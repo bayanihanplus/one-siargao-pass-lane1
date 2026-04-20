@@ -1,15 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { ClearanceStatus } from '@prisma/client';
-import { assertAdminLikeRole, getCurrentUserOrThrow } from '../auth/utils/current-user.util';
+import { getCurrentUserOrThrow } from '../auth/utils/current-user.util';
 
 @Injectable()
 export class ManifestApprovalsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async approve(requestId: string, actedByUserId: string, notes?: string) {
-    const user = await getCurrentUserOrThrow(this.prisma, actedByUserId);
-    assertAdminLikeRole(user.primaryRole);
+    await getCurrentUserOrThrow(this.prisma, actedByUserId);
 
     const req = await this.prisma.manifestApprovalRequest.findUnique({
       where: { id: requestId },
@@ -38,8 +37,7 @@ export class ManifestApprovalsService {
   }
 
   async deny(requestId: string, actedByUserId: string, notes?: string) {
-    const user = await getCurrentUserOrThrow(this.prisma, actedByUserId);
-    assertAdminLikeRole(user.primaryRole);
+    await getCurrentUserOrThrow(this.prisma, actedByUserId);
 
     const req = await this.prisma.manifestApprovalRequest.findUnique({
       where: { id: requestId },

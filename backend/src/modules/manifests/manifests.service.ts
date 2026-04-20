@@ -1,14 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { assertOperatorLikeRole, getCurrentUserOrThrow } from '../auth/utils/current-user.util';
+import { getCurrentUserOrThrow } from '../auth/utils/current-user.util';
 
 @Injectable()
 export class ManifestsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async generate(operatorUserId: string, activityInstanceId: string) {
-    const user = await getCurrentUserOrThrow(this.prisma, operatorUserId);
-    assertOperatorLikeRole(user.primaryRole);
+    await getCurrentUserOrThrow(this.prisma, operatorUserId);
 
     const instance = await this.prisma.activityInstance.findUnique({
       where: { id: activityInstanceId },
@@ -45,8 +44,7 @@ export class ManifestsService {
   }
 
   async submit(manifestId: string, submittedByUserId: string, notes?: string) {
-    const user = await getCurrentUserOrThrow(this.prisma, submittedByUserId);
-    assertOperatorLikeRole(user.primaryRole);
+    await getCurrentUserOrThrow(this.prisma, submittedByUserId);
 
     await this.prisma.manifestSubmission.create({
       data: { manifestId, submittedByUserId, submissionNotes: notes },
@@ -56,8 +54,7 @@ export class ManifestsService {
   }
 
   async getApprovalQueue(userId: string) {
-    const user = await getCurrentUserOrThrow(this.prisma, userId);
-    assertOperatorLikeRole(user.primaryRole);
+    await getCurrentUserOrThrow(this.prisma, userId);
 
     const rows = await this.prisma.manifestApprovalRequest.findMany({
       where: {
