@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { assertOperatorLikeRole, getCurrentUserOrThrow } from '../auth/utils/current-user.util';
+import { getCurrentUserOrThrow } from '../auth/utils/current-user.util';
 import { CreateActivityTemplateDto } from './dto/create-activity-template.dto';
 import { CreateActivityInstanceDto } from './dto/create-activity-instance.dto';
 
@@ -9,8 +9,7 @@ export class ActivitiesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createTemplate(ownerUserId: string, dto: CreateActivityTemplateDto) {
-    const user = await getCurrentUserOrThrow(this.prisma, ownerUserId);
-    assertOperatorLikeRole(user.primaryRole);
+    await getCurrentUserOrThrow(this.prisma, ownerUserId);
 
     return this.prisma.activityTemplate.create({
       data: {
@@ -25,8 +24,7 @@ export class ActivitiesService {
   }
 
   async createInstance(userId: string, dto: CreateActivityInstanceDto) {
-    const user = await getCurrentUserOrThrow(this.prisma, userId);
-    assertOperatorLikeRole(user.primaryRole);
+    await getCurrentUserOrThrow(this.prisma, userId);
 
     return this.prisma.activityInstance.create({
       data: {
