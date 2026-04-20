@@ -1,0 +1,52 @@
+OSP Lane 1 current state — AUTHZ PROVEN
+
+Authentication state:
+- Protected routes use bearer auth via DevAuthGuard + CurrentUserId.
+- Legacy x-user-id access is no longer accepted on protected routes.
+- Supported auth format: Authorization: Bearer dev-token-<userId>
+
+Authorization state:
+- Traveler bearer is blocked from operator-sensitive routes with 403.
+- Operator bearer is allowed on operator-like routes.
+- Admin bearer is allowed on operator-like routes.
+- Manifest approval routes are admin-only at runtime.
+
+Runtime proof completed:
+- Traveler blocked from:
+  - POST /activities
+  - POST /activities/instances
+  - POST /manifests/generate
+  - GET /manifests/approval-queue
+  - POST /manifest-approvals/:requestId/approve
+- Operator allowed on:
+  - POST /activities
+  - GET /manifests/approval-queue
+- Operator blocked from:
+  - POST /manifest-approvals/:requestId/approve
+- Admin allowed through authz on:
+  - POST /manifest-approvals/:requestId/approve
+  - fake request id correctly returns 404 after authz passes
+
+Security cleanup completed:
+- auth/me no longer leaks passwordHash
+- profile no longer leaks passwordHash
+- passes no longer expose backupCodes, offlinePayloads, or raw qrToken
+- trips no longer expose backupCodes or raw qrToken
+- bookings create response is shaped
+- notifications response is shaped
+- manifest approval queue is guarded
+
+Current known environment fact:
+- /Users/jamesm.halasan/projects/one-siargao-pass-lane1 still has no .git directory
+- all changes remain local only until real repo is located or recloned
+
+Remaining next-lane candidates:
+1. Create real operator-side happy-path data:
+   - activity template
+   - activity instance
+   - booking linked to trip
+   - manifest generate
+   - manifest submit
+   - admin approve/deny against real request
+2. Replace dev-token auth with real JWT/session auth
+3. Add formal role guard/decorator layer instead of service-level assertions

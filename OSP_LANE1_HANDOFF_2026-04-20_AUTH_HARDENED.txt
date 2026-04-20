@@ -1,0 +1,53 @@
+OSP Lane 1 current state — AUTH HARDENED
+
+Resolved earlier root cause:
+- /api/v1/trips 500 was caused by missing identity reaching Prisma as undefined travelerUserId.
+- TripsController now no longer relies on direct manual header parsing.
+
+Current auth pattern:
+- Shared DevAuthGuard introduced.
+- CurrentUserId decorator introduced.
+- Bearer format supported: Authorization: Bearer dev-token-<userId>
+- Legacy x-user-id fallback is confined to DevAuthGuard only.
+
+Protected controllers now using DevAuthGuard + CurrentUserId:
+- auth/me
+- profile
+- trips
+- bookings
+- activities
+- manifests
+- manifest-approvals
+- notifications
+- passes
+
+Confirmed runtime behavior:
+- auth/register -> 201
+- auth/login -> 201
+- auth/me with bearer -> 200
+- profile with bearer -> 200
+- bookings without auth -> 401
+- trips create with bearer -> 201
+- trips get with bearer -> 200
+- passes issue with bearer -> 201
+- passes get with bearer -> 200
+- protected endpoints without auth -> 401
+
+Sensitive-data cleanup completed:
+- auth/me no longer returns passwordHash
+- profile no longer returns passwordHash
+- passes responses no longer expose backupCodes, offlinePayloads, or raw qrToken
+- trips response no longer exposes pass backupCodes or raw qrToken
+
+Important environment fact:
+- working directory /Users/jamesm.halasan/projects/one-siargao-pass-lane1 still has NO .git directory
+- changes exist locally only
+- Git diff/add/commit cannot work until real repo is located or recloned
+
+Remaining auth debt:
+- DevAuthGuard still supports x-user-id fallback for temporary backward compatibility
+- next future cleanup can remove x-user-id fallback and enforce bearer-only auth
+
+Likely next cleanup lane:
+- inspect manifests / approval queue / bookings / notifications for over-broad raw Prisma response shapes
+- continue response shaping where needed

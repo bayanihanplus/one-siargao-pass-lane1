@@ -1,0 +1,50 @@
+OSP Lane 1 current state — FINAL HARDENED
+
+Core outcome:
+- Lane 1 protected routes now use bearer auth via DevAuthGuard + CurrentUserId.
+- Legacy x-user-id access no longer works on protected routes.
+
+Auth pattern:
+- Supported: Authorization: Bearer dev-token-<userId>
+- Rejected: x-user-id on protected routes
+- Shared guard is the only auth entry point for protected controller paths.
+
+Confirmed runtime behavior:
+- auth/register -> 201
+- auth/login -> 201
+- auth/me with bearer -> 200
+- profile with bearer -> 200
+- profile with x-user-id only -> 401
+- bookings without auth -> 401
+- bookings create with bearer -> 201
+- trips create with bearer -> 201
+- trips get with bearer -> 200
+- passes issue with bearer -> 201
+- passes get with bearer -> 200
+- manifests approval queue without auth -> 401
+- manifests approval queue with bearer -> 200
+- notifications with bearer -> 200
+- notifications/read without auth -> 401
+
+Sensitive-data cleanup completed:
+- auth/me no longer returns passwordHash
+- profile no longer returns passwordHash
+- passes no longer expose backupCodes, offlinePayloads, or raw qrToken
+- trips no longer expose pass backupCodes or raw qrToken
+- bookings create response is shaped
+- notifications response is shaped
+
+Important data/testing notes:
+- ActivityInstance table was empty during booking tests
+- BookingItem.activityInstanceId is nullable
+- fake activityInstanceId values will fail FK validation if provided
+
+Important environment fact:
+- working directory /Users/jamesm.halasan/projects/one-siargao-pass-lane1 still has NO .git directory
+- all changes are local only
+- no git diff/add/commit available until real repo is located or recloned
+
+Remaining future cleanup candidates:
+- review manifests generate/submit response shape
+- review manifest approvals response and operator authorization model
+- eventually replace dev-token pattern with real JWT/session auth

@@ -1,0 +1,26 @@
+OSP Lane 1 current state — LOCKED
+
+Resolved root cause:
+- /api/v1/trips was throwing 500 because TripsController accepted missing x-user-id, TripsService passed undefined travelerUserId into Prisma, and Prisma rejected required traveler relation.
+
+Confirmed working behavior:
+- POST /api/v1/auth/register -> 201
+- POST /api/v1/auth/login -> 201
+- POST /api/v1/trips without x-user-id -> 400 Bad Request, message: x-user-id header is required
+- POST /api/v1/trips with valid x-user-id -> 201 Created
+
+Patched file:
+- backend/src/modules/trips/trips.controller.ts
+
+Current patched controller behavior:
+- import BadRequestException from @nestjs/common
+- create(): if !userId throw new BadRequestException('x-user-id header is required')
+- getById(): if !userId throw same BadRequestException
+
+Important environment fact:
+- working directory /Users/jamesm.halasan/projects/one-siargao-pass-lane1 has NO .git directory
+- code changes exist locally, but Git diff/add/commit cannot work until the real repository is located or recloned
+
+Do not revisit Docker/Postgres/auth migration loop.
+Current remaining next-step is architectural:
+- replace temporary x-user-id header contract with real authenticated user resolution for Lane 1 protected routes.

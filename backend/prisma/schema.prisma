@@ -1,0 +1,492 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  TRAVELER
+  OPERATOR_OWNER
+  OPERATOR_MANAGER
+  OPERATOR_STAFF
+  GUIDE
+  ADMIN
+  SILENT_LGU_ANALYTICS
+}
+
+enum AccountStatus {
+  ACTIVE
+  PENDING
+  SUSPENDED
+  DISABLED
+}
+
+enum TripStatus {
+  DRAFT
+  REGISTERED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum RegistrationStatus {
+  INCOMPLETE
+  SUBMITTED
+  VERIFIED
+  REJECTED
+}
+
+enum ClearanceStatus {
+  PENDING
+  APPROVED
+  DENIED
+  NEEDS_CHANGES
+}
+
+enum PassStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+  SUSPENDED
+}
+
+enum BookingSource {
+  OSP
+  OTA
+  INTERNATIONAL_OTA
+  DIRECT_OPERATOR
+  MANUAL
+  PRE_OSP
+  TRAVELER_CLAIMED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum ManifestStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  DENIED
+  NEEDS_CHANGES
+  CANCELLED
+}
+
+enum ValidationResult {
+  VALID
+  INVALID
+  DUPLICATE
+  LATE
+  OVERRIDDEN
+  MANIFEST_ISSUE
+}
+
+model User {
+  id                String        @id @default(cuid())
+  email             String?       @unique
+  mobileNumber      String?       @unique
+  passwordHash      String?
+  fullName          String
+  displayName       String?
+  accountStatus     AccountStatus @default(ACTIVE)
+  primaryRole       UserRole
+  preferredLanguage String        @default("en")
+  isEmailVerified   Boolean       @default(false)
+  isMobileVerified  Boolean       @default(false)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  travelerProfile   TravelerProfile?
+  operatorProfile   OperatorProfile?
+  guideProfile      GuideProfile?
+  emergencyContacts EmergencyContact[]
+  notificationPref  NotificationPreference?
+  trips             Trip[]                  @relation("TravelerTrips")
+  createdActivities ActivityTemplate[]      @relation("ActivityOwner")
+  createdManifests  Manifest[]              @relation("ManifestOperator")
+  notifications     Notification[]
+}
+
+model TravelerProfile {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  nationalityCode String?
+  birthDate       DateTime?
+  homeCountry     String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OperatorProfile {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  businessName       String
+  displayName        String
+  contactEmail       String?
+  contactMobile      String?
+  onboardingStatus   String
+  verificationStatus String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GuideProfile {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  guideDisplayName   String
+  biography          String?
+  onboardingStatus   String
+  verificationStatus String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EmergencyContact {
+  id            String   @id @default(cuid())
+  userId        String
+  contactName   String
+  contactMobile String
+  relationship  String
+  isPrimary     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model NotificationPreference {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  allowInApp     Boolean  @default(true)
+  allowEmail     Boolean  @default(true)
+  allowMessenger Boolean  @default(false)
+  marketingOptIn Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Trip {
+  id                        String             @id @default(cuid())
+  travelerUserId            String
+  tripTitle                 String?
+  arrivalDate               DateTime
+  departureDate             DateTime
+  originLocation            String?
+  declaredAccommodationName String?
+  tripStatus                TripStatus         @default(DRAFT)
+  registrationStatus        RegistrationStatus @default(INCOMPLETE)
+  clearanceStatus           ClearanceStatus    @default(PENDING)
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+
+  traveler         User                 @relation("TravelerTrips", fields: [travelerUserId], references: [id], onDelete: Cascade)
+  registration     TripRegistration?
+  members          TripMember[]
+  consents         TripConsent[]
+  pass             OspPass?
+  bookingLinks     BookingLink[]
+  manifestMembers  ManifestMember[]
+  clearanceHistory TripClearanceState[]
+}
+
+model TripRegistration {
+  id                      String    @id @default(cuid())
+  tripId                  String    @unique
+  registrationReference   String    @unique
+  registrationChannel     String
+  registrationCompletedAt DateTime?
+  createdAt               DateTime  @default(now())
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+}
+
+model TripMember {
+  id                String   @id @default(cuid())
+  tripId            String
+  memberType        String
+  linkedUserId      String?
+  fullName          String
+  nationalityCode   String?
+  age               Int?
+  passportOrIdHint  String?
+  isPrimaryTraveler Boolean  @default(false)
+  createdAt         DateTime @default(now())
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+}
+
+model TripConsent {
+  id                String   @id @default(cuid())
+  tripId            String
+  consentType       String
+  consentedByUserId String
+  consentedAt       DateTime @default(now())
+  metadataJson      Json?
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+}
+
+model TripClearanceState {
+  id              String          @id @default(cuid())
+  tripId          String
+  clearanceStatus ClearanceStatus
+  clearanceReason String?
+  approvedBy      String?
+  approvedAt      DateTime?
+  createdAt       DateTime        @default(now())
+
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+}
+
+model OspPass {
+  id         String     @id @default(cuid())
+  tripId     String     @unique
+  passCode   String     @unique
+  passStatus PassStatus @default(ACTIVE)
+  issuedAt   DateTime   @default(now())
+  revokedAt  DateTime?
+  expiresAt  DateTime?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  trip            Trip                 @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  qrCredential    QrCredential?
+  backupCodes     BackupCode[]
+  offlinePayloads OfflinePassPayload[]
+}
+
+model QrCredential {
+  id                String    @id @default(cuid())
+  ospPassId         String    @unique
+  qrToken           String    @unique
+  qrVersion         Int       @default(1)
+  lastRegeneratedAt DateTime?
+  createdAt         DateTime  @default(now())
+
+  ospPass OspPass @relation(fields: [ospPassId], references: [id], onDelete: Cascade)
+}
+
+model BackupCode {
+  id         String   @id @default(cuid())
+  ospPassId  String
+  backupCode String   @unique
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  ospPass OspPass @relation(fields: [ospPassId], references: [id], onDelete: Cascade)
+}
+
+model OfflinePassPayload {
+  id             String   @id @default(cuid())
+  ospPassId      String
+  payloadVersion Int
+  payloadJson    Json
+  expiresAt      DateTime
+  createdAt      DateTime @default(now())
+
+  ospPass OspPass @relation(fields: [ospPassId], references: [id], onDelete: Cascade)
+}
+
+model ActivityTemplate {
+  id                String   @id @default(cuid())
+  ownerUserId       String
+  title             String
+  description       String?
+  durationMinutes   Int?
+  meetingPointText  String?
+  requiresManifest  Boolean  @default(false)
+  requiresGuide     Boolean  @default(false)
+  isPubliclyVisible Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  owner     User               @relation("ActivityOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+  instances ActivityInstance[]
+}
+
+model ActivityInstance {
+  id                 String    @id @default(cuid())
+  activityTemplateId String
+  scheduledDate      DateTime
+  startTime          DateTime?
+  endTime            DateTime?
+  capacity           Int?
+  bookedCount        Int       @default(0)
+  instanceStatus     String
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  activityTemplate ActivityTemplate @relation(fields: [activityTemplateId], references: [id], onDelete: Cascade)
+  manifests        Manifest[]
+  bookingItems     BookingItem[]
+}
+
+model Booking {
+  id                    String        @id @default(cuid())
+  primaryTravelerUserId String?
+  bookingReference      String        @unique
+  bookingSource         BookingSource
+  bookingStatus         BookingStatus @default(PENDING)
+  bookingTotalPhp       Decimal?      @db.Decimal(12, 2)
+  currencyCode          String?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  items         BookingItem[]
+  links         BookingLink[]
+  externalLinks ExternalBookingLink[]
+}
+
+model BookingItem {
+  id                 String   @id @default(cuid())
+  bookingId          String
+  itemType           String
+  activityInstanceId String?
+  quantity           Int?
+  unitPricePhp       Decimal? @db.Decimal(12, 2)
+  createdAt          DateTime @default(now())
+
+  booking          Booking           @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  activityInstance ActivityInstance? @relation(fields: [activityInstanceId], references: [id], onDelete: SetNull)
+}
+
+model BookingLink {
+  id                String   @id @default(cuid())
+  bookingId         String
+  tripId            String
+  linkedByUserId    String?
+  linkMethod        String
+  verificationState String
+  createdAt         DateTime @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  trip    Trip    @relation(fields: [tripId], references: [id], onDelete: Cascade)
+}
+
+model ExternalBookingLink {
+  id                  String    @id @default(cuid())
+  bookingId           String
+  externalPartnerCode String?
+  externalReference   String
+  sourcePlatformName  String?
+  claimedByUserId     String?
+  operatorConfirmedBy String?
+  verifiedAt          DateTime?
+  createdAt           DateTime  @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model ValidationAttempt {
+  id                 String           @id @default(cuid())
+  ospPassId          String
+  activityInstanceId String?
+  manifestId         String?
+  scannedByUserId    String?
+  validationResult   ValidationResult
+  contextJson        Json?
+  createdAt          DateTime         @default(now())
+}
+
+model CheckinEvent {
+  id                 String   @id @default(cuid())
+  tripId             String
+  bookingId          String?
+  activityInstanceId String?
+  checkedInByUserId  String?
+  checkinStatus      String
+  createdAt          DateTime @default(now())
+}
+
+model Manifest {
+  id                 String         @id @default(cuid())
+  activityInstanceId String
+  operatorUserId     String?
+  manifestReference  String         @unique
+  manifestStatus     ManifestStatus @default(DRAFT)
+  totalMembers       Int            @default(0)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  activityInstance ActivityInstance          @relation(fields: [activityInstanceId], references: [id], onDelete: Cascade)
+  operator         User?                     @relation("ManifestOperator", fields: [operatorUserId], references: [id], onDelete: SetNull)
+  members          ManifestMember[]
+  submissions      ManifestSubmission[]
+  approvalRequests ManifestApprovalRequest[]
+}
+
+model ManifestMember {
+  id                   String   @id @default(cuid())
+  manifestId           String
+  tripId               String?
+  bookingId            String?
+  travelerNameSnapshot String
+  memberStatus         String
+  createdAt            DateTime @default(now())
+
+  manifest Manifest @relation(fields: [manifestId], references: [id], onDelete: Cascade)
+  trip     Trip?    @relation(fields: [tripId], references: [id], onDelete: SetNull)
+}
+
+model ManifestSubmission {
+  id                String   @id @default(cuid())
+  manifestId        String
+  submittedByUserId String
+  submissionTime    DateTime @default(now())
+  submissionNotes   String?
+  createdAt         DateTime @default(now())
+
+  manifest Manifest @relation(fields: [manifestId], references: [id], onDelete: Cascade)
+}
+
+model ManifestApprovalRequest {
+  id            String         @id @default(cuid())
+  manifestId    String
+  requestStatus ManifestStatus @default(UNDER_REVIEW)
+  reviewedBy    String?
+  reviewedAt    DateTime?
+  reviewNotes   String?
+  createdAt     DateTime       @default(now())
+
+  manifest Manifest                 @relation(fields: [manifestId], references: [id], onDelete: Cascade)
+  actions  ManifestApprovalAction[]
+}
+
+model ManifestApprovalAction {
+  id                        String   @id @default(cuid())
+  manifestApprovalRequestId String
+  actionType                String
+  actedByUserId             String
+  actionNotes               String?
+  createdAt                 DateTime @default(now())
+
+  manifestApprovalRequest ManifestApprovalRequest @relation(fields: [manifestApprovalRequestId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id               String   @id @default(cuid())
+  userId           String
+  notificationType String
+  title            String
+  body             String
+  isRead           Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

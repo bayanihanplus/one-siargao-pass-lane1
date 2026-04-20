@@ -1,0 +1,60 @@
+OSP Lane 1 current state — HAPPY PATH PROVEN
+
+Full runtime flow proven end to end:
+1. Traveler registers/logs in
+2. Traveler creates trip
+3. Traveler booking created against real activity instance
+4. Booking linked to traveler trip
+5. Operator creates activity template
+6. Operator creates activity instance
+7. Operator generates manifest from real activity instance
+8. Operator submits manifest
+9. Admin approves manifest approval request
+10. Trip clearance becomes APPROVED
+11. Traveler trip read reflects APPROVED clearance
+12. Pass read remains shaped and accessible to traveler
+
+Authentication:
+- Protected routes use bearer auth via DevAuthGuard + CurrentUserId
+- Legacy x-user-id no longer accepted on protected routes
+- Auth format currently: Authorization: Bearer dev-token-<userId>
+
+Authorization proven:
+- Traveler blocked with 403 on operator-sensitive routes
+- Operator allowed on operator-like routes
+- Operator blocked from admin-only manifest approval
+- Admin allowed through manifest approval path
+- Fake approval request previously returned 404 only after admin authz passed
+
+Security shaping completed:
+- auth/me no longer leaks passwordHash
+- profile no longer leaks passwordHash
+- passes do not expose backupCodes, offlinePayloads, or raw qrToken
+- trips do not expose backupCodes or raw qrToken
+- bookings create response is shaped
+- notifications response is shaped
+- approval queue is guarded
+
+Verified business-state outcome:
+- Trip clearance status = APPROVED
+- Manifest status = APPROVED
+- Manifest approval request status = APPROVED
+- reviewedBy = osp-admin-001
+- TripClearanceState contains APPROVED row
+- Traveler-facing trip API shows clearanceStatus = APPROVED
+- Traveler-facing pass API remains shaped and functional
+
+Test users created:
+- traveler1@osp.local / Password123! / TRAVELER
+- operator1@osp.local / Password123! / OPERATOR_OWNER
+- admin1@osp.local / Password123! / ADMIN
+
+Important environment fact:
+- /Users/jamesm.halasan/projects/one-siargao-pass-lane1 still has NO .git directory
+- all changes remain local only until real repo is located or recloned
+
+Highest-priority future lanes:
+1. Replace dev-token auth with real JWT/session auth
+2. Move service-level role assertions into formal role guard/decorator layer
+3. Add positive-path tests/scripts for regression safety
+4. Restore real git repository hygiene

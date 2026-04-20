@@ -1,0 +1,46 @@
+OSP Lane 1 current state — JWT LIVE
+
+Authentication:
+- auth/login now returns signed JWT access tokens
+- protected routes accept signed JWT bearer tokens
+- old dev-token-* format is rejected at runtime
+- DevAuthGuard now verifies JWTs via JwtService
+- AuthModule now wires JwtModule + PassportModule
+- CurrentUserId decorator remains the identity extraction surface for controllers
+
+Authorization:
+- Traveler gets 403 on operator-sensitive routes
+- Operator gets 403 on admin-only manifest approval
+- Admin can pass manifest approval authz path
+- Operator/admin happy paths are proven
+
+Full happy path proven:
+1. Traveler creates trip
+2. Operator creates activity template
+3. Operator creates activity instance
+4. Traveler creates booking against real instance
+5. Traveler links booking to trip
+6. Operator generates manifest
+7. Operator submits manifest
+8. Admin approves request
+9. Trip clearance becomes APPROVED
+10. Traveler-facing trip read reflects APPROVED
+
+Security shaping completed:
+- auth/me no longer leaks passwordHash
+- profile no longer leaks passwordHash
+- passes do not expose backupCodes, offlinePayloads, or raw qrToken
+- trips do not expose backupCodes or raw qrToken
+- bookings create response is shaped
+- notifications response is shaped
+- approval queue is guarded
+
+Runtime JWT proof:
+- login returns JWT with dot-separated segments
+- auth/me with returned JWT -> 200
+- auth/me with old dev-token-* -> 401
+
+Environment note:
+- project directory still has no .git metadata
+- local tar.gz snapshot exists:
+  one-siargao-pass-lane1_20260421_071505.tar.gz

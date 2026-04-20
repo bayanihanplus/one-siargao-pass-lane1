@@ -1,0 +1,21 @@
+import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { ManifestApprovalsService } from './manifest-approvals.service';
+import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
+import { CurrentUserId } from '../auth/decorators/current-user-id.decorator';
+
+@Controller('manifest-approvals')
+export class ManifestApprovalsController {
+  constructor(private readonly service: ManifestApprovalsService) {}
+
+  @UseGuards(DevAuthGuard)
+  @Post(':requestId/approve')
+  approve(@CurrentUserId() userId: string, @Param('requestId') requestId: string, @Body('notes') notes?: string) {
+    return this.service.approve(requestId, userId, notes);
+  }
+
+  @UseGuards(DevAuthGuard)
+  @Post(':requestId/deny')
+  deny(@CurrentUserId() userId: string, @Param('requestId') requestId: string, @Body('notes') notes?: string) {
+    return this.service.deny(requestId, userId, notes);
+  }
+}
