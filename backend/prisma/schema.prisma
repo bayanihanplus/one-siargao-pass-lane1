@@ -398,6 +398,8 @@ model BookingLink {
 
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   trip    Trip    @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@unique([bookingId, tripId])
 }
 
 model ExternalBookingLink {

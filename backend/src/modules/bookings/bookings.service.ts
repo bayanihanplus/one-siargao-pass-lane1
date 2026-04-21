@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { LinkBookingToTripDto } from './dto/link-booking-to-trip.dto';
@@ -58,15 +58,22 @@ export class BookingsService {
     };
   }
 
-  linkToTrip(linkedByUserId: string | undefined, dto: LinkBookingToTripDto) {
-    return this.prisma.bookingLink.create({
-      data: {
-        bookingId: dto.bookingId,
-        tripId: dto.tripId,
-        linkedByUserId,
-        linkMethod: dto.linkMethod,
-        verificationState: 'verified',
-      },
-    });
+  async linkToTrip(linkedByUserId: string | undefined, dto: LinkBookingToTripDto) {
+    try {
+      return await this.prisma.bookingLink.create({
+        data: {
+          bookingId: dto.bookingId,
+          tripId: dto.tripId,
+          linkedByUserId,
+          linkMethod: dto.linkMethod,
+          verificationState: 'verified',
+        },
+      });
+    } catch (error: any) {
+      if (error?.code === 'P2002') {
+        throw new ConflictException('Booking is already linked to this trip');
+      }
+      throw error;
+    }
   }
 }
