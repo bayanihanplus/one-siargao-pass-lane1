@@ -39,7 +39,19 @@ export class TripsService {
         members: true,
         registration: true,
         pass: { include: { qrCredential: true } },
-        bookingLinks: { include: { booking: true } },
+        bookingLinks: {
+          include: {
+            booking: {
+              include: {
+                paymentState: true,
+                paymentIntents: {
+                  orderBy: { createdAt: 'desc' },
+                  take: 1,
+                },
+              },
+            },
+          },
+        },
         clearanceHistory: true,
       },
     });
@@ -90,8 +102,36 @@ export class TripsService {
               bookingReference: link.booking.bookingReference,
               bookingSource: link.booking.bookingSource,
               bookingStatus: link.booking.bookingStatus,
+              bookingTotalPhp: link.booking.bookingTotalPhp,
+              currencyCode: link.booking.currencyCode,
               createdAt: link.booking.createdAt,
               updatedAt: link.booking.updatedAt,
+              paymentState: link.booking.paymentState
+                ? {
+                    id: link.booking.paymentState.id,
+                    bookingId: link.booking.paymentState.bookingId,
+                    state: link.booking.paymentState.state,
+                    paidAmountPhp: link.booking.paymentState.paidAmountPhp,
+                    unpaidAmountPhp: link.booking.paymentState.unpaidAmountPhp,
+                    lastPaymentIntentId: link.booking.paymentState.lastPaymentIntentId,
+                    stateUpdatedAt: link.booking.paymentState.stateUpdatedAt,
+                    createdAt: link.booking.paymentState.createdAt,
+                    updatedAt: link.booking.paymentState.updatedAt,
+                  }
+                : null,
+              latestPaymentIntent: link.booking.paymentIntents[0]
+                ? {
+                    id: link.booking.paymentIntents[0].id,
+                    intentReference: link.booking.paymentIntents[0].intentReference,
+                    amountPhp: link.booking.paymentIntents[0].amountPhp,
+                    currencyCode: link.booking.paymentIntents[0].currencyCode,
+                    status: link.booking.paymentIntents[0].status,
+                    provider: link.booking.paymentIntents[0].provider,
+                    confirmedAt: link.booking.paymentIntents[0].confirmedAt,
+                    createdAt: link.booking.paymentIntents[0].createdAt,
+                    updatedAt: link.booking.paymentIntents[0].updatedAt,
+                  }
+                : null,
             }
           : null,
       })),
