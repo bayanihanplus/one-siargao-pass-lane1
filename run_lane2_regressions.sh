@@ -34,4 +34,10 @@ echo
 echo "=== TRIP PAYMENT READ EXPOSURE SMOKE PASSED ==="
 echo
 
+echo "=== 6) PAYMENT MISSING TOTAL REJECTION SMOKE ==="
+./smoke_lane2_missing_total_rejected.sh
+echo
+echo "=== PAYMENT MISSING TOTAL REJECTION SMOKE PASSED ==="
+echo
+
 echo "=== LANE 2 REGRESSION SUITE COMPLETE ==="
