@@ -1,6 +1,13 @@
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
 type TripPageProps = {
   params: {
     tripId: string;
+  };
+  searchParams?: {
+    added?: string;
+    error?: string;
   };
 };
 
@@ -62,6 +69,52 @@ async function getTrip(tripId: string): Promise<{
   }
 }
 
+async function addCompanion(formData: FormData) {
+  "use server";
+
+  const tripId = String(formData.get("tripId") || "");
+  const fullName = String(formData.get("fullName") || "").trim();
+  const nationalityCode = String(formData.get("nationalityCode") || "").trim();
+  const ageRaw = String(formData.get("age") || "").trim();
+  const passportOrIdHint = String(formData.get("passportOrIdHint") || "").trim();
+
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+
+  if (!tripId || !fullName) {
+    return;
+  }
+
+  const token = await getDevTravelerToken(baseUrl);
+
+  const body: Record<string, any> = {
+    memberType: "COMPANION",
+    fullName,
+    isPrimaryTraveler: false,
+  };
+
+  if (nationalityCode) body.nationalityCode = nationalityCode;
+  if (passportOrIdHint) body.passportOrIdHint = passportOrIdHint;
+  if (ageRaw) body.age = Number(ageRaw);
+
+  const res = await fetch(`${baseUrl}/trips/${tripId}/members`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Add companion failed: HTTP ${res.status}`);
+  }
+
+  revalidatePath(`/traveler/trips/${tripId}`);
+  redirect(`/traveler/trips/${tripId}`);
+}
+
 function Section(props: { title: string; children: any }) {
   const { title, children } = props;
 
@@ -99,8 +152,8 @@ export default async function TravelerTripDetailPage({
     <main style={{ maxWidth: 920, margin: "0 auto", padding: 24 }}>
       <h1 style={{ marginBottom: 8 }}>Traveler Trip Detail</h1>
       <p style={{ marginTop: 0, marginBottom: 24 }}>
-        Trip contract viewer for registration, clearance, pass, and current
-        booking/payment state.
+        Trip contract viewer for registration, clearance, pass, current
+        booking/payment state, and dev-only companion add flow.
       </p>
 
       <Section title="Development Note">
@@ -137,6 +190,87 @@ export default async function TravelerTripDetailPage({
               label="Accommodation"
               value={trip.declaredAccommodationName}
             />
+          </Section>
+
+          <Section title="Trip Members">
+            {Array.isArray(trip.members) && trip.members.length > 0 ? (
+              <div style={{ display: "grid", gap: 12, marginBottom: 16 }}>
+                {trip.members.map((member: any) => (
+                  <div
+                    key={member.id}
+                    style={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 10,
+                      padding: 12,
+                    }}
+                  >
+                    <KeyValue label="Member ID" value={member.id} />
+                    <KeyValue label="Type" value={member.memberType} />
+                    <KeyValue label="Full Name" value={member.fullName} />
+                    <KeyValue
+                      label="Nationality"
+                      value={member.nationalityCode}
+                    />
+                    <KeyValue label="Age" value={member.age} />
+                    <KeyValue
+                      label="Passport / ID Hint"
+                      value={member.passportOrIdHint}
+                    />
+                    <KeyValue
+                      label="Primary Traveler"
+                      value={String(member.isPrimaryTraveler)}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No trip members yet.</p>
+            )}
+
+            <form action={addCompanion} style={{ display: "grid", gap: 12 }}>
+              <input type="hidden" name="tripId" value={trip.id} />
+
+              <label>
+                <div style={{ marginBottom: 4 }}>Companion Full Name</div>
+                <input
+                  name="fullName"
+                  required
+                  style={{ width: "100%", padding: 8 }}
+                />
+              </label>
+
+              <label>
+                <div style={{ marginBottom: 4 }}>Nationality Code</div>
+                <input
+                  name="nationalityCode"
+                  placeholder="PH"
+                  style={{ width: "100%", padding: 8 }}
+                />
+              </label>
+
+              <label>
+                <div style={{ marginBottom: 4 }}>Age</div>
+                <input
+                  name="age"
+                  type="number"
+                  min="0"
+                  style={{ width: "100%", padding: 8 }}
+                />
+              </label>
+
+              <label>
+                <div style={{ marginBottom: 4 }}>Passport / ID Hint</div>
+                <input
+                  name="passportOrIdHint"
+                  placeholder="ID-1234"
+                  style={{ width: "100%", padding: 8 }}
+                />
+              </label>
+
+              <button type="submit" style={{ padding: "10px 14px" }}>
+                Add Companion
+              </button>
+            </form>
           </Section>
 
           <Section title="Booking Summary">
