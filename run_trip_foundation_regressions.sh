@@ -22,4 +22,10 @@ echo
 echo "=== TRIP CURRENT BOOKING CONTRACT SMOKE PASSED ==="
 echo
 
+echo "=== 4) TRIP MEMBER MUTATION OWNERSHIP SMOKE ==="
+./smoke_trip_member_mutation_ownership.sh
+echo
+echo "=== TRIP MEMBER MUTATION OWNERSHIP SMOKE PASSED ==="
+echo
+
 echo "=== TRIP FOUNDATION REGRESSION SUITE COMPLETE ==="
