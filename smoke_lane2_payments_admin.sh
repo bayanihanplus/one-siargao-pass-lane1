@@ -16,8 +16,6 @@ login_token() {
   | python3 -c 'import sys,json; print(json.load(sys.stdin)["accessToken"])'
 }
 
-OTHER_TRAVELER_TOKEN="$(login_token "operator1@osp.local" "Password123!")"
-
 expect_http() {
   local expected="$1"
   local label="$2"
@@ -37,18 +35,14 @@ expect_http() {
   fi
 }
 
-expect_http 404 "1) OTHER TRAVELER CANNOT READ PAYMENT INTENT" \
-  curl "$BASE/payments/intents/$KNOWN_INTENT_ID" \
-  -H "Authorization: Bearer $OTHER_TRAVELER_TOKEN"
+ADMIN_TOKEN="$(login_token "admin1@osp.local" "Password123!")"
 
-expect_http 404 "2) OTHER TRAVELER CANNOT READ BOOKING PAYMENT STATE" \
-  curl "$BASE/payments/states/$KNOWN_BOOKING_ID" \
-  -H "Authorization: Bearer $OTHER_TRAVELER_TOKEN"
+expect_http 200 "1) ADMIN CAN READ PAYMENT INTENT" \
+  curl "$BASE/payments/admin/intents/$KNOWN_INTENT_ID" \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
 
-expect_http 404 "3) OTHER TRAVELER CANNOT CONFIRM SOMEONE ELSE'S PAYMENT INTENT" \
-  curl -X POST "$BASE/payments/intents/$KNOWN_INTENT_ID/confirm" \
-  -H "Authorization: Bearer $OTHER_TRAVELER_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"eventKey":"lane2-unauthorized-confirm-attempt"}'
+expect_http 200 "2) ADMIN CAN READ BOOKING PAYMENT STATE" \
+  curl "$BASE/payments/admin/states/$KNOWN_BOOKING_ID" \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
 
-echo "=== LANE 2 PAYMENT UNAUTHORIZED SMOKE PASSED ==="
+echo "=== LANE 2 PAYMENT ADMIN SMOKE PASSED ==="

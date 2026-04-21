@@ -3,6 +3,8 @@ import { PaymentsService } from './payments.service';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { ConfirmPaymentIntentDto } from './dto/confirm-payment-intent.dto';
 import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUserId } from '../auth/decorators/current-user-id.decorator';
 
 @Controller('payments')
@@ -41,5 +43,19 @@ export class PaymentsController {
     @Param('bookingId') bookingId: string,
   ) {
     return this.paymentsService.getBookingPaymentState(userId, bookingId);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('admin/intents/:id')
+  getIntentAdmin(@Param('id') intentId: string) {
+    return this.paymentsService.getIntentAdmin(intentId);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('admin/states/:bookingId')
+  getBookingPaymentStateAdmin(@Param('bookingId') bookingId: string) {
+    return this.paymentsService.getBookingPaymentStateAdmin(bookingId);
   }
 }

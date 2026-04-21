@@ -321,5 +321,99 @@ export class PaymentsService {
         : null,
     };
   }
+
+  async getIntentAdmin(intentId: string) {
+    const intent = await this.prisma.paymentIntent.findUnique({
+      where: { id: intentId },
+      include: {
+        booking: {
+          include: {
+            paymentState: true,
+          },
+        },
+      },
+    });
+
+    if (!intent) {
+      throw new NotFoundException('Payment intent not found');
+    }
+
+    return {
+      id: intent.id,
+      bookingId: intent.bookingId,
+      intentReference: intent.intentReference,
+      amountPhp: intent.amountPhp,
+      currencyCode: intent.currencyCode,
+      status: intent.status,
+      provider: intent.provider,
+      confirmedAt: intent.confirmedAt,
+      createdAt: intent.createdAt,
+      updatedAt: intent.updatedAt,
+      paymentState: intent.booking.paymentState
+        ? {
+            id: intent.booking.paymentState.id,
+            bookingId: intent.booking.paymentState.bookingId,
+            state: intent.booking.paymentState.state,
+            paidAmountPhp: intent.booking.paymentState.paidAmountPhp,
+            unpaidAmountPhp: intent.booking.paymentState.unpaidAmountPhp,
+            lastPaymentIntentId: intent.booking.paymentState.lastPaymentIntentId,
+            stateUpdatedAt: intent.booking.paymentState.stateUpdatedAt,
+            createdAt: intent.booking.paymentState.createdAt,
+            updatedAt: intent.booking.paymentState.updatedAt,
+          }
+        : null,
+    };
+  }
+
+  async getBookingPaymentStateAdmin(bookingId: string) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        paymentState: true,
+        paymentIntents: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+      },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    return {
+      bookingId: booking.id,
+      bookingReference: booking.bookingReference,
+      bookingStatus: booking.bookingStatus,
+      bookingTotalPhp: booking.bookingTotalPhp,
+      currencyCode: booking.currencyCode,
+      paymentState: booking.paymentState
+        ? {
+            id: booking.paymentState.id,
+            bookingId: booking.paymentState.bookingId,
+            state: booking.paymentState.state,
+            paidAmountPhp: booking.paymentState.paidAmountPhp,
+            unpaidAmountPhp: booking.paymentState.unpaidAmountPhp,
+            lastPaymentIntentId: booking.paymentState.lastPaymentIntentId,
+            stateUpdatedAt: booking.paymentState.stateUpdatedAt,
+            createdAt: booking.paymentState.createdAt,
+            updatedAt: booking.paymentState.updatedAt,
+          }
+        : null,
+      latestPaymentIntent: booking.paymentIntents[0]
+        ? {
+            id: booking.paymentIntents[0].id,
+            intentReference: booking.paymentIntents[0].intentReference,
+            amountPhp: booking.paymentIntents[0].amountPhp,
+            currencyCode: booking.paymentIntents[0].currencyCode,
+            status: booking.paymentIntents[0].status,
+            provider: booking.paymentIntents[0].provider,
+            confirmedAt: booking.paymentIntents[0].confirmedAt,
+            createdAt: booking.paymentIntents[0].createdAt,
+            updatedAt: booking.paymentIntents[0].updatedAt,
+          }
+        : null,
+    };
+  }
 }
 

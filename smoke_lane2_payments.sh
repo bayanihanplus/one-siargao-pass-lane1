@@ -137,6 +137,11 @@ if [ -z "$INTENT_ID" ]; then
   exit 1
 fi
 
+cat > lane2_payment_ids.env <<ENV
+BOOKING_ID=$BOOKING_ID
+INTENT_ID=$INTENT_ID
+ENV
+
 EVENT_KEY="lane2-smoke-confirm-$INTENT_ID"
 
 CONFIRM_BODY="$(mktemp)"
