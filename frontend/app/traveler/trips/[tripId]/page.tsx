@@ -1,0 +1,273 @@
+type TripPageProps = {
+  params: {
+    tripId: string;
+  };
+};
+
+type TripResponse = any;
+
+async function getDevTravelerToken(baseUrl: string) {
+  const res = await fetch(`${baseUrl}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    cache: "no-store",
+    body: JSON.stringify({
+      email: "traveler1@osp.local",
+      password: "Password123!",
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Dev login failed: HTTP ${res.status}`);
+  }
+
+  const json = await res.json();
+  return json.accessToken as string;
+}
+
+async function getTrip(tripId: string): Promise<{
+  error: string | null;
+  trip: TripResponse | null;
+}> {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+
+  try {
+    const token = await getDevTravelerToken(baseUrl);
+
+    const res = await fetch(`${baseUrl}/trips/${tripId}`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      return {
+        error: `Failed to load trip: HTTP ${res.status}`,
+        trip: null,
+      };
+    }
+
+    const trip = await res.json();
+    return { trip, error: null };
+  } catch (error: any) {
+    return {
+      error: error?.message || "Unknown trip load failure",
+      trip: null,
+    };
+  }
+}
+
+function Section(props: { title: string; children: any }) {
+  const { title, children } = props;
+
+  return (
+    <section
+      style={{
+        border: "1px solid #e5e7eb",
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 16,
+      }}
+    >
+      <h2 style={{ marginTop: 0, marginBottom: 12 }}>{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+function KeyValue(props: { label: string; value: any }) {
+  const { label, value } = props;
+
+  return (
+    <div style={{ marginBottom: 8 }}>
+      <strong>{label}:</strong> {value ?? "—"}
+    </div>
+  );
+}
+
+export default async function TravelerTripDetailPage({
+  params,
+}: TripPageProps) {
+  const { trip, error } = await getTrip(params.tripId);
+
+  return (
+    <main style={{ maxWidth: 920, margin: "0 auto", padding: 24 }}>
+      <h1 style={{ marginBottom: 8 }}>Traveler Trip Detail</h1>
+      <p style={{ marginTop: 0, marginBottom: 24 }}>
+        Trip contract viewer for registration, clearance, pass, and current
+        booking/payment state.
+      </p>
+
+      <Section title="Development Note">
+        <p style={{ marginTop: 0 }}>
+          This page is using a temporary server-side dev login helper with the
+          seeded traveler account so we can validate the trip contract without
+          waiting for the full frontend auth/session layer.
+        </p>
+        <p style={{ marginBottom: 0 }}>
+          Replace this with the real authenticated session wiring later.
+        </p>
+      </Section>
+
+      {error ? (
+        <Section title="Load Error">
+          <p style={{ margin: 0 }}>{error}</p>
+        </Section>
+      ) : null}
+
+      {!trip ? null : (
+        <>
+          <Section title="Trip Overview">
+            <KeyValue label="Trip ID" value={trip.id} />
+            <KeyValue label="Trip Status" value={trip.tripStatus} />
+            <KeyValue
+              label="Registration Status"
+              value={trip.registrationStatus}
+            />
+            <KeyValue label="Clearance Status" value={trip.clearanceStatus} />
+            <KeyValue label="Arrival Date" value={trip.arrivalDate} />
+            <KeyValue label="Departure Date" value={trip.departureDate} />
+            <KeyValue label="Origin" value={trip.originLocation} />
+            <KeyValue
+              label="Accommodation"
+              value={trip.declaredAccommodationName}
+            />
+          </Section>
+
+          <Section title="Booking Summary">
+            <KeyValue
+              label="Total Linked Bookings"
+              value={trip.bookingSummary?.totalLinkedBookings}
+            />
+            <KeyValue
+              label="Paid Bookings"
+              value={trip.bookingSummary?.paidBookings}
+            />
+            <KeyValue
+              label="Unpaid Bookings"
+              value={trip.bookingSummary?.unpaidBookings}
+            />
+            <KeyValue
+              label="Latest Linked Booking ID"
+              value={trip.bookingSummary?.latestLinkedBookingId}
+            />
+          </Section>
+
+          <Section title="Current Booking">
+            <KeyValue label="Booking ID" value={trip.currentBooking?.id} />
+            <KeyValue
+              label="Booking Reference"
+              value={trip.currentBooking?.bookingReference}
+            />
+            <KeyValue
+              label="Booking Status"
+              value={trip.currentBooking?.bookingStatus}
+            />
+            <KeyValue
+              label="Booking Total PHP"
+              value={trip.currentBooking?.bookingTotalPhp}
+            />
+            <KeyValue
+              label="Currency Code"
+              value={trip.currentBooking?.currencyCode}
+            />
+          </Section>
+
+          <Section title="Current Payment State">
+            <KeyValue
+              label="Payment State"
+              value={trip.currentPaymentState?.state}
+            />
+            <KeyValue
+              label="Paid Amount PHP"
+              value={trip.currentPaymentState?.paidAmountPhp}
+            />
+            <KeyValue
+              label="Unpaid Amount PHP"
+              value={trip.currentPaymentState?.unpaidAmountPhp}
+            />
+            <KeyValue
+              label="Last Payment Intent ID"
+              value={trip.currentPaymentState?.lastPaymentIntentId}
+            />
+          </Section>
+
+          <Section title="Current Payment Intent">
+            <KeyValue label="Intent ID" value={trip.currentPaymentIntent?.id} />
+            <KeyValue
+              label="Intent Reference"
+              value={trip.currentPaymentIntent?.intentReference}
+            />
+            <KeyValue
+              label="Intent Status"
+              value={trip.currentPaymentIntent?.status}
+            />
+            <KeyValue
+              label="Amount PHP"
+              value={trip.currentPaymentIntent?.amountPhp}
+            />
+            <KeyValue
+              label="Provider"
+              value={trip.currentPaymentIntent?.provider}
+            />
+          </Section>
+
+          <Section title="Pass">
+            <KeyValue label="Pass Code" value={trip.pass?.passCode} />
+            <KeyValue label="Pass Status" value={trip.pass?.passStatus} />
+            <KeyValue
+              label="QR Version"
+              value={trip.pass?.qrCredential?.qrVersion}
+            />
+          </Section>
+
+          <Section title="Historical Booking Links">
+            {Array.isArray(trip.bookingLinks) && trip.bookingLinks.length > 0 ? (
+              <div style={{ display: "grid", gap: 12 }}>
+                {trip.bookingLinks.map((link: any) => (
+                  <div
+                    key={link.id}
+                    style={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 10,
+                      padding: 12,
+                    }}
+                  >
+                    <KeyValue label="Link ID" value={link.id} />
+                    <KeyValue
+                      label="Booking ID"
+                      value={link.booking?.id || link.bookingId}
+                    />
+                    <KeyValue
+                      label="Booking Reference"
+                      value={link.booking?.bookingReference}
+                    />
+                    <KeyValue
+                      label="Booking Status"
+                      value={link.booking?.bookingStatus}
+                    />
+                    <KeyValue
+                      label="Payment State"
+                      value={link.booking?.paymentState?.state}
+                    />
+                    <KeyValue
+                      label="Latest Intent Status"
+                      value={link.booking?.latestPaymentIntent?.status}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ margin: 0 }}>No linked bookings found.</p>
+            )}
+          </Section>
+        </>
+      )}
+    </main>
+  );
+}
