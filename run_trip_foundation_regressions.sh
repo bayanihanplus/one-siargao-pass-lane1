@@ -16,4 +16,10 @@ echo
 echo "=== TRIP BOOKING SUMMARY AND ORDERING SMOKE PASSED ==="
 echo
 
+echo "=== 3) TRIP CURRENT BOOKING CONTRACT SMOKE ==="
+./smoke_trip_current_booking_contract.sh
+echo
+echo "=== TRIP CURRENT BOOKING CONTRACT SMOKE PASSED ==="
+echo
+
 echo "=== TRIP FOUNDATION REGRESSION SUITE COMPLETE ==="
