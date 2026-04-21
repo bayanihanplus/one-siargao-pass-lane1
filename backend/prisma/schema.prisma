@@ -90,6 +90,24 @@ enum ValidationResult {
   MANIFEST_ISSUE
 }
 
+enum PaymentIntentStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+enum PaymentState {
+  UNPAID
+  PAID
+}
+
+enum PaymentEventType {
+  PAYMENT_INTENT_CREATED
+  PAYMENT_CONFIRMATION_RECEIVED
+  PAYMENT_MARKED_PAID
+}
+
 model User {
   id                String        @id @default(cuid())
   email             String?       @unique
@@ -351,6 +369,9 @@ model Booking {
   items         BookingItem[]
   links         BookingLink[]
   externalLinks ExternalBookingLink[]
+  paymentState  PaymentStateRecord?
+  paymentIntents PaymentIntent[]
+  paymentEvents  PaymentEventLedger[]
 }
 
 model BookingItem {
@@ -391,6 +412,55 @@ model ExternalBookingLink {
   createdAt           DateTime  @default(now())
 
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model PaymentIntent {
+  id              String              @id @default(cuid())
+  bookingId       String
+  intentReference String              @unique
+  amountPhp       Decimal             @db.Decimal(12, 2)
+  currencyCode    String
+  status          PaymentIntentStatus @default(PENDING)
+  provider        String?
+  createdByUserId String?
+  confirmedAt     DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+}
+
+model PaymentStateRecord {
+  id                  String       @id @default(cuid())
+  bookingId           String       @unique
+  state               PaymentState @default(UNPAID)
+  paidAmountPhp       Decimal?     @db.Decimal(12, 2)
+  unpaidAmountPhp     Decimal?     @db.Decimal(12, 2)
+  lastPaymentIntentId String?
+  stateUpdatedAt      DateTime     @default(now())
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model PaymentEventLedger {
+  id              String           @id @default(cuid())
+  bookingId       String
+  paymentIntentId String?
+  eventType       PaymentEventType
+  eventKey        String           @unique
+  source          String
+  payloadJson     Json?
+  processedAt     DateTime         @default(now())
+  createdAt       DateTime         @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId])
+  @@index([paymentIntentId])
 }
 
 model ValidationAttempt {

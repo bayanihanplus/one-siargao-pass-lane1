@@ -14,7 +14,15 @@ export class BookingsService {
         bookingReference: `BKG-${Date.now()}`,
         bookingSource: dto.bookingSource,
         bookingStatus: 'CONFIRMED',
-        items: { create: { itemType: dto.itemType, activityInstanceId: dto.activityInstanceId } },
+        bookingTotalPhp: dto.bookingTotalPhp,
+        currencyCode: dto.currencyCode ?? 'PHP',
+        items: {
+          create: {
+            itemType: dto.itemType,
+            activityInstanceId: dto.activityInstanceId,
+            unitPricePhp: dto.bookingTotalPhp,
+          },
+        },
       },
       include: { items: true },
     });

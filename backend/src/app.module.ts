@@ -9,6 +9,7 @@ import { TripsModule } from './modules/trips/trips.module';
 import { PassesModule } from './modules/passes/passes.module';
 import { ActivitiesModule } from './modules/activities/activities.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 import { ValidationModule } from './modules/validation/validation.module';
 import { ManifestsModule } from './modules/manifests/manifests.module';
 import { ManifestApprovalsModule } from './modules/manifest-approvals/manifest-approvals.module';
@@ -27,6 +28,7 @@ import { PrismaService } from './database/prisma.service';
     PassesModule,
     ActivitiesModule,
     BookingsModule,
+    PaymentsModule,
     ValidationModule,
     ManifestsModule,
     ManifestApprovalsModule,

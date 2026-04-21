@@ -1,4 +1,5 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 import { BookingSource } from '@prisma/client';
 
 export class CreateBookingDto {
@@ -15,4 +16,13 @@ export class CreateBookingDto {
   @IsOptional()
   @IsString()
   activityInstanceId?: string;
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsPositive()
+  bookingTotalPhp!: number;
+
+  @IsOptional()
+  @IsString()
+  currencyCode?: string;
 }
