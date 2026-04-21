@@ -22,7 +22,13 @@ echo
 echo "=== PAYMENT ADMIN VISIBILITY SMOKE PASSED ==="
 echo
 
-echo "=== 4) TRIP PAYMENT READ EXPOSURE SMOKE ==="
+echo "=== 4) PAYMENT ADMIN FORBIDDEN ROLE SMOKE ==="
+./smoke_lane2_payments_admin_forbidden.sh
+echo
+echo "=== PAYMENT ADMIN FORBIDDEN ROLE SMOKE PASSED ==="
+echo
+
+echo "=== 5) TRIP PAYMENT READ EXPOSURE SMOKE ==="
 ./smoke_lane2_trip_payment_read.sh
 echo
 echo "=== TRIP PAYMENT READ EXPOSURE SMOKE PASSED ==="
