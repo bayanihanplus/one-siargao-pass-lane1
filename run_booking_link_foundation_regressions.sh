@@ -16,4 +16,10 @@ echo
 echo "=== BOOKING LINK OWNERSHIP REJECTION SMOKE PASSED ==="
 echo
 
+echo "=== 3) BOOKING LINK NONEXISTENT TARGET REJECTION SMOKE ==="
+./smoke_booking_link_nonexistent_targets_rejected.sh
+echo
+echo "=== BOOKING LINK NONEXISTENT TARGET REJECTION SMOKE PASSED ==="
+echo
+
 echo "=== BOOKING LINK FOUNDATION REGRESSION SUITE COMPLETE ==="
