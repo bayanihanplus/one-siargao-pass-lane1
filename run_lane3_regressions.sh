@@ -16,4 +16,10 @@ echo
 echo "=== NONEXISTENT TARGET REJECTION SMOKE PASSED ==="
 echo
 
+echo "=== 3) ADMIN READ-ONLY ENFORCEMENT SMOKE ==="
+./smoke_lane3_admin_read_only_enforced.sh
+echo
+echo "=== ADMIN READ-ONLY ENFORCEMENT SMOKE PASSED ==="
+echo
+
 echo "=== LANE 3 REGRESSION SUITE COMPLETE ==="
