@@ -23,6 +23,10 @@ export class PaymentsService {
       throw new NotFoundException('Booking not found');
     }
 
+    if (!userId || booking.primaryTravelerUserId !== userId) {
+      throw new NotFoundException('Booking not found');
+    }
+
     if (!booking.bookingTotalPhp) {
       throw new BadRequestException('Booking total is required before creating payment intent');
     }

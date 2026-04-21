@@ -40,4 +40,10 @@ echo
 echo "=== PAYMENT MISSING TOTAL REJECTION SMOKE PASSED ==="
 echo
 
+echo "=== 7) PAYMENT INTENT CREATE UNAUTHORIZED SMOKE ==="
+./smoke_lane2_create_intent_unauthorized.sh
+echo
+echo "=== PAYMENT INTENT CREATE UNAUTHORIZED SMOKE PASSED ==="
+echo
+
 echo "=== LANE 2 REGRESSION SUITE COMPLETE ==="
