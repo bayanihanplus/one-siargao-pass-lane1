@@ -40,6 +40,7 @@ export class TripsService {
         registration: true,
         pass: { include: { qrCredential: true } },
         bookingLinks: {
+          orderBy: { createdAt: 'desc' },
           include: {
             booking: {
               include: {
@@ -57,6 +58,32 @@ export class TripsService {
     });
     if (!trip) throw new NotFoundException('Trip not found');
 
+    const linkedBookings = trip.bookingLinks
+      .map((link) => link.booking)
+      .filter(Boolean);
+
+    const paidBookings = linkedBookings.filter(
+      (booking) => booking?.paymentState?.state === 'PAID',
+    );
+
+    const unpaidBookings = linkedBookings.filter(
+      (booking) =>
+        booking &&
+        (!booking.paymentState || booking.paymentState.state !== 'PAID'),
+    );
+
+    const latestLinkedBooking = [...linkedBookings].sort(
+      (a, b) => new Date(b!.createdAt).getTime() - new Date(a!.createdAt).getTime(),
+    )[0] ?? null;
+
+    const latestPayableBooking = [...linkedBookings]
+      .filter((booking) => booking?.bookingTotalPhp != null)
+      .sort((a, b) => new Date(b!.createdAt).getTime() - new Date(a!.createdAt).getTime())[0] ?? null;
+
+    const latestPaidBooking = [...paidBookings].sort(
+      (a, b) => new Date(b!.createdAt).getTime() - new Date(a!.createdAt).getTime(),
+    )[0] ?? null;
+
     return {
       id: trip.id,
       travelerUserId: trip.travelerUserId,
@@ -72,6 +99,14 @@ export class TripsService {
       updatedAt: trip.updatedAt,
       registration: trip.registration,
       members: trip.members,
+      bookingSummary: {
+        totalLinkedBookings: linkedBookings.length,
+        paidBookings: paidBookings.length,
+        unpaidBookings: unpaidBookings.length,
+        latestLinkedBookingId: latestLinkedBooking?.id ?? null,
+        latestPayableBookingId: latestPayableBooking?.id ?? null,
+        latestPaidBookingId: latestPaidBooking?.id ?? null,
+      },
       pass: trip.pass
         ? {
             id: trip.pass.id,
