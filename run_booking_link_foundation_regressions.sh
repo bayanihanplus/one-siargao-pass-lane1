@@ -10,4 +10,10 @@ echo
 echo "=== DUPLICATE BOOKING-TRIP LINK REJECTION SMOKE PASSED ==="
 echo
 
+echo "=== 2) BOOKING LINK OWNERSHIP REJECTION SMOKE ==="
+./smoke_booking_link_unauthorized_rejected.sh
+echo
+echo "=== BOOKING LINK OWNERSHIP REJECTION SMOKE PASSED ==="
+echo
+
 echo "=== BOOKING LINK FOUNDATION REGRESSION SUITE COMPLETE ==="

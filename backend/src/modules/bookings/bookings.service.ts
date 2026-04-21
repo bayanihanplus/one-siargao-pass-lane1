@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { LinkBookingToTripDto } from './dto/link-booking-to-trip.dto';
@@ -59,6 +59,24 @@ export class BookingsService {
   }
 
   async linkToTrip(linkedByUserId: string | undefined, dto: LinkBookingToTripDto) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: dto.bookingId },
+      select: { id: true, primaryTravelerUserId: true },
+    });
+
+    if (!booking || !linkedByUserId || booking.primaryTravelerUserId !== linkedByUserId) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    const trip = await this.prisma.trip.findUnique({
+      where: { id: dto.tripId },
+      select: { id: true, travelerUserId: true },
+    });
+
+    if (!trip || trip.travelerUserId !== linkedByUserId) {
+      throw new NotFoundException('Trip not found');
+    }
+
     try {
       return await this.prisma.bookingLink.create({
         data: {
