@@ -22,4 +22,10 @@ echo
 echo "=== PAYMENT ADMIN VISIBILITY SMOKE PASSED ==="
 echo
 
+echo "=== 4) TRIP PAYMENT READ EXPOSURE SMOKE ==="
+./smoke_lane2_trip_payment_read.sh
+echo
+echo "=== TRIP PAYMENT READ EXPOSURE SMOKE PASSED ==="
+echo
+
 echo "=== LANE 2 REGRESSION SUITE COMPLETE ==="
