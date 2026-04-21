@@ -212,7 +212,16 @@ export class TripsService {
     };
   }
 
-  async addMember(tripId: string, dto: AddTripMemberDto) {
+  async addMember(userId: string, tripId: string, dto: AddTripMemberDto) {
+    const trip = await this.prisma.trip.findFirst({
+      where: { id: tripId, travelerUserId: userId },
+      select: { id: true },
+    });
+
+    if (!trip) {
+      throw new NotFoundException('Trip not found');
+    }
+
     return this.prisma.tripMember.create({
       data: {
         tripId,

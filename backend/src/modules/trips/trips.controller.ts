@@ -21,8 +21,13 @@ export class TripsController {
     return this.tripsService.getById(userId, tripId);
   }
 
+  @UseGuards(DevAuthGuard)
   @Post(':tripId/members')
-  addMember(@Param('tripId') tripId: string, @Body() dto: AddTripMemberDto) {
-    return this.tripsService.addMember(tripId, dto);
+  addMember(
+    @CurrentUserId() userId: string,
+    @Param('tripId') tripId: string,
+    @Body() dto: AddTripMemberDto,
+  ) {
+    return this.tripsService.addMember(userId, tripId, dto);
   }
 }
