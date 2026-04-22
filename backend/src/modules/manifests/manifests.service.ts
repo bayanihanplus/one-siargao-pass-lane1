@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { getCurrentUserOrThrow } from '../auth/utils/current-user.util';
+import { assertAdminLikeRole, assertOperatorLikeRole, getCurrentUserOrThrow } from '../auth/utils/current-user.util';
 
 @Injectable()
 export class ManifestsService {
@@ -54,13 +54,26 @@ export class ManifestsService {
   }
 
   async getApprovalQueue(userId: string) {
-    await getCurrentUserOrThrow(this.prisma, userId);
+    const user = await getCurrentUserOrThrow(this.prisma, userId);
+
+    const where =
+      user.primaryRole === 'ADMIN'
+        ? {
+            requestStatus: 'UNDER_REVIEW' as const,
+          }
+        : {
+            requestStatus: 'UNDER_REVIEW' as const,
+            manifest: { operatorUserId: userId },
+          };
+
+    if (user.primaryRole === 'ADMIN') {
+      assertAdminLikeRole(user.primaryRole);
+    } else {
+      assertOperatorLikeRole(user.primaryRole);
+    }
 
     const rows = await this.prisma.manifestApprovalRequest.findMany({
-      where: {
-        requestStatus: 'UNDER_REVIEW',
-        manifest: { operatorUserId: userId },
-      },
+      where,
       include: {
         manifest: {
           include: {
