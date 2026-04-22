@@ -243,6 +243,19 @@ export default async function OperatorManifestsPage() {
         Dev-bridge operator view for manifest request history, approval status, and review outcomes.
       </p>
 
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 12,
+          marginBottom: 16,
+        }}
+      >
+        <a href="/" style={{ textDecoration: "none" }}>← Dev Entry</a>
+        <a href="/operator/activities" style={{ textDecoration: "none" }}>Operator Activities</a>
+        <a href="/operator/manifests" style={{ textDecoration: "none" }}>Operator Manifests</a>
+      </div>
+
       <Section title="Development Note">
         <p style={{ marginTop: 0 }}>
           This page uses a seeded operator account through a temporary server-side

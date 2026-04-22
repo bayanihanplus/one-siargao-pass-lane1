@@ -168,6 +168,20 @@ export default async function AdminActivitiesPage() {
         Dev-bridge admin read view for activity templates and scheduled instances.
       </p>
 
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 12,
+          marginBottom: 16,
+        }}
+      >
+        <a href="/" style={{ textDecoration: "none" }}>← Dev Entry</a>
+        <a href="/admin/activities" style={{ textDecoration: "none" }}>Admin Activities</a>
+        <a href="/admin/manifest-approvals" style={{ textDecoration: "none" }}>Manifest Approval Queue</a>
+        <a href="/admin/manifests/history" style={{ textDecoration: "none" }}>Manifest History</a>
+      </div>
+
       <Section title="Development Note">
         <p style={{ marginTop: 0 }}>
           This page uses a seeded admin account through a temporary server-side

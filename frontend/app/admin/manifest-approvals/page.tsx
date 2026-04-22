@@ -204,6 +204,20 @@ export default async function AdminManifestApprovalsPage() {
         Dev-bridge admin view for submitted manifests awaiting review.
       </p>
 
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 12,
+          marginBottom: 16,
+        }}
+      >
+        <a href="/" style={{ textDecoration: "none" }}>← Dev Entry</a>
+        <a href="/admin/activities" style={{ textDecoration: "none" }}>Admin Activities</a>
+        <a href="/admin/manifest-approvals" style={{ textDecoration: "none" }}>Manifest Approval Queue</a>
+        <a href="/admin/manifests/history" style={{ textDecoration: "none" }}>Manifest History</a>
+      </div>
+
       <Section title="Development Note">
         <p style={{ marginTop: 0 }}>
           This page uses the seeded admin account through a temporary server-side
