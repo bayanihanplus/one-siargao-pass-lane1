@@ -395,6 +395,38 @@ export default async function OperatorActivitiesPage() {
         <KeyValue label="Selectable Activity Templates" value={templateRows.length} />
       </Section>
 
+      {templateRows.length === 0 ? (
+        <Section title="No Activity Templates">
+          <p style={{ margin: 0 }}>
+            No operator-owned activity templates are currently available.
+          </p>
+        </Section>
+      ) : (
+        <Section title="Recent Activity Templates">
+          {templateRows.map((row: any) => (
+            <div
+              key={row.id}
+              style={{
+                border: "1px solid #e5e7eb",
+                borderRadius: 10,
+                padding: 12,
+                marginBottom: 12,
+              }}
+            >
+              <KeyValue label="Template ID" value={row.id} />
+              <KeyValue label="Title" value={row.title} />
+              <KeyValue label="Description" value={row.description} />
+              <KeyValue label="Meeting Point Text" value={row.meetingPointText} />
+              <KeyValue label="Requires Manifest" value={String(row.requiresManifest)} />
+              <KeyValue label="Requires Guide" value={String(row.requiresGuide)} />
+              <KeyValue label="Publicly Visible" value={String(row.isPubliclyVisible)} />
+              <KeyValue label="Created At" value={row.createdAt} />
+              <KeyValue label="Updated At" value={row.updatedAt} />
+            </div>
+          ))}
+        </Section>
+      )}
+
       {rows.length === 0 ? (
         <Section title="No Activity Instances">
           <p style={{ margin: 0 }}>
