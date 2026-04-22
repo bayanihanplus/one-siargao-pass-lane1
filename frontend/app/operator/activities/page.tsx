@@ -1,28 +1,9 @@
 import { revalidatePath } from "next/cache";
-
-async function getDevOperatorToken(baseUrl: string) {
-  const res = await fetch(`${baseUrl}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    cache: "no-store",
-    body: JSON.stringify({
-      email: "operator1@osp.local",
-      password: "Password123!",
-    }),
-  });
-
-  if (!res.ok) {
-    throw new Error(`Dev operator login failed: HTTP ${res.status}`);
-  }
-
-  const json = await res.json();
-  return json.accessToken as string;
-}
+import { redirect } from "next/navigation";
+import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../src/lib/server-auth";
 
 function getBaseUrl() {
-  return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+  return getApiBaseUrl();
 }
 
 async function createActivityTemplateAction(formData: FormData) {
@@ -39,7 +20,7 @@ async function createActivityTemplateAction(formData: FormData) {
   }
 
   const baseUrl = getBaseUrl();
-  const token = await getDevOperatorToken(baseUrl);
+  const token = await requireAccessToken();
 
   const res = await fetch(`${baseUrl}/activities`, {
     method: "POST",
@@ -98,7 +79,7 @@ async function createActivityInstanceAction(formData: FormData) {
   }
 
   const baseUrl = getBaseUrl();
-  const token = await getDevOperatorToken(baseUrl);
+  const token = await requireAccessToken();
 
   const res = await fetch(`${baseUrl}/activities/instances`, {
     method: "POST",
@@ -126,7 +107,7 @@ async function getOperatorActivityTemplates() {
   const baseUrl = getBaseUrl();
 
   try {
-    const token = await getDevOperatorToken(baseUrl);
+    const token = await requireAccessToken();
 
     const res = await fetch(`${baseUrl}/activities/templates`, {
       cache: "no-store",
@@ -157,7 +138,7 @@ async function getOperatorActivityInstances() {
   const baseUrl = getBaseUrl();
 
   try {
-    const token = await getDevOperatorToken(baseUrl);
+    const token = await requireAccessToken();
 
     const res = await fetch(`${baseUrl}/activities/instances`, {
       cache: "no-store",
@@ -261,6 +242,12 @@ function MetaItem(props: { label: string; value: any }) {
 }
 
 export default async function OperatorActivitiesPage() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login?next=/operator/activities");
+  }
+
   const { rows, error } = await getOperatorActivityInstances();
   const { rows: templateRows, error: templateError } = await getOperatorActivityTemplates();
 
@@ -282,15 +269,16 @@ export default async function OperatorActivitiesPage() {
         <a href="/" style={{ textDecoration: "none" }}>← Dev Entry</a>
         <a href="/operator/activities" style={{ textDecoration: "none" }}>Operator Activities</a>
         <a href="/operator/manifests" style={{ textDecoration: "none" }}>Operator Manifests</a>
+        <a href="/logout" style={{ textDecoration: "none" }}>Logout</a>
       </div>
 
       <Section title="Development Note">
         <p style={{ marginTop: 0 }}>
-          This page uses a seeded operator account through a temporary server-side
-          dev login helper until the real frontend auth/session layer is built.
+          This page now reads the authenticated frontend session cookie and resolves
+          the current user through the backend auth contract.
         </p>
         <p style={{ marginBottom: 0 }}>
-          This lane keeps write flows intact, but compresses templates and instances into faster-scanning cards.
+          This lane keeps write flows intact, but now removes the seeded operator login helper from this page.
         </p>
       </Section>
 
