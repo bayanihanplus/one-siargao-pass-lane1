@@ -10,103 +10,131 @@ export class ManifestApprovalsService {
   async approve(requestId: string, actedByUserId: string, notes?: string) {
     await getCurrentUserOrThrow(this.prisma, actedByUserId);
 
-    const req = await this.prisma.manifestApprovalRequest.findUnique({
-      where: { id: requestId },
-      include: { manifest: { include: { members: true } } },
-    });
+    const decisionTime = new Date();
 
-    if (!req) {
-      throw new NotFoundException('Manifest approval request not found');
-    }
+    return this.prisma.$transaction(async (tx) => {
+      const req = await tx.manifestApprovalRequest.findUnique({
+        where: { id: requestId },
+        include: { manifest: { include: { members: true } } },
+      });
 
-    if (req.requestStatus !== 'UNDER_REVIEW') {
-      throw new BadRequestException('Only UNDER_REVIEW requests can be approved');
-    }
-
-    await this.prisma.manifestApprovalAction.create({
-      data: { manifestApprovalRequestId: requestId, actionType: 'approve', actedByUserId, actionNotes: notes },
-    });
-
-    await this.prisma.manifestApprovalRequest.update({
-      where: { id: requestId },
-      data: { requestStatus: 'APPROVED', reviewedBy: actedByUserId, reviewedAt: new Date(), reviewNotes: notes },
-    });
-
-    await this.prisma.manifest.update({
-      where: { id: req.manifestId },
-      data: { manifestStatus: 'APPROVED' },
-    });
-
-    for (const member of req.manifest.members) {
-      if (member.tripId) {
-        await this.prisma.trip.update({
-          where: { id: member.tripId },
-          data: { clearanceStatus: ClearanceStatus.APPROVED },
-        });
-
-        await this.prisma.tripClearanceState.create({
-          data: {
-            tripId: member.tripId,
-            clearanceStatus: ClearanceStatus.APPROVED,
-            approvedBy: actedByUserId,
-            approvedAt: new Date(),
-          },
-        });
+      if (!req) {
+        throw new NotFoundException('Manifest approval request not found');
       }
-    }
 
-    return { ok: true, status: 'APPROVED' };
+      if (req.requestStatus !== 'UNDER_REVIEW') {
+        throw new BadRequestException('Only UNDER_REVIEW requests can be approved');
+      }
+
+      await tx.manifestApprovalAction.create({
+        data: {
+          manifestApprovalRequestId: requestId,
+          actionType: 'approve',
+          actedByUserId,
+          actionNotes: notes,
+        },
+      });
+
+      await tx.manifestApprovalRequest.update({
+        where: { id: requestId },
+        data: {
+          requestStatus: 'APPROVED',
+          reviewedBy: actedByUserId,
+          reviewedAt: decisionTime,
+          reviewNotes: notes,
+        },
+      });
+
+      await tx.manifest.update({
+        where: { id: req.manifestId },
+        data: { manifestStatus: 'APPROVED' },
+      });
+
+      for (const member of req.manifest.members) {
+        if (member.tripId) {
+          await tx.trip.update({
+            where: { id: member.tripId },
+            data: { clearanceStatus: ClearanceStatus.APPROVED },
+          });
+
+          await tx.tripClearanceState.create({
+            data: {
+              tripId: member.tripId,
+              clearanceStatus: ClearanceStatus.APPROVED,
+              approvedBy: actedByUserId,
+              approvedAt: decisionTime,
+            },
+          });
+        }
+      }
+
+      return { ok: true, status: 'APPROVED' };
+    });
   }
 
   async deny(requestId: string, actedByUserId: string, notes?: string) {
     await getCurrentUserOrThrow(this.prisma, actedByUserId);
 
-    const req = await this.prisma.manifestApprovalRequest.findUnique({
-      where: { id: requestId },
-      include: { manifest: { include: { members: true } } },
-    });
+    const decisionTime = new Date();
 
-    if (!req) {
-      throw new NotFoundException('Manifest approval request not found');
-    }
+    return this.prisma.$transaction(async (tx) => {
+      const req = await tx.manifestApprovalRequest.findUnique({
+        where: { id: requestId },
+        include: { manifest: { include: { members: true } } },
+      });
 
-    if (req.requestStatus !== 'UNDER_REVIEW') {
-      throw new BadRequestException('Only UNDER_REVIEW requests can be denied');
-    }
-
-    await this.prisma.manifestApprovalAction.create({
-      data: { manifestApprovalRequestId: requestId, actionType: 'deny', actedByUserId, actionNotes: notes },
-    });
-
-    await this.prisma.manifestApprovalRequest.update({
-      where: { id: requestId },
-      data: { requestStatus: 'DENIED', reviewedBy: actedByUserId, reviewedAt: new Date(), reviewNotes: notes },
-    });
-
-    await this.prisma.manifest.update({
-      where: { id: req.manifestId },
-      data: { manifestStatus: 'DENIED' },
-    });
-
-    for (const member of req.manifest.members) {
-      if (member.tripId) {
-        await this.prisma.trip.update({
-          where: { id: member.tripId },
-          data: { clearanceStatus: ClearanceStatus.DENIED },
-        });
-
-        await this.prisma.tripClearanceState.create({
-          data: {
-            tripId: member.tripId,
-            clearanceStatus: ClearanceStatus.DENIED,
-            approvedBy: actedByUserId,
-            approvedAt: new Date(),
-            clearanceReason: notes,
-          },
-        });
+      if (!req) {
+        throw new NotFoundException('Manifest approval request not found');
       }
-    }
 
-    return { ok: true, status: 'DENIED' };
+      if (req.requestStatus !== 'UNDER_REVIEW') {
+        throw new BadRequestException('Only UNDER_REVIEW requests can be denied');
+      }
+
+      await tx.manifestApprovalAction.create({
+        data: {
+          manifestApprovalRequestId: requestId,
+          actionType: 'deny',
+          actedByUserId,
+          actionNotes: notes,
+        },
+      });
+
+      await tx.manifestApprovalRequest.update({
+        where: { id: requestId },
+        data: {
+          requestStatus: 'DENIED',
+          reviewedBy: actedByUserId,
+          reviewedAt: decisionTime,
+          reviewNotes: notes,
+        },
+      });
+
+      await tx.manifest.update({
+        where: { id: req.manifestId },
+        data: { manifestStatus: 'DENIED' },
+      });
+
+      for (const member of req.manifest.members) {
+        if (member.tripId) {
+          await tx.trip.update({
+            where: { id: member.tripId },
+            data: { clearanceStatus: ClearanceStatus.DENIED },
+          });
+
+          await tx.tripClearanceState.create({
+            data: {
+              tripId: member.tripId,
+              clearanceStatus: ClearanceStatus.DENIED,
+              approvedBy: actedByUserId,
+              approvedAt: decisionTime,
+              clearanceReason: notes,
+            },
+          });
+        }
+      }
+
+      return { ok: true, status: 'DENIED' };
+    });
   }
 }
