@@ -28,6 +28,7 @@ function getBaseUrl() {
 async function postManifestDecision(
   requestId: string,
   action: "approve" | "deny",
+  notes?: string,
 ) {
   "use server";
 
@@ -41,7 +42,9 @@ async function postManifestDecision(
       Authorization: `Bearer ${token}`,
     },
     cache: "no-store",
-    body: JSON.stringify({}),
+    body: JSON.stringify({
+      notes: notes || undefined,
+    }),
   });
 
   if (!res.ok) {
@@ -62,22 +65,26 @@ async function approveAction(formData: FormData) {
   "use server";
 
   const requestId = String(formData.get("requestId") || "");
+  const notes = String(formData.get("notes") || "").trim();
+
   if (!requestId) {
     throw new Error("Missing requestId for approve action");
   }
 
-  await postManifestDecision(requestId, "approve");
+  await postManifestDecision(requestId, "approve", notes);
 }
 
 async function denyAction(formData: FormData) {
   "use server";
 
   const requestId = String(formData.get("requestId") || "");
+  const notes = String(formData.get("notes") || "").trim();
+
   if (!requestId) {
     throw new Error("Missing requestId for deny action");
   }
 
-  await postManifestDecision(requestId, "deny");
+  await postManifestDecision(requestId, "deny", notes);
 }
 
 async function getApprovalQueue() {
@@ -253,21 +260,49 @@ export default async function AdminManifestApprovalsPage() {
               <p style={{ margin: 0 }}>No manifest members found.</p>
             )}
 
-            <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
-              <form action={approveAction}>
-                <input type="hidden" name="requestId" value={row.id} />
-                <button type="submit" style={{ padding: "10px 14px" }}>
+            <form style={{ marginTop: 16 }}>
+              <input type="hidden" name="requestId" value={row.id} />
+
+              <label
+                htmlFor={`notes-${row.id}`}
+                style={{ display: "block", fontWeight: 600, marginBottom: 8 }}
+              >
+                Review Notes
+              </label>
+              <textarea
+                id={`notes-${row.id}`}
+                name="notes"
+                placeholder="Optional decision notes..."
+                rows={3}
+                style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  padding: 10,
+                  borderRadius: 8,
+                  border: "1px solid #d1d5db",
+                  marginBottom: 12,
+                }}
+                defaultValue=""
+              />
+
+              <div style={{ display: "flex", gap: 12 }}>
+                <button
+                  type="submit"
+                  formAction={approveAction}
+                  style={{ padding: "10px 14px" }}
+                >
                   Approve
                 </button>
-              </form>
 
-              <form action={denyAction}>
-                <input type="hidden" name="requestId" value={row.id} />
-                <button type="submit" style={{ padding: "10px 14px" }}>
+                <button
+                  type="submit"
+                  formAction={denyAction}
+                  style={{ padding: "10px 14px" }}
+                >
                   Deny
                 </button>
-              </form>
-            </div>
+              </div>
+            </form>
           </Section>
         ))
       )}
