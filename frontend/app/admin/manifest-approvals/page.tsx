@@ -1,3 +1,5 @@
+import { revalidatePath } from "next/cache";
+
 async function getDevAdminToken(baseUrl: string) {
   const res = await fetch(`${baseUrl}/auth/login`, {
     method: "POST",
@@ -19,9 +21,67 @@ async function getDevAdminToken(baseUrl: string) {
   return json.accessToken as string;
 }
 
+function getBaseUrl() {
+  return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+}
+
+async function postManifestDecision(
+  requestId: string,
+  action: "approve" | "deny",
+) {
+  "use server";
+
+  const baseUrl = getBaseUrl();
+  const token = await getDevAdminToken(baseUrl);
+
+  const res = await fetch(`${baseUrl}/manifest-approvals/${requestId}/${action}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+    body: JSON.stringify({}),
+  });
+
+  if (!res.ok) {
+    let detail = `HTTP ${res.status}`;
+
+    try {
+      const json = await res.json();
+      detail = json?.message || json?.error || detail;
+    } catch {}
+
+    throw new Error(`Failed to ${action} manifest request: ${detail}`);
+  }
+
+  revalidatePath("/admin/manifest-approvals");
+}
+
+async function approveAction(formData: FormData) {
+  "use server";
+
+  const requestId = String(formData.get("requestId") || "");
+  if (!requestId) {
+    throw new Error("Missing requestId for approve action");
+  }
+
+  await postManifestDecision(requestId, "approve");
+}
+
+async function denyAction(formData: FormData) {
+  "use server";
+
+  const requestId = String(formData.get("requestId") || "");
+  if (!requestId) {
+    throw new Error("Missing requestId for deny action");
+  }
+
+  await postManifestDecision(requestId, "deny");
+}
+
 async function getApprovalQueue() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+  const baseUrl = getBaseUrl();
 
   try {
     const token = await getDevAdminToken(baseUrl);
@@ -115,10 +175,7 @@ export default async function AdminManifestApprovalsPage() {
         </Section>
       ) : (
         rows.map((row: any) => (
-          <Section
-            key={row.id}
-            title={`Approval Request ${row.id}`}
-          >
+          <Section key={row.id} title={`Approval Request ${row.id}`}>
             <KeyValue label="Request ID" value={row.id} />
             <KeyValue label="Manifest ID" value={row.manifestId} />
             <KeyValue label="Request Status" value={row.requestStatus} />
@@ -130,15 +187,30 @@ export default async function AdminManifestApprovalsPage() {
             <div style={{ height: 12 }} />
 
             <h3 style={{ marginBottom: 8 }}>Manifest</h3>
-            <KeyValue label="Manifest Reference" value={row.manifest?.manifestReference} />
-            <KeyValue label="Manifest Status" value={row.manifest?.manifestStatus} />
-            <KeyValue label="Operator User ID" value={row.manifest?.operatorUserId} />
-            <KeyValue label="Total Members" value={row.manifest?.totalMembers} />
+            <KeyValue
+              label="Manifest Reference"
+              value={row.manifest?.manifestReference}
+            />
+            <KeyValue
+              label="Manifest Status"
+              value={row.manifest?.manifestStatus}
+            />
+            <KeyValue
+              label="Operator User ID"
+              value={row.manifest?.operatorUserId}
+            />
+            <KeyValue
+              label="Total Members"
+              value={row.manifest?.totalMembers}
+            />
 
             <div style={{ height: 12 }} />
 
             <h3 style={{ marginBottom: 8 }}>Activity Instance</h3>
-            <KeyValue label="Activity Instance ID" value={row.manifest?.activityInstance?.id} />
+            <KeyValue
+              label="Activity Instance ID"
+              value={row.manifest?.activityInstance?.id}
+            />
             <KeyValue
               label="Activity Template ID"
               value={row.manifest?.activityInstance?.activityTemplateId}
@@ -182,12 +254,19 @@ export default async function AdminManifestApprovalsPage() {
             )}
 
             <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
-              <button type="button" disabled style={{ padding: "10px 14px" }}>
-                Approve (next lane)
-              </button>
-              <button type="button" disabled style={{ padding: "10px 14px" }}>
-                Deny (next lane)
-              </button>
+              <form action={approveAction}>
+                <input type="hidden" name="requestId" value={row.id} />
+                <button type="submit" style={{ padding: "10px 14px" }}>
+                  Approve
+                </button>
+              </form>
+
+              <form action={denyAction}>
+                <input type="hidden" name="requestId" value={row.id} />
+                <button type="submit" style={{ padding: "10px 14px" }}>
+                  Deny
+                </button>
+              </form>
             </div>
           </Section>
         ))
