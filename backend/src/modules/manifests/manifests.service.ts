@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { assertAdminLikeRole, assertOperatorLikeRole, getCurrentUserOrThrow } from '../auth/utils/current-user.util';
 
@@ -46,11 +46,42 @@ export class ManifestsService {
   async submit(manifestId: string, submittedByUserId: string, notes?: string) {
     await getCurrentUserOrThrow(this.prisma, submittedByUserId);
 
+    const manifest = await this.prisma.manifest.findUnique({
+      where: { id: manifestId },
+      select: {
+        id: true,
+        manifestStatus: true,
+        approvalRequests: {
+          where: { requestStatus: 'UNDER_REVIEW' },
+          select: { id: true },
+        },
+      },
+    });
+
+    if (!manifest) {
+      throw new NotFoundException('Manifest not found');
+    }
+
+    if (manifest.manifestStatus === 'APPROVED') {
+      throw new BadRequestException('Approved manifest cannot be resubmitted');
+    }
+
+    if (manifest.approvalRequests.length > 0) {
+      throw new BadRequestException('Manifest already has an active approval request');
+    }
+
     await this.prisma.manifestSubmission.create({
       data: { manifestId, submittedByUserId, submissionNotes: notes },
     });
-    await this.prisma.manifestApprovalRequest.create({ data: { manifestId } });
-    return this.prisma.manifest.update({ where: { id: manifestId }, data: { manifestStatus: 'SUBMITTED' } });
+
+    await this.prisma.manifestApprovalRequest.create({
+      data: { manifestId },
+    });
+
+    return this.prisma.manifest.update({
+      where: { id: manifestId },
+      data: { manifestStatus: 'SUBMITTED' },
+    });
   }
 
   async getApprovalQueue(userId: string) {
