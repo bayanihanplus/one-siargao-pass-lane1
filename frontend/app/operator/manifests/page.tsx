@@ -23,13 +23,13 @@ function getBaseUrl() {
   return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
 }
 
-async function getOperatorManifestQueue() {
+async function getOperatorManifestHistory() {
   const baseUrl = getBaseUrl();
 
   try {
     const token = await getDevOperatorToken(baseUrl);
 
-    const res = await fetch(`${baseUrl}/manifests/approval-queue`, {
+    const res = await fetch(`${baseUrl}/manifests/history`, {
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
@@ -39,7 +39,7 @@ async function getOperatorManifestQueue() {
 
     if (!res.ok) {
       return {
-        error: `Failed to load operator manifest queue: HTTP ${res.status}`,
+        error: `Failed to load operator manifest history: HTTP ${res.status}`,
         rows: [],
       };
     }
@@ -48,7 +48,7 @@ async function getOperatorManifestQueue() {
     return { rows, error: null };
   } catch (error: any) {
     return {
-      error: error?.message || "Unknown operator queue load failure",
+      error: error?.message || "Unknown operator history load failure",
       rows: [],
     };
   }
@@ -83,13 +83,13 @@ function KeyValue(props: { label: string; value: any }) {
 }
 
 export default async function OperatorManifestsPage() {
-  const { rows, error } = await getOperatorManifestQueue();
+  const { rows, error } = await getOperatorManifestHistory();
 
   return (
     <main style={{ maxWidth: 1040, margin: "0 auto", padding: 24 }}>
       <h1 style={{ marginBottom: 8 }}>Operator Manifests</h1>
       <p style={{ marginTop: 0, marginBottom: 24 }}>
-        Dev-bridge operator view for manifest approval status and review outcomes.
+        Dev-bridge operator view for manifest request history, approval status, and review outcomes.
       </p>
 
       <Section title="Development Note">
@@ -109,13 +109,13 @@ export default async function OperatorManifestsPage() {
       ) : null}
 
       <Section title="Queue Summary">
-        <KeyValue label="Visible Request Count" value={rows.length} />
+        <KeyValue label="Visible History Count" value={rows.length} />
       </Section>
 
       {rows.length === 0 ? (
         <Section title="No Visible Requests">
           <p style={{ margin: 0 }}>
-            No operator-owned manifest requests are currently under review.
+            No operator-owned manifest history is currently available.
           </p>
         </Section>
       ) : (

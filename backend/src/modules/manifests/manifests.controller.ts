@@ -30,4 +30,11 @@ export class ManifestsController {
   getApprovalQueue(@CurrentUserId() userId: string) {
     return this.manifestsService.getApprovalQueue(userId);
   }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @Get('history')
+  getManifestHistory(@CurrentUserId() userId: string) {
+    return this.manifestsService.getManifestHistory(userId);
+  }
 }

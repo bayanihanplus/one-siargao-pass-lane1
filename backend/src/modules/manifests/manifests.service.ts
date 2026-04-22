@@ -86,6 +86,51 @@ export class ManifestsService {
     });
   }
 
+  private mapManifestApprovalRows(rows: any[]) {
+    return rows.map((row) => ({
+      id: row.id,
+      manifestId: row.manifestId,
+      requestStatus: row.requestStatus,
+      createdAt: row.createdAt,
+      reviewedBy: row.reviewedBy,
+      reviewedAt: row.reviewedAt,
+      reviewNotes: row.reviewNotes,
+      manifest: row.manifest
+        ? {
+            id: row.manifest.id,
+            activityInstanceId: row.manifest.activityInstanceId,
+            operatorUserId: row.manifest.operatorUserId,
+            manifestReference: row.manifest.manifestReference,
+            manifestStatus: row.manifest.manifestStatus,
+            totalMembers: row.manifest.totalMembers,
+            createdAt: row.manifest.createdAt,
+            updatedAt: row.manifest.updatedAt,
+            activityInstance: row.manifest.activityInstance
+              ? {
+                  id: row.manifest.activityInstance.id,
+                  activityTemplateId: row.manifest.activityInstance.activityTemplateId,
+                  scheduledDate: row.manifest.activityInstance.scheduledDate,
+                  startTime: row.manifest.activityInstance.startTime,
+                  endTime: row.manifest.activityInstance.endTime,
+                  instanceStatus: row.manifest.activityInstance.instanceStatus,
+                  createdAt: row.manifest.activityInstance.createdAt,
+                  updatedAt: row.manifest.activityInstance.updatedAt,
+                }
+              : null,
+            members: row.manifest.members.map((member: any) => ({
+              id: member.id,
+              manifestId: member.manifestId,
+              tripId: member.tripId,
+              bookingId: member.bookingId,
+              travelerNameSnapshot: member.travelerNameSnapshot,
+              memberStatus: member.memberStatus,
+              createdAt: member.createdAt,
+            })),
+          }
+        : null,
+    }));
+  }
+
   async getApprovalQueue(userId: string) {
     const user = await getCurrentUserOrThrow(this.prisma, userId);
 
@@ -118,47 +163,38 @@ export class ManifestsService {
       orderBy: { createdAt: 'asc' },
     });
 
-    return rows.map((row) => ({
-      id: row.id,
-      manifestId: row.manifestId,
-      requestStatus: row.requestStatus,
-      createdAt: row.createdAt,
-      reviewedBy: row.reviewedBy,
-      reviewedAt: row.reviewedAt,
-      reviewNotes: row.reviewNotes,
-      manifest: row.manifest
-        ? {
-            id: row.manifest.id,
-            activityInstanceId: row.manifest.activityInstanceId,
-            operatorUserId: row.manifest.operatorUserId,
-            manifestReference: row.manifest.manifestReference,
-            manifestStatus: row.manifest.manifestStatus,
-            totalMembers: row.manifest.totalMembers,
-            createdAt: row.manifest.createdAt,
-            updatedAt: row.manifest.updatedAt,
-            activityInstance: row.manifest.activityInstance
-              ? {
-                  id: row.manifest.activityInstance.id,
-                  activityTemplateId: row.manifest.activityInstance.activityTemplateId,
-                  scheduledDate: row.manifest.activityInstance.scheduledDate,
-                  startTime: row.manifest.activityInstance.startTime,
-                  endTime: row.manifest.activityInstance.endTime,
-                  instanceStatus: row.manifest.activityInstance.instanceStatus,
-                  createdAt: row.manifest.activityInstance.createdAt,
-                  updatedAt: row.manifest.activityInstance.updatedAt,
-                }
-              : null,
-            members: row.manifest.members.map((member) => ({
-              id: member.id,
-              manifestId: member.manifestId,
-              tripId: member.tripId,
-              bookingId: member.bookingId,
-              travelerNameSnapshot: member.travelerNameSnapshot,
-              memberStatus: member.memberStatus,
-              createdAt: member.createdAt,
-            })),
-          }
-        : null,
-    }));
+    return this.mapManifestApprovalRows(rows);
+  }
+
+  async getManifestHistory(userId: string) {
+    const user = await getCurrentUserOrThrow(this.prisma, userId);
+
+    const where =
+      user.primaryRole === 'ADMIN'
+        ? {}
+        : {
+            manifest: { operatorUserId: userId },
+          };
+
+    if (user.primaryRole === 'ADMIN') {
+      assertAdminLikeRole(user.primaryRole);
+    } else {
+      assertOperatorLikeRole(user.primaryRole);
+    }
+
+    const rows = await this.prisma.manifestApprovalRequest.findMany({
+      where,
+      include: {
+        manifest: {
+          include: {
+            members: true,
+            activityInstance: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return this.mapManifestApprovalRows(rows);
   }
 }
