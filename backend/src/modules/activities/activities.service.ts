@@ -44,7 +44,17 @@ export class ActivitiesService {
       assertOperatorLikeRole(user.primaryRole);
     }
 
+    const where =
+      user.primaryRole === 'ADMIN'
+        ? {}
+        : {
+            activityTemplate: {
+              ownerUserId: userId,
+            },
+          };
+
     const rows = await this.prisma.activityInstance.findMany({
+      where,
       include: {
         activityTemplate: true,
       },
