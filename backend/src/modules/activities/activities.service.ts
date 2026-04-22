@@ -24,12 +24,48 @@ export class ActivitiesService {
   }
 
   async createInstance(userId: string, dto: CreateActivityInstanceDto) {
-    await getCurrentUserOrThrow(this.prisma, userId);
+    const user = await getCurrentUserOrThrow(this.prisma, userId);
+
+    if (user.primaryRole === 'ADMIN') {
+      assertAdminLikeRole(user.primaryRole);
+    } else {
+      assertOperatorLikeRole(user.primaryRole);
+    }
+
+    const scheduledDate = new Date(dto.scheduledDate);
+
+    const template = await this.prisma.activityTemplate.findUnique({
+      where: { id: dto.activityTemplateId },
+      select: {
+        id: true,
+        ownerUserId: true,
+      },
+    });
+
+    if (!template) {
+      throw new Error('Activity template not found');
+    }
+
+    if (user.primaryRole !== 'ADMIN' && template.ownerUserId !== userId) {
+      throw new Error('Cannot create instance for another operator template');
+    }
+
+    const existingInstance = await this.prisma.activityInstance.findFirst({
+      where: {
+        activityTemplateId: dto.activityTemplateId,
+        scheduledDate,
+        instanceStatus: 'scheduled',
+      },
+    });
+
+    if (existingInstance) {
+      return existingInstance;
+    }
 
     return this.prisma.activityInstance.create({
       data: {
         activityTemplateId: dto.activityTemplateId,
-        scheduledDate: new Date(dto.scheduledDate),
+        scheduledDate,
         capacity: dto.capacity,
         instanceStatus: 'scheduled',
       },
