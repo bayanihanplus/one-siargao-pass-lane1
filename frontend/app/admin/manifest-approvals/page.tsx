@@ -146,6 +146,54 @@ function KeyValue(props: { label: string; value: any }) {
   );
 }
 
+function StatusPill(props: { value: string }) {
+  return (
+    <span
+      style={{
+        display: "inline-block",
+        padding: "4px 10px",
+        borderRadius: 999,
+        border: "1px solid #d1d5db",
+        fontSize: 12,
+        fontWeight: 600,
+      }}
+    >
+      {props.value}
+    </span>
+  );
+}
+
+function MetaRow(props: { children: any }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 12,
+        marginTop: 8,
+      }}
+    >
+      {props.children}
+    </div>
+  );
+}
+
+function MetaItem(props: { label: string; value: any }) {
+  return (
+    <div
+      style={{
+        border: "1px solid #e5e7eb",
+        borderRadius: 8,
+        padding: "8px 10px",
+        minWidth: 140,
+      }}
+    >
+      <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 4 }}>{props.label}</div>
+      <div style={{ fontWeight: 600 }}>{props.value ?? "—"}</div>
+    </div>
+  );
+}
+
 export default async function AdminManifestApprovalsPage() {
   const { rows, error } = await getApprovalQueue();
 
@@ -181,130 +229,127 @@ export default async function AdminManifestApprovalsPage() {
           <p style={{ margin: 0 }}>No manifests are currently under review.</p>
         </Section>
       ) : (
-        rows.map((row: any) => (
-          <Section key={row.id} title={`Approval Request ${row.id}`}>
-            <KeyValue label="Request ID" value={row.id} />
-            <KeyValue label="Manifest ID" value={row.manifestId} />
-            <KeyValue label="Request Status" value={row.requestStatus} />
-            <KeyValue label="Created At" value={row.createdAt} />
-            <KeyValue label="Reviewed By" value={row.reviewedBy} />
-            <KeyValue label="Reviewed At" value={row.reviewedAt} />
-            <KeyValue label="Review Notes" value={row.reviewNotes} />
+        <Section title="Pending Approval Requests">
+          <div style={{ display: "grid", gap: 12 }}>
+            {rows.map((row: any) => {
+              const members = Array.isArray(row.manifest?.members) ? row.manifest.members : [];
+              const memberPreview = members.slice(0, 3);
 
-            <div style={{ height: 12 }} />
-
-            <h3 style={{ marginBottom: 8 }}>Manifest</h3>
-            <KeyValue
-              label="Manifest Reference"
-              value={row.manifest?.manifestReference}
-            />
-            <KeyValue
-              label="Manifest Status"
-              value={row.manifest?.manifestStatus}
-            />
-            <KeyValue
-              label="Operator User ID"
-              value={row.manifest?.operatorUserId}
-            />
-            <KeyValue
-              label="Total Members"
-              value={row.manifest?.totalMembers}
-            />
-
-            <div style={{ height: 12 }} />
-
-            <h3 style={{ marginBottom: 8 }}>Activity Instance</h3>
-            <KeyValue
-              label="Activity Instance ID"
-              value={row.manifest?.activityInstance?.id}
-            />
-            <KeyValue
-              label="Activity Template ID"
-              value={row.manifest?.activityInstance?.activityTemplateId}
-            />
-            <KeyValue
-              label="Scheduled Date"
-              value={row.manifest?.activityInstance?.scheduledDate}
-            />
-            <KeyValue
-              label="Instance Status"
-              value={row.manifest?.activityInstance?.instanceStatus}
-            />
-
-            <div style={{ height: 12 }} />
-
-            <h3 style={{ marginBottom: 8 }}>Members</h3>
-            {Array.isArray(row.manifest?.members) && row.manifest.members.length > 0 ? (
-              <div style={{ display: "grid", gap: 12 }}>
-                {row.manifest.members.map((member: any) => (
-                  <div
-                    key={member.id}
-                    style={{
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 10,
-                      padding: 12,
-                    }}
-                  >
-                    <KeyValue label="Member ID" value={member.id} />
-                    <KeyValue label="Trip ID" value={member.tripId} />
-                    <KeyValue label="Booking ID" value={member.bookingId} />
-                    <KeyValue
-                      label="Traveler Snapshot"
-                      value={member.travelerNameSnapshot}
-                    />
-                    <KeyValue label="Member Status" value={member.memberStatus} />
+              return (
+                <div
+                  key={row.id}
+                  style={{
+                    border: "1px solid #e5e7eb",
+                    borderRadius: 10,
+                    padding: 14,
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+                    <div>
+                      <div style={{ fontWeight: 700 }}>
+                        {row.manifest?.manifestReference || row.id}
+                      </div>
+                      <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>
+                        Operator {row.manifest?.operatorUserId || "—"} · created {row.createdAt}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                      <StatusPill value={String(row.requestStatus).toUpperCase()} />
+                      <StatusPill value={String(row.manifest?.manifestStatus || "UNKNOWN").toUpperCase()} />
+                    </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p style={{ margin: 0 }}>No manifest members found.</p>
-            )}
 
-            <form style={{ marginTop: 16 }}>
-              <input type="hidden" name="requestId" value={row.id} />
+                  <MetaRow>
+                    <MetaItem label="Scheduled Date" value={row.manifest?.activityInstance?.scheduledDate} />
+                    <MetaItem label="Instance Status" value={row.manifest?.activityInstance?.instanceStatus} />
+                    <MetaItem label="Total Members" value={row.manifest?.totalMembers ?? members.length} />
+                    <MetaItem label="Activity Instance" value={row.manifest?.activityInstance?.id || "—"} />
+                  </MetaRow>
 
-              <label
-                htmlFor={`notes-${row.id}`}
-                style={{ display: "block", fontWeight: 600, marginBottom: 8 }}
-              >
-                Review Notes
-              </label>
-              <textarea
-                id={`notes-${row.id}`}
-                name="notes"
-                placeholder="Optional decision notes..."
-                rows={3}
-                style={{
-                  width: "100%",
-                  boxSizing: "border-box",
-                  padding: 10,
-                  borderRadius: 8,
-                  border: "1px solid #d1d5db",
-                  marginBottom: 12,
-                }}
-                defaultValue=""
-              />
+                  <div style={{ marginTop: 12 }}>
+                    <div style={{ fontWeight: 600, marginBottom: 6 }}>Member Preview</div>
+                    {memberPreview.length === 0 ? (
+                      <div style={{ fontSize: 14, color: "#6b7280" }}>No manifest members found.</div>
+                    ) : (
+                      <div style={{ display: "grid", gap: 8 }}>
+                        {memberPreview.map((member: any) => (
+                          <div
+                            key={member.id}
+                            style={{
+                              border: "1px solid #e5e7eb",
+                              borderRadius: 8,
+                              padding: 10,
+                            }}
+                          >
+                            <div style={{ fontWeight: 600 }}>
+                              {member.travelerNameSnapshot || member.tripId || member.id}
+                            </div>
+                            <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>
+                              Booking: {member.bookingId || "—"} · Status: {member.memberStatus || "—"}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {members.length > 3 ? (
+                      <div style={{ marginTop: 8, fontSize: 12, color: "#6b7280" }}>
+                        + {members.length - 3} more members
+                      </div>
+                    ) : null}
+                  </div>
 
-              <div style={{ display: "flex", gap: 12 }}>
-                <button
-                  type="submit"
-                  formAction={approveAction}
-                  style={{ padding: "10px 14px" }}
-                >
-                  Approve
-                </button>
+                  <form style={{ marginTop: 16 }}>
+                    <input type="hidden" name="requestId" value={row.id} />
 
-                <button
-                  type="submit"
-                  formAction={denyAction}
-                  style={{ padding: "10px 14px" }}
-                >
-                  Deny
-                </button>
-              </div>
-            </form>
-          </Section>
-        ))
+                    <label
+                      htmlFor={`notes-${row.id}`}
+                      style={{ display: "block", fontWeight: 600, marginBottom: 8 }}
+                    >
+                      Review Notes
+                    </label>
+                    <textarea
+                      id={`notes-${row.id}`}
+                      name="notes"
+                      placeholder="Optional decision notes..."
+                      rows={3}
+                      style={{
+                        width: "100%",
+                        boxSizing: "border-box",
+                        padding: 10,
+                        borderRadius: 8,
+                        border: "1px solid #d1d5db",
+                        marginBottom: 12,
+                      }}
+                      defaultValue=""
+                    />
+
+                    <div style={{ display: "flex", gap: 12 }}>
+                      <button
+                        type="submit"
+                        formAction={approveAction}
+                        style={{ padding: "10px 14px" }}
+                      >
+                        Approve
+                      </button>
+
+                      <button
+                        type="submit"
+                        formAction={denyAction}
+                        style={{ padding: "10px 14px" }}
+                      >
+                        Deny
+                      </button>
+                    </div>
+                  </form>
+
+                  <div style={{ marginTop: 12, fontSize: 12, color: "#6b7280" }}>
+                    Request ID: {row.id} · Manifest ID: {row.manifestId}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Section>
       )}
     </main>
   );
