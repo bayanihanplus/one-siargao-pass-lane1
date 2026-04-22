@@ -17,6 +17,20 @@ export class ManifestsService {
     });
     if (!instance) throw new NotFoundException('Activity instance not found');
 
+    const existingDraft = await this.prisma.manifest.findFirst({
+      where: {
+        operatorUserId,
+        activityInstanceId,
+        manifestStatus: 'DRAFT',
+      },
+      include: { members: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (existingDraft) {
+      return existingDraft;
+    }
+
     const manifest = await this.prisma.manifest.create({
       data: {
         activityInstanceId,
@@ -40,7 +54,11 @@ export class ManifestsService {
     }
 
     const count = await this.prisma.manifestMember.count({ where: { manifestId: manifest.id } });
-    return this.prisma.manifest.update({ where: { id: manifest.id }, data: { totalMembers: count }, include: { members: true } });
+    return this.prisma.manifest.update({
+      where: { id: manifest.id },
+      data: { totalMembers: count },
+      include: { members: true },
+    });
   }
 
   async submit(manifestId: string, submittedByUserId: string, notes?: string) {
