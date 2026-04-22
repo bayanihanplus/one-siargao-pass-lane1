@@ -1,32 +1,13 @@
-async function getDevTravelerToken(baseUrl: string) {
-  const res = await fetch(`${baseUrl}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    cache: "no-store",
-    body: JSON.stringify({
-      email: "traveler1@osp.local",
-      password: "Password123!",
-    }),
-  });
-
-  if (!res.ok) {
-    throw new Error(`Dev login failed: HTTP ${res.status}`);
-  }
-
-  const json = await res.json();
-  return json.accessToken as string;
-}
+import { redirect } from "next/navigation";
+import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../src/lib/server-auth";
 
 async function getPassView() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+  const baseUrl = getApiBaseUrl();
   const tripId =
     process.env.NEXT_PUBLIC_DEV_TRIP_ID || "cmo77j9oe0001nlduxl7ta5qp";
 
   try {
-    const token = await getDevTravelerToken(baseUrl);
+    const token = await requireAccessToken();
 
     const res = await fetch(`${baseUrl}/trips/${tripId}`, {
       cache: "no-store",
@@ -82,6 +63,12 @@ function KeyValue(props: { label: string; value: any }) {
 }
 
 export default async function TravelerPassPage() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login?next=/traveler/pass");
+  }
+
   const { trip, error } = await getPassView();
 
   return (
@@ -93,12 +80,11 @@ export default async function TravelerPassPage() {
 
       <Section title="Development Note">
         <p style={{ marginTop: 0 }}>
-          This page uses the seeded traveler account and a dev trip ID bridge
-          until the real frontend auth/session and traveler trip selection flows
-          are built.
+          This page now reads the authenticated frontend session cookie, but
+          still uses a dev trip ID bridge until traveler trip selection is built.
         </p>
         <p style={{ marginBottom: 0 }}>
-          Replace this with proper authenticated traveler pass wiring later.
+          This is the first traveler auth migration step. Trip selection remains out of scope here.
         </p>
       </Section>
 
