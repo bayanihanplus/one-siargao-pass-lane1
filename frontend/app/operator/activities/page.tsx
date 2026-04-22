@@ -1,3 +1,5 @@
+import { revalidatePath } from "next/cache";
+
 async function getDevOperatorToken(baseUrl: string) {
   const res = await fetch(`${baseUrl}/auth/login`, {
     method: "POST",
@@ -21,6 +23,52 @@ async function getDevOperatorToken(baseUrl: string) {
 
 function getBaseUrl() {
   return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+}
+
+async function createActivityTemplateAction(formData: FormData) {
+  "use server";
+
+  const title = String(formData.get("title") || "").trim();
+  const description = String(formData.get("description") || "").trim();
+  const meetingPointText = String(formData.get("meetingPointText") || "").trim();
+  const requiresManifest = formData.get("requiresManifest") === "on";
+  const requiresGuide = formData.get("requiresGuide") === "on";
+
+  if (!title) {
+    throw new Error("Missing activity template title");
+  }
+
+  const baseUrl = getBaseUrl();
+  const token = await getDevOperatorToken(baseUrl);
+
+  const res = await fetch(`${baseUrl}/activities`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+    body: JSON.stringify({
+      title,
+      description: description || undefined,
+      meetingPointText: meetingPointText || undefined,
+      requiresManifest,
+      requiresGuide,
+    }),
+  });
+
+  if (!res.ok) {
+    let detail = `HTTP ${res.status}`;
+
+    try {
+      const json = await res.json();
+      detail = json?.message || json?.error || detail;
+    } catch {}
+
+    throw new Error(`Failed to create activity template: ${detail}`);
+  }
+
+  revalidatePath("/operator/activities");
 }
 
 async function getOperatorActivityInstances() {
@@ -98,8 +146,80 @@ export default async function OperatorActivitiesPage() {
           dev login helper until the real frontend auth/session layer is built.
         </p>
         <p style={{ marginBottom: 0 }}>
-          This lane is read-only. Template and instance creation stay out of scope here.
+          This lane now adds template creation only. Instance creation stays out of scope here.
         </p>
+      </Section>
+
+      <Section title="Create Activity Template">
+        <form action={createActivityTemplateAction}>
+          <label htmlFor="title" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
+            Title
+          </label>
+          <input
+            id="title"
+            name="title"
+            type="text"
+            placeholder="Enter template title..."
+            style={{
+              width: "100%",
+              boxSizing: "border-box",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid #d1d5db",
+              marginBottom: 12,
+            }}
+          />
+
+          <label htmlFor="description" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
+            Description
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            placeholder="Optional description..."
+            rows={3}
+            style={{
+              width: "100%",
+              boxSizing: "border-box",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid #d1d5db",
+              marginBottom: 12,
+            }}
+          />
+
+          <label htmlFor="meetingPointText" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
+            Meeting Point Text
+          </label>
+          <input
+            id="meetingPointText"
+            name="meetingPointText"
+            type="text"
+            placeholder="Optional meeting point..."
+            style={{
+              width: "100%",
+              boxSizing: "border-box",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid #d1d5db",
+              marginBottom: 12,
+            }}
+          />
+
+          <label style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <input type="checkbox" name="requiresManifest" />
+            Requires Manifest
+          </label>
+
+          <label style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+            <input type="checkbox" name="requiresGuide" />
+            Requires Guide
+          </label>
+
+          <button type="submit" style={{ padding: "10px 14px" }}>
+            Create Activity Template
+          </button>
+        </form>
       </Section>
 
       {error ? (
