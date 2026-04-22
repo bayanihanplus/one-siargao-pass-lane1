@@ -86,4 +86,45 @@ export class ActivitiesService {
         : null,
     }));
   }
+
+  async listTemplates(userId: string) {
+    const user = await getCurrentUserOrThrow(this.prisma, userId);
+
+    if (user.primaryRole === 'ADMIN') {
+      assertAdminLikeRole(user.primaryRole);
+    } else {
+      assertOperatorLikeRole(user.primaryRole);
+    }
+
+    const where =
+      user.primaryRole === 'ADMIN'
+        ? {}
+        : {
+            ownerUserId: userId,
+          };
+
+    const rows = await this.prisma.activityTemplate.findMany({
+      where,
+      orderBy: [
+        { createdAt: 'desc' },
+        { updatedAt: 'desc' },
+      ],
+      take: 25,
+    });
+
+    return rows.map((row) => ({
+      id: row.id,
+      ownerUserId: row.ownerUserId,
+      title: row.title,
+      description: row.description,
+      durationMinutes: row.durationMinutes,
+      meetingPointText: row.meetingPointText,
+      requiresManifest: row.requiresManifest,
+      requiresGuide: row.requiresGuide,
+      isPubliclyVisible: row.isPubliclyVisible,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+    }));
+  }
+
 }

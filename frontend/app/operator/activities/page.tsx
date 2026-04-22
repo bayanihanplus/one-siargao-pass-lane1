@@ -71,6 +71,92 @@ async function createActivityTemplateAction(formData: FormData) {
   revalidatePath("/operator/activities");
 }
 
+async function createActivityInstanceAction(formData: FormData) {
+  "use server";
+
+  const activityTemplateId = String(formData.get("activityTemplateId") || "").trim();
+  const scheduledDate = String(formData.get("scheduledDate") || "").trim();
+  const capacityRaw = String(formData.get("capacity") || "").trim();
+
+  if (!activityTemplateId) {
+    throw new Error("Missing activityTemplateId");
+  }
+
+  if (!scheduledDate) {
+    throw new Error("Missing scheduledDate");
+  }
+
+  const payload: any = {
+    activityTemplateId,
+    scheduledDate,
+  };
+
+  if (capacityRaw) {
+    const capacity = Number(capacityRaw);
+    if (!Number.isInteger(capacity)) {
+      throw new Error("Capacity must be an integer");
+    }
+    payload.capacity = capacity;
+  }
+
+  const baseUrl = getBaseUrl();
+  const token = await getDevOperatorToken(baseUrl);
+
+  const res = await fetch(`${baseUrl}/activities/instances`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    let detail = `HTTP ${res.status}`;
+
+    try {
+      const json = await res.json();
+      detail = json?.message || json?.error || detail;
+    } catch {}
+
+    throw new Error(`Failed to create activity instance: ${detail}`);
+  }
+
+  revalidatePath("/operator/activities");
+}
+
+async function getOperatorActivityTemplates() {
+  const baseUrl = getBaseUrl();
+
+  try {
+    const token = await getDevOperatorToken(baseUrl);
+
+    const res = await fetch(`${baseUrl}/activities/templates`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      return {
+        error: `Failed to load activity templates: HTTP ${res.status}`,
+        rows: [],
+      };
+    }
+
+    const rows = await res.json();
+    return { rows, error: null };
+  } catch (error: any) {
+    return {
+      error: error?.message || "Unknown activity template load failure",
+      rows: [],
+    };
+  }
+}
+
 async function getOperatorActivityInstances() {
   const baseUrl = getBaseUrl();
 
@@ -132,6 +218,7 @@ function KeyValue(props: { label: string; value: any }) {
 
 export default async function OperatorActivitiesPage() {
   const { rows, error } = await getOperatorActivityInstances();
+  const { rows: templateRows, error: templateError } = await getOperatorActivityTemplates();
 
   return (
     <main style={{ maxWidth: 1040, margin: "0 auto", padding: 24 }}>
@@ -146,7 +233,7 @@ export default async function OperatorActivitiesPage() {
           dev login helper until the real frontend auth/session layer is built.
         </p>
         <p style={{ marginBottom: 0 }}>
-          This lane now adds template creation only. Instance creation stays out of scope here.
+          This lane adds template creation and instance creation, but keeps edit/delete flows out of scope.
         </p>
       </Section>
 
@@ -222,6 +309,81 @@ export default async function OperatorActivitiesPage() {
         </form>
       </Section>
 
+      <Section title="Create Activity Instance">
+        <form action={createActivityInstanceAction}>
+          <label htmlFor="activityTemplateId" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
+            Activity Template
+          </label>
+          <select
+            id="activityTemplateId"
+            name="activityTemplateId"
+            defaultValue=""
+            style={{
+              width: "100%",
+              boxSizing: "border-box",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid #d1d5db",
+              marginBottom: 12,
+            }}
+          >
+            <option value="" disabled>
+              Select an activity template...
+            </option>
+            {templateRows.map((row: any) => (
+              <option key={row.id} value={row.id}>
+                {row.title} | manifest: {String(row.requiresManifest)} | guide: {String(row.requiresGuide)}
+              </option>
+            ))}
+          </select>
+
+          <label htmlFor="scheduledDate" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
+            Scheduled Date
+          </label>
+          <input
+            id="scheduledDate"
+            name="scheduledDate"
+            type="date"
+            style={{
+              width: "100%",
+              boxSizing: "border-box",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid #d1d5db",
+              marginBottom: 12,
+            }}
+          />
+
+          <label htmlFor="capacity" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
+            Capacity
+          </label>
+          <input
+            id="capacity"
+            name="capacity"
+            type="number"
+            placeholder="Optional capacity..."
+            style={{
+              width: "100%",
+              boxSizing: "border-box",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid #d1d5db",
+              marginBottom: 12,
+            }}
+          />
+
+          <button type="submit" style={{ padding: "10px 14px" }}>
+            Create Activity Instance
+          </button>
+        </form>
+      </Section>
+
+      {templateError ? (
+        <Section title="Template Load Error">
+          <p style={{ margin: 0 }}>{templateError}</p>
+        </Section>
+      ) : null}
+
       {error ? (
         <Section title="Load Error">
           <p style={{ margin: 0 }}>{error}</p>
@@ -230,6 +392,7 @@ export default async function OperatorActivitiesPage() {
 
       <Section title="Activity Summary">
         <KeyValue label="Visible Activity Instances" value={rows.length} />
+        <KeyValue label="Selectable Activity Templates" value={templateRows.length} />
       </Section>
 
       {rows.length === 0 ? (

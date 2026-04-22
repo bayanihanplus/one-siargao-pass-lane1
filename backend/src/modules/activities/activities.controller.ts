@@ -30,4 +30,12 @@ export class ActivitiesController {
   listInstances(@CurrentUserId() userId: string) {
     return this.activitiesService.listInstances(userId);
   }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @Get('templates')
+  listTemplates(@CurrentUserId() userId: string) {
+    return this.activitiesService.listTemplates(userId);
+  }
+
 }
