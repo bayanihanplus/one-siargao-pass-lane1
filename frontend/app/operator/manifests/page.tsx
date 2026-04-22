@@ -125,6 +125,37 @@ async function getOperatorManifestHistory() {
   }
 }
 
+async function getActivityInstances() {
+  const baseUrl = getBaseUrl();
+
+  try {
+    const token = await getDevOperatorToken(baseUrl);
+
+    const res = await fetch(`${baseUrl}/activities/instances`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      return {
+        error: `Failed to load activity instances: HTTP ${res.status}`,
+        rows: [],
+      };
+    }
+
+    const rows = await res.json();
+    return { rows, error: null };
+  } catch (error: any) {
+    return {
+      error: error?.message || "Unknown activity instance load failure",
+      rows: [],
+    };
+  }
+}
+
 function Section(props: { title: string; children: any }) {
   const { title, children } = props;
 
@@ -155,6 +186,7 @@ function KeyValue(props: { label: string; value: any }) {
 
 export default async function OperatorManifestsPage() {
   const { rows, error } = await getOperatorManifestHistory();
+  const { rows: instanceRows, error: instanceError } = await getActivityInstances();
 
   return (
     <main style={{ maxWidth: 1040, margin: "0 auto", padding: 24 }}>
@@ -179,13 +211,12 @@ export default async function OperatorManifestsPage() {
             htmlFor="activityInstanceId"
             style={{ display: "block", fontWeight: 600, marginBottom: 8 }}
           >
-            Activity Instance ID
+            Activity Instance
           </label>
-          <input
+          <select
             id="activityInstanceId"
             name="activityInstanceId"
-            type="text"
-            placeholder="Enter activity instance id..."
+            defaultValue=""
             style={{
               width: "100%",
               boxSizing: "border-box",
@@ -194,8 +225,16 @@ export default async function OperatorManifestsPage() {
               border: "1px solid #d1d5db",
               marginBottom: 12,
             }}
-            defaultValue=""
-          />
+          >
+            <option value="" disabled>
+              Select an activity instance...
+            </option>
+            {instanceRows.map((row: any) => (
+              <option key={row.id} value={row.id}>
+                {row.activityTemplate?.title || row.activityTemplateId} | {row.scheduledDate} | {row.instanceStatus}
+              </option>
+            ))}
+          </select>
 
           <label
             htmlFor="notes"
@@ -225,6 +264,12 @@ export default async function OperatorManifestsPage() {
         </form>
       </Section>
 
+      {instanceError ? (
+        <Section title="Activity Instance Load Error">
+          <p style={{ margin: 0 }}>{instanceError}</p>
+        </Section>
+      ) : null}
+
       {error ? (
         <Section title="Load Error">
           <p style={{ margin: 0 }}>{error}</p>
@@ -233,6 +278,7 @@ export default async function OperatorManifestsPage() {
 
       <Section title="History Summary">
         <KeyValue label="Visible History Count" value={rows.length} />
+        <KeyValue label="Selectable Activity Instances" value={instanceRows.length} />
       </Section>
 
       {rows.length === 0 ? (

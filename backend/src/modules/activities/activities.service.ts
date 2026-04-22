@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { getCurrentUserOrThrow } from '../auth/utils/current-user.util';
+import { assertAdminLikeRole, assertOperatorLikeRole, getCurrentUserOrThrow } from '../auth/utils/current-user.util';
 import { CreateActivityTemplateDto } from './dto/create-activity-template.dto';
 import { CreateActivityInstanceDto } from './dto/create-activity-instance.dto';
 
@@ -34,5 +34,46 @@ export class ActivitiesService {
         instanceStatus: 'scheduled',
       },
     });
+  }
+  async listInstances(userId: string) {
+    const user = await getCurrentUserOrThrow(this.prisma, userId);
+
+    if (user.primaryRole === 'ADMIN') {
+      assertAdminLikeRole(user.primaryRole);
+    } else {
+      assertOperatorLikeRole(user.primaryRole);
+    }
+
+    const rows = await this.prisma.activityInstance.findMany({
+      include: {
+        activityTemplate: true,
+      },
+      orderBy: [
+        { scheduledDate: 'desc' },
+        { createdAt: 'desc' },
+      ],
+      take: 25,
+    });
+
+    return rows.map((row) => ({
+      id: row.id,
+      activityTemplateId: row.activityTemplateId,
+      scheduledDate: row.scheduledDate,
+      startTime: row.startTime,
+      endTime: row.endTime,
+      capacity: row.capacity,
+      bookedCount: row.bookedCount,
+      instanceStatus: row.instanceStatus,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      activityTemplate: row.activityTemplate
+        ? {
+            id: row.activityTemplate.id,
+            title: row.activityTemplate.title,
+            description: row.activityTemplate.description,
+            requiresManifest: row.activityTemplate.requiresManifest,
+          }
+        : null,
+    }));
   }
 }

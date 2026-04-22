@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ActivitiesService } from './activities.service';
 import { CreateActivityTemplateDto } from './dto/create-activity-template.dto';
 import { CreateActivityInstanceDto } from './dto/create-activity-instance.dto';
@@ -23,5 +23,11 @@ export class ActivitiesController {
   @Post('instances')
   createInstance(@CurrentUserId() userId: string, @Body() dto: CreateActivityInstanceDto) {
     return this.activitiesService.createInstance(userId, dto);
+  }
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @Get('instances')
+  listInstances(@CurrentUserId() userId: string) {
+    return this.activitiesService.listInstances(userId);
   }
 }
