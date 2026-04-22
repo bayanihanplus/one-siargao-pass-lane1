@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { assertAdminLikeRole, assertOperatorLikeRole, getCurrentUserOrThrow } from '../auth/utils/current-user.util';
 import { CreateActivityTemplateDto } from './dto/create-activity-template.dto';
@@ -32,7 +32,10 @@ export class ActivitiesService {
       assertOperatorLikeRole(user.primaryRole);
     }
 
-    const scheduledDate = new Date(dto.scheduledDate);
+    const scheduledDate = new Date(`${dto.scheduledDate}T00:00:00.000Z`);
+    if (Number.isNaN(scheduledDate.getTime())) {
+      throw new BadRequestException('Invalid scheduledDate');
+    }
 
     const template = await this.prisma.activityTemplate.findUnique({
       where: { id: dto.activityTemplateId },
@@ -43,11 +46,11 @@ export class ActivitiesService {
     });
 
     if (!template) {
-      throw new Error('Activity template not found');
+      throw new NotFoundException('Activity template not found');
     }
 
     if (user.primaryRole !== 'ADMIN' && template.ownerUserId !== userId) {
-      throw new Error('Cannot create instance for another operator template');
+      throw new ForbiddenException('Cannot create instance for another operator template');
     }
 
     const existingInstance = await this.prisma.activityInstance.findFirst({
@@ -59,6 +62,13 @@ export class ActivitiesService {
     });
 
     if (existingInstance) {
+      const requestedCapacity = dto.capacity ?? null;
+      const existingCapacity = existingInstance.capacity ?? null;
+
+      if (requestedCapacity !== existingCapacity) {
+        throw new BadRequestException('Scheduled instance already exists with a different capacity');
+      }
+
       return existingInstance;
     }
 
