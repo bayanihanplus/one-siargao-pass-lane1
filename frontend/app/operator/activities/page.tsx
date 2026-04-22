@@ -59,12 +59,10 @@ async function createActivityTemplateAction(formData: FormData) {
 
   if (!res.ok) {
     let detail = `HTTP ${res.status}`;
-
     try {
       const json = await res.json();
       detail = json?.message || json?.error || detail;
     } catch {}
-
     throw new Error(`Failed to create activity template: ${detail}`);
   }
 
@@ -114,12 +112,10 @@ async function createActivityInstanceAction(formData: FormData) {
 
   if (!res.ok) {
     let detail = `HTTP ${res.status}`;
-
     try {
       const json = await res.json();
       detail = json?.message || json?.error || detail;
     } catch {}
-
     throw new Error(`Failed to create activity instance: ${detail}`);
   }
 
@@ -216,6 +212,54 @@ function KeyValue(props: { label: string; value: any }) {
   );
 }
 
+function StatusPill(props: { value: string }) {
+  return (
+    <span
+      style={{
+        display: "inline-block",
+        padding: "4px 10px",
+        borderRadius: 999,
+        border: "1px solid #d1d5db",
+        fontSize: 12,
+        fontWeight: 600,
+      }}
+    >
+      {props.value}
+    </span>
+  );
+}
+
+function MetaRow(props: { children: any }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 12,
+        marginTop: 8,
+      }}
+    >
+      {props.children}
+    </div>
+  );
+}
+
+function MetaItem(props: { label: string; value: any }) {
+  return (
+    <div
+      style={{
+        border: "1px solid #e5e7eb",
+        borderRadius: 8,
+        padding: "8px 10px",
+        minWidth: 140,
+      }}
+    >
+      <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 4 }}>{props.label}</div>
+      <div style={{ fontWeight: 600 }}>{props.value ?? "—"}</div>
+    </div>
+  );
+}
+
 export default async function OperatorActivitiesPage() {
   const { rows, error } = await getOperatorActivityInstances();
   const { rows: templateRows, error: templateError } = await getOperatorActivityTemplates();
@@ -233,7 +277,7 @@ export default async function OperatorActivitiesPage() {
           dev login helper until the real frontend auth/session layer is built.
         </p>
         <p style={{ marginBottom: 0 }}>
-          This lane adds template creation and instance creation, but keeps edit/delete flows out of scope.
+          This lane keeps write flows intact, but compresses templates and instances into faster-scanning cards.
         </p>
       </Section>
 
@@ -403,27 +447,35 @@ export default async function OperatorActivitiesPage() {
         </Section>
       ) : (
         <Section title="Recent Activity Templates">
-          {templateRows.map((row: any) => (
-            <div
-              key={row.id}
-              style={{
-                border: "1px solid #e5e7eb",
-                borderRadius: 10,
-                padding: 12,
-                marginBottom: 12,
-              }}
-            >
-              <KeyValue label="Template ID" value={row.id} />
-              <KeyValue label="Title" value={row.title} />
-              <KeyValue label="Description" value={row.description} />
-              <KeyValue label="Meeting Point Text" value={row.meetingPointText} />
-              <KeyValue label="Requires Manifest" value={String(row.requiresManifest)} />
-              <KeyValue label="Requires Guide" value={String(row.requiresGuide)} />
-              <KeyValue label="Publicly Visible" value={String(row.isPubliclyVisible)} />
-              <KeyValue label="Created At" value={row.createdAt} />
-              <KeyValue label="Updated At" value={row.updatedAt} />
-            </div>
-          ))}
+          <div style={{ display: "grid", gap: 12 }}>
+            {templateRows.map((row: any) => (
+              <div
+                key={row.id}
+                style={{
+                  border: "1px solid #e5e7eb",
+                  borderRadius: 10,
+                  padding: 14,
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+                  <div>
+                    <div style={{ fontWeight: 700 }}>{row.title}</div>
+                    <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>{row.description || "No description"}</div>
+                  </div>
+                  <div>
+                    <StatusPill value={row.requiresManifest ? "MANIFEST" : "NO MANIFEST"} />
+                  </div>
+                </div>
+
+                <MetaRow>
+                  <MetaItem label="Guide" value={row.requiresGuide ? "Required" : "Not required"} />
+                  <MetaItem label="Meeting Point" value={row.meetingPointText || "—"} />
+                  <MetaItem label="Public" value={row.isPubliclyVisible ? "Yes" : "No"} />
+                  <MetaItem label="Created" value={row.createdAt} />
+                </MetaRow>
+              </div>
+            ))}
+          </div>
         </Section>
       )}
 
@@ -434,23 +486,43 @@ export default async function OperatorActivitiesPage() {
           </p>
         </Section>
       ) : (
-        rows.map((row: any) => (
-          <Section key={row.id} title={`Activity Instance ${row.id}`}>
-            <KeyValue label="Activity Instance ID" value={row.id} />
-            <KeyValue label="Template ID" value={row.activityTemplateId} />
-            <KeyValue label="Template Title" value={row.activityTemplate?.title} />
-            <KeyValue label="Template Description" value={row.activityTemplate?.description} />
-            <KeyValue label="Requires Manifest" value={String(row.activityTemplate?.requiresManifest)} />
-            <KeyValue label="Scheduled Date" value={row.scheduledDate} />
-            <KeyValue label="Start Time" value={row.startTime} />
-            <KeyValue label="End Time" value={row.endTime} />
-            <KeyValue label="Instance Status" value={row.instanceStatus} />
-            <KeyValue label="Capacity" value={row.capacity} />
-            <KeyValue label="Booked Count" value={row.bookedCount} />
-            <KeyValue label="Created At" value={row.createdAt} />
-            <KeyValue label="Updated At" value={row.updatedAt} />
-          </Section>
-        ))
+        <Section title="Recent Activity Instances">
+          <div style={{ display: "grid", gap: 12 }}>
+            {rows.map((row: any) => (
+              <div
+                key={row.id}
+                style={{
+                  border: "1px solid #e5e7eb",
+                  borderRadius: 10,
+                  padding: 14,
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+                  <div>
+                    <div style={{ fontWeight: 700 }}>{row.activityTemplate?.title || row.activityTemplateId}</div>
+                    <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>
+                      {row.activityTemplate?.description || "No description"}
+                    </div>
+                  </div>
+                  <div>
+                    <StatusPill value={String(row.instanceStatus).toUpperCase()} />
+                  </div>
+                </div>
+
+                <MetaRow>
+                  <MetaItem label="Scheduled Date" value={row.scheduledDate} />
+                  <MetaItem label="Capacity" value={row.capacity ?? "—"} />
+                  <MetaItem label="Booked Count" value={row.bookedCount} />
+                  <MetaItem label="Requires Manifest" value={row.activityTemplate?.requiresManifest ? "Yes" : "No"} />
+                </MetaRow>
+
+                <div style={{ marginTop: 10, fontSize: 12, color: "#6b7280" }}>
+                  Instance ID: {row.id}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
       )}
     </main>
   );
