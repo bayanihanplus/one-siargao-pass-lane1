@@ -1,3 +1,5 @@
+import { revalidatePath } from "next/cache";
+
 async function getDevOperatorToken(baseUrl: string) {
   const res = await fetch(`${baseUrl}/auth/login`, {
     method: "POST",
@@ -21,6 +23,75 @@ async function getDevOperatorToken(baseUrl: string) {
 
 function getBaseUrl() {
   return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+}
+
+async function createAndSubmitManifestAction(formData: FormData) {
+  "use server";
+
+  const activityInstanceId = String(formData.get("activityInstanceId") || "").trim();
+  const notes = String(formData.get("notes") || "").trim();
+
+  if (!activityInstanceId) {
+    throw new Error("Missing activityInstanceId");
+  }
+
+  const baseUrl = getBaseUrl();
+  const token = await getDevOperatorToken(baseUrl);
+
+  const generateRes = await fetch(`${baseUrl}/manifests/generate`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+    body: JSON.stringify({
+      activityInstanceId,
+    }),
+  });
+
+  if (!generateRes.ok) {
+    let detail = `HTTP ${generateRes.status}`;
+
+    try {
+      const json = await generateRes.json();
+      detail = json?.message || json?.error || detail;
+    } catch {}
+
+    throw new Error(`Failed to generate manifest: ${detail}`);
+  }
+
+  const generated = await generateRes.json();
+  const manifestId = generated?.id;
+
+  if (!manifestId) {
+    throw new Error("Generate manifest response did not include manifest id");
+  }
+
+  const submitRes = await fetch(`${baseUrl}/manifests/${manifestId}/submit`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+    body: JSON.stringify({
+      notes: notes || undefined,
+    }),
+  });
+
+  if (!submitRes.ok) {
+    let detail = `HTTP ${submitRes.status}`;
+
+    try {
+      const json = await submitRes.json();
+      detail = json?.message || json?.error || detail;
+    } catch {}
+
+    throw new Error(`Failed to submit manifest: ${detail}`);
+  }
+
+  revalidatePath("/operator/manifests");
 }
 
 async function getOperatorManifestHistory() {
@@ -98,8 +169,60 @@ export default async function OperatorManifestsPage() {
           dev login helper until the real frontend auth/session layer is built.
         </p>
         <p style={{ marginBottom: 0 }}>
-          This is a read-only operator status surface. No approval actions are exposed here.
+          Operator can generate and submit a manifest here, but no approval actions are exposed.
         </p>
+      </Section>
+
+      <Section title="Generate and Submit Manifest">
+        <form action={createAndSubmitManifestAction}>
+          <label
+            htmlFor="activityInstanceId"
+            style={{ display: "block", fontWeight: 600, marginBottom: 8 }}
+          >
+            Activity Instance ID
+          </label>
+          <input
+            id="activityInstanceId"
+            name="activityInstanceId"
+            type="text"
+            placeholder="Enter activity instance id..."
+            style={{
+              width: "100%",
+              boxSizing: "border-box",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid #d1d5db",
+              marginBottom: 12,
+            }}
+            defaultValue=""
+          />
+
+          <label
+            htmlFor="notes"
+            style={{ display: "block", fontWeight: 600, marginBottom: 8 }}
+          >
+            Submit Notes
+          </label>
+          <textarea
+            id="notes"
+            name="notes"
+            placeholder="Optional submission notes..."
+            rows={3}
+            style={{
+              width: "100%",
+              boxSizing: "border-box",
+              padding: 10,
+              borderRadius: 8,
+              border: "1px solid #d1d5db",
+              marginBottom: 12,
+            }}
+            defaultValue=""
+          />
+
+          <button type="submit" style={{ padding: "10px 14px" }}>
+            Generate and Submit Manifest
+          </button>
+        </form>
       </Section>
 
       {error ? (
@@ -108,7 +231,7 @@ export default async function OperatorManifestsPage() {
         </Section>
       ) : null}
 
-      <Section title="Queue Summary">
+      <Section title="History Summary">
         <KeyValue label="Visible History Count" value={rows.length} />
       </Section>
 
