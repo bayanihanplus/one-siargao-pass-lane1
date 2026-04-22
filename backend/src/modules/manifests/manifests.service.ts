@@ -66,6 +66,8 @@ export class ManifestsService {
       throw new BadRequestException('Approved manifest cannot be resubmitted');
     }
 
+    // DENIED manifests are intentionally allowed to be resubmitted.
+    // Policy: denial is a fix-and-resubmit state, not a terminal lock.
     if (manifest.approvalRequests.length > 0) {
       throw new BadRequestException('Manifest already has an active approval request');
     }

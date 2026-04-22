@@ -167,6 +167,52 @@ async function main() {
   });
   assertStatus(denyAfterApprove.res.status, 400, 'deny after approve rejected', denyAfterApprove.json);
 
+  const generate3 = await jsonFetch(`${API_BASE}/manifests/generate`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ activityInstanceId }),
+  });
+  assertStatus(generate3.res.status, 201, 'generate manifest for deny-resubmit case', generate3.json);
+
+  const manifestId3 = generate3.json?.id;
+  if (!manifestId3) throw new Error('Missing manifestId3');
+
+  const submit3 = await jsonFetch(`${API_BASE}/manifests/${manifestId3}/submit`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ notes: 'submit for deny case' }),
+  });
+  assertStatus(submit3.res.status, 201, 'submit for deny case', submit3.json);
+
+  const requestId3 = await getLatestApprovalRequestId(manifestId3);
+  console.log(`Using denied-requestId=${requestId3}`);
+
+  const deny1 = await jsonFetch(`${API_BASE}/manifest-approvals/${requestId3}/deny`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ notes: 'deny once' }),
+  });
+  assertStatus(deny1.res.status, 201, 'first deny', deny1.json);
+
+  const resubmitDenied = await jsonFetch(`${API_BASE}/manifests/${manifestId3}/submit`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ notes: 'resubmit after denial' }),
+  });
+  assertStatus(resubmitDenied.res.status, 201, 'denied manifest resubmitted', resubmitDenied.json);
+
   console.log('\nALL MANIFEST WORKFLOW SMOKE CHECKS PASSED');
 }
 
