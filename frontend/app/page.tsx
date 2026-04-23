@@ -180,9 +180,9 @@ function getHeroState(trip: any) {
     return {
       pill: "PENDING",
       travelerLabel: "Traveler On File",
-      title: "Trip Active.\nPass Ready.",
-      body: "Access your trip status,\npass, clearance, and\npayment in one place.",
-      pillBg: "#d89a20",
+      title: "Trip On File.\nClearance Pending.",
+      body: "Your pass may be issued, but clearance is still under review before trip readiness is confirmed.",
+      pillBg: "#6f62d8",
     };
   }
 
@@ -302,9 +302,20 @@ function getPassCardBadgeColor(trip: any) {
 function getPassCardVerificationLabel(trip: any) {
   const passIssued = getTripPassIssued(trip);
   const passStatus = String(getTripPassStatusRaw(trip) || "").toLowerCase();
+  const clearanceStatus = String(trip?.clearanceStatus || "").toLowerCase();
+  const paymentState = String(getTripPaymentStateRaw(trip) || "").toLowerCase();
+
+  if (
+    passIssued &&
+    (passStatus === "active" || passStatus === "issued" || passStatus === "valid") &&
+    clearanceStatus === "approved" &&
+    paymentState === "paid"
+  ) {
+    return "VERIFIED";
+  }
 
   if (passIssued && (passStatus === "active" || passStatus === "issued" || passStatus === "valid")) {
-    return "VERIFIED";
+    return "PASS ISSUED";
   }
 
   return "NOT ISSUED";
