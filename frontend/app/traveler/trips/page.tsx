@@ -1,4 +1,5 @@
 import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
+import { getPreferredTravelerTrip } from "../../../src/lib/travelerTripSelection";
 
 async function getTrips() {
   const baseUrl = getApiBaseUrl();
@@ -60,13 +61,9 @@ function MetaItem(props: { label: string; value: any }) {
   );
 }
 
-function getPreferredTrip(rows: any[]) {
-  return rows.find((trip: any) => Boolean(trip?.pass)) || rows[0] || null;
-}
-
 export default async function TravelerTripsPage() {
   const { rows, error } = await getTrips();
-  const preferredTrip = getPreferredTrip(rows);
+  const preferredTrip = getPreferredTravelerTrip(rows);
 
   return (
     <main style={{ maxWidth: 960, margin: "0 auto", padding: 24 }}>

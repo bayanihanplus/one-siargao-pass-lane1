@@ -1,4 +1,5 @@
 import { getCurrentUser, requireAccessToken } from "../src/lib/server-auth";
+import { getPreferredTravelerTrip } from "../src/lib/travelerTripSelection";
 
 function Section(props: { title: string; children: any }) {
   return (
@@ -53,7 +54,7 @@ async function getTravelerLatestTrip() {
 
     const rows = await listRes.json();
     const trips = Array.isArray(rows) ? rows : [];
-    const preferredTrip = trips.find((trip: any) => Boolean(trip?.pass)) || trips[0] || null;
+    const preferredTrip = getPreferredTravelerTrip(trips);
 
     if (!preferredTrip?.id) {
       return { trip: null, error: null };

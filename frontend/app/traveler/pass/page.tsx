@@ -1,4 +1,5 @@
 import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
+import { getPreferredTravelerTrip } from "../../../src/lib/travelerTripSelection";
 
 async function getPassView() {
   const baseUrl = getApiBaseUrl();
@@ -31,8 +32,7 @@ async function getPassView() {
       };
     }
 
-    const preferredTrip =
-      trips.find((trip: any) => Boolean(trip.pass)) || trips[0];
+    const preferredTrip = getPreferredTravelerTrip(trips);
 
     if (!preferredTrip?.id) {
       return {
