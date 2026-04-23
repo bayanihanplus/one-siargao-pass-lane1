@@ -453,6 +453,67 @@ export default async function TravelerTripDetailPage({
             />
           </Section>
 
+          <Section title="Payment History">
+            {Array.isArray(trip.bookingLinks) && trip.bookingLinks.length > 0 ? (
+              <div style={{ display: "grid", gap: 12, marginBottom: 16 }}>
+                {trip.bookingLinks.map((link: any) => (
+                  <div
+                    key={`payment-history-${link.id}`}
+                    style={{
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 10,
+                      padding: 12,
+                    }}
+                  >
+                    <KeyValue
+                      label="Booking Reference"
+                      value={link.booking?.bookingReference}
+                    />
+                    <KeyValue
+                      label="Booking Status"
+                      value={link.booking?.bookingStatus}
+                    />
+                    <KeyValue
+                      label="Booking Total PHP"
+                      value={link.booking?.bookingTotalPhp}
+                    />
+                    <KeyValue
+                      label="Payment State"
+                      value={link.booking?.paymentState?.state}
+                    />
+                    <KeyValue
+                      label="Latest Payment Intent Reference"
+                      value={link.booking?.latestPaymentIntent?.intentReference}
+                    />
+                    <KeyValue
+                      label="Latest Payment Intent Status"
+                      value={link.booking?.latestPaymentIntent?.status}
+                    />
+
+                    {link.booking?.latestPaymentIntent?.id ? (
+                      <div style={{ marginTop: 8 }}>
+                        <a
+                          href={`/traveler/payments/${link.booking.latestPaymentIntent.id}`}
+                          style={{
+                            display: "inline-block",
+                            padding: "10px 14px",
+                            border: "1px solid #d1d5db",
+                            borderRadius: 8,
+                            textDecoration: "none",
+                          }}
+                        >
+                          Open Payment Detail
+                        </a>
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No booking-linked payment history yet.</p>
+            )}
+          </Section>
+
           <Section title="Historical Booking Links">
             {Array.isArray(trip.bookingLinks) && trip.bookingLinks.length > 0 ? (
               <div style={{ display: "grid", gap: 12 }}>
