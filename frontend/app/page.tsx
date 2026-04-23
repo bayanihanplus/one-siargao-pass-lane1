@@ -304,12 +304,12 @@ function getPassCardBadgeColor(trip: any) {
     return "#d89a20";
   }
 
-  if (hasTrip && paymentState && paymentState !== "paid") {
-    return "#0fa8c8";
-  }
-
   if (hasTrip && clearanceStatus && clearanceStatus !== "approved") {
     return "#6f62d8";
+  }
+
+  if (hasTrip && paymentState && paymentState !== "paid") {
+    return "#0fa8c8";
   }
 
   return "#64748b";
