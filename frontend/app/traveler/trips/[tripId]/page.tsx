@@ -417,13 +417,28 @@ export default async function TravelerTripDetailPage({
                 </form>
 
                 {trip.currentPaymentIntent?.id ? (
-                  <form action={confirmPaymentIntentAction}>
-                    <input type="hidden" name="tripId" value={trip.id} />
-                    <input type="hidden" name="intentId" value={trip.currentPaymentIntent.id} />
-                    <button type="submit" style={{ padding: "10px 14px" }}>
-                      Confirm Payment
-                    </button>
-                  </form>
+                  <>
+                    <form action={confirmPaymentIntentAction}>
+                      <input type="hidden" name="tripId" value={trip.id} />
+                      <input type="hidden" name="intentId" value={trip.currentPaymentIntent.id} />
+                      <button type="submit" style={{ padding: "10px 14px" }}>
+                        Confirm Payment
+                      </button>
+                    </form>
+
+                    <a
+                      href={`/traveler/payments/${trip.currentPaymentIntent.id}`}
+                      style={{
+                        display: "inline-block",
+                        padding: "10px 14px",
+                        border: "1px solid #d1d5db",
+                        borderRadius: 8,
+                        textDecoration: "none",
+                      }}
+                    >
+                      Open Payment Detail
+                    </a>
+                  </>
                 ) : null}
               </div>
             )}
