@@ -46,6 +46,30 @@ async function loginAction(formData: FormData) {
   redirect(nextPath);
 }
 
+function Section(props: { title: string; children: any }) {
+  return (
+    <section
+      style={{
+        border: "1px solid #e5e7eb",
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 16,
+      }}
+    >
+      <h2 style={{ marginTop: 0, marginBottom: 12 }}>{props.title}</h2>
+      {props.children}
+    </section>
+  );
+}
+
+function KeyValue(props: { label: string; value: any }) {
+  return (
+    <div style={{ marginBottom: 8 }}>
+      <strong>{props.label}:</strong> {props.value ?? "—"}
+    </div>
+  );
+}
+
 export default async function LoginPage({
   searchParams,
 }: {
@@ -55,64 +79,114 @@ export default async function LoginPage({
   const resolvedSearchParams = await searchParams;
   const nextPath = resolvedSearchParams?.next || "/";
 
-  if (user) {
-    redirect(nextPath);
-  }
-
   return (
-    <main style={{ maxWidth: 520, margin: "0 auto", padding: 24 }}>
+    <main style={{ maxWidth: 560, margin: "0 auto", padding: 24 }}>
       <h1 style={{ marginBottom: 8 }}>Login</h1>
       <p style={{ marginTop: 0, marginBottom: 24 }}>
-        Temporary real session entry using backend JWT login.
+        Sign in once, then the route guard and role-aware landing will route you correctly.
       </p>
 
-      <form action={loginAction}>
-        <input type="hidden" name="next" value={nextPath} />
+      <Section title="Requested Destination">
+        <KeyValue label="Next" value={nextPath} />
+      </Section>
 
-        <label htmlFor="email" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
-          Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="Enter email..."
-          style={{
-            width: "100%",
-            boxSizing: "border-box",
-            padding: 10,
-            borderRadius: 8,
-            border: "1px solid #d1d5db",
-            marginBottom: 12,
-          }}
-        />
+      {user ? (
+        <Section title="Current Session Detected">
+          <p style={{ marginTop: 0 }}>
+            You are already signed in. Continue with the current session or log out to switch accounts.
+          </p>
+          <KeyValue label="Email" value={user.email} />
+          <KeyValue label="Role" value={user.primaryRole} />
+          <KeyValue label="Status" value={user.accountStatus} />
 
-        <label htmlFor="password" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
-          Password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Enter password..."
-          style={{
-            width: "100%",
-            boxSizing: "border-box",
-            padding: 10,
-            borderRadius: 8,
-            border: "1px solid #d1d5db",
-            marginBottom: 12,
-          }}
-        />
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 12,
+              marginTop: 12,
+            }}
+          >
+            <a
+              href={nextPath}
+              style={{
+                display: "inline-block",
+                padding: "10px 14px",
+                border: "1px solid #d1d5db",
+                borderRadius: 8,
+                textDecoration: "none",
+              }}
+            >
+              Continue as Current User
+            </a>
 
-        <button type="submit" style={{ padding: "10px 14px" }}>
-          Login
-        </button>
-      </form>
+            <a
+              href="/logout"
+              style={{
+                display: "inline-block",
+                padding: "10px 14px",
+                border: "1px solid #d1d5db",
+                borderRadius: 8,
+                textDecoration: "none",
+              }}
+            >
+              Logout and Switch Account
+            </a>
+          </div>
+        </Section>
+      ) : (
+        <Section title="Sign In">
+          <form action={loginAction}>
+            <input type="hidden" name="next" value={nextPath} />
 
-      <div style={{ marginTop: 16, fontSize: 12, color: "#6b7280" }}>
-        Seeded dev users still work here during transition.
-      </div>
+            <label htmlFor="email" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Enter email..."
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                padding: 10,
+                borderRadius: 8,
+                border: "1px solid #d1d5db",
+                marginBottom: 12,
+              }}
+            />
+
+            <label htmlFor="password" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Enter password..."
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                padding: 10,
+                borderRadius: 8,
+                border: "1px solid #d1d5db",
+                marginBottom: 12,
+              }}
+            />
+
+            <button type="submit" style={{ padding: "10px 14px" }}>
+              Login
+            </button>
+          </form>
+        </Section>
+      )}
+
+      <Section title="Role Guide">
+        <div style={{ marginBottom: 8 }}><strong>Admin:</strong> admin1@osp.local</div>
+        <div style={{ marginBottom: 8 }}><strong>Operator:</strong> operator1@osp.local</div>
+        <div style={{ marginBottom: 8 }}><strong>Traveler:</strong> traveler1@osp.local</div>
+      </Section>
     </main>
   );
 }
