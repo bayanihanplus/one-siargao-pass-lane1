@@ -118,7 +118,7 @@ async function getActivityInstances(): Promise<ActivityInstanceRow[]> {
 
 async function getRecentOperatorAccess(activityInstanceId?: string): Promise<OperatorAccessRecordRow[]> {
   const token = await requireAccessToken();
-  const url = new URL(`${getApiBaseUrl()}/osp-qr/operator-access/recent`);
+  const url = new URL(`${getApiBaseUrl()}/operator-access/recent`);
   if (activityInstanceId) {
     url.searchParams.set("activityInstanceId", activityInstanceId);
   }
