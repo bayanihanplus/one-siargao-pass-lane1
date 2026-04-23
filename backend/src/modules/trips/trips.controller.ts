@@ -16,6 +16,12 @@ export class TripsController {
   }
 
   @UseGuards(DevAuthGuard)
+  @Get()
+  listMine(@CurrentUserId() userId: string) {
+    return this.tripsService.listMine(userId);
+  }
+
+  @UseGuards(DevAuthGuard)
   @Get(':tripId')
   getById(@CurrentUserId() userId: string, @Param('tripId') tripId: string) {
     return this.tripsService.getById(userId, tripId);

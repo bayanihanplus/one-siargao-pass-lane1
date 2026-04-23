@@ -32,6 +32,66 @@ export class TripsService {
     });
   }
 
+  async listMine(userId: string) {
+    const rows = await this.prisma.trip.findMany({
+      where: { travelerUserId: userId },
+      include: {
+        registration: true,
+        pass: { include: { qrCredential: true } },
+      },
+      orderBy: [
+        { createdAt: 'desc' },
+        { arrivalDate: 'desc' },
+      ],
+      take: 25,
+    });
+
+    return rows.map((trip) => ({
+      id: trip.id,
+      travelerUserId: trip.travelerUserId,
+      tripTitle: trip.tripTitle,
+      arrivalDate: trip.arrivalDate,
+      departureDate: trip.departureDate,
+      originLocation: trip.originLocation,
+      declaredAccommodationName: trip.declaredAccommodationName,
+      tripStatus: trip.tripStatus,
+      registrationStatus: trip.registrationStatus,
+      clearanceStatus: trip.clearanceStatus,
+      createdAt: trip.createdAt,
+      updatedAt: trip.updatedAt,
+      registration: trip.registration
+        ? {
+            id: trip.registration.id,
+            tripId: trip.registration.tripId,
+            registrationReference: trip.registration.registrationReference,
+            registrationChannel: trip.registration.registrationChannel,
+            registrationCompletedAt: trip.registration.registrationCompletedAt,
+            createdAt: trip.registration.createdAt,
+          }
+        : null,
+      pass: trip.pass
+        ? {
+            id: trip.pass.id,
+            tripId: trip.pass.tripId,
+            passCode: trip.pass.passCode,
+            passStatus: trip.pass.passStatus,
+            issuedAt: trip.pass.issuedAt,
+            revokedAt: trip.pass.revokedAt,
+            expiresAt: trip.pass.expiresAt,
+            createdAt: trip.pass.createdAt,
+            updatedAt: trip.pass.updatedAt,
+            qrCredential: trip.pass.qrCredential
+              ? {
+                  id: trip.pass.qrCredential.id,
+                  qrVersion: trip.pass.qrCredential.qrVersion,
+                  lastRegeneratedAt: trip.pass.qrCredential.lastRegeneratedAt,
+                }
+              : null,
+          }
+        : null,
+    }));
+  }
+
   async getById(userId: string, tripId: string) {
     const trip = await this.prisma.trip.findFirst({
       where: { id: tripId, travelerUserId: userId },
