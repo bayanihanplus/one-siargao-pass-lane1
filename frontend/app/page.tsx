@@ -166,16 +166,6 @@ function getHeroState(trip: any) {
     };
   }
 
-  if (hasTrip && paymentState && paymentState !== "paid") {
-    return {
-      pill: "PAYMENT",
-      travelerLabel: "Payment Pending",
-      title: "Trip On File.\nPayment Pending.",
-      body: "Access your trip status,\npass, clearance, and\npayment in one place.",
-      pillBg: "#0fa8c8",
-    };
-  }
-
   if (hasTrip && clearanceStatus && clearanceStatus !== "approved") {
     return {
       pill: "PENDING",
@@ -183,6 +173,16 @@ function getHeroState(trip: any) {
       title: "Trip On File.\nClearance Pending.",
       body: "Your pass may be issued, but clearance is still under review before trip readiness is confirmed.",
       pillBg: "#6f62d8",
+    };
+  }
+
+  if (hasTrip && paymentState && paymentState !== "paid") {
+    return {
+      pill: "PAYMENT",
+      travelerLabel: "Payment Pending",
+      title: "Trip On File.\nPayment Pending.",
+      body: "Access your trip status,\npass, clearance, and\npayment in one place.",
+      pillBg: "#0fa8c8",
     };
   }
 
@@ -523,17 +523,17 @@ function getTravelerReassuranceMessage(trip: any) {
     };
   }
 
-  if (hasTrip && paymentState && paymentState !== "paid") {
-    return {
-      message: "Payment is still pending. Settle it to keep your trip moving.",
-      color: "#2998b4",
-    };
-  }
-
   if (hasTrip && clearanceStatus && clearanceStatus !== "approved") {
     return {
       message: "Clearance is still under review. Keep checking your latest trip status.",
       color: "#6f62d8",
+    };
+  }
+
+  if (hasTrip && paymentState && paymentState !== "paid") {
+    return {
+      message: "Payment is still pending. Settle it to keep your trip moving.",
+      color: "#2998b4",
     };
   }
 
