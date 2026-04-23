@@ -216,6 +216,39 @@ export class OspQrService {
     };
   }
 
+
+  async getRecentOperatorAccess(
+    actor: any,
+    input: { activityInstanceId?: string; limit?: number },
+  ) {
+    const safeLimit = Number.isFinite(input.limit)
+      ? Math.max(1, Math.min(50, Number(input.limit)))
+      : 15;
+
+    const where: any = {};
+
+    if (input.activityInstanceId) {
+      where.activityInstanceId = input.activityInstanceId;
+    }
+
+    if (actor.role !== 'ADMIN') {
+      where.operatorUserId = actor.id;
+    }
+
+    const rows = await this.prisma.operatorAccessRecord.findMany({
+      where,
+      orderBy: {
+        occurredAt: 'desc',
+      },
+      take: safeLimit,
+    });
+
+    return {
+      ok: true,
+      data: rows,
+    };
+  }
+
   async getCheckpointEvents(limit = 15) {
     const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(50, Number(limit))) : 15;
 
@@ -232,6 +265,181 @@ export class OspQrService {
     return {
       ok: true,
       data: rows,
+    };
+  }
+
+
+  async operatorAccessScan(
+    actor: any,
+    body: { qrToken: string; activityInstanceId: string; accessChannel: string },
+  ) {
+    const activityInstance = await this.prisma.activityInstance.findUnique({
+      where: { id: body.activityInstanceId },
+      include: {
+        activityTemplate: true,
+      },
+    });
+
+    if (!activityInstance || !activityInstance.activityTemplate) {
+      throw new NotFoundException('Activity instance not found');
+    }
+
+    const operatorUserId = activityInstance.activityTemplate.ownerUserId;
+
+    if (actor.role !== 'ADMIN' && operatorUserId !== actor.id) {
+      throw new NotFoundException('Activity instance not found');
+    }
+
+    const trip = await this.getTripByQrToken(body.qrToken);
+
+    if (!trip) {
+      const qrEvent = await this.createQrEvent({
+        eventType: 'OPERATOR_ACCESS_SCAN',
+        contextType: 'OPERATOR_ACCESS',
+        contextReferenceId: body.activityInstanceId,
+        scannerActorId: actor.id,
+        scannerActorRole: actor.role,
+        outcome: 'BLOCKED',
+        reasonCode: 'QR_NOT_FOUND',
+        reasonMessage: 'Traveler has no valid OSP QR.',
+      });
+
+      const blockedRecord = await this.prisma.operatorAccessRecord.create({
+        data: {
+          travelerId: 'UNKNOWN_TRAVELER',
+          tripId: 'UNKNOWN_TRIP',
+          operatorUserId,
+          activityTemplateId: activityInstance.activityTemplateId,
+          activityInstanceId: activityInstance.id,
+          accessChannel: body.accessChannel,
+          accessStatus: 'BLOCKED',
+          sourceQrEventId: qrEvent.id,
+          scannedByUserId: actor.id,
+          scannedByRole: actor.role,
+          reasonCode: 'QR_NOT_FOUND',
+          reasonMessage: 'Traveler has no valid OSP QR.',
+          occurredAt: new Date(),
+        },
+      });
+
+      return {
+        ok: true,
+        data: {
+          outcome: 'BLOCKED',
+          reasonCode: 'QR_NOT_FOUND',
+          reasonMessage: 'Traveler has no valid OSP QR.',
+          qrEventId: qrEvent.id,
+          operatorAccessRecordId: blockedRecord.id,
+          accessStatus: 'BLOCKED',
+        },
+      };
+    }
+
+    const derived = this.deriveEffectiveStatus(trip);
+
+    const latestManifestMember =
+      Array.isArray(trip.manifestMembers) && trip.manifestMembers.length > 0
+        ? trip.manifestMembers[0]
+        : null;
+
+    const linkedBookings = Array.isArray(trip.bookingLinks)
+      ? trip.bookingLinks.map((link: any) => link.booking).filter(Boolean)
+      : [];
+
+    const latestBooking =
+      [...linkedBookings].sort(
+        (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )[0] ?? null;
+
+    const qrEvent = await this.createQrEvent({
+      eventType: 'OPERATOR_ACCESS_SCAN',
+      travelerId: trip.travelerUserId,
+      tripId: trip.id,
+      passId: trip.pass?.id ?? null,
+      qrCredentialId: trip.pass?.qrCredential?.id ?? null,
+      effectivePassStatus: derived.effectivePassStatus,
+      scannerActorId: actor.id,
+      scannerActorRole: actor.role,
+      contextType: 'OPERATOR_ACCESS',
+      contextReferenceId: body.activityInstanceId,
+      outcome: derived.effectivePassStatus === 'ACTIVE' ? 'ALLOWED' : 'BLOCKED',
+      reasonCode: derived.reasonCode,
+      reasonMessage: derived.reasonMessage,
+    });
+
+    const existing = await this.prisma.operatorAccessRecord.findFirst({
+      where: {
+        travelerId: trip.travelerUserId,
+        activityInstanceId: activityInstance.id,
+        completedAt: null,
+      },
+      orderBy: {
+        occurredAt: 'desc',
+      },
+    });
+
+    const accessStatus = derived.effectivePassStatus === 'ACTIVE' ? 'CHECKED_IN' : 'BLOCKED';
+
+    const record =
+      existing
+        ? await this.prisma.operatorAccessRecord.update({
+            where: { id: existing.id },
+            data: {
+              bookingId: latestBooking?.id ?? existing.bookingId,
+              manifestId: latestManifestMember?.manifestId ?? existing.manifestId,
+              manifestMemberId: latestManifestMember?.id ?? existing.manifestMemberId,
+              sourceQrEventId: qrEvent.id,
+              scannedQrCredentialId: trip.pass?.qrCredential?.id ?? existing.scannedQrCredentialId,
+              scannedByUserId: actor.id,
+              scannedByRole: actor.role,
+              accessStatus,
+              reasonCode: derived.reasonCode,
+              reasonMessage: derived.reasonMessage,
+              occurredAt: new Date(),
+            },
+          })
+        : await this.prisma.operatorAccessRecord.create({
+            data: {
+              travelerId: trip.travelerUserId,
+              tripId: trip.id,
+              bookingId: latestBooking?.id ?? null,
+              manifestId: latestManifestMember?.manifestId ?? null,
+              manifestMemberId: latestManifestMember?.id ?? null,
+              operatorUserId,
+              activityTemplateId: activityInstance.activityTemplateId,
+              activityInstanceId: activityInstance.id,
+              accessChannel: body.accessChannel,
+              accessStatus,
+              sourceQrEventId: qrEvent.id,
+              scannedQrCredentialId: trip.pass?.qrCredential?.id ?? null,
+              scannedByUserId: actor.id,
+              scannedByRole: actor.role,
+              reasonCode: derived.reasonCode,
+              reasonMessage: derived.reasonMessage,
+              occurredAt: new Date(),
+            },
+          });
+
+    return {
+      ok: true,
+      data: {
+        outcome: derived.effectivePassStatus === 'ACTIVE' ? 'ALLOWED' : 'BLOCKED',
+        reasonCode: derived.reasonCode,
+        reasonMessage: derived.reasonMessage,
+        qrEventId: qrEvent.id,
+        operatorAccessRecordId: record.id,
+        accessStatus,
+        traveler: {
+          travelerId: trip.travelerUserId,
+          tripId: trip.id,
+          fullName: trip.traveler?.fullName ?? null,
+        },
+        activity: {
+          activityTemplateId: activityInstance.activityTemplateId,
+          activityInstanceId: activityInstance.id,
+          title: activityInstance.activityTemplate.title,
+        },
+      },
     };
   }
 

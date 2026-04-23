@@ -22,6 +22,30 @@ export class OspQrController {
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @Get('operator-access/recent')
+  getRecentOperatorAccess(
+    @Req() req: any,
+    @Query('activityInstanceId') activityInstanceId?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.ospQrService.getRecentOperatorAccess(req.user, {
+      activityInstanceId,
+      limit: limit ? Number(limit) : 15,
+    });
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @Post('operator-access/scan')
+  operatorAccessScan(
+    @Req() req: any,
+    @Body() body: { qrToken: string; activityInstanceId: string; accessChannel: string },
+  ) {
+    return this.ospQrService.operatorAccessScan(req.user, body);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Post('checkpoint/ingress-scan')
   ingressScan(

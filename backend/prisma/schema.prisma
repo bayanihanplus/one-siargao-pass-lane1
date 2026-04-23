@@ -581,3 +581,41 @@ model QrEvent {
   reasonMessage       String?
   createdAt           DateTime @default(now())
 }
+
+
+enum OperatorAccessStatus {
+  BLOCKED
+  ALLOWED
+  CHECKED_IN
+  IN_SERVICE
+  COMPLETED
+  NO_SHOW
+  CANCELLED
+}
+
+model OperatorAccessRecord {
+  id                  String               @id @default(cuid())
+  travelerId          String
+  tripId              String
+  bookingId           String?
+  manifestId          String?
+  manifestMemberId    String?
+  operatorUserId      String
+  activityTemplateId  String
+  activityInstanceId  String
+  accessChannel       String
+  accessStatus        OperatorAccessStatus
+  sourceQrEventId     String
+  scannedQrCredentialId String?
+  scannedByUserId     String
+  scannedByRole       String
+  reasonCode          String?
+  reasonMessage       String?
+  occurredAt          DateTime
+  completedAt         DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  @@index([operatorUserId, activityInstanceId, occurredAt])
+  @@index([travelerId, activityInstanceId, occurredAt])
+}
