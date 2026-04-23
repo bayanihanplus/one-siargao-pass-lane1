@@ -240,6 +240,9 @@ export default async function TravelerTripDetailPage({
               value={trip.registrationStatus}
             />
             <KeyValue label="Clearance Status" value={trip.clearanceStatus} />
+            <KeyValue label="Manifest Listed" value={trip.manifestReadiness?.isManifestListed ? "YES" : "NO"} />
+            <KeyValue label="Manifest Status" value={trip.manifestReadiness?.latestManifestStatus} />
+            <KeyValue label="Manifest Ref" value={trip.manifestReadiness?.latestManifestReference} />
             <KeyValue label="Arrival Date" value={trip.arrivalDate} />
             <KeyValue label="Departure Date" value={trip.departureDate} />
             <KeyValue label="Origin" value={trip.originLocation} />

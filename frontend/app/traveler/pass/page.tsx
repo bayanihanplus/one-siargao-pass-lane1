@@ -167,6 +167,9 @@ export default async function TravelerPassPage() {
             <KeyValue label="Trip Status" value={trip.tripStatus} />
             <KeyValue label="Registration Status" value={trip.registrationStatus} />
             <KeyValue label="Clearance Status" value={trip.clearanceStatus} />
+            <KeyValue label="Manifest Listed" value={trip.manifestReadiness?.isManifestListed ? "YES" : "NO"} />
+            <KeyValue label="Manifest Status" value={trip.manifestReadiness?.latestManifestStatus} />
+            <KeyValue label="Manifest Ref" value={trip.manifestReadiness?.latestManifestReference} />
             <KeyValue label="Payment State" value={trip.currentPaymentState?.state} />
             <KeyValue label="Has Issued Pass" value={trip.pass ? "YES" : "NO"} />
             <KeyValue label="Pass Status" value={trip.pass?.passStatus} />
