@@ -1,4 +1,4 @@
-import { getCurrentUser } from "../src/lib/server-auth";
+import { getCurrentUser, requireAccessToken } from "../src/lib/server-auth";
 
 function Section(props: { title: string; children: any }) {
   return (
@@ -32,6 +32,54 @@ function isOperatorRole(role: string | null | undefined) {
   return ["OPERATOR_OWNER", "OPERATOR_MANAGER", "OPERATOR_STAFF"].includes(role || "");
 }
 
+async function getTravelerTrips() {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+
+  try {
+    const token = await requireAccessToken();
+
+    const res = await fetch(`${baseUrl}/auth/me`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      return { rows: [], error: `Failed to resolve current traveler: HTTP ${res.status}` };
+    }
+
+    const me = await res.json();
+    const travelerUserId = me?.id;
+
+    if (!travelerUserId) {
+      return { rows: [], error: "Current traveler id missing" };
+    }
+
+    const tripsRes = await fetch(`${baseUrl}/trips`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!tripsRes.ok) {
+      return { rows: [], error: `Failed to load traveler trips: HTTP ${tripsRes.status}` };
+    }
+
+    const rows = await tripsRes.json();
+    return { rows: Array.isArray(rows) ? rows : [], error: null };
+  } catch (error: any) {
+    return {
+      rows: [],
+      error: error?.message || "Unknown traveler trip load failure",
+    };
+  }
+}
+
 export default async function HomePage() {
   const user = await getCurrentUser();
 
@@ -54,6 +102,12 @@ export default async function HomePage() {
       </main>
     );
   }
+
+  const travelerTrips =
+    user.primaryRole === "TRAVELER" ? await getTravelerTrips() : { rows: [], error: null };
+
+  const latestTravelerTrip =
+    travelerTrips.rows.length > 0 ? travelerTrips.rows[0] : null;
 
   return (
     <main style={{ maxWidth: 960, margin: "0 auto", padding: 24 }}>
@@ -96,16 +150,29 @@ export default async function HomePage() {
       ) : null}
 
       {user.primaryRole === "TRAVELER" ? (
-        <Section title="Traveler Landing">
-          <LinkList
-            items={[
-              { href: "/traveler/pass", label: "Traveler Pass" },
-              { href: "/traveler/trips/cmo77w9sl0001tx4nohfhue9k", label: "Traveler Trip Detail" },
-              { href: "/dev", label: "Dev Route Index" },
-              { href: "/logout", label: "Logout" },
-            ]}
-          />
-        </Section>
+        <>
+          {travelerTrips.error ? (
+            <Section title="Traveler Trip Load Error">
+              <div>{travelerTrips.error}</div>
+            </Section>
+          ) : null}
+
+          <Section title="Traveler Landing">
+            <LinkList
+              items={[
+                { href: "/traveler/pass", label: "Traveler Pass" },
+                ...(latestTravelerTrip
+                  ? [{
+                      href: `/traveler/trips/${latestTravelerTrip.id}`,
+                      label: "Latest Traveler Trip Detail",
+                    }]
+                  : []),
+                { href: "/dev", label: "Dev Route Index" },
+                { href: "/logout", label: "Logout" },
+              ]}
+            />
+          </Section>
+        </>
       ) : null}
     </main>
   );
