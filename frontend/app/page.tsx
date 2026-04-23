@@ -35,13 +35,11 @@ function isOperatorRole(role: string | null | undefined) {
 async function getTravelerLatestTrip() {
   const baseUrl =
     process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
-  const tripId =
-    process.env.NEXT_PUBLIC_DEV_TRIP_ID || "cmo77j9oe0001nlduxl7ta5qp";
 
   try {
     const token = await requireAccessToken();
 
-    const res = await fetch(`${baseUrl}/trips/${tripId}`, {
+    const res = await fetch(`${baseUrl}/trips`, {
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
@@ -53,7 +51,9 @@ async function getTravelerLatestTrip() {
       return { trip: null, error: `Failed to load latest traveler trip: HTTP ${res.status}` };
     }
 
-    const trip = await res.json();
+    const rows = await res.json();
+    const trip = Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
+
     return { trip, error: null };
   } catch (error: any) {
     return {

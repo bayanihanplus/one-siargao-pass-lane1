@@ -2,13 +2,11 @@ import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth"
 
 async function getPassView() {
   const baseUrl = getApiBaseUrl();
-  const tripId =
-    process.env.NEXT_PUBLIC_DEV_TRIP_ID || "cmo77j9oe0001nlduxl7ta5qp";
 
   try {
     const token = await requireAccessToken();
 
-    const res = await fetch(`${baseUrl}/trips/${tripId}`, {
+    const listRes = await fetch(`${baseUrl}/trips`, {
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
@@ -16,14 +14,39 @@ async function getPassView() {
       },
     });
 
-    if (!res.ok) {
+    if (!listRes.ok) {
       return {
-        error: `Failed to load pass view: HTTP ${res.status}`,
+        error: `Failed to load traveler trips: HTTP ${listRes.status}`,
         trip: null,
       };
     }
 
-    const trip = await res.json();
+    const rows = await listRes.json();
+    const latestTrip = Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
+
+    if (!latestTrip?.id) {
+      return {
+        error: null,
+        trip: null,
+      };
+    }
+
+    const tripRes = await fetch(`${baseUrl}/trips/${latestTrip.id}`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!tripRes.ok) {
+      return {
+        error: `Failed to load pass view: HTTP ${tripRes.status}`,
+        trip: null,
+      };
+    }
+
+    const trip = await tripRes.json();
     return { trip, error: null };
   } catch (error: any) {
     return {
@@ -76,7 +99,7 @@ export default async function TravelerPassPage() {
           This page uses the authenticated session to load the traveler pass view.
         </p>
         <p style={{ marginBottom: 0 }}>
-          Trip selection for the pass view is still tied to the current traveler entry flow.
+          The pass view now follows the authenticated traveler's latest available trip.
         </p>
       </Section>
 
