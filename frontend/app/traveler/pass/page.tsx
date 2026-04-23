@@ -71,13 +71,12 @@ export default async function TravelerPassPage() {
         Dev-bridge pass viewer using the current trip contract.
       </p>
 
-      <Section title="Development Note">
+      <Section title="Pass Access Note">
         <p style={{ marginTop: 0 }}>
-          This page now reads the authenticated frontend session cookie, but
-          still uses a dev trip ID bridge until traveler trip selection is built.
+          This page uses the authenticated session to load the traveler pass view.
         </p>
         <p style={{ marginBottom: 0 }}>
-          This is the first traveler auth migration step. Trip selection remains out of scope here.
+          Trip selection for the pass view is still tied to the current traveler entry flow.
         </p>
       </Section>
 

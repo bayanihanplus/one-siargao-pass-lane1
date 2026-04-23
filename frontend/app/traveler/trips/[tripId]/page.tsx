@@ -143,18 +143,13 @@ export default async function TravelerTripDetailPage({
         booking/payment state, and dev-only companion add flow.
       </p>
 
-      <Section title="Development Note">
+      <Section title="Trip Access Note">
         <p style={{ marginTop: 0 }}>
-          This page now reads the authenticated frontend session cookie so we
-          can validate the trip contract without the seeded traveler login helper.
+          This page uses the authenticated session to load the selected traveler trip.
         </p>
-        <p style={{ marginBottom: 8 }}>
-          Traveler trip selection and trip discovery are still out of scope for this lane.
+        <p style={{ marginBottom: 0 }}>
+          Traveler trip selection remains controlled by the current role-aware entry flow.
         </p>
-        <KeyValue label="Session User ID" value={user?.id} />
-        <KeyValue label="Session User Email" value={user?.email} />
-        <KeyValue label="Session User Role" value={user?.primaryRole} />
-        <KeyValue label="Resolved Trip ID" value={tripId} />
       </Section>
 
       {error ? (
