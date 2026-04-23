@@ -240,11 +240,27 @@ export default async function TravelerPassPage() {
               <Section title="QR Credential">
                 {trip.pass?.qrCredential?.qrToken ? (
                   <div style={{ marginBottom: 16 }}>
-                    <QRCodeSVG
-                      value={trip.pass.qrCredential.qrToken}
-                      size={220}
-                      includeMargin={true}
-                    />
+                    <div
+                      style={{
+                        display: "inline-block",
+                        padding: 12,
+                        borderRadius: 12,
+                        background: "#ffffff",
+                        border: "1px solid #e5e7eb",
+                        opacity: passUsageWarnings.length > 0 ? 0.35 : 1,
+                      }}
+                    >
+                      <QRCodeSVG
+                        value={trip.pass.qrCredential.qrToken}
+                        size={220}
+                        includeMargin={true}
+                      />
+                    </div>
+                    {passUsageWarnings.length > 0 ? (
+                      <p style={{ marginTop: 12, marginBottom: 0, color: "#b45309", fontWeight: 600 }}>
+                        QR is on record but not ready for operational use yet.
+                      </p>
+                    ) : null}
                   </div>
                 ) : (
                   <p style={{ marginTop: 0 }}>QR token is not available for this pass yet.</p>
