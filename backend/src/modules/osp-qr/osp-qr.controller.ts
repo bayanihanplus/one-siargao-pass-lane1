@@ -37,6 +37,17 @@ export class OspQrController {
 
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @Post('operator-access/:id/status')
+  updateOperatorAccessStatus(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Body() body: { nextStatus: string },
+  ) {
+    return this.ospQrService.updateOperatorAccessStatus(req.user, id, body);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
   @Post('operator-access/scan')
   operatorAccessScan(
     @Req() req: any,

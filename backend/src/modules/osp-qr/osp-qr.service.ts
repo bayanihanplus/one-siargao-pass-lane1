@@ -269,6 +269,59 @@ export class OspQrService {
   }
 
 
+
+  async updateOperatorAccessStatus(
+    actor: any,
+    id: string,
+    body: { nextStatus: string },
+  ) {
+    const record = await this.prisma.operatorAccessRecord.findUnique({
+      where: { id },
+    });
+
+    if (!record) {
+      throw new NotFoundException('Operator access record not found');
+    }
+
+    if (actor.role !== 'ADMIN' && record.operatorUserId !== actor.id) {
+      throw new NotFoundException('Operator access record not found');
+    }
+
+    const nextStatusRaw = String(body.nextStatus || '').trim().toUpperCase();
+
+    if (!['IN_SERVICE', 'COMPLETED'].includes(nextStatusRaw)) {
+      throw new BadRequestException('Unsupported nextStatus');
+    }
+
+    const nextStatus = nextStatusRaw as 'IN_SERVICE' | 'COMPLETED';
+
+    if (nextStatus === 'IN_SERVICE' && record.accessStatus !== 'CHECKED_IN') {
+      throw new BadRequestException('Only CHECKED_IN records can move to IN_SERVICE');
+    }
+
+    if (nextStatus === 'COMPLETED' && record.accessStatus !== 'IN_SERVICE') {
+      throw new BadRequestException('Only IN_SERVICE records can move to COMPLETED');
+    }
+
+    const updated = await this.prisma.operatorAccessRecord.update({
+      where: { id },
+      data: {
+        accessStatus: nextStatus,
+        completedAt: nextStatus === 'COMPLETED' ? new Date() : record.completedAt,
+        updatedAt: new Date(),
+      },
+    });
+
+    return {
+      ok: true,
+      data: {
+        id: updated.id,
+        accessStatus: updated.accessStatus,
+        completedAt: updated.completedAt,
+      },
+    };
+  }
+
   async operatorAccessScan(
     actor: any,
     body: { qrToken: string; activityInstanceId: string; accessChannel: string },

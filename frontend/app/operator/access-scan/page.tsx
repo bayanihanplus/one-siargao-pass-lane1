@@ -140,6 +140,43 @@ async function getRecentOperatorAccess(activityInstanceId?: string): Promise<Ope
   return Array.isArray(json?.data) ? json.data : [];
 }
 
+async function updateOperatorAccessStatusAction(
+  formData: FormData,
+): Promise<{ ok: boolean; error?: string }> {
+  "use server";
+
+  const token = await requireAccessToken();
+  const recordId = String(formData.get("recordId") || "").trim();
+  const nextStatus = String(formData.get("nextStatus") || "").trim();
+  const activityInstanceId = String(formData.get("activityInstanceId") || "").trim();
+
+  if (!recordId) return { ok: false, error: "Record id is required." };
+  if (!nextStatus) return { ok: false, error: "Next status is required." };
+
+  const res = await fetch(`${getApiBaseUrl()}/osp-qr/operator-access/${recordId}/status`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    cache: "no-store",
+    body: JSON.stringify({
+      nextStatus,
+    }),
+  });
+
+  const json = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    return {
+      ok: false,
+      error: json?.message || "Failed to update operator access status.",
+    };
+  }
+
+  return { ok: true };
+}
+
 async function runOperatorAccessScan(
   formData: FormData,
 ): Promise<{ ok: boolean; error?: string; result?: OperatorAccessScanResult }> {
@@ -209,6 +246,23 @@ export default async function OperatorAccessScanPage({
   const instances = await getActivityInstances();
   const recentAccessRows = await getRecentOperatorAccess(activityInstanceId || undefined);
   const resultTone = getResultTone(outcome);
+
+  async function advanceLifecycleAction(formData: FormData) {
+    "use server";
+
+    const result = await updateOperatorAccessStatusAction(formData);
+    const qp = new URLSearchParams({
+      activityInstanceId: String(formData.get("activityInstanceId") || ""),
+      accessChannel: String(formData.get("accessChannel") || "OPERATOR_SITE"),
+    });
+
+    if (!result.ok) {
+      qp.set("error", result.error || "Failed to update operator access status.");
+    }
+
+    const { redirect } = await import("next/navigation");
+    redirect(`/operator/access-scan?${qp.toString()}`);
+  }
 
   async function scanAction(formData: FormData) {
     "use server";
@@ -527,8 +581,58 @@ export default async function OperatorAccessScanPage({
                     <div><strong>Scanned By Role:</strong> {row.scannedByRole || "—"}</div>
                     <div><strong>Channel:</strong> {row.accessChannel || "—"}</div>
                     <div><strong>Source QR Event:</strong> {row.sourceQrEventId || "—"}</div>
+                    <div><strong>Completed At:</strong> {formatDateTime(row.completedAt || null)}</div>
+                    <div><strong>Updated At:</strong> {formatDateTime(row.updatedAt || null)}</div>
                     <div style={{ gridColumn: "1 / -1" }}><strong>Record ID:</strong> {row.id}</div>
                   </div>
+
+                  {(row.accessStatus === "CHECKED_IN" || row.accessStatus === "IN_SERVICE") ? (
+                    <div style={{ marginTop: 12 }}>
+                      <form action={advanceLifecycleAction} style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                        <input type="hidden" name="recordId" value={row.id} />
+                        <input type="hidden" name="activityInstanceId" value={activityInstanceId} />
+                        <input type="hidden" name="accessChannel" value={accessChannel} />
+
+                        {row.accessStatus === "CHECKED_IN" ? (
+                          <button
+                            type="submit"
+                            name="nextStatus"
+                            value="IN_SERVICE"
+                            style={{
+                              padding: "10px 14px",
+                              borderRadius: 10,
+                              border: "none",
+                              background: "#1d4ed8",
+                              color: "#ffffff",
+                              fontWeight: 800,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Mark In Service
+                          </button>
+                        ) : null}
+
+                        {row.accessStatus === "IN_SERVICE" ? (
+                          <button
+                            type="submit"
+                            name="nextStatus"
+                            value="COMPLETED"
+                            style={{
+                              padding: "10px 14px",
+                              borderRadius: 10,
+                              border: "none",
+                              background: "#15803d",
+                              color: "#ffffff",
+                              fontWeight: 800,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Mark Completed
+                          </button>
+                        ) : null}
+                      </form>
+                    </div>
+                  ) : null}
                 </div>
               );
             })}
