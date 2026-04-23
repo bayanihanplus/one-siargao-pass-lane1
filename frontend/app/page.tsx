@@ -299,7 +299,14 @@ function getPassCardBadgeColor(trip: any) {
 }
 
 function getPassCardVerificationLabel(trip: any) {
-  return getTripPassIssued(trip) ? "VERIFIED" : "NOT ISSUED";
+  const passIssued = getTripPassIssued(trip);
+  const passStatus = String(getTripPassStatusRaw(trip) || "").toLowerCase();
+
+  if (passIssued && (passStatus === "active" || passStatus === "issued" || passStatus === "valid")) {
+    return "VERIFIED";
+  }
+
+  return "NOT ISSUED";
 }
 
 function PassCardQrShell() {
@@ -438,9 +445,11 @@ function getStatusRowTripDates(trip: any) {
 }
 
 function getStatusRowPassStatus(trip: any) {
+  const passIssued = getTripPassIssued(trip);
   const passStatus = getTripPassStatusRaw(trip);
-  if (passStatus) return normalizeLabel(passStatus);
-  return getTripPassIssued(trip) ? "Issued" : "Not Issued";
+
+  if (passIssued && passStatus) return normalizeLabel(passStatus);
+  return passIssued ? "Issued" : "Not Issued";
 }
 
 function getStatusRowClearanceStatus(trip: any) {
@@ -497,7 +506,7 @@ function getTravelerReassuranceMessage(trip: any) {
 
   if (hasTrip && !passIssued) {
     return {
-      message: "Your trip is on file. Complete the remaining requirements to activate your pass.",
+      message: "Your trip is on file. Complete the remaining requirements before your pass is issued.",
       color: "#b07d19",
     };
   }
