@@ -53,6 +53,7 @@ check_protected_route "Operator Manifests" "/operator/manifests" "/login?next=/o
 check_protected_route "Admin Activities" "/admin/activities" "/login?next=/admin/activities"
 check_protected_route "Admin Manifest Approvals" "/admin/manifest-approvals" "/login?next=/admin/manifest-approvals"
 check_protected_route "Admin Manifest History" "/admin/manifests/history" "/login?next=/admin/manifests/history"
+check_protected_route "Traveler Pass" "/traveler/pass" "/login?next=/traveler/pass"
 
 echo
 echo "ALL DEV SURFACE SMOKE CHECKS PASSED"
