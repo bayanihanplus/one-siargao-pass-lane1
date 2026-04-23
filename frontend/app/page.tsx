@@ -179,7 +179,7 @@ function getHeroState(trip: any) {
     return {
       pill: "REVIEW",
       travelerLabel: "Clearance In Review",
-      title: "Trip On File.\nAwaiting Review.",
+      title: "Trip Active.\nPass Ready.",
       body: "Access your trip status,\npass, clearance, and\npayment in one place.",
       pillBg: "#6f62d8",
     };
@@ -799,7 +799,7 @@ function TravelerShellFrame(props: {
             backgroundImage:
               'linear-gradient(90deg, rgba(5,39,82,0.99) 0%, rgba(6,59,108,0.97) 33%, rgba(7,92,140,0.58) 53%, rgba(7,110,164,0.12) 69%), url("/osp/osp-hero-map.png")',
             backgroundSize: "cover",
-            backgroundPosition: "44% center",
+            backgroundPosition: "58% center",
             backgroundRepeat: "no-repeat",
           }}
         >
