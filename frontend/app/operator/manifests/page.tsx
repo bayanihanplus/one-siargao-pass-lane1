@@ -1,3 +1,4 @@
+import OperatorShell from "../../../src/components/operator/OperatorShell";
 import { revalidatePath } from "next/cache";
 import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 
@@ -217,7 +218,7 @@ export default async function OperatorManifestsPage() {
   const { rows: instanceRows, error: instanceError } = await getActivityInstances();
 
   return (
-    <main style={{ maxWidth: 1040, margin: "0 auto", padding: 24 }}>
+    <OperatorShell currentPath="/operator/manifests" title="Manifests" subtitle="Review, generate, and submit manifests for activity departures.">
       <h1 style={{ marginBottom: 8 }}>Operator Manifests</h1>
       <p style={{ marginTop: 0, marginBottom: 24 }}>
         Dev-bridge operator view for manifest request history, approval status, and review outcomes.
@@ -415,6 +416,6 @@ export default async function OperatorManifestsPage() {
           </div>
         </Section>
       )}
-    </main>
+    </OperatorShell>
   );
 }

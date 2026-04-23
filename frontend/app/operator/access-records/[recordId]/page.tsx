@@ -1,3 +1,4 @@
+import OperatorShell from "../../../../src/components/operator/OperatorShell";
 import { getApiBaseUrl, requireAccessToken } from "../../../../src/lib/server-auth";
 
 type OperatorAccessRecordRow = {
@@ -95,11 +96,14 @@ async function advanceLifecycleAction(formData: FormData) {
 
   const recordId = String(formData.get("recordId") || "").trim();
   const result = await updateOperatorAccessStatusAction(formData);
-
   const { redirect } = await import("next/navigation");
 
   if (!result.ok) {
-    redirect(`/operator/access-records/${recordId}?error=${encodeURIComponent(result.error || "Failed to update lifecycle.")}`);
+    redirect(
+      `/operator/access-records/${recordId}?error=${encodeURIComponent(
+        result.error || "Failed to update lifecycle.",
+      )}`,
+    );
   }
 
   redirect(`/operator/access-records/${recordId}`);
@@ -120,49 +124,67 @@ export default async function OperatorAccessRecordDetailPage({
 
   if (!row) {
     return (
-      <main style={{ maxWidth: 960, margin: "0 auto", padding: 24 }}>
-        <h1>Operator Access Record</h1>
-        <p>Record not found.</p>
-        <a href="/operator/access-scan">← Back to Operator Access Scan</a>
-      </main>
+      <OperatorShell
+        currentPath="/operator/records"
+        title="Access Record"
+        subtitle="Review one attendance/access record and manage its lifecycle safely."
+      >
+        <section
+          style={{
+            border: "1px solid #e2e8f0",
+            borderRadius: 20,
+            background: "#fff",
+            padding: 22,
+            boxShadow: "0 8px 24px rgba(15,23,42,0.05)",
+          }}
+        >
+          <h2 style={{ marginTop: 0 }}>Record not found</h2>
+          <p style={{ color: "#475569" }}>
+            The requested operator access record could not be loaded.
+          </p>
+          <a
+            href="http://localhost:3002/operator/access-scan"
+            style={{ textDecoration: "none", fontWeight: 800, color: "#0f172a" }}
+          >
+            http://localhost:3002/operator/access-scan
+          </a>
+        </section>
+      </OperatorShell>
     );
   }
 
   return (
-    <main style={{ maxWidth: 960, margin: "0 auto", padding: 24 }}>
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
-        <a href="/operator/access-scan" style={{ textDecoration: "none" }}>← Operator Access Scan</a>
-        <a href="/operator/activities" style={{ textDecoration: "none" }}>Operator Activities</a>
-        <a href="/operator/manifests" style={{ textDecoration: "none" }}>Operator Manifests</a>
-      </div>
-
-      <h1 style={{ marginBottom: 8 }}>Operator Access Record</h1>
-      <p style={{ marginTop: 0, marginBottom: 24 }}>
-        Isolated lifecycle management surface for a single attendance/access record.
-      </p>
-
+    <OperatorShell
+      currentPath="/operator/records"
+      title="Access Record"
+      subtitle="Review one attendance/access record and manage its lifecycle safely."
+    >
       {error ? (
-        <div style={{
-          marginBottom: 20,
-          padding: 14,
-          borderRadius: 12,
-          border: "1px solid #fca5a5",
-          background: "#fef2f2",
-          color: "#991b1b",
-          fontWeight: 700,
-        }}>
+        <div
+          style={{
+            marginBottom: 20,
+            padding: 14,
+            borderRadius: 12,
+            border: "1px solid #fca5a5",
+            background: "#fef2f2",
+            color: "#991b1b",
+            fontWeight: 700,
+          }}
+        >
           {error}
         </div>
       ) : null}
 
-      <section style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 20,
-        background: "#fff",
-        padding: 22,
-        boxShadow: "0 8px 24px rgba(15,23,42,0.05)",
-        marginBottom: 20,
-      }}>
+      <section
+        style={{
+          border: "1px solid #e5e7eb",
+          borderRadius: 20,
+          background: "#fff",
+          padding: 22,
+          boxShadow: "0 8px 24px rgba(15,23,42,0.05)",
+          marginBottom: 20,
+        }}
+      >
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 14 }}>
           <div><strong>Record ID</strong><div style={{ wordBreak: "break-all" }}>{row.id}</div></div>
           <div><strong>Status</strong><div>{row.accessStatus}</div></div>
@@ -183,13 +205,15 @@ export default async function OperatorAccessRecordDetailPage({
         </div>
       </section>
 
-      <section style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 20,
-        background: "#fff",
-        padding: 22,
-        boxShadow: "0 8px 24px rgba(15,23,42,0.05)",
-      }}>
+      <section
+        style={{
+          border: "1px solid #e5e7eb",
+          borderRadius: 20,
+          background: "#fff",
+          padding: 22,
+          boxShadow: "0 8px 24px rgba(15,23,42,0.05)",
+        }}
+      >
         <h2 style={{ marginTop: 0 }}>Lifecycle Actions</h2>
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
@@ -197,15 +221,17 @@ export default async function OperatorAccessRecordDetailPage({
             <form action={advanceLifecycleAction}>
               <input type="hidden" name="recordId" value={row.id} />
               <input type="hidden" name="nextStatus" value="IN_SERVICE" />
-              <button style={{
-                padding: "12px 18px",
-                borderRadius: 12,
-                border: "none",
-                background: "#0f766e",
-                color: "#fff",
-                fontWeight: 800,
-                cursor: "pointer",
-              }}>
+              <button
+                style={{
+                  padding: "12px 18px",
+                  borderRadius: 12,
+                  border: "none",
+                  background: "#0f766e",
+                  color: "#fff",
+                  fontWeight: 800,
+                  cursor: "pointer",
+                }}
+              >
                 Move to IN_SERVICE
               </button>
             </form>
@@ -215,34 +241,38 @@ export default async function OperatorAccessRecordDetailPage({
             <form action={advanceLifecycleAction}>
               <input type="hidden" name="recordId" value={row.id} />
               <input type="hidden" name="nextStatus" value="COMPLETED" />
-              <button style={{
-                padding: "12px 18px",
-                borderRadius: 12,
-                border: "none",
-                background: "#166534",
-                color: "#fff",
-                fontWeight: 800,
-                cursor: "pointer",
-              }}>
+              <button
+                style={{
+                  padding: "12px 18px",
+                  borderRadius: 12,
+                  border: "none",
+                  background: "#166534",
+                  color: "#fff",
+                  fontWeight: 800,
+                  cursor: "pointer",
+                }}
+              >
                 Move to COMPLETED
               </button>
             </form>
           ) : null}
 
           {row.accessStatus === "COMPLETED" ? (
-            <div style={{
-              padding: "12px 18px",
-              borderRadius: 12,
-              background: "#ecfdf5",
-              border: "1px solid #86efac",
-              color: "#166534",
-              fontWeight: 800,
-            }}>
+            <div
+              style={{
+                padding: "12px 18px",
+                borderRadius: 12,
+                background: "#ecfdf5",
+                border: "1px solid #86efac",
+                color: "#166534",
+                fontWeight: 800,
+              }}
+            >
               Record already completed
             </div>
           ) : null}
         </div>
       </section>
-    </main>
+    </OperatorShell>
   );
 }

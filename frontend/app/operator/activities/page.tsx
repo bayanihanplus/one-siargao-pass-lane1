@@ -1,3 +1,4 @@
+import OperatorShell from "../../../src/components/operator/OperatorShell";
 import { revalidatePath } from "next/cache";
 import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 
@@ -245,7 +246,7 @@ export default async function OperatorActivitiesPage() {
   const { rows: templateRows, error: templateError } = await getOperatorActivityTemplates();
 
   return (
-    <main style={{ maxWidth: 1040, margin: "0 auto", padding: 24 }}>
+    <OperatorShell currentPath="/operator/activities" title="Activities" subtitle="View and manage your scheduled activity instances.">
       <h1 style={{ marginBottom: 8 }}>Operator Activities</h1>
       <p style={{ marginTop: 0, marginBottom: 24 }}>
         Dev-bridge operator view for recent activity instances and manifest-relevant status.
@@ -518,6 +519,6 @@ export default async function OperatorActivitiesPage() {
           </div>
         </Section>
       )}
-    </main>
+    </OperatorShell>
   );
 }

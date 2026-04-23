@@ -130,9 +130,19 @@ export class ManifestsService {
                   scheduledDate: row.manifest.activityInstance.scheduledDate,
                   startTime: row.manifest.activityInstance.startTime,
                   endTime: row.manifest.activityInstance.endTime,
+                  capacity: row.manifest.activityInstance.capacity,
+                  bookedCount: row.manifest.activityInstance.bookedCount,
                   instanceStatus: row.manifest.activityInstance.instanceStatus,
                   createdAt: row.manifest.activityInstance.createdAt,
                   updatedAt: row.manifest.activityInstance.updatedAt,
+                  activityTemplate: row.manifest.activityInstance.activityTemplate
+                    ? {
+                        id: row.manifest.activityInstance.activityTemplate.id,
+                        title: row.manifest.activityInstance.activityTemplate.title,
+                        requiresGuide: row.manifest.activityInstance.activityTemplate.requiresGuide,
+                        requiresManifest: row.manifest.activityInstance.activityTemplate.requiresManifest,
+                      }
+                    : null,
                 }
               : null,
             members: row.manifest.members.map((member: any) => ({
@@ -174,7 +184,7 @@ export class ManifestsService {
         manifest: {
           include: {
             members: true,
-            activityInstance: true,
+            activityInstance: { include: { activityTemplate: true } },
           },
         },
       },
@@ -206,7 +216,7 @@ export class ManifestsService {
         manifest: {
           include: {
             members: true,
-            activityInstance: true,
+            activityInstance: { include: { activityTemplate: true } },
           },
         },
       },

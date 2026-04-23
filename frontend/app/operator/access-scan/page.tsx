@@ -1,3 +1,4 @@
+import OperatorShell from "../../../src/components/operator/OperatorShell";
 import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 
 type ActivityInstanceRow = {
@@ -240,26 +241,11 @@ export default async function OperatorAccessScanPage({
   }
 
   return (
-    <main style={{ maxWidth: 1040, margin: "0 auto", padding: 24 }}>
+    <OperatorShell currentPath="/operator/access-scan" title="Access Scan" subtitle="Scan traveler QR codes for live activity access and attendance.">
       <h1 style={{ marginBottom: 8 }}>Operator Access Scan</h1>
       <p style={{ marginTop: 0, marginBottom: 24 }}>
         Rapid operator-side QR validation and attendance/access bridge for live activity operations.
       </p>
-
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 12,
-          marginBottom: 16,
-        }}
-      >
-        <a href="/" style={{ textDecoration: "none" }}>← Dev Entry</a>
-        <a href="/operator/activities" style={{ textDecoration: "none" }}>Operator Activities</a>
-        <a href="/operator/manifests" style={{ textDecoration: "none" }}>Operator Manifests</a>
-        <a href="/operator/access-scan" style={{ textDecoration: "none", fontWeight: 700 }}>Operator Access Scan</a>
-        <a href="/logout" style={{ textDecoration: "none" }}>Logout</a>
-      </div>
 
       <section
         style={{
@@ -572,6 +558,6 @@ export default async function OperatorAccessScanPage({
           </div>
         )}
       </section>
-    </main>
+    </OperatorShell>
   );
 }
