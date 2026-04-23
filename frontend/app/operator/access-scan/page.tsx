@@ -548,6 +548,24 @@ export default async function OperatorAccessScanPage({
                     <div><strong>Updated At:</strong> {formatDateTime(row.updatedAt || null)}</div>
                     <div style={{ gridColumn: "1 / -1" }}><strong>Record ID:</strong> {row.id}</div>
                   </div>
+
+                  <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    <a
+                      href={`/operator/access-records/${row.id}`}
+                      style={{
+                        display: "inline-block",
+                        textDecoration: "none",
+                        padding: "10px 12px",
+                        borderRadius: 10,
+                        background: "#0f172a",
+                        color: "#ffffff",
+                        fontSize: 13,
+                        fontWeight: 800,
+                      }}
+                    >
+                      Open record
+                    </a>
+                  </div>
                 </div>
               );
             })}
