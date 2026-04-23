@@ -113,6 +113,12 @@ export class TripsService {
             },
           },
         },
+        manifestMembers: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            manifest: true,
+          },
+        },
         clearanceHistory: true,
       },
     });
@@ -144,6 +150,9 @@ export class TripsService {
       (a, b) => new Date(b!.createdAt).getTime() - new Date(a!.createdAt).getTime(),
     )[0] ?? null;
 
+    const manifestMembers = trip.manifestMembers ?? [];
+    const latestManifestMember = manifestMembers[0] ?? null;
+
     return {
       id: trip.id,
       travelerUserId: trip.travelerUserId,
@@ -159,6 +168,14 @@ export class TripsService {
       updatedAt: trip.updatedAt,
       registration: trip.registration,
       members: trip.members,
+      manifestReadiness: {
+        isManifestListed: manifestMembers.length > 0,
+        manifestMembershipCount: manifestMembers.length,
+        latestManifestMemberStatus: latestManifestMember?.memberStatus ?? null,
+        latestManifestStatus: latestManifestMember?.manifest?.manifestStatus ?? null,
+        latestManifestReference: latestManifestMember?.manifest?.manifestReference ?? null,
+        latestManifestId: latestManifestMember?.manifest?.id ?? null,
+      },
       bookingSummary: {
         totalLinkedBookings: linkedBookings.length,
         paidBookings: paidBookings.length,
