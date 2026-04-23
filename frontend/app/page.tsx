@@ -166,6 +166,16 @@ function getHeroState(trip: any) {
     };
   }
 
+  if (hasTrip && clearanceStatus === "denied") {
+    return {
+      pill: "DENIED",
+      travelerLabel: "Clearance Blocked",
+      title: "Trip On File.\nClearance Denied.",
+      body: "Your trip is on file, but clearance was denied. Review your latest trip status before proceeding.",
+      pillBg: "#dc2626",
+    };
+  }
+
   if (hasTrip && clearanceStatus && clearanceStatus !== "approved") {
     return {
       pill: "PENDING",
@@ -520,6 +530,13 @@ function getTravelerReassuranceMessage(trip: any) {
     return {
       message: "Your trip is on file. Complete the remaining requirements before your pass is issued.",
       color: "#b07d19",
+    };
+  }
+
+  if (hasTrip && clearanceStatus === "denied") {
+    return {
+      message: "Clearance was denied. Review your trip details and wait for the next required action before proceeding.",
+      color: "#dc2626",
     };
   }
 
