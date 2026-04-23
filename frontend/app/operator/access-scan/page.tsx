@@ -19,6 +19,11 @@ type OperatorAccessScanResult = {
   qrEventId?: string;
   operatorAccessRecordId?: string;
   accessStatus?: string;
+  pax?: {
+    expected?: number;
+    scanned?: number;
+    remaining?: number;
+  } | null;
   traveler?: {
     travelerId?: string;
     tripId?: string;
@@ -205,6 +210,9 @@ export default async function OperatorAccessScanPage({
   const travelerId = typeof params.travelerId === "string" ? params.travelerId : "";
   const tripId = typeof params.tripId === "string" ? params.tripId : "";
   const activityTitle = typeof params.activityTitle === "string" ? params.activityTitle : "";
+  const expectedPax = typeof params.expectedPax === "string" ? params.expectedPax : "";
+  const scannedPax = typeof params.scannedPax === "string" ? params.scannedPax : "";
+  const remainingPax = typeof params.remainingPax === "string" ? params.remainingPax : "";
   const error = typeof params.error === "string" ? params.error : "";
 
   const instances = await getActivityInstances();
@@ -234,6 +242,9 @@ export default async function OperatorAccessScanPage({
       qp.set("travelerId", result.result?.traveler?.travelerId || "");
       qp.set("tripId", result.result?.traveler?.tripId || "");
       qp.set("activityTitle", result.result?.activity?.title || "");
+      qp.set("expectedPax", String(result.result?.pax?.expected ?? ""));
+      qp.set("scannedPax", String(result.result?.pax?.scanned ?? ""));
+      qp.set("remainingPax", String(result.result?.pax?.remaining ?? ""));
     }
 
     const { redirect } = await import("next/navigation");
@@ -428,6 +439,18 @@ export default async function OperatorAccessScanPage({
             <div style={{ background: "#ffffffaa", borderRadius: 14, padding: 14 }}>
               <div style={{ fontSize: 12, color: "#64748b", fontWeight: 700, marginBottom: 6 }}>Activity</div>
               <div style={{ fontSize: 18, fontWeight: 800 }}>{activityTitle || activityInstanceId || "—"}</div>
+            </div>
+            <div style={{ background: "#ffffffaa", borderRadius: 14, padding: 14 }}>
+              <div style={{ fontSize: 12, color: "#64748b", fontWeight: 700, marginBottom: 6 }}>Expected Pax</div>
+              <div style={{ fontSize: 24, fontWeight: 900 }}>{expectedPax || "—"}</div>
+            </div>
+            <div style={{ background: "#ffffffaa", borderRadius: 14, padding: 14 }}>
+              <div style={{ fontSize: 12, color: "#64748b", fontWeight: 700, marginBottom: 6 }}>Scanned Pax</div>
+              <div style={{ fontSize: 24, fontWeight: 900 }}>{scannedPax || "—"}</div>
+            </div>
+            <div style={{ background: "#ffffffaa", borderRadius: 14, padding: 14 }}>
+              <div style={{ fontSize: 12, color: "#64748b", fontWeight: 700, marginBottom: 6 }}>Remaining Pax</div>
+              <div style={{ fontSize: 24, fontWeight: 900 }}>{remainingPax || "—"}</div>
             </div>
             <div style={{ background: "#ffffffaa", borderRadius: 14, padding: 14 }}>
               <div style={{ fontSize: 12, color: "#64748b", fontWeight: 700, marginBottom: 6 }}>Reason Code</div>

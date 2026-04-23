@@ -413,6 +413,59 @@ export class OspQrService {
       throw new NotFoundException('Activity instance not found');
     }
 
+    const approvedManifest = await this.prisma.manifest.findFirst({
+      where: {
+        activityInstanceId: activityInstance.id,
+        manifestStatus: 'APPROVED',
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
+
+    if (!approvedManifest) {
+      const qrEvent = await this.createQrEvent({
+        eventType: 'OPERATOR_ACCESS_SCAN',
+        contextType: 'OPERATOR_ACCESS',
+        contextReferenceId: body.activityInstanceId,
+        scannerActorId: actor.id,
+        scannerActorRole: actor.role,
+        outcome: 'BLOCKED',
+        reasonCode: 'MANIFEST_NOT_APPROVED',
+        reasonMessage: 'Activity manifest is not approved yet.',
+      });
+
+      const blockedRecord = await this.prisma.operatorAccessRecord.create({
+        data: {
+          travelerId: 'UNKNOWN_TRAVELER',
+          tripId: 'UNKNOWN_TRIP',
+          operatorUserId,
+          activityTemplateId: activityInstance.activityTemplateId,
+          activityInstanceId: activityInstance.id,
+          accessChannel: body.accessChannel,
+          accessStatus: 'BLOCKED',
+          sourceQrEventId: qrEvent.id,
+          scannedByUserId: actor.id,
+          scannedByRole: actor.role,
+          reasonCode: 'MANIFEST_NOT_APPROVED',
+          reasonMessage: 'Activity manifest is not approved yet.',
+          occurredAt: new Date(),
+        },
+      });
+
+      return {
+        ok: true,
+        data: {
+          outcome: 'BLOCKED',
+          reasonCode: 'MANIFEST_NOT_APPROVED',
+          reasonMessage: 'Activity manifest is not approved yet.',
+          qrEventId: qrEvent.id,
+          operatorAccessRecordId: blockedRecord.id,
+          accessStatus: blockedRecord.accessStatus,
+        },
+      };
+    }
+
     const trip = await this.getTripByQrToken(body.qrToken);
 
     if (!trip) {
