@@ -1,48 +1,28 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../../src/lib/server-auth";
 
 type TripPageProps = {
-  params: {
+  params: Promise<{
     tripId: string;
-  };
-  searchParams?: {
+  }>;
+  searchParams?: Promise<{
     added?: string;
     error?: string;
-  };
+  }>;
 };
 
 type TripResponse = any;
 
-async function getDevTravelerToken(baseUrl: string) {
-  const res = await fetch(`${baseUrl}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    cache: "no-store",
-    body: JSON.stringify({
-      email: "traveler1@osp.local",
-      password: "Password123!",
-    }),
-  });
-
-  if (!res.ok) {
-    throw new Error(`Dev login failed: HTTP ${res.status}`);
-  }
-
-  const json = await res.json();
-  return json.accessToken as string;
-}
 
 async function getTrip(tripId: string): Promise<{
   error: string | null;
   trip: TripResponse | null;
 }> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+  const baseUrl = getApiBaseUrl();
 
   try {
-    const token = await getDevTravelerToken(baseUrl);
+    const token = await requireAccessToken();
 
     const res = await fetch(`${baseUrl}/trips/${tripId}`, {
       cache: "no-store",
@@ -85,7 +65,7 @@ async function addCompanion(formData: FormData) {
     return;
   }
 
-  const token = await getDevTravelerToken(baseUrl);
+  const token = await requireAccessToken();
 
   const body: Record<string, any> = {
     memberType: "COMPANION",
@@ -146,7 +126,14 @@ function KeyValue(props: { label: string; value: any }) {
 export default async function TravelerTripDetailPage({
   params,
 }: TripPageProps) {
-  const { trip, error } = await getTrip(params.tripId);
+  const { tripId } = await params;
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect(`/login?next=/traveler/trips/${tripId}`);
+  }
+
+  const { trip, error } = await getTrip(tripId);
 
   return (
     <main style={{ maxWidth: 920, margin: "0 auto", padding: 24 }}>
@@ -158,13 +145,16 @@ export default async function TravelerTripDetailPage({
 
       <Section title="Development Note">
         <p style={{ marginTop: 0 }}>
-          This page is using a temporary server-side dev login helper with the
-          seeded traveler account so we can validate the trip contract without
-          waiting for the full frontend auth/session layer.
+          This page now reads the authenticated frontend session cookie so we
+          can validate the trip contract without the seeded traveler login helper.
         </p>
-        <p style={{ marginBottom: 0 }}>
-          Replace this with the real authenticated session wiring later.
+        <p style={{ marginBottom: 8 }}>
+          Traveler trip selection and trip discovery are still out of scope for this lane.
         </p>
+        <KeyValue label="Session User ID" value={user?.id} />
+        <KeyValue label="Session User Email" value={user?.email} />
+        <KeyValue label="Session User Role" value={user?.primaryRole} />
+        <KeyValue label="Resolved Trip ID" value={tripId} />
       </Section>
 
       {error ? (
