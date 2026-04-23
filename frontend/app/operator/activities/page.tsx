@@ -1,524 +1,230 @@
 import OperatorShell from "../../../src/components/operator/OperatorShell";
-import { revalidatePath } from "next/cache";
 import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 
-function getBaseUrl() {
-  return getApiBaseUrl();
+async function safeJson(url: string, token: string, fallback: any) {
+  try {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+    if (!res.ok) return fallback;
+    return await res.json().catch(() => fallback);
+  } catch {
+    return fallback;
+  }
 }
 
-async function createActivityTemplateAction(formData: FormData) {
-  "use server";
-
-  const title = String(formData.get("title") || "").trim();
-  const description = String(formData.get("description") || "").trim();
-  const meetingPointText = String(formData.get("meetingPointText") || "").trim();
-  const requiresManifest = formData.get("requiresManifest") === "on";
-  const requiresGuide = formData.get("requiresGuide") === "on";
-
-  if (!title) {
-    throw new Error("Missing activity template title");
-  }
-
-  const baseUrl = getBaseUrl();
+async function getData() {
   const token = await requireAccessToken();
+  const baseUrl = getApiBaseUrl();
 
-  const res = await fetch(`${baseUrl}/activities`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
-    body: JSON.stringify({
-      title,
-      description: description || undefined,
-      meetingPointText: meetingPointText || undefined,
-      requiresManifest,
-      requiresGuide,
-    }),
-  });
+  const [instances, manifests] = await Promise.all([
+    safeJson(`${baseUrl}/activities/instances`, token, []),
+    safeJson(`${baseUrl}/manifests/history`, token, []),
+  ]);
 
-  if (!res.ok) {
-    let detail = `HTTP ${res.status}`;
-    try {
-      const json = await res.json();
-      detail = json?.message || json?.error || detail;
-    } catch {}
-    throw new Error(`Failed to create activity template: ${detail}`);
-  }
-
-  revalidatePath("/operator/activities");
-}
-
-async function createActivityInstanceAction(formData: FormData) {
-  "use server";
-
-  const activityTemplateId = String(formData.get("activityTemplateId") || "").trim();
-  const scheduledDate = String(formData.get("scheduledDate") || "").trim();
-  const capacityRaw = String(formData.get("capacity") || "").trim();
-
-  if (!activityTemplateId) {
-    throw new Error("Missing activityTemplateId");
-  }
-
-  if (!scheduledDate) {
-    throw new Error("Missing scheduledDate");
-  }
-
-  const payload: any = {
-    activityTemplateId,
-    scheduledDate,
+  return {
+    instances: Array.isArray(instances) ? instances : [],
+    manifests: Array.isArray(manifests) ? manifests : [],
   };
+}
 
-  if (capacityRaw) {
-    const capacity = Number(capacityRaw);
-    if (!Number.isInteger(capacity)) {
-      throw new Error("Capacity must be an integer");
-    }
-    payload.capacity = capacity;
+function getManifest(row: any) {
+  return row?.manifest || row || null;
+}
+
+function getActivityIdFromManifest(row: any) {
+  const m = getManifest(row);
+  return m?.activityInstanceId || m?.activityInstance?.id || null;
+}
+
+function buildManifestByActivity(manifests: any[]) {
+  const grouped = new Map<string, any[]>();
+
+  for (const row of manifests) {
+    const activityId = getActivityIdFromManifest(row);
+    if (!activityId) continue;
+    const list = grouped.get(activityId) || [];
+    list.push(row);
+    grouped.set(activityId, list);
   }
 
-  const baseUrl = getBaseUrl();
-  const token = await requireAccessToken();
+  const result = new Map<string, any>();
 
-  const res = await fetch(`${baseUrl}/activities/instances`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
-    body: JSON.stringify(payload),
+  for (const [activityId, list] of grouped.entries()) {
+    const approved = list
+      .filter((row) => getManifest(row)?.manifestStatus === "APPROVED")
+      .sort((a, b) => new Date(getManifest(b)?.updatedAt || getManifest(b)?.createdAt || 0).getTime() - new Date(getManifest(a)?.updatedAt || getManifest(a)?.createdAt || 0).getTime());
+
+    const latest =
+      approved[0] ||
+      list.sort((a, b) => new Date(getManifest(b)?.updatedAt || getManifest(b)?.createdAt || 0).getTime() - new Date(getManifest(a)?.updatedAt || getManifest(a)?.createdAt || 0).getTime())[0];
+
+    result.set(activityId, latest);
+  }
+
+  return result;
+}
+
+function formatDate(value?: string | null) {
+  if (!value) return "—";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleString("en-PH", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
   });
-
-  if (!res.ok) {
-    let detail = `HTTP ${res.status}`;
-    try {
-      const json = await res.json();
-      detail = json?.message || json?.error || detail;
-    } catch {}
-    throw new Error(`Failed to create activity instance: ${detail}`);
-  }
-
-  revalidatePath("/operator/activities");
 }
 
-async function getOperatorActivityTemplates() {
-  const baseUrl = getBaseUrl();
-
-  try {
-    const token = await requireAccessToken();
-
-    const res = await fetch(`${baseUrl}/activities/templates`, {
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!res.ok) {
-      return {
-        error: `Failed to load activity templates: HTTP ${res.status}`,
-        rows: [],
-      };
-    }
-
-    const rows = await res.json();
-    return { rows, error: null };
-  } catch (error: any) {
-    return {
-      error: error?.message || "Unknown activity template load failure",
-      rows: [],
-    };
-  }
-}
-
-async function getOperatorActivityInstances() {
-  const baseUrl = getBaseUrl();
-
-  try {
-    const token = await requireAccessToken();
-
-    const res = await fetch(`${baseUrl}/activities/instances`, {
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!res.ok) {
-      return {
-        error: `Failed to load activity instances: HTTP ${res.status}`,
-        rows: [],
-      };
-    }
-
-    const rows = await res.json();
-    return { rows, error: null };
-  } catch (error: any) {
-    return {
-      error: error?.message || "Unknown activity instance load failure",
-      rows: [],
-    };
-  }
-}
-
-function Section(props: { title: string; children: any }) {
-  const { title, children } = props;
+function Badge(props: { label: string; tone: "ready" | "warn" | "bad" | "neutral" }) {
+  const tones = {
+    ready: { bg: "#ecfdf5", border: "#86efac", color: "#166534" },
+    warn: { bg: "#fff7ed", border: "#fdba74", color: "#9a3412" },
+    bad: { bg: "#fef2f2", border: "#fca5a5", color: "#991b1b" },
+    neutral: { bg: "#f8fafc", border: "#94a3b8", color: "#0f172a" },
+  }[props.tone];
 
   return (
-    <section
-      style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 16,
-      }}
-    >
-      <h2 style={{ marginTop: 0, marginBottom: 12 }}>{title}</h2>
-      {children}
-    </section>
-  );
-}
-
-function KeyValue(props: { label: string; value: any }) {
-  const { label, value } = props;
-
-  return (
-    <div style={{ marginBottom: 8 }}>
-      <strong>{label}:</strong> {value ?? "—"}
-    </div>
-  );
-}
-
-function StatusPill(props: { value: string }) {
-  return (
-    <span
-      style={{
-        display: "inline-block",
-        padding: "4px 10px",
-        borderRadius: 999,
-        border: "1px solid #d1d5db",
-        fontSize: 12,
-        fontWeight: 600,
-      }}
-    >
-      {props.value}
+    <span style={{
+      display: "inline-block",
+      padding: "7px 10px",
+      borderRadius: 999,
+      background: tones.bg,
+      border: `1px solid ${tones.border}`,
+      color: tones.color,
+      fontSize: 12,
+      fontWeight: 900,
+    }}>
+      {props.label}
     </span>
   );
 }
 
-function MetaRow(props: { children: any }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 12,
-        marginTop: 8,
-      }}
-    >
-      {props.children}
-    </div>
-  );
-}
-
-function MetaItem(props: { label: string; value: any }) {
-  return (
-    <div
-      style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 8,
-        padding: "8px 10px",
-        minWidth: 140,
-      }}
-    >
-      <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 4 }}>{props.label}</div>
-      <div style={{ fontWeight: 600 }}>{props.value ?? "—"}</div>
-    </div>
-  );
-}
-
 export default async function OperatorActivitiesPage() {
-  const { rows, error } = await getOperatorActivityInstances();
-  const { rows: templateRows, error: templateError } = await getOperatorActivityTemplates();
+  const { instances, manifests } = await getData();
+  const manifestByActivity = buildManifestByActivity(manifests);
 
   return (
-    <OperatorShell currentPath="/operator/activities" title="Activities" subtitle="View and manage your scheduled activity instances.">
-      <h1 style={{ marginBottom: 8 }}>Operator Activities</h1>
-      <p style={{ marginTop: 0, marginBottom: 24 }}>
-        Dev-bridge operator view for recent activity instances and manifest-relevant status.
-      </p>
-
-      <div
+    <OperatorShell
+      currentPath="/operator/activities"
+      title="Activities"
+      subtitle="Daily execution board for upcoming operations, manifest readiness, and scan routing."
+    >
+      <section
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 12,
-          marginBottom: 16,
+          border: "1px solid #e2e8f0",
+          borderRadius: 18,
+          background: "#ffffff",
+          padding: 22,
         }}
       >
-        <a href="/" style={{ textDecoration: "none" }}>← Dev Entry</a>
-        <a href="/operator/activities" style={{ textDecoration: "none" }}>Operator Activities</a>
-        <a href="/operator/manifests" style={{ textDecoration: "none" }}>Operator Manifests</a>
-        <a href="/logout" style={{ textDecoration: "none" }}>Logout</a>
-      </div>
+        <h2 style={{ marginTop: 0 }}>Upcoming Operations</h2>
 
-      <Section title="Development Note">
-        <p style={{ marginTop: 0 }}>
-          This page now reads the authenticated frontend session cookie and resolves
-          the current user through the backend auth contract.
-        </p>
-        <p style={{ marginBottom: 0 }}>
-          This lane keeps write flows intact, but now removes the seeded operator login helper from this page.
-        </p>
-      </Section>
+        {instances.length === 0 ? (
+          <p>No scheduled activities.</p>
+        ) : (
+          <div style={{ display: "grid", gap: 16 }}>
+            {instances.map((row: any) => {
+              const manifestRow = manifestByActivity.get(row.id);
+              const manifest = getManifest(manifestRow);
+              const manifestStatus = manifest?.manifestStatus || "NO MANIFEST";
+              const expectedPax = manifest?.totalMembers ?? "—";
+              const readyToScan = manifestStatus === "APPROVED";
 
-      <Section title="Create Activity Template">
-        <form action={createActivityTemplateAction}>
-          <label htmlFor="title" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
-            Title
-          </label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            placeholder="Enter template title..."
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #d1d5db",
-              marginBottom: 12,
-            }}
-          />
+              let tone: "ready" | "warn" | "bad" | "neutral" = "neutral";
+              if (manifestStatus === "APPROVED") tone = "ready";
+              else if (manifestStatus === "SUBMITTED" || manifestStatus === "DRAFT") tone = "warn";
+              else if (manifestStatus === "DENIED") tone = "bad";
 
-          <label htmlFor="description" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            placeholder="Optional description..."
-            rows={3}
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #d1d5db",
-              marginBottom: 12,
-            }}
-          />
-
-          <label htmlFor="meetingPointText" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
-            Meeting Point Text
-          </label>
-          <input
-            id="meetingPointText"
-            name="meetingPointText"
-            type="text"
-            placeholder="Optional meeting point..."
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #d1d5db",
-              marginBottom: 12,
-            }}
-          />
-
-          <label style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-            <input type="checkbox" name="requiresManifest" />
-            Requires Manifest
-          </label>
-
-          <label style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <input type="checkbox" name="requiresGuide" />
-            Requires Guide
-          </label>
-
-          <button type="submit" style={{ padding: "10px 14px" }}>
-            Create Activity Template
-          </button>
-        </form>
-      </Section>
-
-      <Section title="Create Activity Instance">
-        <form action={createActivityInstanceAction}>
-          <label htmlFor="activityTemplateId" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
-            Activity Template
-          </label>
-          <select
-            id="activityTemplateId"
-            name="activityTemplateId"
-            defaultValue=""
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #d1d5db",
-              marginBottom: 12,
-            }}
-          >
-            <option value="" disabled>
-              Select an activity template...
-            </option>
-            {templateRows.map((row: any) => (
-              <option key={row.id} value={row.id}>
-                {row.title} | manifest: {String(row.requiresManifest)} | guide: {String(row.requiresGuide)}
-              </option>
-            ))}
-          </select>
-
-          <label htmlFor="scheduledDate" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
-            Scheduled Date
-          </label>
-          <input
-            id="scheduledDate"
-            name="scheduledDate"
-            type="date"
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #d1d5db",
-              marginBottom: 12,
-            }}
-          />
-
-          <label htmlFor="capacity" style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
-            Capacity
-          </label>
-          <input
-            id="capacity"
-            name="capacity"
-            type="number"
-            placeholder="Optional capacity..."
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #d1d5db",
-              marginBottom: 12,
-            }}
-          />
-
-          <button type="submit" style={{ padding: "10px 14px" }}>
-            Create Activity Instance
-          </button>
-        </form>
-      </Section>
-
-      {templateError ? (
-        <Section title="Template Load Error">
-          <p style={{ margin: 0 }}>{templateError}</p>
-        </Section>
-      ) : null}
-
-      {error ? (
-        <Section title="Load Error">
-          <p style={{ margin: 0 }}>{error}</p>
-        </Section>
-      ) : null}
-
-      <Section title="Activity Summary">
-        <KeyValue label="Visible Activity Instances" value={rows.length} />
-        <KeyValue label="Selectable Activity Templates" value={templateRows.length} />
-      </Section>
-
-      {templateRows.length === 0 ? (
-        <Section title="No Activity Templates">
-          <p style={{ margin: 0 }}>
-            No operator-owned activity templates are currently available.
-          </p>
-        </Section>
-      ) : (
-        <Section title="Recent Activity Templates">
-          <div style={{ display: "grid", gap: 12 }}>
-            {templateRows.map((row: any) => (
-              <div
-                key={row.id}
-                style={{
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 10,
-                  padding: 14,
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
-                  <div>
-                    <div style={{ fontWeight: 700 }}>{row.title}</div>
-                    <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>{row.description || "No description"}</div>
+              return (
+                <div
+                  key={row.id}
+                  style={{
+                    border: "1px solid #e2e8f0",
+                    borderRadius: 16,
+                    padding: 18,
+                    background: "#ffffff",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                    <strong style={{ fontSize: 18 }}>
+                      {row.activityTemplate?.title || "Activity"}
+                    </strong>
+                    <Badge label={manifestStatus} tone={tone} />
                   </div>
-                  <div>
-                    <StatusPill value={row.requiresManifest ? "MANIFEST" : "NO MANIFEST"} />
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                      gap: 12,
+                      marginTop: 14,
+                      color: "#334155",
+                    }}
+                  >
+                    <div><strong>Departure</strong><br />{formatDate(row.scheduledDate)}</div>
+                    <div><strong>Capacity</strong><br />{row.capacity ?? "—"}</div>
+                    <div><strong>Booked</strong><br />{row.bookedCount ?? "—"}</div>
+                    <div><strong>Expected Pax</strong><br />{expectedPax}</div>
+                  </div>
+
+                  <div style={{ marginTop: 12, color: "#475569", fontSize: 14 }}>
+                    {readyToScan
+                      ? "Ready to scan. Manifest is approved."
+                      : "Not ready for scan. Manifest must be approved first."}
+                  </div>
+
+                  <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    <a
+                      href={`http://localhost:3001/operator/access-scan?activityInstanceId=${row.id}`}
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: 10,
+                        background: readyToScan ? "#0f172a" : "#64748b",
+                        color: "#ffffff",
+                        textDecoration: "none",
+                        fontWeight: 900,
+                      }}
+                    >
+                      Start Scan
+                    </a>
+
+                    <a
+                      href={`http://localhost:3001/operator/manifests?activityInstanceId=${row.id}`}
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: 10,
+                        border: "1px solid #334155",
+                        color: "#0f172a",
+                        textDecoration: "none",
+                        fontWeight: 900,
+                      }}
+                    >
+                      Manifests
+                    </a>
+
+                    <a
+                      href={`http://localhost:3001/operator/records?activityInstanceId=${row.id}`}
+                      style={{
+                        padding: "10px 12px",
+                        borderRadius: 10,
+                        border: "1px solid #334155",
+                        color: "#0f172a",
+                        textDecoration: "none",
+                        fontWeight: 900,
+                      }}
+                    >
+                      Records
+                    </a>
                   </div>
                 </div>
-
-                <MetaRow>
-                  <MetaItem label="Guide" value={row.requiresGuide ? "Required" : "Not required"} />
-                  <MetaItem label="Meeting Point" value={row.meetingPointText || "—"} />
-                  <MetaItem label="Public" value={row.isPubliclyVisible ? "Yes" : "No"} />
-                  <MetaItem label="Created" value={row.createdAt} />
-                </MetaRow>
-              </div>
-            ))}
+              );
+            })}
           </div>
-        </Section>
-      )}
-
-      {rows.length === 0 ? (
-        <Section title="No Activity Instances">
-          <p style={{ margin: 0 }}>
-            No operator-owned activity instances are currently available.
-          </p>
-        </Section>
-      ) : (
-        <Section title="Recent Activity Instances">
-          <div style={{ display: "grid", gap: 12 }}>
-            {rows.map((row: any) => (
-              <div
-                key={row.id}
-                style={{
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 10,
-                  padding: 14,
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
-                  <div>
-                    <div style={{ fontWeight: 700 }}>{row.activityTemplate?.title || row.activityTemplateId}</div>
-                    <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>
-                      {row.activityTemplate?.description || "No description"}
-                    </div>
-                  </div>
-                  <div>
-                    <StatusPill value={String(row.instanceStatus).toUpperCase()} />
-                  </div>
-                </div>
-
-                <MetaRow>
-                  <MetaItem label="Scheduled Date" value={row.scheduledDate} />
-                  <MetaItem label="Capacity" value={row.capacity ?? "—"} />
-                  <MetaItem label="Booked Count" value={row.bookedCount} />
-                  <MetaItem label="Requires Manifest" value={row.activityTemplate?.requiresManifest ? "Yes" : "No"} />
-                </MetaRow>
-
-                <div style={{ marginTop: 10, fontSize: 12, color: "#6b7280" }}>
-                  Instance ID: {row.id}
-                </div>
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
+        )}
+      </section>
     </OperatorShell>
   );
 }
