@@ -105,6 +105,10 @@ function getTripPaymentStateRaw(trip: any) {
   return trip?.currentPaymentState?.state ?? null;
 }
 
+function getTripRegistrationStatusRaw(trip: any) {
+  return trip?.registrationStatus ?? null;
+}
+
 function getTripArrivalDateRaw(trip: any) {
   return trip?.arrivalDate ?? null;
 }
@@ -156,23 +160,25 @@ function getHeroState(trip: any) {
     };
   }
 
+  const registrationStatus = String(getTripRegistrationStatusRaw(trip) || "").toLowerCase();
+
   if (hasTrip && !passIssued) {
+    if (!registrationStatus || registrationStatus === "incomplete" || registrationStatus === "rejected") {
+      return {
+        pill: "PENDING",
+        travelerLabel: "Traveler On File",
+        title: "Trip On File.\nRegistration Required.",
+        body: "Complete your traveler trip registration first so your pass can move forward.",
+        pillBg: "#d89a20",
+      };
+    }
+
     return {
       pill: "PENDING",
       travelerLabel: "Traveler On File",
       title: "Trip Found.\nPass Pending.",
-      body: "Access your trip status,\npass, clearance, and\npayment in one place.",
+      body: "Your registration is on file. Keep checking your latest trip status as your pass moves forward.",
       pillBg: "#d89a20",
-    };
-  }
-
-  if (hasTrip && clearanceStatus === "denied") {
-    return {
-      pill: "DENIED",
-      travelerLabel: "Clearance Blocked",
-      title: "Trip On File.\nClearance Denied.",
-      body: "Your trip is on file, but clearance was denied. Review your latest trip status before proceeding.",
-      pillBg: "#dc2626",
     };
   }
 
@@ -526,17 +532,19 @@ function getTravelerReassuranceMessage(trip: any) {
     };
   }
 
+  const registrationStatus = String(getTripRegistrationStatusRaw(trip) || "").toLowerCase();
+
   if (hasTrip && !passIssued) {
+    if (!registrationStatus || registrationStatus === "incomplete" || registrationStatus === "rejected") {
+      return {
+        message: "Complete your traveler registration first so your pass can move forward.",
+        color: "#b07d19",
+      };
+    }
+
     return {
       message: "Your trip is on file. Complete the remaining requirements before your pass is issued.",
       color: "#b07d19",
-    };
-  }
-
-  if (hasTrip && clearanceStatus === "denied") {
-    return {
-      message: "Clearance was denied. Review your trip details and wait for the next required action before proceeding.",
-      color: "#dc2626",
     };
   }
 
