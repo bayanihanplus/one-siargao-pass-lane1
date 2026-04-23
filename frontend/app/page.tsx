@@ -109,6 +109,10 @@ function getTripRegistrationStatusRaw(trip: any) {
   return trip?.registrationStatus ?? null;
 }
 
+function getTripManifestListedRaw(trip: any) {
+  return trip?.manifestReadiness?.isManifestListed ?? null;
+}
+
 function getTripArrivalDateRaw(trip: any) {
   return trip?.arrivalDate ?? null;
 }
@@ -161,6 +165,7 @@ function getHeroState(trip: any) {
   }
 
   const registrationStatus = String(getTripRegistrationStatusRaw(trip) || "").toLowerCase();
+  const isManifestListed = getTripManifestListedRaw(trip);
 
   if (hasTrip && !passIssued) {
     if (!registrationStatus || registrationStatus === "incomplete" || registrationStatus === "rejected") {
@@ -169,6 +174,16 @@ function getHeroState(trip: any) {
         travelerLabel: "Traveler On File",
         title: "Trip On File.\nRegistration Required.",
         body: "Complete your traveler trip registration first so your pass can move forward.",
+        pillBg: "#d89a20",
+      };
+    }
+
+    if (isManifestListed === false) {
+      return {
+        pill: "PENDING",
+        travelerLabel: "Traveler On File",
+        title: "Trip On File.\nManifest Listing Required.",
+        body: "Your registration is on file, but you are not yet listed in the manifest for this trip.",
         pillBg: "#d89a20",
       };
     }
@@ -533,11 +548,19 @@ function getTravelerReassuranceMessage(trip: any) {
   }
 
   const registrationStatus = String(getTripRegistrationStatusRaw(trip) || "").toLowerCase();
+  const isManifestListed = getTripManifestListedRaw(trip);
 
   if (hasTrip && !passIssued) {
     if (!registrationStatus || registrationStatus === "incomplete" || registrationStatus === "rejected") {
       return {
         message: "Complete your traveler registration first so your pass can move forward.",
+        color: "#b07d19",
+      };
+    }
+
+    if (isManifestListed === false) {
+      return {
+        message: "Your registration is on file, but you are not yet listed in the manifest for this trip.",
         color: "#b07d19",
       };
     }
