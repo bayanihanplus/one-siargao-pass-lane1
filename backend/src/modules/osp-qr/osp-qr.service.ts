@@ -249,6 +249,25 @@ export class OspQrService {
     };
   }
 
+  async getOperatorAccessRecord(actor: any, id: string) {
+    const row = await this.prisma.operatorAccessRecord.findUnique({
+      where: { id },
+    });
+
+    if (!row) {
+      throw new NotFoundException('Operator access record not found');
+    }
+
+    if (actor.role !== 'ADMIN' && row.operatorUserId !== actor.id) {
+      throw new NotFoundException('Operator access record not found');
+    }
+
+    return {
+      ok: true,
+      data: row,
+    };
+  }
+
   async getCheckpointEvents(limit = 15) {
     const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(50, Number(limit))) : 15;
 
