@@ -237,6 +237,7 @@ export class TripsService {
             qrCredential: trip.pass.qrCredential
               ? {
                   id: trip.pass.qrCredential.id,
+                  qrToken: trip.pass.qrCredential.qrToken,
                   qrVersion: trip.pass.qrCredential.qrVersion,
                   lastRegeneratedAt: trip.pass.qrCredential.lastRegeneratedAt,
                 }
