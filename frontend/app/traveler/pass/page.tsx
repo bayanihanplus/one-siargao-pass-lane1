@@ -1,5 +1,6 @@
 import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 import { getPreferredTravelerTrip } from "../../../src/lib/travelerTripSelection";
+import { QRCodeSVG } from "qrcode.react";
 
 async function getPassView() {
   const baseUrl = getApiBaseUrl();
@@ -237,6 +238,18 @@ export default async function TravelerPassPage() {
               </Section>
 
               <Section title="QR Credential">
+                {trip.pass?.qrCredential?.qrToken ? (
+                  <div style={{ marginBottom: 16 }}>
+                    <QRCodeSVG
+                      value={trip.pass.qrCredential.qrToken}
+                      size={220}
+                      includeMargin={true}
+                    />
+                  </div>
+                ) : (
+                  <p style={{ marginTop: 0 }}>QR token is not available for this pass yet.</p>
+                )}
+                <KeyValue label="QR Token" value={trip.pass?.qrCredential?.qrToken} />
                 <KeyValue label="QR Version" value={trip.pass?.qrCredential?.qrVersion} />
                 <KeyValue
                   label="Last Regenerated At"
