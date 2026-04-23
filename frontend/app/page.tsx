@@ -177,11 +177,11 @@ function getHeroState(trip: any) {
 
   if (hasTrip && clearanceStatus && clearanceStatus !== "approved") {
     return {
-      pill: "REVIEW",
-      travelerLabel: "Clearance In Review",
+      pill: "PENDING",
+      travelerLabel: "Traveler On File",
       title: "Trip Active.\nPass Ready.",
       body: "Access your trip status,\npass, clearance, and\npayment in one place.",
-      pillBg: "#6f62d8",
+      pillBg: "#d89a20",
     };
   }
 
