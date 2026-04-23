@@ -88,6 +88,12 @@ export function middleware(req: NextRequest) {
     }
   }
 
+  if (pathname.startsWith("/dev")) {
+    if (!isAdminRole(role)) {
+      return redirectToHome(req);
+    }
+  }
+
   if (pathname.startsWith("/traveler")) {
     if (!isTravelerRole(role)) {
       return redirectToHome(req);
@@ -101,6 +107,7 @@ export const config = {
   matcher: [
     "/",
     "/login",
+    "/dev/:path*",
     "/operator/:path*",
     "/admin/:path*",
     "/traveler/:path*",
