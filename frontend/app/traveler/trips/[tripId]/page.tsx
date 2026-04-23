@@ -95,6 +95,71 @@ async function addCompanion(formData: FormData) {
   redirect(`/traveler/trips/${tripId}`);
 }
 
+
+async function createPaymentIntentAction(formData: FormData) {
+  "use server";
+
+  const tripId = String(formData.get("tripId") || "");
+  const bookingId = String(formData.get("bookingId") || "");
+
+  if (!tripId || !bookingId) {
+    return;
+  }
+
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+  const token = await requireAccessToken();
+
+  const res = await fetch(`${baseUrl}/payments/intents`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+    body: JSON.stringify({ bookingId }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Create payment intent failed: HTTP ${res.status}`);
+  }
+
+  revalidatePath(`/traveler/trips/${tripId}`);
+  redirect(`/traveler/trips/${tripId}`);
+}
+
+async function confirmPaymentIntentAction(formData: FormData) {
+  "use server";
+
+  const tripId = String(formData.get("tripId") || "");
+  const intentId = String(formData.get("intentId") || "");
+
+  if (!tripId || !intentId) {
+    return;
+  }
+
+  const baseUrl =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+  const token = await requireAccessToken();
+
+  const res = await fetch(`${baseUrl}/payments/intents/${intentId}/confirm`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+    body: JSON.stringify({ eventKey: `traveler-confirm:${intentId}` }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Confirm payment intent failed: HTTP ${res.status}`);
+  }
+
+  revalidatePath(`/traveler/trips/${tripId}`);
+  redirect(`/traveler/trips/${tripId}`);
+}
+
 function Section(props: { title: string; children: any }) {
   const { title, children } = props;
 
@@ -334,6 +399,34 @@ export default async function TravelerTripDetailPage({
               label="Provider"
               value={trip.currentPaymentIntent?.provider}
             />
+          </Section>
+
+          <Section title="Payment Actions">
+            {!trip.currentBooking?.id ? (
+              <p style={{ margin: 0 }}>
+                No current booking is linked to this trip yet, so payment actions are unavailable.
+              </p>
+            ) : (
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <form action={createPaymentIntentAction}>
+                  <input type="hidden" name="tripId" value={trip.id} />
+                  <input type="hidden" name="bookingId" value={trip.currentBooking.id} />
+                  <button type="submit" style={{ padding: "10px 14px" }}>
+                    Create Payment Intent
+                  </button>
+                </form>
+
+                {trip.currentPaymentIntent?.id ? (
+                  <form action={confirmPaymentIntentAction}>
+                    <input type="hidden" name="tripId" value={trip.id} />
+                    <input type="hidden" name="intentId" value={trip.currentPaymentIntent.id} />
+                    <button type="submit" style={{ padding: "10px 14px" }}>
+                      Confirm Payment
+                    </button>
+                  </form>
+                ) : null}
+              </div>
+            )}
           </Section>
 
           <Section title="Pass">
