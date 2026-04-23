@@ -1,4 +1,50 @@
 import OperatorShell from "../../../src/components/operator/OperatorShell";
+import { revalidatePath } from "next/cache";
+import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
+
+async function getProfile() {
+  const token = await requireAccessToken();
+
+  const res = await fetch(`${getApiBaseUrl()}/profile`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: "no-store",
+  });
+
+  if (!res.ok) return null;
+  return await res.json().catch(() => null);
+}
+
+async function saveSettingsAction(formData: FormData) {
+  "use server";
+
+  const token = await requireAccessToken();
+
+  const payload = {
+    fullName: String(formData.get("fullName") || "").trim(),
+    displayName: String(formData.get("displayName") || "").trim(),
+    businessName: String(formData.get("businessName") || "").trim(),
+    operatorDisplayName: String(formData.get("operatorDisplayName") || "").trim(),
+    contactEmail: String(formData.get("contactEmail") || "").trim(),
+    contactMobile: String(formData.get("contactMobile") || "").trim(),
+    preferredLanguage: String(formData.get("preferredLanguage") || "en").trim(),
+  };
+
+  const res = await fetch(`${getApiBaseUrl()}/profile`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    throw new Error("Unable to save operator settings.");
+  }
+
+  revalidatePath("/operator/settings");
+}
 
 function Card(props: { title: string; subtitle?: string; children: any }) {
   return (
@@ -20,32 +66,15 @@ function Card(props: { title: string; subtitle?: string; children: any }) {
   );
 }
 
-function Row(props: { label: string; value: string }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        gap: 16,
-        borderBottom: "1px solid #e2e8f0",
-        padding: "12px 0",
-      }}
-    >
-      <strong>{props.label}</strong>
-      <span style={{ color: "#475569", textAlign: "right" }}>{props.value}</span>
-    </div>
-  );
-}
-
-
-function TextInput(props: { label: string; value: string; disabled?: boolean }) {
+function TextInput(props: { label: string; name: string; defaultValue?: string; disabled?: boolean }) {
   return (
     <label style={{ display: "grid", gap: 8 }}>
       <span style={{ fontWeight: 900 }}>{props.label}</span>
       <input
-        value={props.value}
+        name={props.name}
+        defaultValue={props.defaultValue || ""}
         disabled={props.disabled}
-        readOnly
+        readOnly={props.disabled}
         style={{
           width: "100%",
           boxSizing: "border-box",
@@ -61,24 +90,20 @@ function TextInput(props: { label: string; value: string; disabled?: boolean }) 
   );
 }
 
-function DisabledSaveButton() {
+function Row(props: { label: string; value: string }) {
   return (
-    <button
-      type="button"
-      disabled
+    <div
       style={{
-        padding: "12px 16px",
-        borderRadius: 10,
-        border: "1px solid #64748b",
-        background: "#64748b",
-        color: "#ffffff",
-        fontWeight: 900,
-        cursor: "not-allowed",
-        opacity: 0.9,
+        display: "flex",
+        justifyContent: "space-between",
+        gap: 16,
+        borderBottom: "1px solid #e2e8f0",
+        padding: "12px 0",
       }}
     >
-      Save Settings — Backend Storage Not Wired Yet
-    </button>
+      <strong>{props.label}</strong>
+      <span style={{ color: "#475569", textAlign: "right" }}>{props.value}</span>
+    </div>
   );
 }
 
@@ -102,62 +127,65 @@ function LinkButton(props: { href: string; children: any }) {
   );
 }
 
-export default function OperatorSettingsPage() {
+export default async function OperatorSettingsPage() {
+  const profile = await getProfile();
+  const operatorProfile = profile?.operatorProfile;
+
   return (
     <OperatorShell
       currentPath="/operator/settings"
       title="Settings"
-      subtitle="Operator workspace settings, readiness notes, support links, and future configuration areas."
+      subtitle="Operator workspace settings, contact details, readiness notes, and support links."
     >
       <div style={{ display: "grid", gap: 20 }}>
         <Card
           title="Workspace Profile"
-          subtitle="Editable workspace profile scaffold. Save is intentionally disabled until backend settings storage is wired."
+          subtitle="Editable operator profile stored through the existing profile backend."
         >
-          <div style={{ display: "grid", gap: 14 }}>
-            <TextInput label="Workspace Name" value="One Siargao Pass Operator Workspace" />
-            <TextInput label="Operator Contact Name" value="Not configured yet" />
-            <TextInput label="Primary Mobile Number" value="Not configured yet" />
-            <TextInput label="Primary Email" value="Not configured yet" />
-            <TextInput label="Meeting Point / Office Address" value="Not configured yet" />
-            <DisabledSaveButton />
-          </div>
+          <form action={saveSettingsAction} style={{ display: "grid", gap: 14 }}>
+            <TextInput label="Full Name" name="fullName" defaultValue={profile?.fullName || ""} />
+            <TextInput label="Display Name" name="displayName" defaultValue={profile?.displayName || ""} />
+            <TextInput label="Business Name" name="businessName" defaultValue={operatorProfile?.businessName || ""} />
+            <TextInput label="Operator Display Name" name="operatorDisplayName" defaultValue={operatorProfile?.displayName || ""} />
+            <TextInput label="Contact Email" name="contactEmail" defaultValue={operatorProfile?.contactEmail || profile?.email || ""} />
+            <TextInput label="Contact Mobile" name="contactMobile" defaultValue={operatorProfile?.contactMobile || profile?.mobileNumber || ""} />
+            <TextInput label="Preferred Language" name="preferredLanguage" defaultValue={profile?.preferredLanguage || "en"} />
+
+            <button
+              type="submit"
+              style={{
+                padding: "12px 16px",
+                borderRadius: 10,
+                border: "none",
+                background: "#0f172a",
+                color: "#ffffff",
+                fontWeight: 900,
+                cursor: "pointer",
+              }}
+            >
+              Save Settings
+            </button>
+          </form>
         </Card>
 
         <Card
           title="Operational Settings"
-          subtitle="Editable operational preference scaffold. Values shown here reflect current locked workflow rules."
+          subtitle="Locked operational rules currently enforced by the system."
         >
-          <div style={{ display: "grid", gap: 14 }}>
-            <TextInput label="Manifest Rule" value="Approved manifest required before scan" disabled />
-            <TextInput label="Pax Rule" value="Manifest pax is attendance truth for groups/families" disabled />
-            <TextInput label="Scan Enforcement" value="Approved manifest + pax guardrails enforced" disabled />
-            <TextInput label="Record Retention" value="Access records retained for audit review" disabled />
-            <DisabledSaveButton />
-          </div>
+          <Row label="Manifest Requirement" value="Approved manifest required before scan operations." />
+          <Row label="Pax Rule" value="Manifest pax count is the expected attendance truth for families and groups." />
+          <Row label="Scan Enforcement" value="Approved manifest and pax guardrails are enforced at scan time." />
+          <Row label="Records" value="Access records are retained for audit and operational review." />
         </Card>
 
         <Card
           title="Guide Settings Readiness"
-          subtitle="Editable guide-settings scaffold. Payout automation remains intentionally disabled."
+          subtitle="Guide settings are intentionally not payout automation yet."
         >
-          <div style={{ display: "grid", gap: 14 }}>
-            <TextInput label="Default Guide Assignment Mode" value="Manual assignment first" disabled />
-            <TextInput label="Guide Payment Mode" value="Manual tracking first, automated payout later" disabled />
-            <TextInput label="Tips and Commission" value="Future traceability layer" disabled />
-            <TextInput label="Payout Verification" value="Required before real money movement" disabled />
-            <DisabledSaveButton />
-          </div>
-        </Card>
-
-        <Card
-          title="Notifications Readiness"
-          subtitle="Future notification controls for operational events."
-        >
-          <Row label="Manifest Updates" value="Future alert configuration." />
-          <Row label="Scan Alerts" value="Future alert configuration." />
-          <Row label="Guide Payment Alerts" value="Future alert configuration." />
-          <Row label="Departure Reminders" value="Future alert configuration." />
+          <Row label="Guide Assignment" value="Future operator configuration area." />
+          <Row label="Guide Payments" value="Manual tracking first, automated payout later." />
+          <Row label="Tips and Commission" value="Future traceability layer." />
+          <Row label="Payout Verification" value="Required before any real money movement." />
         </Card>
 
         <Card title="Quick Support Links">

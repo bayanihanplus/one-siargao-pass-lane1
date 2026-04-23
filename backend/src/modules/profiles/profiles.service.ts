@@ -41,13 +41,45 @@ export class ProfilesService {
   }
 
   async updateMe(userId: string, dto: UpdateProfileDto) {
-    return this.prisma.user.update({
+    const user = await this.prisma.user.update({
       where: { id: userId },
       data: {
         ...(dto.fullName ? { fullName: dto.fullName } : {}),
         ...(dto.displayName ? { displayName: dto.displayName } : {}),
         ...(dto.preferredLanguage ? { preferredLanguage: dto.preferredLanguage } : {}),
       },
+      include: {
+        operatorProfile: true,
+      },
     });
+
+    const shouldUpdateOperatorProfile =
+      dto.businessName ||
+      dto.operatorDisplayName ||
+      dto.contactEmail ||
+      dto.contactMobile;
+
+    if (shouldUpdateOperatorProfile) {
+      await this.prisma.operatorProfile.upsert({
+        where: { userId },
+        create: {
+          userId,
+          businessName: dto.businessName || user.displayName || user.fullName || 'Operator Workspace',
+          displayName: dto.operatorDisplayName || dto.businessName || user.displayName || user.fullName || 'Operator',
+          contactEmail: dto.contactEmail || user.email,
+          contactMobile: dto.contactMobile || user.mobileNumber,
+          onboardingStatus: 'ACTIVE',
+          verificationStatus: 'UNVERIFIED',
+        },
+        update: {
+          ...(dto.businessName ? { businessName: dto.businessName } : {}),
+          ...(dto.operatorDisplayName ? { displayName: dto.operatorDisplayName } : {}),
+          ...(dto.contactEmail ? { contactEmail: dto.contactEmail } : {}),
+          ...(dto.contactMobile ? { contactMobile: dto.contactMobile } : {}),
+        },
+      });
+    }
+
+    return this.getMe(userId);
   }
 }
