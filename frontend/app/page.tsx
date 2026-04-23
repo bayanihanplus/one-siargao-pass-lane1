@@ -809,7 +809,7 @@ function TravelerShellFrame(props: {
             backgroundImage:
               'linear-gradient(90deg, rgba(5,39,82,0.99) 0%, rgba(6,59,108,0.97) 33%, rgba(7,92,140,0.58) 53%, rgba(7,110,164,0.12) 69%), url("/osp/osp-hero-map.png")',
             backgroundSize: "cover",
-            backgroundPosition: "64% center",
+            backgroundPosition: "60% center",
             backgroundRepeat: "no-repeat",
           }}
         >
@@ -945,7 +945,7 @@ function TravelerShellFrame(props: {
               </a>
 
               <a
-                href="/traveler/trips"
+                href={props.latestTravelerTrip?.id ? `/traveler/trips/${props.latestTravelerTrip.id}` : "/traveler/trips"}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
