@@ -122,9 +122,36 @@ function buildPassGateReasons(trip: any) {
   return reasons;
 }
 
+function buildPassUsageWarnings(trip: any) {
+  const warnings: string[] = [];
+
+  if (!trip?.pass) {
+    return warnings;
+  }
+
+  if (trip?.manifestReadiness?.isManifestListed === false) {
+    warnings.push("This pass is on record, but the trip is not yet listed in a manifest.");
+  }
+
+  if (trip?.clearanceStatus !== "APPROVED") {
+    warnings.push("This pass is not ready for use because traveler clearance is not approved.");
+  }
+
+  if (trip?.currentBooking?.id && trip?.currentPaymentState?.state !== "PAID") {
+    warnings.push("This pass is not ready for use because the current booking payment is not marked paid.");
+  }
+
+  if (!trip?.currentBooking?.id) {
+    warnings.push("This pass is on record, but no current booking is linked to this trip.");
+  }
+
+  return warnings;
+}
+
 export default async function TravelerPassPage() {
   const { trip, error } = await getPassView();
   const gateReasons = trip ? buildPassGateReasons(trip) : [];
+  const passUsageWarnings = trip ? buildPassUsageWarnings(trip) : [];
 
   return (
     <main style={{ maxWidth: 920, margin: "0 auto", padding: 24 }}>
@@ -191,6 +218,16 @@ export default async function TravelerPassPage() {
             </Section>
           ) : (
             <>
+              {passUsageWarnings.length > 0 ? (
+                <Section title="Pass Not Ready for Use">
+                  <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8 }}>
+                    {passUsageWarnings.map((warning) => (
+                      <li key={warning}>{warning}</li>
+                    ))}
+                  </ul>
+                </Section>
+              ) : null}
+
               <Section title="Pass Status">
                 <KeyValue label="Pass Code" value={trip.pass?.passCode} />
                 <KeyValue label="Pass Status" value={trip.pass?.passStatus} />

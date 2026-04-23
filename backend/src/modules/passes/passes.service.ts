@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 
 @Injectable()
@@ -8,9 +8,58 @@ export class PassesService {
   async issue(userId: string, tripId: string) {
     const trip = await this.prisma.trip.findFirst({
       where: { id: tripId, travelerUserId: userId },
-      include: { pass: true },
+      include: {
+        pass: true,
+        bookingLinks: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            booking: {
+              include: {
+                paymentState: true,
+              },
+            },
+          },
+        },
+        manifestMembers: {
+          include: {
+            manifest: true,
+          },
+        },
+      },
     });
     if (!trip) throw new NotFoundException('Trip not found');
+
+    const linkedBookings = (trip.bookingLinks ?? [])
+      .map((link) => link.booking)
+      .filter(Boolean);
+
+    const latestLinkedBooking = [...linkedBookings].sort(
+      (a, b) => new Date(b!.createdAt).getTime() - new Date(a!.createdAt).getTime(),
+    )[0] ?? null;
+
+    const isManifestListed = (trip.manifestMembers ?? []).length > 0;
+    const isClearanceApproved = trip.clearanceStatus === 'APPROVED';
+    const isPaymentPaid = latestLinkedBooking?.paymentState?.state === 'PAID';
+    const hasCurrentBooking = Boolean(latestLinkedBooking?.id);
+
+    if (!trip.pass) {
+      if (!isManifestListed) {
+        throw new BadRequestException('Trip is not yet listed in a manifest');
+      }
+
+      if (!isClearanceApproved) {
+        throw new BadRequestException('Traveler clearance is not yet approved');
+      }
+
+      if (!hasCurrentBooking) {
+        throw new BadRequestException('No current booking is linked to this trip');
+      }
+
+      if (!isPaymentPaid) {
+        throw new BadRequestException('Current booking payment is not yet marked paid');
+      }
+    }
+
     if (trip.pass) {
       return {
         id: trip.pass.id,
