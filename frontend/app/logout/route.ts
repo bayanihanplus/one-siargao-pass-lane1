@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { getAuthCookieName } from "../../src/lib/server-auth";
 
-export async function GET() {
+export async function GET(request: Request) {
   const cookieStore = await cookies();
   cookieStore.set(getAuthCookieName(), "", {
     httpOnly: true,
@@ -12,5 +12,5 @@ export async function GET() {
     maxAge: 0,
   });
 
-  return NextResponse.redirect(new URL("/login", "http://localhost:3000"));
+  return NextResponse.redirect(new URL("/login", request.url));
 }
