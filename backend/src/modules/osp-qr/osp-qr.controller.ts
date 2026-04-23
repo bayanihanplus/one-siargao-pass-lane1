@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { OspQrService } from './osp-qr.service';
 
 @Controller('osp-qr')
@@ -12,6 +14,8 @@ export class OspQrController {
     return this.ospQrService.getEffectivePassStatus(req.user.id, tripId);
   }
 
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @Post('checkpoint/ingress-scan')
   ingressScan(
     @Req() req: any,
@@ -20,6 +24,8 @@ export class OspQrController {
     return this.ospQrService.ingressScan(req.user, body);
   }
 
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   @Post('checkpoint/egress-scan')
   egressScan(
     @Req() req: any,
