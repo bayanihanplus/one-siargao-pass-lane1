@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
-import { DevAuthGuard } from '../auth/dev-auth.guard';
+import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
 import { OspQrService } from './osp-qr.service';
 
 @Controller('osp-qr')
