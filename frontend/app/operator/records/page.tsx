@@ -60,7 +60,7 @@ function FilterLink(props: { label: string; status: string; active: boolean }) {
         textDecoration: "none",
         padding: "10px 12px",
         borderRadius: 999,
-        border: props.active ? "1px solid #0f172a" : "1px solid #cbd5e1",
+        border: props.active ? "1px solid #0f172a" : "1px solid #334155",
         background: props.active ? "#0f172a" : "#ffffff",
         color: props.active ? "#ffffff" : "#0f172a",
         fontWeight: 800,

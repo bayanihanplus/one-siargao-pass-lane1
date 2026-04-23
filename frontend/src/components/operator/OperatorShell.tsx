@@ -91,7 +91,7 @@ export default function OperatorShell({
                     fontSize: 15,
                     background: active ? "#0f172a" : "#ffffff",
                     color: active ? "#ffffff" : "#0f172a",
-                    border: active ? "1px solid #0f172a" : "1px solid #e2e8f0",
+                    border: active ? "1px solid #0f172a" : "1px solid #94a3b8",
                     boxShadow: active ? "0 8px 20px rgba(15,23,42,0.10)" : "none",
                   }}
                 >
