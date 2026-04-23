@@ -2,420 +2,332 @@ import OperatorShell from "../../../src/components/operator/OperatorShell";
 import { revalidatePath } from "next/cache";
 import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 
-function getBaseUrl() {
-  return getApiBaseUrl();
-}
-
 async function createAndSubmitManifestAction(formData: FormData) {
   "use server";
 
   const activityInstanceId = String(formData.get("activityInstanceId") || "").trim();
   const notes = String(formData.get("notes") || "").trim();
 
-  if (!activityInstanceId) {
-    throw new Error("Missing activityInstanceId");
-  }
+  if (!activityInstanceId) throw new Error("Missing activityInstanceId");
 
-  const baseUrl = getBaseUrl();
+  const baseUrl = getApiBaseUrl();
   const token = await requireAccessToken();
 
   const generateRes = await fetch(`${baseUrl}/manifests/generate`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     cache: "no-store",
-    body: JSON.stringify({
-      activityInstanceId,
-    }),
+    body: JSON.stringify({ activityInstanceId }),
   });
 
-  if (!generateRes.ok) {
-    let detail = `HTTP ${generateRes.status}`;
-
-    try {
-      const json = await generateRes.json();
-      detail = json?.message || json?.error || detail;
-    } catch {}
-
-    throw new Error(`Failed to generate manifest: ${detail}`);
-  }
+  if (!generateRes.ok) throw new Error("Unable to generate manifest.");
 
   const generated = await generateRes.json();
   const manifestId = generated?.id;
-
-  if (!manifestId) {
-    throw new Error("Generate manifest response did not include manifest id");
-  }
+  if (!manifestId) throw new Error("Manifest ID missing.");
 
   const submitRes = await fetch(`${baseUrl}/manifests/${manifestId}/submit`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     cache: "no-store",
-    body: JSON.stringify({
-      notes: notes || undefined,
-    }),
+    body: JSON.stringify({ notes: notes || undefined }),
   });
 
-  if (!submitRes.ok) {
-    let detail = `HTTP ${submitRes.status}`;
-
-    try {
-      const json = await submitRes.json();
-      detail = json?.message || json?.error || detail;
-    } catch {}
-
-    throw new Error(`Failed to submit manifest: ${detail}`);
-  }
+  if (!submitRes.ok) throw new Error("Unable to submit manifest.");
 
   revalidatePath("/operator/manifests");
 }
 
-async function getOperatorManifestHistory() {
-  const baseUrl = getBaseUrl();
-
+async function safeJson(url: string, fallback: any) {
+  const token = await requireAccessToken();
   try {
-    const token = await requireAccessToken();
-
-    const res = await fetch(`${baseUrl}/manifests/history`, {
+    const res = await fetch(url, {
       cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
-
-    if (!res.ok) {
-      return {
-        error: `Failed to load operator manifest history: HTTP ${res.status}`,
-        rows: [],
-      };
-    }
-
-    const rows = await res.json();
-    return { rows, error: null };
-  } catch (error: any) {
-    return {
-      error: error?.message || "Unknown operator history load failure",
-      rows: [],
-    };
+    if (!res.ok) return fallback;
+    return await res.json().catch(() => fallback);
+  } catch {
+    return fallback;
   }
 }
 
-async function getActivityInstances() {
-  const baseUrl = getBaseUrl();
+async function getData() {
+  const baseUrl = getApiBaseUrl();
+  const [history, instances] = await Promise.all([
+    safeJson(`${baseUrl}/manifests/history`, []),
+    safeJson(`${baseUrl}/activities/instances`, []),
+  ]);
 
-  try {
-    const token = await requireAccessToken();
-
-    const res = await fetch(`${baseUrl}/activities/instances`, {
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!res.ok) {
-      return {
-        error: `Failed to load activity instances: HTTP ${res.status}`,
-        rows: [],
-      };
-    }
-
-    const rows = await res.json();
-    return { rows, error: null };
-  } catch (error: any) {
-    return {
-      error: error?.message || "Unknown activity instance load failure",
-      rows: [],
-    };
-  }
+  return {
+    history: Array.isArray(history) ? history : [],
+    instances: Array.isArray(instances) ? instances : [],
+  };
 }
 
-function Section(props: { title: string; children: any }) {
-  const { title, children } = props;
-
-  return (
-    <section
-      style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 16,
-      }}
-    >
-      <h2 style={{ marginTop: 0, marginBottom: 12 }}>{title}</h2>
-      {children}
-    </section>
-  );
+function formatDate(value?: string | null) {
+  if (!value) return "—";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleString("en-PH", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }
 
-function KeyValue(props: { label: string; value: any }) {
-  const { label, value } = props;
-
-  return (
-    <div style={{ marginBottom: 8 }}>
-      <strong>{label}:</strong> {value ?? "—"}
-    </div>
-  );
+function statusTone(status: string) {
+  if (status === "APPROVED") return { bg: "#ecfdf5", border: "#86efac", color: "#166534" };
+  if (status === "DENIED") return { bg: "#fef2f2", border: "#fca5a5", color: "#991b1b" };
+  if (status === "SUBMITTED" || status === "UNDER_REVIEW") return { bg: "#fff7ed", border: "#fdba74", color: "#9a3412" };
+  return { bg: "#f8fafc", border: "#94a3b8", color: "#0f172a" };
 }
 
-function StatusPill(props: { value: string }) {
+function StatusPill(props: { status: string }) {
+  const tone = statusTone(props.status);
   return (
-    <span
-      style={{
-        display: "inline-block",
-        padding: "4px 10px",
-        borderRadius: 999,
-        border: "1px solid #d1d5db",
-        fontSize: 12,
-        fontWeight: 600,
-      }}
-    >
-      {props.value}
+    <span style={{
+      display: "inline-block",
+      padding: "7px 10px",
+      borderRadius: 999,
+      background: tone.bg,
+      border: `1px solid ${tone.border}`,
+      color: tone.color,
+      fontWeight: 900,
+      fontSize: 12,
+    }}>
+      {props.status}
     </span>
   );
 }
 
-function MetaRow(props: { children: any }) {
+function PrimaryLink(props: { href: string; children: any }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 12,
-        marginTop: 8,
-      }}
-    >
+    <a href={props.href} style={{
+      display: "inline-block",
+      textDecoration: "none",
+      padding: "10px 12px",
+      borderRadius: 10,
+      background: "#0f172a",
+      color: "#ffffff",
+      fontWeight: 900,
+      fontSize: 13,
+    }}>
       {props.children}
-    </div>
+    </a>
   );
 }
 
-function MetaItem(props: { label: string; value: any }) {
+function SecondaryLink(props: { href: string; children: any }) {
   return (
-    <div
-      style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 8,
-        padding: "8px 10px",
-        minWidth: 140,
-      }}
+    <a href={props.href} style={{
+      display: "inline-block",
+      textDecoration: "none",
+      padding: "10px 12px",
+      borderRadius: 10,
+      background: "#ffffff",
+      color: "#0f172a",
+      border: "1px solid #334155",
+      fontWeight: 900,
+      fontSize: 13,
+    }}>
+      {props.children}
+    </a>
+  );
+}
+
+export default async function OperatorManifestsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const params = (await searchParams) || {};
+  const selectedActivityInstanceId =
+    typeof params.activityInstanceId === "string" ? params.activityInstanceId : "";
+
+  const { history, instances } = await getData();
+
+  const approvedCount = history.filter((row: any) => row.manifest?.manifestStatus === "APPROVED").length;
+  const submittedCount = history.filter((row: any) => row.manifest?.manifestStatus === "SUBMITTED").length;
+  const totalPax = history.reduce((sum: number, row: any) => sum + Number(row.manifest?.totalMembers || 0), 0);
+
+  return (
+    <OperatorShell
+      currentPath="/operator/manifests"
+      title="Manifests"
+      subtitle="Prepare, submit, and review manifest readiness before departure."
     >
-      <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 4 }}>{props.label}</div>
-      <div style={{ fontWeight: 600 }}>{props.value ?? "—"}</div>
-    </div>
-  );
-}
+      <div style={{ display: "grid", gap: 20 }}>
+        <section style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: 16,
+        }}>
+          <div style={{ border: "1px solid #e2e8f0", borderRadius: 18, background: "#fff", padding: 20 }}>
+            <strong>Approved</strong>
+            <div style={{ fontSize: 34, fontWeight: 900 }}>{approvedCount}</div>
+          </div>
+          <div style={{ border: "1px solid #e2e8f0", borderRadius: 18, background: "#fff", padding: 20 }}>
+            <strong>Submitted</strong>
+            <div style={{ fontSize: 34, fontWeight: 900 }}>{submittedCount}</div>
+          </div>
+          <div style={{ border: "1px solid #e2e8f0", borderRadius: 18, background: "#fff", padding: 20 }}>
+            <strong>Total Pax</strong>
+            <div style={{ fontSize: 34, fontWeight: 900 }}>{totalPax}</div>
+          </div>
+        </section>
 
-export default async function OperatorManifestsPage() {
-  const { rows, error } = await getOperatorManifestHistory();
-  const { rows: instanceRows, error: instanceError } = await getActivityInstances();
-
-  return (
-    <OperatorShell currentPath="/operator/manifests" title="Manifests" subtitle="Review, generate, and submit manifests for activity departures.">
-      <h1 style={{ marginBottom: 8 }}>Operator Manifests</h1>
-      <p style={{ marginTop: 0, marginBottom: 24 }}>
-        Dev-bridge operator view for manifest request history, approval status, and review outcomes.
-      </p>
-
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 12,
-          marginBottom: 16,
-        }}
-      >
-        <a href="/" style={{ textDecoration: "none" }}>← Dev Entry</a>
-        <a href="/operator/activities" style={{ textDecoration: "none" }}>Operator Activities</a>
-        <a href="/operator/manifests" style={{ textDecoration: "none" }}>Operator Manifests</a>
-        <a href="/logout" style={{ textDecoration: "none" }}>Logout</a>
-      </div>
-
-      <Section title="Development Note">
-        <p style={{ marginTop: 0 }}>
-          This page now reads the authenticated frontend session cookie and resolves
-          the current user through the backend auth contract.
-        </p>
-        <p style={{ marginBottom: 0 }}>
-          Operator can generate and submit a manifest here without the seeded operator login helper.
-        </p>
-      </Section>
-
-      <Section title="Generate and Submit Manifest">
-        <form action={createAndSubmitManifestAction}>
-          <label
-            htmlFor="activityInstanceId"
-            style={{ display: "block", fontWeight: 600, marginBottom: 8 }}
-          >
-            Activity Instance
-          </label>
-          <select
-            id="activityInstanceId"
-            name="activityInstanceId"
-            defaultValue=""
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #d1d5db",
-              marginBottom: 12,
-            }}
-          >
-            <option value="" disabled>
-              Select an activity instance...
-            </option>
-            {instanceRows.map((row: any) => (
-              <option key={row.id} value={row.id}>
-                {row.activityTemplate?.title || row.activityTemplateId} | {row.scheduledDate} | {row.instanceStatus}
-              </option>
-            ))}
-          </select>
-
-          <label
-            htmlFor="notes"
-            style={{ display: "block", fontWeight: 600, marginBottom: 8 }}
-          >
-            Submit Notes
-          </label>
-          <textarea
-            id="notes"
-            name="notes"
-            placeholder="Optional submission notes..."
-            rows={3}
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #d1d5db",
-              marginBottom: 12,
-            }}
-            defaultValue=""
-          />
-
-          <button type="submit" style={{ padding: "10px 14px" }}>
-            Generate and Submit Manifest
-          </button>
-        </form>
-      </Section>
-
-      {instanceError ? (
-        <Section title="Activity Instance Load Error">
-          <p style={{ margin: 0 }}>{instanceError}</p>
-        </Section>
-      ) : null}
-
-      {error ? (
-        <Section title="Load Error">
-          <p style={{ margin: 0 }}>{error}</p>
-        </Section>
-      ) : null}
-
-      <Section title="History Summary">
-        <KeyValue label="Visible History Count" value={rows.length} />
-        <KeyValue label="Selectable Activity Instances" value={instanceRows.length} />
-      </Section>
-
-      {rows.length === 0 ? (
-        <Section title="No Visible Requests">
-          <p style={{ margin: 0 }}>
-            No operator-owned manifest history is currently available.
+        <section style={{
+          border: "1px solid #e2e8f0",
+          borderRadius: 18,
+          background: "#ffffff",
+          padding: 22,
+          boxShadow: "0 8px 24px rgba(15,23,42,0.04)",
+        }}>
+          <h2 style={{ marginTop: 0 }}>Generate and Submit Manifest</h2>
+          <p style={{ color: "#475569", marginTop: 0 }}>
+            Select the departure, then submit the manifest for approval. Approved manifests unlock scanning.
           </p>
-        </Section>
-      ) : (
-        <Section title="Recent Manifest Requests">
-          <div style={{ display: "grid", gap: 12 }}>
-            {rows.map((row: any) => {
-              const members = Array.isArray(row.manifest?.members) ? row.manifest.members : [];
-              const memberPreview = members.slice(0, 3);
 
-              return (
-                <div
-                  key={row.id}
-                  style={{
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 10,
-                    padding: 14,
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
-                    <div>
-                      <div style={{ fontWeight: 700 }}>
-                        {row.manifest?.activityInstance?.id || row.manifestId}
+          <form action={createAndSubmitManifestAction}>
+            <label htmlFor="activityInstanceId" style={{ display: "block", fontWeight: 900, marginBottom: 8 }}>
+              Activity Departure
+            </label>
+            <select
+              id="activityInstanceId"
+              name="activityInstanceId"
+              defaultValue={selectedActivityInstanceId}
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #334155",
+                marginBottom: 12,
+                color: "#0f172a",
+                fontWeight: 700,
+              }}
+            >
+              <option value="" disabled>Select departure...</option>
+              {instances.map((row: any) => (
+                <option key={row.id} value={row.id}>
+                  {row.activityTemplate?.title || row.activityTemplateId} | {formatDate(row.scheduledDate)} | {row.instanceStatus}
+                </option>
+              ))}
+            </select>
+
+            <label htmlFor="notes" style={{ display: "block", fontWeight: 900, marginBottom: 8 }}>
+              Notes
+            </label>
+            <textarea
+              id="notes"
+              name="notes"
+              placeholder="Optional note for approval..."
+              rows={3}
+              style={{
+                width: "100%",
+                boxSizing: "border-box",
+                padding: 12,
+                borderRadius: 10,
+                border: "1px solid #334155",
+                marginBottom: 12,
+                color: "#0f172a",
+              }}
+            />
+
+            <button type="submit" style={{
+              padding: "12px 16px",
+              borderRadius: 10,
+              border: "none",
+              background: "#0f172a",
+              color: "#ffffff",
+              fontWeight: 900,
+              cursor: "pointer",
+            }}>
+              Submit Manifest
+            </button>
+          </form>
+        </section>
+
+        <section style={{
+          border: "1px solid #e2e8f0",
+          borderRadius: 18,
+          background: "#ffffff",
+          padding: 22,
+          boxShadow: "0 8px 24px rgba(15,23,42,0.04)",
+        }}>
+          <h2 style={{ marginTop: 0 }}>Manifest History</h2>
+
+          {history.length === 0 ? (
+            <p style={{ margin: 0, color: "#475569" }}>No manifest history found.</p>
+          ) : (
+            <div style={{ display: "grid", gap: 14 }}>
+              {history.map((row: any) => {
+                const manifestStatus = String(row.manifest?.manifestStatus || "UNKNOWN").toUpperCase();
+                const requestStatus = String(row.requestStatus || "UNKNOWN").toUpperCase();
+                const activity = row.manifest?.activityInstance;
+                const activityTitle = activity?.activityTemplate?.title || activity?.id || row.manifestId;
+                const members = Array.isArray(row.manifest?.members) ? row.manifest.members : [];
+
+                return (
+                  <div key={row.id} style={{
+                    border: "1px solid #e2e8f0",
+                    borderRadius: 16,
+                    padding: 16,
+                    display: "grid",
+                    gap: 12,
+                  }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+                      <div>
+                        <strong style={{ fontSize: 18 }}>{activityTitle}</strong>
+                        <div style={{ color: "#475569", fontSize: 14 }}>
+                          Manifest: {row.manifest?.manifestReference || row.manifestId}
+                        </div>
                       </div>
-                      <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>
-                        {row.manifest?.manifestReference || "No manifest reference"} · created {row.createdAt}
+                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                        <StatusPill status={manifestStatus} />
+                        <StatusPill status={requestStatus} />
                       </div>
                     </div>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
-                      <StatusPill value={String(row.requestStatus).toUpperCase()} />
-                      <StatusPill value={String(row.manifest?.manifestStatus || "UNKNOWN").toUpperCase()} />
+
+                    <div style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                      gap: 12,
+                      color: "#334155",
+                      fontSize: 14,
+                    }}>
+                      <div><strong>Departure</strong><br />{formatDate(activity?.scheduledDate)}</div>
+                      <div><strong>Expected Pax</strong><br />{row.manifest?.totalMembers ?? members.length}</div>
+                      <div><strong>Instance Status</strong><br />{activity?.instanceStatus || "—"}</div>
+                      <div><strong>Reviewed By</strong><br />{row.reviewedBy || "—"}</div>
                     </div>
-                  </div>
 
-                  <MetaRow>
-                    <MetaItem label="Scheduled Date" value={row.manifest?.activityInstance?.scheduledDate} />
-                    <MetaItem label="Instance Status" value={row.manifest?.activityInstance?.instanceStatus} />
-                    <MetaItem label="Total Members" value={row.manifest?.totalMembers ?? members.length} />
-                    <MetaItem label="Reviewed By" value={row.reviewedBy || "—"} />
-                  </MetaRow>
-
-                  <div style={{ marginTop: 12 }}>
-                    <div style={{ fontWeight: 600, marginBottom: 6 }}>Review Notes</div>
-                    <div style={{ fontSize: 14, color: "#374151" }}>
-                      {row.reviewNotes || "No review notes"}
-                    </div>
-                  </div>
-
-                  <div style={{ marginTop: 12 }}>
-                    <div style={{ fontWeight: 600, marginBottom: 6 }}>Member Preview</div>
-                    {memberPreview.length === 0 ? (
-                      <div style={{ fontSize: 14, color: "#6b7280" }}>No manifest members found.</div>
-                    ) : (
-                      <div style={{ display: "grid", gap: 8 }}>
-                        {memberPreview.map((member: any) => (
-                          <div
-                            key={member.id}
-                            style={{
-                              border: "1px solid #e5e7eb",
-                              borderRadius: 8,
-                              padding: 10,
-                            }}
-                          >
-                            <div style={{ fontWeight: 600 }}>
-                              {member.travelerNameSnapshot || member.tripId || member.id}
-                            </div>
-                            <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>
-                              Booking: {member.bookingId || "—"} · Status: {member.memberStatus || "—"}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {members.length > 3 ? (
-                      <div style={{ marginTop: 8, fontSize: 12, color: "#6b7280" }}>
-                        + {members.length - 3} more members
+                    {row.reviewNotes ? (
+                      <div style={{ color: "#475569", fontSize: 14 }}>
+                        <strong>Review Notes:</strong> {row.reviewNotes}
                       </div>
                     ) : null}
-                  </div>
 
-                  <div style={{ marginTop: 12, fontSize: 12, color: "#6b7280" }}>
-                    Request ID: {row.id} · Manifest ID: {row.manifestId}
+                    <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                      <PrimaryLink href={`http://localhost:3001/operator/access-scan?activityInstanceId=${activity?.id || ""}`}>
+                        Open Scan
+                      </PrimaryLink>
+                      <SecondaryLink href={`http://localhost:3001/operator/activities`}>
+                        Activities
+                      </SecondaryLink>
+                      <SecondaryLink href={`http://localhost:3001/operator/records?activityInstanceId=${activity?.id || ""}`}>
+                        Records
+                      </SecondaryLink>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </Section>
-      )}
+                );
+              })}
+            </div>
+          )}
+        </section>
+      </div>
     </OperatorShell>
   );
 }
