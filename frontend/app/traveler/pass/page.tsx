@@ -149,10 +149,59 @@ function buildPassUsageWarnings(trip: any) {
   return warnings;
 }
 
+function getPassReadinessSummary(trip: any, passUsageWarnings: string[]) {
+  if (!trip) {
+    return {
+      title: "No Trip Available",
+      body: "No traveler trip is available yet for pass viewing.",
+      accent: "#64748b",
+    };
+  }
+
+  if (trip?.pass && passUsageWarnings.length === 0) {
+    return {
+      title: "Pass Ready",
+      body: "Your pass is on file and ready for operational use.",
+      accent: "#16a34a",
+    };
+  }
+
+  if (trip?.pass && passUsageWarnings.length > 0) {
+    return {
+      title: "Pass On Record",
+      body: passUsageWarnings[0],
+      accent: "#b45309",
+    };
+  }
+
+  return {
+    title: "Pass Pending",
+    body: "Your traveler pass is not yet available. Check the status summary below for the next requirement.",
+    accent: "#b45309",
+  };
+}
+
+function StatusChip(props: { label: string; value: any }) {
+  return (
+    <div
+      style={{
+        border: "1px solid #e5e7eb",
+        borderRadius: 12,
+        padding: "10px 12px",
+        background: "#ffffff",
+      }}
+    >
+      <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>{props.label}</div>
+      <div style={{ fontSize: 16, fontWeight: 700 }}>{props.value ?? "—"}</div>
+    </div>
+  );
+}
+
 export default async function TravelerPassPage() {
   const { trip, error } = await getPassView();
   const gateReasons = trip ? buildPassGateReasons(trip) : [];
   const passUsageWarnings = trip ? buildPassUsageWarnings(trip) : [];
+  const readiness = getPassReadinessSummary(trip, passUsageWarnings);
 
   return (
     <main style={{ maxWidth: 920, margin: "0 auto", padding: 24 }}>
@@ -190,99 +239,93 @@ export default async function TravelerPassPage() {
         </Section>
       ) : (
         <>
-          <Section title="Pass Eligibility / Status">
-            <KeyValue label="Trip ID" value={trip.id} />
-            <KeyValue label="Trip Status" value={trip.tripStatus} />
-            <KeyValue label="Registration Status" value={trip.registrationStatus} />
-            <KeyValue label="Clearance Status" value={trip.clearanceStatus} />
-            <KeyValue label="Manifest Listed" value={trip.manifestReadiness?.isManifestListed ? "YES" : "NO"} />
-            <KeyValue label="Manifest Status" value={trip.manifestReadiness?.latestManifestStatus} />
-            <KeyValue label="Manifest Ref" value={trip.manifestReadiness?.latestManifestReference} />
-            <KeyValue label="Payment State" value={trip.currentPaymentState?.state} />
-            <KeyValue label="Has Issued Pass" value={trip.pass ? "YES" : "NO"} />
-            <KeyValue label="Pass Status" value={trip.pass?.passStatus} />
+          <Section title="Pass Readiness">
+            <div
+              style={{
+                borderLeft: `6px solid ${readiness.accent}`,
+                padding: 16,
+                borderRadius: 12,
+                background: "#f8fafc",
+              }}
+            >
+              <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.05 }}>{readiness.title}</div>
+              <p style={{ marginTop: 8, marginBottom: 0, fontSize: 16 }}>{readiness.body}</p>
+            </div>
           </Section>
 
-          {!trip.pass ? (
-            <Section title="Pass Blocked">
-              {gateReasons.length > 0 ? (
-                <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8 }}>
-                  {gateReasons.map((reason) => (
-                    <li key={reason}>{reason}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p style={{ margin: 0 }}>
-                  Pass is not currently available for this trip.
-                </p>
-              )}
+          <Section title="QR Credential">
+            {trip.pass?.qrCredential?.qrToken ? (
+              <div style={{ marginBottom: 16 }}>
+                <div
+                  style={{
+                    display: "inline-block",
+                    padding: 12,
+                    borderRadius: 12,
+                    background: "#ffffff",
+                    border: "1px solid #e5e7eb",
+                    opacity: passUsageWarnings.length > 0 ? 0.35 : 1,
+                  }}
+                >
+                  <QRCodeSVG
+                    value={trip.pass.qrCredential.qrToken}
+                    size={220}
+                    includeMargin={true}
+                  />
+                </div>
+                {passUsageWarnings.length > 0 ? (
+                  <p style={{ marginTop: 12, marginBottom: 0, color: "#b45309", fontWeight: 600 }}>
+                    QR is on record but not ready for operational use yet.
+                  </p>
+                ) : null}
+              </div>
+            ) : (
+              <p style={{ marginTop: 0 }}>QR token is not available for this pass yet.</p>
+            )}
+          </Section>
+
+          {passUsageWarnings.length > 0 ? (
+            <Section title="Action Required">
+              <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8 }}>
+                {passUsageWarnings.map((warning) => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
             </Section>
-          ) : (
-            <>
-              {passUsageWarnings.length > 0 ? (
-                <Section title="Pass Not Ready for Use">
-                  <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8 }}>
-                    {passUsageWarnings.map((warning) => (
-                      <li key={warning}>{warning}</li>
-                    ))}
-                  </ul>
-                </Section>
-              ) : null}
+          ) : null}
 
-              <Section title="Pass Status">
-                <KeyValue label="Pass Code" value={trip.pass?.passCode} />
-                <KeyValue label="Pass Status" value={trip.pass?.passStatus} />
-                <KeyValue label="Issued At" value={trip.pass?.issuedAt} />
-                <KeyValue label="Expires At" value={trip.pass?.expiresAt} />
-                <KeyValue label="Revoked At" value={trip.pass?.revokedAt} />
-              </Section>
+          {!trip.pass && gateReasons.length > 0 ? (
+            <Section title="Pass Blocked">
+              <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8 }}>
+                {gateReasons.map((reason) => (
+                  <li key={reason}>{reason}</li>
+                ))}
+              </ul>
+            </Section>
+          ) : null}
 
-              <Section title="QR Credential">
-                {trip.pass?.qrCredential?.qrToken ? (
-                  <div style={{ marginBottom: 16 }}>
-                    <div
-                      style={{
-                        display: "inline-block",
-                        padding: 12,
-                        borderRadius: 12,
-                        background: "#ffffff",
-                        border: "1px solid #e5e7eb",
-                        opacity: passUsageWarnings.length > 0 ? 0.35 : 1,
-                      }}
-                    >
-                      <QRCodeSVG
-                        value={trip.pass.qrCredential.qrToken}
-                        size={220}
-                        includeMargin={true}
-                      />
-                    </div>
-                    {passUsageWarnings.length > 0 ? (
-                      <p style={{ marginTop: 12, marginBottom: 0, color: "#b45309", fontWeight: 600 }}>
-                        QR is on record but not ready for operational use yet.
-                      </p>
-                    ) : null}
-                  </div>
-                ) : (
-                  <p style={{ marginTop: 0 }}>QR token is not available for this pass yet.</p>
-                )}
-                <KeyValue label="QR Token" value={trip.pass?.qrCredential?.qrToken} />
-                <KeyValue label="QR Version" value={trip.pass?.qrCredential?.qrVersion} />
-                <KeyValue
-                  label="Last Regenerated At"
-                  value={trip.pass?.qrCredential?.lastRegeneratedAt}
-                />
-              </Section>
-            </>
-          )}
-
-          <Section title="Traveler / Trip Context">
+          <Section title="Key Status Summary">
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                gap: 12,
+              }}
+            >
+              <StatusChip label="Registration" value={trip.registrationStatus} />
+              <StatusChip label="Manifest" value={trip.manifestReadiness?.isManifestListed ? "LISTED" : "NOT LISTED"} />
+              <StatusChip label="Clearance" value={trip.clearanceStatus} />
+              <StatusChip label="Payment" value={trip.currentPaymentState?.state} />
+              <StatusChip label="Pass" value={trip.pass?.passStatus ?? "NOT ISSUED"} />
+            </div>
+          </Section>
+          <Section title="Trip Details">
             <KeyValue label="Origin" value={trip.originLocation} />
             <KeyValue label="Accommodation" value={trip.declaredAccommodationName} />
             <KeyValue label="Arrival Date" value={trip.arrivalDate} />
             <KeyValue label="Departure Date" value={trip.departureDate} />
           </Section>
 
-          <Section title="Current Booking / Payment Snapshot">
+          <Section title="Booking & Payment Details">
             <KeyValue label="Current Booking ID" value={trip.currentBooking?.id} />
             <KeyValue
               label="Current Booking Reference"
