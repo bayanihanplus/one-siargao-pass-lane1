@@ -562,3 +562,22 @@ model Notification {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+
+model QrEvent {
+  id                  String   @id @default(cuid())
+  eventType           String
+  travelerId          String?
+  tripId              String?
+  passId              String?
+  qrCredentialId      String?
+  effectivePassStatus String?
+  scannerActorId      String?
+  scannerActorRole    String?
+  contextType         String
+  contextReferenceId  String?
+  outcome             String
+  reasonCode          String?
+  reasonMessage       String?
+  createdAt           DateTime @default(now())
+}
