@@ -1,6 +1,5 @@
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../src/lib/server-auth";
+import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 
 function getBaseUrl() {
   return getApiBaseUrl();
@@ -214,12 +213,6 @@ function MetaItem(props: { label: string; value: any }) {
 }
 
 export default async function OperatorManifestsPage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect("/login?next=/operator/manifests");
-  }
-
   const { rows, error } = await getOperatorManifestHistory();
   const { rows: instanceRows, error: instanceError } = await getActivityInstances();
 

@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../../src/lib/server-auth";
+import { getApiBaseUrl, requireAccessToken } from "../../../../src/lib/server-auth";
 
 function getBaseUrl() {
   return getApiBaseUrl();
@@ -109,12 +108,6 @@ function MetaItem(props: { label: string; value: any }) {
 }
 
 export default async function AdminManifestHistoryPage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect("/login?next=/admin/manifests/history");
-  }
-
   const { rows, error } = await getAdminManifestHistory();
 
   return (

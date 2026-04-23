@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../src/lib/server-auth";
+import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 
 async function getPassView() {
   const baseUrl = getApiBaseUrl();
@@ -63,12 +62,6 @@ function KeyValue(props: { label: string; value: any }) {
 }
 
 export default async function TravelerPassPage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect("/login?next=/traveler/pass");
-  }
-
   const { trip, error } = await getPassView();
 
   return (

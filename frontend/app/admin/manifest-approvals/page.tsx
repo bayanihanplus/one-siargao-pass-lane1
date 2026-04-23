@@ -1,6 +1,5 @@
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../src/lib/server-auth";
+import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 
 function getBaseUrl() {
   return getApiBaseUrl();
@@ -176,12 +175,6 @@ function MetaItem(props: { label: string; value: any }) {
 }
 
 export default async function AdminManifestApprovalsPage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect("/login?next=/admin/manifest-approvals");
-  }
-
   const { rows, error } = await getApprovalQueue();
 
   return (

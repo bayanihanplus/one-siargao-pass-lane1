@@ -1,6 +1,5 @@
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
-import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../src/lib/server-auth";
+import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 
 function getBaseUrl() {
   return getApiBaseUrl();
@@ -242,12 +241,6 @@ function MetaItem(props: { label: string; value: any }) {
 }
 
 export default async function OperatorActivitiesPage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect("/login?next=/operator/activities");
-  }
-
   const { rows, error } = await getOperatorActivityInstances();
   const { rows: templateRows, error: templateError } = await getOperatorActivityTemplates();
 
