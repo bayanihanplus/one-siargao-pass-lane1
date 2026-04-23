@@ -1594,6 +1594,7 @@ export default async function HomePage() {
                   { href: "/admin/activities", label: "Admin Activities" },
                   { href: "/admin/manifest-approvals", label: "Manifest Approval Queue" },
                   { href: "/admin/manifests/history", label: "Manifest History" },
+                  { href: "/admin/checkpoint", label: "Checkpoint Scan" },
                   { href: "/dev", label: "Dev Route Index" },
                   { href: "/logout", label: "Logout" },
                 ]}

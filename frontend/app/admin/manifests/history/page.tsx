@@ -129,6 +129,7 @@ export default async function AdminManifestHistoryPage() {
         <a href="/admin/activities" style={{ textDecoration: "none" }}>Admin Activities</a>
         <a href="/admin/manifest-approvals" style={{ textDecoration: "none" }}>Manifest Approval Queue</a>
         <a href="/admin/manifests/history" style={{ textDecoration: "none" }}>Manifest History</a>
+        <a href="/admin/checkpoint" style={{ textDecoration: "none" }}>Checkpoint Scan</a>
         <a href="/logout" style={{ textDecoration: "none" }}>Logout</a>
       </div>
 

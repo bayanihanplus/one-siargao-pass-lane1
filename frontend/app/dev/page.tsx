@@ -33,6 +33,7 @@ export default function DevPage() {
           <li><a href="/admin/activities">/admin/activities</a></li>
           <li><a href="/admin/manifest-approvals">/admin/manifest-approvals</a></li>
           <li><a href="/admin/manifests/history">/admin/manifests/history</a></li>
+          <li><a href="/admin/checkpoint">/admin/checkpoint</a></li>
         </ul>
       </section>
 
