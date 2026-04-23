@@ -48,12 +48,12 @@ check_protected_route() {
 check_public_route "Root" "/"
 check_public_route "Login" "/login"
 
-check_protected_route "Operator Activities" "/operator/activities" "/login?next=/operator/activities"
-check_protected_route "Operator Manifests" "/operator/manifests" "/login?next=/operator/manifests"
-check_protected_route "Admin Activities" "/admin/activities" "/login?next=/admin/activities"
-check_protected_route "Admin Manifest Approvals" "/admin/manifest-approvals" "/login?next=/admin/manifest-approvals"
-check_protected_route "Admin Manifest History" "/admin/manifests/history" "/login?next=/admin/manifests/history"
-check_protected_route "Traveler Pass" "/traveler/pass" "/login?next=/traveler/pass"
+check_protected_route "Operator Activities" "/operator/activities" "/login?next=%2Foperator%2Factivities"
+check_protected_route "Operator Manifests" "/operator/manifests" "/login?next=%2Foperator%2Fmanifests"
+check_protected_route "Admin Activities" "/admin/activities" "/login?next=%2Fadmin%2Factivities"
+check_protected_route "Admin Manifest Approvals" "/admin/manifest-approvals" "/login?next=%2Fadmin%2Fmanifest-approvals"
+check_protected_route "Admin Manifest History" "/admin/manifests/history" "/login?next=%2Fadmin%2Fmanifests%2Fhistory"
+check_protected_route "Traveler Pass" "/traveler/pass" "/login?next=%2Ftraveler%2Fpass"
 
 echo
 echo "ALL DEV SURFACE SMOKE CHECKS PASSED"
