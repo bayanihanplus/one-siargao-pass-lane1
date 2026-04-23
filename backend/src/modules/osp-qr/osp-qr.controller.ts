@@ -23,6 +23,13 @@ export class OspQrController {
 
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @Get('operator-access/summary')
+  getOperatorAccessSummary(@Req() req: any) {
+    return this.ospQrService.getOperatorAccessSummary(req.user);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
   @Get('operator-access/recent')
   getRecentOperatorAccess(
     @Req() req: any,

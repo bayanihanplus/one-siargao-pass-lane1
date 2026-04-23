@@ -217,6 +217,57 @@ export class OspQrService {
   }
 
 
+  async getOperatorAccessSummary(actor: any) {
+    const where: any = {};
+
+    if (actor.role !== 'ADMIN') {
+      where.operatorUserId = actor.id;
+    }
+
+    const rows = await this.prisma.operatorAccessRecord.groupBy({
+      by: ['activityInstanceId', 'accessStatus'],
+      where,
+      _count: {
+        _all: true,
+      },
+    });
+
+    const byActivity: Record<string, any> = {};
+
+    for (const row of rows) {
+      const activityId = row.activityInstanceId;
+      if (!byActivity[activityId]) {
+        byActivity[activityId] = {
+          activityInstanceId: activityId,
+          checkedIn: 0,
+          inService: 0,
+          completed: 0,
+          blocked: 0,
+          allowed: 0,
+          noShow: 0,
+          cancelled: 0,
+          totalRecords: 0,
+        };
+      }
+
+      const count = row._count._all;
+      byActivity[activityId].totalRecords += count;
+
+      if (row.accessStatus === 'CHECKED_IN') byActivity[activityId].checkedIn += count;
+      if (row.accessStatus === 'IN_SERVICE') byActivity[activityId].inService += count;
+      if (row.accessStatus === 'COMPLETED') byActivity[activityId].completed += count;
+      if (row.accessStatus === 'BLOCKED') byActivity[activityId].blocked += count;
+      if (row.accessStatus === 'ALLOWED') byActivity[activityId].allowed += count;
+      if (row.accessStatus === 'NO_SHOW') byActivity[activityId].noShow += count;
+      if (row.accessStatus === 'CANCELLED') byActivity[activityId].cancelled += count;
+    }
+
+    return {
+      ok: true,
+      data: Object.values(byActivity),
+    };
+  }
+
   async getRecentOperatorAccess(
     actor: any,
     input: { activityInstanceId?: string; limit?: number },

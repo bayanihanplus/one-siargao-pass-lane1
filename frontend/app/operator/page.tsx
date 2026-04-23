@@ -18,16 +18,18 @@ async function getDashboardData() {
     }
   };
 
-  const [activities, manifests, recentAccessJson] = await Promise.all([
+  const [activities, manifests, recentAccessJson, accessSummaryJson] = await Promise.all([
     safeFetchJson(`${baseUrl}/activities/instances`, []),
     safeFetchJson(`${baseUrl}/manifests/history`, []),
     safeFetchJson(`${baseUrl}/osp-qr/operator-access/recent?limit=8`, { data: [] }),
+    safeFetchJson(`${baseUrl}/osp-qr/operator-access/summary`, { data: [] }),
   ]);
 
   return {
     activities: Array.isArray(activities) ? activities : [],
     manifests: Array.isArray(manifests) ? manifests : [],
     recentAccess: Array.isArray(recentAccessJson?.data) ? recentAccessJson.data : [],
+    accessSummary: Array.isArray(accessSummaryJson?.data) ? accessSummaryJson.data : [],
   };
 }
 
@@ -120,10 +122,17 @@ function StatusBadge(props: { status: string }) {
   );
 }
 
-function DepartureCard(props: { row: any; actionHref: string; actionText: string }) {
+function DepartureCard(props: { row: any; actionHref: string; actionText: string; summary?: any }) {
   const row = props.row;
   const status = getStatus(row);
-  const pax = getPax(row);
+  const pax = Number(getPax(row)) || 0;
+  const checkedIn = Number(props.summary?.checkedIn || 0);
+  const inService = Number(props.summary?.inService || 0);
+  const completed = Number(props.summary?.completed || 0);
+  const blocked = Number(props.summary?.blocked || 0);
+  const scannedCount = checkedIn + inService + completed;
+  const remaining = Math.max(pax - scannedCount, 0);
+  const percent = pax > 0 ? Math.min(100, Math.round((scannedCount / pax) * 100)) : 0;
 
   return (
     <div style={{ border: "1px solid #e2e8f0", borderRadius: 16, background: "#fff", padding: 18 }}>
@@ -132,10 +141,28 @@ function DepartureCard(props: { row: any; actionHref: string; actionText: string
         <StatusBadge status={status} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 12, marginBottom: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 12, marginBottom: 14 }}>
         <div><strong>Departure</strong><br />{formatDate(getScheduledDate(row))}</div>
         <div><strong>Expected Pax</strong><br />{pax}</div>
-        <div><strong>Readiness</strong><br />{status === "APPROVED" ? "Ready to scan" : "Needs manifest action"}</div>
+        <div><strong>Scanned Pax</strong><br />{scannedCount}</div>
+        <div><strong>Remaining</strong><br />{remaining}</div>
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, fontSize: 13, color: "#475569" }}>
+          <span>Boarding Progress</span>
+          <strong>{percent}%</strong>
+        </div>
+        <div style={{ height: 10, borderRadius: 999, background: "#e2e8f0", overflow: "hidden" }}>
+          <div style={{ height: "100%", width: `${percent}%`, background: "#0f172a" }} />
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 10, marginBottom: 14, fontSize: 13 }}>
+        <div><strong>Checked In</strong><br />{checkedIn}</div>
+        <div><strong>In Service</strong><br />{inService}</div>
+        <div><strong>Completed</strong><br />{completed}</div>
+        <div><strong>Blocked</strong><br />{blocked}</div>
       </div>
 
       <a href={props.actionHref} style={{
@@ -154,7 +181,11 @@ function DepartureCard(props: { row: any; actionHref: string; actionText: string
 }
 
 export default async function Page() {
-  const { activities, manifests, recentAccess } = await getDashboardData();
+  const { activities, manifests, recentAccess, accessSummary } = await getDashboardData();
+
+  const summaryByActivity = new Map(
+    accessSummary.map((row: any) => [row.activityInstanceId, row])
+  );
 
   const bestManifests = groupBestManifestPerActivity(manifests);
   const approved = bestManifests.filter((row) => getStatus(row) === "APPROVED");
@@ -192,6 +223,7 @@ export default async function Page() {
               <DepartureCard
                 key={getManifest(row)?.id}
                 row={row}
+                summary={summaryByActivity.get(getManifest(row)?.activityInstanceId)}
                 actionHref="http://localhost:3000/operator/access-scan"
                 actionText="Start Scan"
               />
@@ -208,6 +240,7 @@ export default async function Page() {
               <DepartureCard
                 key={getManifest(row)?.id}
                 row={row}
+                summary={summaryByActivity.get(getManifest(row)?.activityInstanceId)}
                 actionHref="http://localhost:3000/operator/manifests"
                 actionText="Fix Manifest"
               />
