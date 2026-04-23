@@ -39,7 +39,7 @@ async function getTravelerLatestTrip() {
   try {
     const token = await requireAccessToken();
 
-    const res = await fetch(`${baseUrl}/trips`, {
+    const listRes = await fetch(`${baseUrl}/trips`, {
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
@@ -47,13 +47,34 @@ async function getTravelerLatestTrip() {
       },
     });
 
-    if (!res.ok) {
-      return { trip: null, error: `Failed to load latest traveler trip: HTTP ${res.status}` };
+    if (!listRes.ok) {
+      return { trip: null, error: `Failed to load latest traveler trip: HTTP ${listRes.status}` };
     }
 
-    const rows = await res.json();
-    const trip = Array.isArray(rows) && rows.length > 0 ? rows[0] : null;
+    const rows = await listRes.json();
+    const trips = Array.isArray(rows) ? rows : [];
+    const preferredTrip = trips.find((trip: any) => Boolean(trip?.pass)) || trips[0] || null;
 
+    if (!preferredTrip?.id) {
+      return { trip: null, error: null };
+    }
+
+    const detailRes = await fetch(`${baseUrl}/trips/${preferredTrip.id}`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!detailRes.ok) {
+      return {
+        trip: null,
+        error: `Failed to load latest traveler trip detail: HTTP ${detailRes.status}`,
+      };
+    }
+
+    const trip = await detailRes.json();
     return { trip, error: null };
   } catch (error: any) {
     return {
@@ -389,8 +410,21 @@ function PassCardQrShell() {
 }
 
 function getStatusRowTripDates(trip: any) {
-  const startLabel = formatDate(getTripArrivalDateRaw(trip));
-  const endLabel = formatDate(getTripDepartureDateRaw(trip));
+  const startValue = getTripArrivalDateRaw(trip);
+  const endValue = getTripDepartureDateRaw(trip);
+
+  const shortFormat = (value: any) => {
+    if (!value) return "—";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "—";
+    return new Intl.DateTimeFormat("en-PH", {
+      month: "short",
+      day: "numeric",
+    }).format(date);
+  };
+
+  const startLabel = shortFormat(startValue);
+  const endLabel = shortFormat(endValue);
 
   if (startLabel !== "—" && endLabel !== "—") {
     return startLabel + " – " + endLabel;
@@ -495,16 +529,17 @@ function TravelerStatusRowCard(props: { title: string; value: string; icon: any 
         border: "1px solid #e5e7eb",
         borderRadius: 16,
         background: "#ffffff",
-        padding: 12,
+        padding: "10px 8px",
+        minHeight: 88,
         boxShadow: "0 6px 18px rgba(15,23,42,0.04)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
         <div
           style={{
-            width: 40,
-            height: 40,
-            borderRadius: 12,
+            width: 30,
+            height: 30,
+            borderRadius: 10,
             background: "#f3f6fa",
             color: "#64748b",
             display: "flex",
@@ -518,7 +553,7 @@ function TravelerStatusRowCard(props: { title: string; value: string; icon: any 
         <div style={{ minWidth: 0 }}>
           <div
             style={{
-              fontSize: 10,
+              fontSize: 7,
               fontWeight: 700,
               lineHeight: 1.2,
               letterSpacing: "0.08em",
@@ -530,8 +565,9 @@ function TravelerStatusRowCard(props: { title: string; value: string; icon: any 
           </div>
           <div
             style={{
-              marginTop: 8,
-              fontSize: 15,
+              marginTop: 2,
+              fontSize: 10,
+              lineHeight: 1.15,
               fontWeight: 700,
               color: getStatusRowValueColor(props.value),
             }}
@@ -555,18 +591,19 @@ function TravelerJourneyCard(props: {
       href={props.href}
       style={{
         border: "1px solid #e6e8ed",
-        borderRadius: 24,
+        borderRadius: 18,
         background: "#ffffff",
-        padding: 16,
+        padding: 12,
+        minHeight: 124,
         textDecoration: "none",
         boxShadow: "0 8px 26px rgba(15,23,42,0.04)",
       }}
     >
       <div
         style={{
-          width: 48,
-          height: 48,
-          borderRadius: 12,
+          width: 36,
+          height: 36,
+          borderRadius: 10,
           background: "#f4f7fb",
           color: "#60759a",
           display: "flex",
@@ -576,10 +613,10 @@ function TravelerJourneyCard(props: {
       >
         {props.icon}
       </div>
-      <div style={{ marginTop: 16, fontSize: 16, fontWeight: 700, color: "#1d2f5c" }}>
+      <div style={{ marginTop: 10, fontSize: 12, fontWeight: 700, lineHeight: 1.15, color: "#1d2f5c" }}>
         {props.title}
       </div>
-      <div style={{ marginTop: 4, fontSize: 13, color: "#64748b" }}>{props.subtitle}</div>
+      <div style={{ marginTop: 3, fontSize: 10, lineHeight: 1.2, color: "#64748b" }}>{props.subtitle}</div>
     </a>
   );
 }
@@ -599,8 +636,8 @@ function TravelerBottomNavLink(props: {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: 8,
-        fontSize: 12,
+        gap: 6,
+        fontSize: 11,
         fontWeight: 500,
         color,
         textDecoration: "none",
@@ -628,15 +665,15 @@ function TravelerShellFrame(props: {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: 12,
-          marginBottom: 16,
+          gap: 10,
+          marginBottom: 12,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, whiteSpace: "nowrap" }}>
           <div
             style={{
-              width: 64,
-              height: 64,
+              width: 60,
+              height: 60,
               borderRadius: "50%",
               border: "2px solid #17b6c6",
               display: "flex",
@@ -664,8 +701,8 @@ function TravelerShellFrame(props: {
             <h1
               style={{
                 margin: 0,
-                fontSize: 28,
-                fontWeight: 600,
+                fontSize: 24,
+                fontWeight: 700,
                 lineHeight: 1,
                 letterSpacing: "-0.02em",
                 color: "#19305a",
@@ -679,7 +716,7 @@ function TravelerShellFrame(props: {
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                fontSize: 15,
+                fontSize: 14,
                 color: "#64748b",
               }}
             >
@@ -747,7 +784,7 @@ function TravelerShellFrame(props: {
       <section
         style={{
           overflow: "hidden",
-          borderRadius: 32,
+          borderRadius: 28,
           background: "#083d67",
           boxShadow: "0 20px 60px rgba(8,61,103,0.22)",
         }}
@@ -755,10 +792,15 @@ function TravelerShellFrame(props: {
         <div
           style={{
             position: "relative",
-            minHeight: 470,
+            minHeight: 446,
             overflow: "hidden",
-            padding: "20px 24px 24px",
+            padding: "20px 20px 20px",
             color: "#ffffff",
+            backgroundImage:
+              'linear-gradient(90deg, rgba(5,39,82,0.99) 0%, rgba(6,59,108,0.97) 33%, rgba(7,92,140,0.58) 53%, rgba(7,110,164,0.12) 69%), url("/osp/osp-hero-map.png")',
+            backgroundSize: "cover",
+            backgroundPosition: "44% center",
+            backgroundRepeat: "no-repeat",
           }}
         >
           <div
@@ -766,98 +808,14 @@ function TravelerShellFrame(props: {
               position: "absolute",
               inset: 0,
               background:
-                "radial-gradient(circle at top right, rgba(255,255,255,0.14), transparent 28%), linear-gradient(135deg, #07345c 0%, #0a5a8e 48%, #0a6f98 100%)",
+                "radial-gradient(circle at top right, rgba(255,255,255,0.12), transparent 24%), linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.06) 100%)",
             }}
           />
 
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              top: 0,
-              width: "56%",
-              height: "100%",
-            }}
-          >
-            <svg viewBox="0 0 420 520" width="100%" height="100%">
-              <defs>
-                <linearGradient id="sea" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#39d0e6" />
-                  <stop offset="60%" stopColor="#0a7bb5" />
-                  <stop offset="100%" stopColor="#0a4d79" />
-                </linearGradient>
-                <linearGradient id="island" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#9cc97b" />
-                  <stop offset="50%" stopColor="#6ca35a" />
-                  <stop offset="100%" stopColor="#355f39" />
-                </linearGradient>
-              </defs>
-
-              <rect x="0" y="0" width="420" height="520" fill="url(#sea)" />
-              <path
-                d="M247 39C276 57 299 85 299 117C300 147 287 172 275 199C262 228 254 258 260 286C267 317 276 343 268 373C259 406 233 433 204 446C175 458 143 455 121 434C99 413 91 381 94 350C97 320 111 291 115 261C120 229 114 197 122 167C131 136 151 106 173 80C193 56 220 23 247 39Z"
-                fill="url(#island)"
-                stroke="#efe5c6"
-                strokeWidth="7"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M204 77C210 109 206 141 198 173C190 205 190 236 196 265C202 293 205 323 198 356C192 383 179 407 163 431"
-                fill="none"
-                stroke="#f3f1d5"
-                strokeWidth="7"
-                strokeLinecap="round"
-              />
-              <path
-                d="M167 140C183 149 193 161 201 177"
-                fill="none"
-                stroke="#f3f1d5"
-                strokeWidth="5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M186 245C206 246 224 252 239 264"
-                fill="none"
-                stroke="#f3f1d5"
-                strokeWidth="5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M148 329C169 330 189 337 205 352"
-                fill="none"
-                stroke="#f3f1d5"
-                strokeWidth="5"
-                strokeLinecap="round"
-              />
-              <circle cx="176" cy="281" r="24" fill="#15b8cf" stroke="#ffffff" strokeWidth="8" />
-              <circle cx="176" cy="281" r="8" fill="#ffffff" />
-              <text x="246" y="150" fill="#ffffff" fontSize="18" fontWeight="700">
-                Daku Island
-              </text>
-              <text x="236" y="242" fill="#ffffff" fontSize="18" fontWeight="700">
-                Cloud 9
-              </text>
-              <text x="135" y="335" fill="#ffffff" fontSize="18" fontWeight="700">
-                General Luna
-              </text>
-              <text x="318" y="398" fill="#ffffff" fontSize="16" fontWeight="700">
-                N
-              </text>
-              <path
-                d="M315 455l9-23 9 23-9-7-9 7zM324 447v28"
-                fill="none"
-                stroke="#ffffff"
-                strokeWidth="2"
-                strokeLinejoin="round"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-
-          <div style={{ position: "relative", zIndex: 1, maxWidth: "48%" }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: "42%" }}>
             <div
               style={{
-                marginBottom: 20,
+                marginBottom: 12,
                 display: "flex",
                 flexWrap: "wrap",
                 alignItems: "center",
@@ -867,8 +825,8 @@ function TravelerShellFrame(props: {
               <span
                 style={{
                   borderRadius: 999,
-                  padding: "6px 16px",
-                  fontSize: 14,
+                  padding: "6px 14px",
+                  fontSize: 13,
                   fontWeight: 700,
                   background: hero.pillBg,
                   color: "#ffffff",
@@ -882,7 +840,7 @@ function TravelerShellFrame(props: {
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
-                  fontSize: 18,
+                  fontSize: 15,
                   fontWeight: 600,
                   color: "rgba(255,255,255,0.95)",
                 }}
@@ -905,10 +863,10 @@ function TravelerShellFrame(props: {
               style={{
                 margin: 0,
                 whiteSpace: "pre-line",
-                fontSize: 56,
-                fontWeight: 600,
-                lineHeight: 0.98,
-                letterSpacing: "-0.04em",
+                fontSize: 38,
+                fontWeight: 800,
+                lineHeight: 0.95,
+                letterSpacing: "-0.05em",
                 color: "#ffffff",
               }}
             >
@@ -917,29 +875,31 @@ function TravelerShellFrame(props: {
 
             <p
               style={{
-                marginTop: 20,
+                marginTop: 14,
                 marginBottom: 0,
                 whiteSpace: "pre-line",
-                fontSize: 17,
-                lineHeight: 1.9,
+                fontSize: 14,
+                lineHeight: 1.4,
                 color: "rgba(255,255,255,0.9)",
               }}
             >
               {hero.body}
             </p>
 
-            <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
               <a
                 href="/traveler/pass"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  height: 64,
+                  minWidth: 186,
+                  height: 54,
                   borderRadius: 999,
                   background: "#16bfd3",
-                  padding: "0 24px",
-                  fontSize: 18,
+                  padding: "0 18px",
+                  fontSize: 15,
+                  whiteSpace: "nowrap",
                   fontWeight: 600,
                   color: "#ffffff",
                   textDecoration: "none",
@@ -981,12 +941,14 @@ function TravelerShellFrame(props: {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 12,
-                  height: 64,
+                  minWidth: 186,
+                  height: 50,
                   borderRadius: 999,
                   border: "1px solid rgba(255,255,255,0.45)",
                   background: "transparent",
-                  padding: "0 24px",
-                  fontSize: 18,
+                  padding: "0 18px",
+                  fontSize: 15,
+                  whiteSpace: "nowrap",
                   fontWeight: 600,
                   color: "#ffffff",
                   textDecoration: "none",
@@ -1028,18 +990,18 @@ function TravelerPassCard(props: {
       style={{
         marginTop: 16,
         border: "1px solid #dbeaf2",
-        borderRadius: 28,
+        borderRadius: 24,
         background: "#eef7fc",
-        padding: 24,
+        padding: 16,
         boxShadow: "0 12px 36px rgba(15,23,42,0.05)",
       }}
     >
       <div
         style={{
           display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: 16,
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        gap: 10,
         }}
       >
         <div>
@@ -1059,8 +1021,8 @@ function TravelerPassCard(props: {
             style={{
               marginTop: 12,
               marginBottom: 0,
-              fontSize: 20,
-              fontWeight: 600,
+              fontSize: 17,
+              fontWeight: 700,
               lineHeight: 1.2,
               color: "#1d2f5c",
             }}
@@ -1083,9 +1045,9 @@ function TravelerPassCard(props: {
             <div
               style={{
                 marginTop: 4,
-                fontSize: 18,
-                fontWeight: 500,
-                letterSpacing: "0.02em",
+              fontSize: 14,
+              fontWeight: 500,
+              letterSpacing: "0.02em",
                 color: "#0f172a",
               }}
             >
@@ -1108,9 +1070,9 @@ function TravelerPassCard(props: {
             <div
               style={{
                 marginTop: 4,
-                fontSize: 18,
-                fontWeight: 500,
-                color: "#0f172a",
+              fontSize: 14,
+              fontWeight: 500,
+              color: "#0f172a",
               }}
             >
               {validDates}
@@ -1119,11 +1081,11 @@ function TravelerPassCard(props: {
 
           <div
             style={{
-              marginTop: 16,
+              marginTop: 12,
               display: "flex",
               alignItems: "center",
               gap: 8,
-              fontSize: 15,
+              fontSize: 14,
               color: "#66819e",
             }}
           >
@@ -1138,7 +1100,7 @@ function TravelerPassCard(props: {
         <div
           style={{
             display: "flex",
-            minWidth: 176,
+            minWidth: 144,
             flexDirection: "column",
             alignItems: "flex-end",
           }}
@@ -1146,8 +1108,8 @@ function TravelerPassCard(props: {
           <span
             style={{
               borderRadius: 999,
-              padding: "6px 16px",
-              fontSize: 14,
+              padding: "6px 14px",
+              fontSize: 13,
               fontWeight: 700,
               background: badgeColor,
               color: "#ffffff",
@@ -1166,7 +1128,7 @@ function TravelerPassCard(props: {
               display: "flex",
               alignItems: "center",
               gap: 8,
-              fontSize: 18,
+              fontSize: 15,
               fontWeight: 700,
               color: "#17b6c6",
             }}
@@ -1205,10 +1167,10 @@ function TravelerCompactStatusRow(props: {
   return (
     <section
       style={{
-        marginTop: 16,
+        marginTop: 14,
         display: "grid",
         gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-        gap: 12,
+        gap: 6,
       }}
     >
       <TravelerStatusRowCard
@@ -1278,11 +1240,11 @@ function TravelerReassuranceAndJourney(props: {
     <>
       <section
         style={{
-          marginTop: 16,
+          marginTop: 14,
           border: "1px solid #cfe8ef",
-          borderRadius: 18,
+          borderRadius: 16,
           background: "#e7f6fb",
-          padding: "12px 16px",
+          padding: "12px 14px",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -1303,7 +1265,7 @@ function TravelerReassuranceAndJourney(props: {
               <path d="M12 3l7 3v5c0 4.5-3 8.1-7 10-4-1.9-7-5.5-7-10V6l7-3z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
             </svg>
           </div>
-          <p style={{ margin: 0, fontSize: 16, fontWeight: 500, color: reassurance.color }}>
+          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.35, fontWeight: 500, color: reassurance.color }}>
             {reassurance.message}
           </p>
         </div>
@@ -1313,8 +1275,8 @@ function TravelerReassuranceAndJourney(props: {
         <h3
           style={{
             margin: 0,
-            fontSize: 18,
-            fontWeight: 600,
+            fontSize: 16,
+            fontWeight: 700,
             color: "#1d2f5c",
           }}
         >
@@ -1323,10 +1285,10 @@ function TravelerReassuranceAndJourney(props: {
 
         <div
           style={{
-            marginTop: 16,
+            marginTop: 12,
             display: "grid",
             gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-            gap: 12,
+            gap: 8,
           }}
         >
           <TravelerJourneyCard
@@ -1396,11 +1358,11 @@ function TravelerBottomNav() {
   return (
     <nav
       style={{
-        marginTop: 28,
+        marginTop: 22,
         border: "1px solid #e5e7eb",
-        borderRadius: 28,
+        borderRadius: 24,
         background: "#ffffff",
-        padding: "12px 24px 16px",
+        padding: "10px 16px 12px",
         boxShadow: "0 8px 30px rgba(15,23,42,0.06)",
       }}
     >
@@ -1430,9 +1392,9 @@ function TravelerBottomNav() {
         <a
           href="/traveler/pass"
           style={{
-            marginTop: -32,
-            width: 80,
-            height: 80,
+            marginTop: -22,
+            width: 64,
+            height: 64,
             borderRadius: "50%",
             background: "#12b0c4",
             color: "#ffffff",
@@ -1490,8 +1452,8 @@ function TravelerShell(props: {
       style={{
         maxWidth: 430,
         margin: "0 auto",
-        paddingTop: 8,
-        paddingBottom: 24,
+        paddingTop: 2,
+        paddingBottom: 18,
       }}
     >
       <TravelerShellFrame latestTravelerTrip={props.latestTravelerTrip} />
