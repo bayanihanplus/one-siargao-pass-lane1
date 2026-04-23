@@ -143,6 +143,7 @@ export default async function HomePage() {
             <LinkList
               items={[
                 { href: "/traveler/pass", label: "Traveler Pass" },
+                { href: "/traveler/trips", label: "My Trips" },
                 ...(latestTravelerTrip
                   ? [{
                       href: `/traveler/trips/${latestTravelerTrip.id}`,
