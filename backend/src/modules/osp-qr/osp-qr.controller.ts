@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -12,6 +12,13 @@ export class OspQrController {
   @Get('trips/:tripId/effective-pass-status')
   getEffectivePassStatus(@Req() req: any, @Param('tripId') tripId: string) {
     return this.ospQrService.getEffectivePassStatus(req.user.id, tripId);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('checkpoint/events')
+  getCheckpointEvents(@Query('limit') limit?: string) {
+    return this.ospQrService.getCheckpointEvents(limit ? Number(limit) : 15);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)

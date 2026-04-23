@@ -8,6 +8,42 @@ type ScanResult = {
   eventId?: string;
 };
 
+type CheckpointEvent = {
+  id: string;
+  eventType: string;
+  travelerId?: string | null;
+  tripId?: string | null;
+  passId?: string | null;
+  qrCredentialId?: string | null;
+  effectivePassStatus?: string | null;
+  scannerActorId?: string | null;
+  scannerActorRole?: string | null;
+  contextType: string;
+  contextReferenceId?: string | null;
+  outcome: string;
+  reasonCode?: string | null;
+  reasonMessage?: string | null;
+  createdAt: string;
+};
+
+async function getRecentCheckpointEvents(): Promise<CheckpointEvent[]> {
+  const token = await requireAccessToken();
+
+  const res = await fetch(`${getApiBaseUrl()}/osp-qr/checkpoint/events?limit=15`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    return [];
+  }
+
+  const json = await res.json().catch(() => null);
+  return Array.isArray(json?.data) ? json.data : [];
+}
+
 async function runCheckpointScan(
   formData: FormData,
   actionType: "ingress" | "egress",
@@ -133,6 +169,8 @@ export default async function AdminCheckpointPage({
     const { redirect } = await import("next/navigation");
     redirect(`/admin/checkpoint?${qp.toString()}`);
   }
+
+  const recentEvents = await getRecentCheckpointEvents();
 
   const resultTone =
     outcome === "ALLOWED"
@@ -266,6 +304,7 @@ export default async function AdminCheckpointPage({
           borderRadius: 16,
           padding: 20,
           background: resultTone.bg,
+          marginBottom: 20,
         }}
       >
         <h2 style={{ marginTop: 0, marginBottom: 12 }}>Result</h2>
@@ -285,6 +324,48 @@ export default async function AdminCheckpointPage({
           <p style={{ margin: 0, color: "#475569" }}>
             No scan executed yet. Paste a QR token, choose checkpoint, then run ingress or egress.
           </p>
+        )}
+      </section>
+
+      <section
+        style={{
+          border: "1px solid #e5e7eb",
+          borderRadius: 16,
+          padding: 20,
+          background: "#ffffff",
+        }}
+      >
+        <h2 style={{ marginTop: 0, marginBottom: 12 }}>Recent Scan Activity</h2>
+
+        {recentEvents.length === 0 ? (
+          <p style={{ margin: 0, color: "#475569" }}>No checkpoint scan events yet.</p>
+        ) : (
+          <div style={{ display: "grid", gap: 12 }}>
+            {recentEvents.map((event) => (
+              <div
+                key={event.id}
+                style={{
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 12,
+                  padding: 14,
+                  background: "#f8fafc",
+                }}
+              >
+                <div style={{ display: "grid", gap: 6, fontSize: 14 }}>
+                  <div><strong>Created At:</strong> {event.createdAt}</div>
+                  <div><strong>Event Type:</strong> {event.eventType}</div>
+                  <div><strong>Outcome:</strong> {event.outcome}</div>
+                  <div><strong>Effective Pass Status:</strong> {event.effectivePassStatus || "—"}</div>
+                  <div><strong>Reason Code:</strong> {event.reasonCode || "—"}</div>
+                  <div><strong>Checkpoint:</strong> {event.contextReferenceId || "—"}</div>
+                  <div><strong>Scanner Role:</strong> {event.scannerActorRole || "—"}</div>
+                  <div><strong>Traveler ID:</strong> {event.travelerId || "—"}</div>
+                  <div><strong>Trip ID:</strong> {event.tripId || "—"}</div>
+                  <div><strong>Event ID:</strong> {event.id}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </section>
     </main>

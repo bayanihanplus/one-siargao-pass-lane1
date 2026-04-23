@@ -216,6 +216,25 @@ export class OspQrService {
     };
   }
 
+  async getCheckpointEvents(limit = 15) {
+    const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(50, Number(limit))) : 15;
+
+    const rows = await this.prisma.qrEvent.findMany({
+      where: {
+        contextType: 'CHECKPOINT',
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: safeLimit,
+    });
+
+    return {
+      ok: true,
+      data: rows,
+    };
+  }
+
   async ingressScan(actor: any, body: { qrToken: string; checkpointId: string; channel: string }) {
     const trip = await this.getTripByQrToken(body.qrToken);
 
