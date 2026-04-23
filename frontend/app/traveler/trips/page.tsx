@@ -60,8 +60,13 @@ function MetaItem(props: { label: string; value: any }) {
   );
 }
 
+function getPreferredTrip(rows: any[]) {
+  return rows.find((trip: any) => Boolean(trip?.pass)) || rows[0] || null;
+}
+
 export default async function TravelerTripsPage() {
   const { rows, error } = await getTrips();
+  const preferredTrip = getPreferredTrip(rows);
 
   return (
     <main style={{ maxWidth: 960, margin: "0 auto", padding: 24 }}>
@@ -83,7 +88,11 @@ export default async function TravelerTripsPage() {
       ) : null}
 
       <Section title="Trip Summary">
-        <div><strong>Visible Trips:</strong> {rows.length}</div>
+        <div style={{ marginBottom: 8 }}><strong>Visible Trips:</strong> {rows.length}</div>
+        <div>
+          <strong>Preferred Traveler Trip:</strong>{" "}
+          {preferredTrip ? (preferredTrip.tripTitle || preferredTrip.id) : "—"}
+        </div>
       </Section>
 
       <Section title="My Trips">
@@ -91,17 +100,26 @@ export default async function TravelerTripsPage() {
           <div>No trips found.</div>
         ) : (
           <div style={{ display: "grid", gap: 12 }}>
-            {rows.map((trip: any) => (
+            {rows.map((trip: any) => {
+              const isPreferredTrip = preferredTrip?.id === trip.id;
+
+              return (
               <article
                 key={trip.id}
                 style={{
-                  border: "1px solid #e5e7eb",
+                  border: isPreferredTrip ? "2px solid #17b6c6" : "1px solid #e5e7eb",
                   borderRadius: 12,
                   padding: 16,
+                  background: isPreferredTrip ? "#f7fdff" : "#ffffff",
                 }}
               >
                 <div style={{ marginBottom: 12 }}>
                   <strong>{trip.tripTitle || `Trip ${trip.id}`}</strong>
+                  {isPreferredTrip ? (
+                    <div style={{ marginTop: 6, fontSize: 12, fontWeight: 700, color: "#0f8ea0" }}>
+                      Current traveler trip selection
+                    </div>
+                  ) : null}
                 </div>
 
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
@@ -116,7 +134,8 @@ export default async function TravelerTripsPage() {
                   {trip.pass ? <a href="/traveler/pass">Open Pass View</a> : null}
                 </div>
               </article>
-            ))}
+            );
+            })}
           </div>
         )}
       </Section>
