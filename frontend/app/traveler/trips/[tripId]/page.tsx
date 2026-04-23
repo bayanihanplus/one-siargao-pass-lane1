@@ -208,6 +208,13 @@ export default async function TravelerTripDetailPage({
         booking/payment state, and dev-only companion add flow.
       </p>
 
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
+        <a href="/">Home</a>
+        <a href="/traveler/trips">My Trips</a>
+        <a href="/traveler/pass">Traveler Pass</a>
+        <a href="/logout">Logout</a>
+      </div>
+
       <Section title="Trip Access Note">
         <p style={{ marginTop: 0 }}>
           This page uses the authenticated session to load the selected traveler trip.
