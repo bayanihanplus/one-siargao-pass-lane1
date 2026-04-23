@@ -378,7 +378,14 @@ export class OspQrService {
       },
     });
 
-    const accessStatus = derived.effectivePassStatus === 'ACTIVE' ? 'CHECKED_IN' : 'BLOCKED';
+    const isActive = derived.effectivePassStatus === 'ACTIVE';
+    const isRepeatCheckIn = Boolean(existing && isActive);
+    const accessStatus = isActive ? 'CHECKED_IN' : 'BLOCKED';
+    const finalReasonCode = isRepeatCheckIn ? 'ALREADY_CHECKED_IN' : derived.reasonCode;
+    const finalReasonMessage = isRepeatCheckIn
+      ? 'Traveler already checked in for this activity instance.'
+      : derived.reasonMessage;
+    const finalOutcome = isActive ? 'ALLOWED' : 'BLOCKED';
 
     const record =
       existing
@@ -393,8 +400,8 @@ export class OspQrService {
               scannedByUserId: actor.id,
               scannedByRole: actor.role,
               accessStatus,
-              reasonCode: derived.reasonCode,
-              reasonMessage: derived.reasonMessage,
+              reasonCode: finalReasonCode,
+              reasonMessage: finalReasonMessage,
               occurredAt: new Date(),
             },
           })
@@ -414,8 +421,8 @@ export class OspQrService {
               scannedQrCredentialId: trip.pass?.qrCredential?.id ?? null,
               scannedByUserId: actor.id,
               scannedByRole: actor.role,
-              reasonCode: derived.reasonCode,
-              reasonMessage: derived.reasonMessage,
+              reasonCode: finalReasonCode,
+              reasonMessage: finalReasonMessage,
               occurredAt: new Date(),
             },
           });
@@ -423,9 +430,9 @@ export class OspQrService {
     return {
       ok: true,
       data: {
-        outcome: derived.effectivePassStatus === 'ACTIVE' ? 'ALLOWED' : 'BLOCKED',
-        reasonCode: derived.reasonCode,
-        reasonMessage: derived.reasonMessage,
+        outcome: finalOutcome,
+        reasonCode: finalReasonCode,
+        reasonMessage: finalReasonMessage,
         qrEventId: qrEvent.id,
         operatorAccessRecordId: record.id,
         accessStatus,
