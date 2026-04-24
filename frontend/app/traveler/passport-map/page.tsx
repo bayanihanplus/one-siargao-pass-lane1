@@ -259,6 +259,8 @@ export default function TravelerPassportMapPage() {
               <SpmLegendAndStatus />
             </div>
           </section>
+
+          <SpmTrailCardsPreview />
         </div>
 
         <nav
@@ -287,6 +289,204 @@ export default function TravelerPassportMapPage() {
         </nav>
       </div>
     </main>
+  );
+}
+
+function SpmTrailCardsPreview() {
+  return (
+    <section
+      aria-label="Preview-only Passport Trails cards"
+      style={{
+        marginTop: 18,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 12,
+          padding: "0 2px",
+        }}
+      >
+        <div>
+          <h2
+            style={{
+              margin: 0,
+              fontFamily: 'Georgia, "Times New Roman", Times, serif',
+              fontSize: 24,
+              lineHeight: 1,
+              letterSpacing: "-0.04em",
+              color: "#14264b",
+              fontWeight: 900,
+            }}
+          >
+            Your Trails
+          </h2>
+          <p
+            style={{
+              margin: "6px 0 0",
+              fontSize: 12,
+              lineHeight: 1.25,
+              color: "#6b7890",
+              fontWeight: 750,
+            }}
+          >
+            Preview-only trail cards. Real trail state comes later.
+          </p>
+        </div>
+
+        <a
+          href="/traveler/passport-map"
+          style={{
+            color: "#13a8b7",
+            fontSize: 12,
+            fontWeight: 900,
+            textDecoration: "none",
+            whiteSpace: "nowrap",
+          }}
+        >
+          View all
+        </a>
+      </div>
+
+      <div
+        style={{
+          marginTop: 12,
+          display: "grid",
+          gap: 10,
+        }}
+      >
+        <TrailPreviewCard
+          title="General Luna Explorer"
+          subtitle="Town center • surf culture • local stops"
+          status="Preview"
+          statusColor="#13a8b7"
+          progressText="Visual only"
+          icon="🌊"
+        />
+
+        <TrailPreviewCard
+          title="Island Discovery Trail"
+          subtitle="Guyam • Daku • Naked Island"
+          status="Preview"
+          statusColor="#1fa45b"
+          progressText="Stamp-ready later"
+          icon="🏝️"
+        />
+
+        <TrailPreviewCard
+          title="North Coast Adventure"
+          subtitle="Pacifico • Alegria • Taktak Falls"
+          status="Locked"
+          statusColor="#8b95a1"
+          progressText="Requires governed records"
+          icon="🛵"
+        />
+      </div>
+    </section>
+  );
+}
+
+function TrailPreviewCard(props: {
+  title: string;
+  subtitle: string;
+  status: string;
+  statusColor: string;
+  progressText: string;
+  icon: string;
+}) {
+  return (
+    <a
+      href="/traveler/passport-map"
+      aria-label={`${props.title} preview card. Visual only.`}
+      style={{
+        minHeight: 88,
+        borderRadius: 22,
+        border: "1px solid rgba(203,213,225,0.74)",
+        background: "rgba(255,255,255,0.96)",
+        boxShadow: "0 10px 28px rgba(15,23,42,0.055)",
+        padding: "14px 14px",
+        textDecoration: "none",
+        display: "grid",
+        gridTemplateColumns: "48px 1fr auto",
+        alignItems: "center",
+        gap: 12,
+      }}
+    >
+      <div
+        style={{
+          width: 48,
+          height: 48,
+          borderRadius: 16,
+          background: "linear-gradient(135deg, #e8f9fb 0%, #ffffff 100%)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 25,
+          boxShadow: "inset 0 0 0 1px rgba(19,168,183,0.14)",
+        }}
+      >
+        {props.icon}
+      </div>
+
+      <div style={{ minWidth: 0 }}>
+        <h3
+          style={{
+            margin: 0,
+            color: "#14264b",
+            fontSize: 15,
+            lineHeight: 1.15,
+            fontWeight: 950,
+            letterSpacing: "-0.015em",
+          }}
+        >
+          {props.title}
+        </h3>
+
+        <p
+          style={{
+            margin: "5px 0 0",
+            color: "#6b7890",
+            fontSize: 11,
+            lineHeight: 1.25,
+            fontWeight: 700,
+          }}
+        >
+          {props.subtitle}
+        </p>
+
+        <div
+          style={{
+            marginTop: 8,
+            color: "#8090a6",
+            fontSize: 10,
+            fontWeight: 900,
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+          }}
+        >
+          {props.progressText}
+        </div>
+      </div>
+
+      <div
+        style={{
+          alignSelf: "flex-start",
+          borderRadius: 999,
+          background: `${props.statusColor}18`,
+          color: props.statusColor,
+          padding: "6px 8px",
+          fontSize: 10,
+          lineHeight: 1,
+          fontWeight: 950,
+          textTransform: "uppercase",
+          letterSpacing: "0.06em",
+        }}
+      >
+        {props.status}
+      </div>
+    </a>
   );
 }
 
