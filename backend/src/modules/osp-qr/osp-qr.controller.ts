@@ -76,14 +76,14 @@ export class OspQrController {
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
   @Get('inter-island/movements')
   listInterIslandMovements(@Query('limit') limit?: string) {
     return this.ospQrService.listInterIslandMovements(limit ? Number(limit) : 25);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
   @Get('checkpoints')
   listCheckpoints() {
     return this.ospQrService.listCheckpoints();
@@ -96,14 +96,14 @@ export class OspQrController {
 
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
   @Get('inter-island/movements/:id/payment-clearance')
   getInterIslandPaymentClearance(@Param('id') id: string) {
     return this.ospQrService.getInterIslandPaymentClearance(id);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
   @Get('inter-island/overdue-movements')
   listOverdueInterIslandMovements(@Query('thresholdMinutes') thresholdMinutes?: string) {
     return this.ospQrService.listOverdueInterIslandMovements(
@@ -112,21 +112,21 @@ export class OspQrController {
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
   @Get('inter-island/movements/:id/passenger-reconciliation')
   getInterIslandPassengerReconciliation(@Param('id') id: string) {
     return this.ospQrService.getInterIslandPassengerReconciliation(id);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
   @Get('vessels')
   listVessels(@Query('limit') limit?: string) {
     return this.ospQrService.listVessels(limit ? Number(limit) : 25);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
   @Get('inter-island/compliance-summary')
   getInterIslandComplianceSummary() {
     return this.ospQrService.getInterIslandComplianceSummary();
@@ -145,14 +145,14 @@ export class OspQrController {
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
   @Get('compliance/exceptions')
   listComplianceExceptions(@Query('limit') limit?: string) {
     return this.ospQrService.listComplianceExceptions(limit ? Number(limit) : 25);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
   @Get('checkpoint/events')
   getCheckpointEvents(@Query('limit') limit?: string) {
     return this.ospQrService.getCheckpointEvents(limit ? Number(limit) : 15);
