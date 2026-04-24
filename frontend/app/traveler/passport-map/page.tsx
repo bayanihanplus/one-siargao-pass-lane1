@@ -254,20 +254,7 @@ export default function TravelerPassportMapPage() {
                 </p>
               </div>
 
-              <div
-                aria-hidden="true"
-                style={{
-                  position: "absolute",
-                  right: -64,
-                  top: 30,
-                  width: 250,
-                  height: 250,
-                  borderRadius: "48% 52% 46% 54%",
-                  background:
-                    "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.96) 0 9%, rgba(188,238,244,0.72) 10% 24%, rgba(103,200,212,0.46) 25% 42%, rgba(22,143,158,0.22) 43% 62%, transparent 63%)",
-                  opacity: 0.7,
-                }}
-              />
+              <SpmMapVisualPreview />
             </div>
           </section>
         </div>
@@ -298,6 +285,154 @@ export default function TravelerPassportMapPage() {
         </nav>
       </div>
     </main>
+  );
+}
+
+function SpmMapVisualPreview() {
+  return (
+    <div
+      aria-label="Visual-only Siargao Passport Map preview. Not live map data."
+      style={{
+        position: "absolute",
+        right: -34,
+        top: 6,
+        width: 260,
+        height: 404,
+        zIndex: 1,
+        pointerEvents: "none",
+      }}
+    >
+      <svg viewBox="0 0 260 404" width="260" height="404" fill="none">
+        <defs>
+          <filter id="spmPinShadow" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#0f172a" floodOpacity="0.22" />
+          </filter>
+          <linearGradient id="spmSea" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#d8f6fb" />
+            <stop offset="52%" stopColor="#85ddeb" />
+            <stop offset="100%" stopColor="#34b8cc" />
+          </linearGradient>
+          <linearGradient id="spmIsland" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#dff6b5" />
+            <stop offset="44%" stopColor="#8fc36b" />
+            <stop offset="100%" stopColor="#4f944c" />
+          </linearGradient>
+        </defs>
+
+        <path
+          d="M40 42C78 2 165-7 211 44C256 94 247 185 223 249C199 313 142 392 83 376C24 360 7 267 15 195C23 123 2 82 40 42Z"
+          fill="url(#spmSea)"
+          opacity="0.68"
+        />
+        <path
+          d="M147 14C183 33 198 73 194 108C190 143 218 161 213 202C208 243 175 266 156 303C137 340 101 370 70 350C39 330 54 285 70 250C86 215 70 188 85 157C100 126 127 113 122 78C117 43 111-5 147 14Z"
+          fill="#f7f0b3"
+          opacity="0.95"
+        />
+        <path
+          d="M148 25C178 42 188 77 184 106C180 138 205 158 198 196C192 232 162 255 146 288C129 322 100 342 77 326C54 310 68 274 82 245C96 216 82 190 96 162C110 134 135 121 130 88C125 55 119 8 148 25Z"
+          fill="url(#spmIsland)"
+        />
+        <path
+          d="M138 36C157 54 159 83 148 104C137 125 162 145 160 170C158 195 130 206 124 232C118 258 99 280 83 271C67 262 81 238 91 219C101 200 83 183 96 162C109 141 127 129 125 100C123 71 119 18 138 36Z"
+          fill="#6bab55"
+          opacity="0.58"
+        />
+
+        <path d="M79 342C42 352 25 376 17 398" stroke="#f6ffff" strokeWidth="7" strokeLinecap="round" opacity="0.82" />
+        <path d="M35 328C18 330 10 341 3 354" stroke="#f6ffff" strokeWidth="5" strokeLinecap="round" opacity="0.75" />
+        <path d="M205 83C235 63 250 36 258 10" stroke="#f6ffff" strokeWidth="6" strokeLinecap="round" opacity="0.7" />
+
+        <path
+          d="M69 328C98 293 145 294 154 255C162 220 193 210 184 176C176 144 147 137 154 102C158 76 176 58 187 43"
+          stroke="#1976d2"
+          strokeWidth="5"
+          strokeLinecap="round"
+          strokeDasharray="7 8"
+          opacity="0.9"
+        />
+        <path
+          d="M69 328C98 293 145 294 154 255C162 220 193 210 184 176C176 144 147 137 154 102C158 76 176 58 187 43"
+          stroke="#ffffff"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeDasharray="7 8"
+          opacity="0.85"
+        />
+
+        <PreviewPin x={154} y={255} type="completed" />
+        <PreviewPin x={184} y={176} type="completed" />
+        <PreviewPin x={69} y={328} type="completed" />
+        <PreviewPin x={70} y={332} type="available" />
+        <PreviewPin x={154} y={102} type="locked" />
+        <PreviewPin x={187} y={43} type="locked" />
+
+        <path d="M218 317l13 31 13-31-13 8-13-8Z" fill="#12375d" opacity="0.72" />
+        <path d="M231 302v58M207 331h48" stroke="#12375d" strokeWidth="2" opacity="0.72" />
+      </svg>
+
+      <MapLabel text="Alegria Beach" top={42} right={48} />
+      <MapLabel text="Pacifico" top={125} right={25} />
+      <MapLabel text="Magpupungko" top={211} right={58} />
+      <MapLabel text="Cloud 9" top={260} right={26} />
+      <MapLabel text="General Luna" top={317} right={70} />
+      <MapLabel text="Daku Island" top={353} right={154} />
+    </div>
+  );
+}
+
+function PreviewPin(props: {
+  x: number;
+  y: number;
+  type: "completed" | "available" | "locked";
+}) {
+  const isCompleted = props.type === "completed";
+  const isAvailable = props.type === "available";
+
+  return (
+    <g filter="url(#spmPinShadow)" transform={`translate(${props.x - 17} ${props.y - 34})`}>
+      <path
+        d="M17 0C7.8 0 0 7.5 0 16.8C0 29.4 17 39 17 39C17 39 34 29.4 34 16.8C34 7.5 26.2 0 17 0Z"
+        fill={isCompleted ? "#1fa45b" : isAvailable ? "#13a8b7" : "#8b95a1"}
+      />
+      <circle cx="17" cy="16.5" r="10.2" fill={isAvailable ? "#ffffff" : "rgba(255,255,255,0.2)"} />
+      {isCompleted ? (
+        <path d="M11.2 16.6l4 4.2 8-9" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      ) : null}
+      {isAvailable ? (
+        <circle cx="17" cy="16.5" r="6" fill="#13a8b7" />
+      ) : null}
+      {!isCompleted && !isAvailable ? (
+        <>
+          <rect x="12" y="15" width="10" height="8" rx="2" fill="#ffffff" />
+          <path d="M14 15v-2.4a3 3 0 0 1 6 0V15" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+        </>
+      ) : null}
+    </g>
+  );
+}
+
+function MapLabel(props: {
+  text: string;
+  top: number;
+  right: number;
+}) {
+  return (
+    <span
+      style={{
+        position: "absolute",
+        top: props.top,
+        right: props.right,
+        color: "#25344d",
+        fontSize: 10,
+        lineHeight: 1,
+        fontWeight: 900,
+        textShadow: "0 1px 2px rgba(255,255,255,0.95)",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {props.text}
+    </span>
   );
 }
 
