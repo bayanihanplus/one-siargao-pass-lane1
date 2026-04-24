@@ -12,6 +12,14 @@ type EffectivePassStatus =
 export class OspQrService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /*
+   * LANE 2-B.2 LEGACY FREEZE:
+   * QrEvent is now legacy history only.
+   * New QR/compliance scan writes must go to OspQrEvent / osp_qr_events.
+   * Do not add new writes to prisma.qrEvent.
+   * Existing QrEvent rows are retained for backward compatibility and audit continuity.
+   */
+
   private deriveEffectiveStatus(trip: any): {
     storedPassStatus: string | null;
     effectivePassStatus: EffectivePassStatus;
