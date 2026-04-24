@@ -98,6 +98,41 @@ export class OspQrService {
     };
   }
 
+  private mapComplianceQrEventType(eventType: string) {
+    switch (eventType) {
+      case 'INGRESS_SCAN':
+        return 'TRAVELER_INGRESS_SCAN';
+      case 'EGRESS_SCAN':
+        return 'TRAVELER_EGRESS_SCAN';
+      case 'OPERATOR_ACCESS_SCAN':
+        return 'OPERATOR_ACCESS_SCAN';
+      case 'PASSPORT_STAMP_SCAN':
+        return 'PASSPORT_STAMP_SCAN';
+      case 'MANIFEST_PARTICIPATION_SCAN':
+        return 'MANIFEST_PARTICIPATION_SCAN';
+      case 'COMPLIANCE_EXCEPTION_SCAN':
+        return 'COMPLIANCE_EXCEPTION_SCAN';
+      default:
+        return 'COMPLIANCE_EXCEPTION_SCAN';
+    }
+  }
+
+  private mapComplianceQrDirection(eventType: string, contextType: string) {
+    if (eventType === 'INGRESS_SCAN') {
+      return 'INGRESS';
+    }
+
+    if (eventType === 'EGRESS_SCAN') {
+      return 'EGRESS';
+    }
+
+    if (contextType === 'OPERATOR_ACCESS') {
+      return 'VALIDATION';
+    }
+
+    return 'VALIDATION';
+  }
+
   private async createQrEvent(input: {
     eventType: string;
     travelerId?: string | null;
@@ -113,19 +148,21 @@ export class OspQrService {
     reasonCode?: string | null;
     reasonMessage?: string | null;
   }) {
-    return this.prisma.qrEvent.create({
+    return this.prisma.ospQrEvent.create({
       data: {
-        eventType: input.eventType,
-        travelerId: input.travelerId ?? null,
+        eventType: this.mapComplianceQrEventType(input.eventType) as any,
+        travelerUserId: input.travelerId ?? null,
         tripId: input.tripId ?? null,
         passId: input.passId ?? null,
         qrCredentialId: input.qrCredentialId ?? null,
-        effectivePassStatus: input.effectivePassStatus ?? null,
+        checkpointId: input.contextType === 'CHECKPOINT' ? input.contextReferenceId ?? null : null,
+        checkpointType: null,
+        direction: this.mapComplianceQrDirection(input.eventType, input.contextType) as any,
         scannerActorId: input.scannerActorId ?? null,
         scannerActorRole: input.scannerActorRole ?? null,
-        contextType: input.contextType,
-        contextReferenceId: input.contextReferenceId ?? null,
-        outcome: input.outcome,
+        scanChannel: input.contextType,
+        effectivePassStatus: input.effectivePassStatus ?? null,
+        outcome: input.outcome as any,
         reasonCode: input.reasonCode ?? null,
         reasonMessage: input.reasonMessage ?? null,
       },
@@ -318,9 +355,11 @@ export class OspQrService {
   async getCheckpointEvents(limit = 15) {
     const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(50, Number(limit))) : 15;
 
-    const rows = await this.prisma.qrEvent.findMany({
+    const rows = await this.prisma.ospQrEvent.findMany({
       where: {
-        contextType: 'CHECKPOINT',
+        checkpointId: {
+          not: null,
+        },
       },
       orderBy: {
         createdAt: 'desc',
