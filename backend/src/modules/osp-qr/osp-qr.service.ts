@@ -809,6 +809,36 @@ export class OspQrService {
     };
   }
 
+
+  async listFeeProgramApprovalAudits(limit = 50) {
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
+
+    const data = await this.prisma.ospFeeProgramApprovalAudit.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: safeLimit,
+      select: {
+        id: true,
+        actorUserId: true,
+        actorRole: true,
+        feeProgramId: true,
+        feeProgramCodeSnapshot: true,
+        feeProgramNameSnapshot: true,
+        previousApprovalStatus: true,
+        newApprovalStatus: true,
+        previousNotes: true,
+        newNotes: true,
+        createdAt: true,
+      },
+    });
+
+    return {
+      ok: true,
+      data,
+    };
+  }
+
   async listFeeChangeAudits(limit = 50) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
 

@@ -138,6 +138,14 @@ export class OspQrController {
     return this.ospQrService.updateComplianceFeeProgramApprovalStatus(req.user, id, body);
   }
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Get('compliance/fee-program-approval-audits')
+  listFeeProgramApprovalAudits(@Query('limit') limit?: string) {
+    return this.ospQrService.listFeeProgramApprovalAudits(limit ? Number(limit) : 50);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
   @Get('compliance/fee-audits')
