@@ -76,14 +76,14 @@ export class OspQrController {
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('inter-island/movements')
   listInterIslandMovements(@Query('limit') limit?: string) {
     return this.ospQrService.listInterIslandMovements(limit ? Number(limit) : 25);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('checkpoints')
   listCheckpoints() {
     return this.ospQrService.listCheckpoints();
@@ -96,7 +96,7 @@ export class OspQrController {
 
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('inter-island/movements/:id/payment-clearance')
   getInterIslandPaymentClearance(@Param('id') id: string) {
     return this.ospQrService.getInterIslandPaymentClearance(id);
@@ -151,28 +151,28 @@ export class OspQrController {
 
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('compliance/manifest-submissions')
   listLguManifestSubmissions(@Query('limit') limit?: string) {
     return this.ospQrService.listLguManifestSubmissions(limit ? Number(limit) : 50);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('compliance/fee-clearance-exceptions')
   listFeeClearanceExceptions(@Query('limit') limit?: string) {
     return this.ospQrService.listFeeClearanceExceptions(limit ? Number(limit) : 50);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('inter-island/movements/:id/fee-clearance-summary')
   getInterIslandFeeClearanceSummary(@Param('id') id: string) {
     return this.ospQrService.getInterIslandFeeClearanceSummary(id);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('compliance/fee-receipts')
   listFeeReceipts(@Query('limit') limit?: string) {
     return this.ospQrService.listFeeReceipts(limit ? Number(limit) : 50);
@@ -193,14 +193,14 @@ export class OspQrController {
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('inter-island/movements/:id/fee-receipt')
   getInterIslandFeeReceipt(@Param('id') id: string) {
     return this.ospQrService.getInterIslandFeeReceipt(id);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('compliance/fee-payment-audits')
   listFeePaymentAudits(@Query('limit') limit?: string) {
     return this.ospQrService.listFeePaymentAudits(limit ? Number(limit) : 50);
@@ -223,14 +223,14 @@ export class OspQrController {
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('inter-island/movements/:id/fee-payment-summary')
   getInterIslandFeePaymentSummary(@Param('id') id: string) {
     return this.ospQrService.getInterIslandFeePaymentSummary(id);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('inter-island/movements/:id/fee-charges')
   listInterIslandFeeCharges(@Param('id') id: string) {
     return this.ospQrService.listInterIslandFeeCharges(id);
@@ -244,35 +244,35 @@ export class OspQrController {
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('inter-island/movements/:id/fee-charge-preview')
   previewInterIslandFeeCharges(@Param('id') id: string) {
     return this.ospQrService.previewInterIslandFeeCharges(id);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('compliance/fee-program-approval-audits')
   listFeeProgramApprovalAudits(@Query('limit') limit?: string) {
     return this.ospQrService.listFeeProgramApprovalAudits(limit ? Number(limit) : 50);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('compliance/fee-audits')
   listFeeChangeAudits(@Query('limit') limit?: string) {
     return this.ospQrService.listFeeChangeAudits(limit ? Number(limit) : 50);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('compliance/fee-programs')
   listComplianceFeePrograms() {
     return this.ospQrService.listComplianceFeePrograms();
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('inter-island/overdue-movements')
   listOverdueInterIslandMovements(@Query('thresholdMinutes') thresholdMinutes?: string) {
     return this.ospQrService.listOverdueInterIslandMovements(
@@ -281,21 +281,21 @@ export class OspQrController {
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('inter-island/movements/:id/passenger-reconciliation')
   getInterIslandPassengerReconciliation(@Param('id') id: string) {
     return this.ospQrService.getInterIslandPassengerReconciliation(id);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('vessels')
   listVessels(@Query('limit') limit?: string) {
     return this.ospQrService.listVessels(limit ? Number(limit) : 25);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('inter-island/compliance-summary')
   getInterIslandComplianceSummary() {
     return this.ospQrService.getInterIslandComplianceSummary();
@@ -314,14 +314,14 @@ export class OspQrController {
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('compliance/exceptions')
   listComplianceExceptions(@Query('limit') limit?: string) {
     return this.ospQrService.listComplianceExceptions(limit ? Number(limit) : 25);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('checkpoint/events')
   getCheckpointEvents(@Query('limit') limit?: string) {
     return this.ospQrService.getCheckpointEvents(limit ? Number(limit) : 15);
