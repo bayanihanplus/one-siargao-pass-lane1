@@ -1,5 +1,6 @@
 import { getCurrentUser, requireAccessToken } from "../src/lib/server-auth";
 import { getPreferredTravelerTrip } from "../src/lib/travelerTripSelection";
+import { redirect } from "next/navigation";
 
 function Section(props: { title: string; children: any }) {
   return (
@@ -1536,6 +1537,15 @@ function TravelerShell(props: {
 
 export default async function HomePage() {
   const user = await getCurrentUser();
+
+  const userRole = user?.primaryRole || user?.role || "";
+  if (
+    userRole === "SILENT_LGU_ANALYTICS" ||
+    userRole === "LGU_APPROVER" ||
+    userRole === "LGU_FEE_EDITOR"
+  ) {
+    redirect("/lgu?panel=overview");
+  }
 
   if (!user) {
     return (
