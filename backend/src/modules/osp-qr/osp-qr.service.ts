@@ -665,6 +665,7 @@ export class OspQrService {
       nonApprovedVessels,
       manifestLinkedMovements,
       manifestLinkedMovementRows,
+      overdueDepartedMovements,
       latestMovements,
       latestExceptions,
     ] = await Promise.all([
@@ -706,6 +707,12 @@ export class OspQrService {
         select: {
           id: true,
           manifestId: true,
+        },
+      }),
+      this.prisma.interIslandMovement.count({
+        where: {
+          movementStatus: 'DEPARTED',
+          arrivalQrEventId: null,
         },
       }),
       this.prisma.interIslandMovement.findMany({
@@ -848,6 +855,7 @@ export class OspQrService {
           nonApprovedVessels,
           manifestLinkedMovements,
           manifestMemberMismatchMovements,
+          overdueDepartedMovements,
         },
         latestMovements: latestMovements.map((movement) => ({
           ...movement,
