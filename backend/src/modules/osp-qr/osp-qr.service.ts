@@ -589,6 +589,87 @@ export class OspQrService {
   }
 
 
+
+  async updateComplianceFeeItem(
+    actor: any,
+    feeItemId: string,
+    body: {
+      amountPhp?: number | string | null;
+      description?: string | null;
+      isRequiredForApproval?: boolean;
+      isTravelerFacing?: boolean;
+    },
+  ) {
+    const existing = await this.prisma.ospComplianceFeeItem.findUnique({
+      where: {
+        id: feeItemId,
+      },
+      include: {
+        feeProgram: true,
+      },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Compliance fee item not found');
+    }
+
+    const amountPhp =
+      body.amountPhp === null || body.amountPhp === undefined || body.amountPhp === ''
+        ? null
+        : Number(body.amountPhp);
+
+    if (amountPhp !== null && (!Number.isFinite(amountPhp) || amountPhp < 0)) {
+      throw new BadRequestException('amountPhp must be a non-negative number or null');
+    }
+
+    const updated = await this.prisma.ospComplianceFeeItem.update({
+      where: {
+        id: feeItemId,
+      },
+      data: {
+        amountPhp,
+        description: body.description === undefined ? existing.description : body.description,
+        isRequiredForApproval:
+          body.isRequiredForApproval === undefined
+            ? existing.isRequiredForApproval
+            : body.isRequiredForApproval,
+        isTravelerFacing:
+          body.isTravelerFacing === undefined ? existing.isTravelerFacing : body.isTravelerFacing,
+      },
+      select: {
+        id: true,
+        feeProgramId: true,
+        code: true,
+        name: true,
+        description: true,
+        feeCategory: true,
+        chargeBasis: true,
+        amountPhp: true,
+        isRequiredForApproval: true,
+        isLguFillable: true,
+        isTravelerFacing: true,
+        sortOrder: true,
+        updatedAt: true,
+        feeProgram: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            scopeType: true,
+            municipality: true,
+            approvalStatus: true,
+            isActive: true,
+          },
+        },
+      },
+    });
+
+    return {
+      ok: true,
+      data: updated,
+    };
+  }
+
   async listComplianceFeePrograms() {
     const data = await this.prisma.ospComplianceFeeProgram.findMany({
       where: {

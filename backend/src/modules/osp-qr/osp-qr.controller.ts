@@ -103,6 +103,24 @@ export class OspQrController {
   }
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'LGU_FEE_EDITOR')
+  @Patch('compliance/fee-items/:id')
+  updateComplianceFeeItem(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Body()
+    body: {
+      amountPhp?: number | string | null;
+      description?: string | null;
+      isRequiredForApproval?: boolean;
+      isTravelerFacing?: boolean;
+    },
+  ) {
+    return this.ospQrService.updateComplianceFeeItem(req.user, id, body);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
   @Get('compliance/fee-programs')
