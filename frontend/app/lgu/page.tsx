@@ -431,6 +431,7 @@ export default async function LguPage({
     manifestSubmissions,
     manifestApprovalDraftReport,
     reportExportAudits,
+    officialReportRegistries,
   ] = await Promise.all([
     apiGet("/osp-qr/inter-island/compliance-summary", token),
     apiGet("/osp-qr/compliance/fee-clearance-exceptions?limit=5", token),
@@ -441,6 +442,7 @@ export default async function LguPage({
     apiGet("/osp-qr/compliance/manifest-submissions?limit=10", token),
     apiGet("/osp-qr/reports/manifest-approval/draft?limit=100", token),
     apiGet("/osp-qr/reports/export-audits?limit=8", token),
+    apiGet("/osp-qr/reports/official-registries", token),
   ]);
 
   const counts = summary?.data?.counts || {};
@@ -451,6 +453,10 @@ export default async function LguPage({
   const overdueRows = overdueMovements?.ok ? overdueMovements.data || [] : [];
   const manifestSubmissionRows = manifestSubmissions?.ok ? manifestSubmissions.data || [] : [];
   const reportExportAuditRows = reportExportAudits?.ok ? reportExportAudits.data || [] : [];
+  const officialRegistryData = officialReportRegistries?.ok ? officialReportRegistries.data || {} : {};
+  const officialReportTypeRows = officialRegistryData.reportTypes || [];
+  const officialJurisdictionRows = officialRegistryData.jurisdictions || [];
+  const officialRegistrySummary = officialRegistryData.summary || {};
   const manifestApprovalDraftReportData = manifestApprovalDraftReport?.ok
     ? manifestApprovalDraftReport.data || {}
     : {};
@@ -2201,6 +2207,133 @@ export default async function LguPage({
             ) : (
               <EmptyState message={manifestApprovalDraftReport?.ok ? "No manifest approval rows available for draft report." : "Backend draft report endpoint did not return report rows."} />
             )}
+          </PanelCard>
+
+          <PanelCard title="Official Report Registry Readiness">
+            <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
+              Read-only registry view for future official report types and jurisdiction codes. Official activation
+              remains disabled. This panel does not generate report numbers, official PDFs, signatures, or seals.
+            </p>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 16, marginTop: 18 }}>
+              <IntelligenceMetricCard
+                label="Report Types"
+                value={safeCount(officialRegistrySummary.reportTypeCount ?? officialReportTypeRows.length)}
+                note="Registry-controlled official report type codes."
+                tone="blue"
+              />
+              <IntelligenceMetricCard
+                label="Jurisdictions"
+                value={safeCount(officialRegistrySummary.jurisdictionCount ?? officialJurisdictionRows.length)}
+                note="Registry-controlled jurisdiction codes."
+                tone="blue"
+              />
+              <IntelligenceMetricCard
+                label="Enabled Types"
+                value={safeCount(officialRegistrySummary.enabledReportTypeCount ?? 0)}
+                note="Must remain zero until official activation doctrine is built."
+                tone="amber"
+              />
+              <IntelligenceMetricCard
+                label="Official Activation"
+                value={officialRegistrySummary.officialActivation || "DISABLED"}
+                note="No official report generation is active."
+                tone="amber"
+              />
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 18 }}>
+              <div>
+                <h3 style={{ margin: "0 0 12px", fontSize: 16, color: colors.dark }}>Report Type Registry</h3>
+                <div style={{ display: "grid", gap: 10 }}>
+                  {officialReportTypeRows.length > 0 ? (
+                    officialReportTypeRows.map((item: any) => (
+                      <div
+                        key={item.id || item.code}
+                        style={{
+                          border: `1px solid ${colors.border}`,
+                          borderRadius: 16,
+                          padding: 14,
+                          background: "#ffffff",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                          <div>
+                            <div style={{ fontWeight: 950, color: colors.dark }}>{item.code}</div>
+                            <div style={{ marginTop: 4, color: colors.muted, fontSize: 13 }}>{item.name}</div>
+                          </div>
+                          <div
+                            style={{
+                              borderRadius: 999,
+                              padding: "6px 9px",
+                              background: item.isOfficialEnabled ? "#fef2f2" : "#fffbeb",
+                              color: item.isOfficialEnabled ? "#991b1b" : "#92400e",
+                              border: item.isOfficialEnabled ? "1px solid #fecaca" : "1px solid #fde68a",
+                              fontSize: 11,
+                              fontWeight: 950,
+                              height: "fit-content",
+                            }}
+                          >
+                            {item.isOfficialEnabled ? "ENABLED" : "DISABLED"}
+                          </div>
+                        </div>
+                        <div style={{ marginTop: 10, color: colors.muted, fontSize: 12, lineHeight: 1.6 }}>
+                          Period: {String(item.requiresPeriod)} · Jurisdiction: {String(item.requiresJurisdiction)} ·
+                          Signature: {String(item.requiresSignature)} · Hash: {String(item.requiresFileHash)}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <EmptyState message="No official report type registry rows visible." />
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <h3 style={{ margin: "0 0 12px", fontSize: 16, color: colors.dark }}>Jurisdiction Registry</h3>
+                <div style={{ display: "grid", gap: 10 }}>
+                  {officialJurisdictionRows.length > 0 ? (
+                    officialJurisdictionRows.map((item: any) => (
+                      <div
+                        key={item.id || item.code}
+                        style={{
+                          border: `1px solid ${colors.border}`,
+                          borderRadius: 16,
+                          padding: 14,
+                          background: "#ffffff",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                          <div>
+                            <div style={{ fontWeight: 950, color: colors.dark }}>{item.code}</div>
+                            <div style={{ marginTop: 4, color: colors.muted, fontSize: 13 }}>{item.name}</div>
+                          </div>
+                          <div
+                            style={{
+                              borderRadius: 999,
+                              padding: "6px 9px",
+                              background: item.isOfficialEnabled ? "#fef2f2" : "#fffbeb",
+                              color: item.isOfficialEnabled ? "#991b1b" : "#92400e",
+                              border: item.isOfficialEnabled ? "1px solid #fecaca" : "1px solid #fde68a",
+                              fontSize: 11,
+                              fontWeight: 950,
+                              height: "fit-content",
+                            }}
+                          >
+                            {item.isOfficialEnabled ? "ENABLED" : "DISABLED"}
+                          </div>
+                        </div>
+                        <div style={{ marginTop: 10, color: colors.muted, fontSize: 12, lineHeight: 1.6 }}>
+                          Type: {item.jurisdictionType || "N/A"} · Parent: {item.parentCode || "None"}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <EmptyState message="No official jurisdiction registry rows visible." />
+                  )}
+                </div>
+              </div>
+            </div>
           </PanelCard>
 
           <PanelCard title="Latest Report Export Audit Log">

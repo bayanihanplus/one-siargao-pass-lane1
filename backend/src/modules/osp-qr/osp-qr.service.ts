@@ -1099,6 +1099,60 @@ export class OspQrService {
     };
   }
 
+  async listOfficialReportRegistries() {
+    const [reportTypes, jurisdictions] = await Promise.all([
+      this.prisma.officialReportTypeRegistry.findMany({
+        orderBy: { sortOrder: 'asc' },
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          description: true,
+          isActive: true,
+          isOfficialEnabled: true,
+          requiresPeriod: true,
+          requiresJurisdiction: true,
+          requiresSignature: true,
+          requiresFileHash: true,
+          sortOrder: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      }),
+      this.prisma.officialJurisdictionRegistry.findMany({
+        orderBy: { sortOrder: 'asc' },
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          jurisdictionType: true,
+          parentCode: true,
+          isActive: true,
+          isOfficialEnabled: true,
+          sortOrder: true,
+          metadataJson: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      }),
+    ]);
+
+    return {
+      ok: true,
+      data: {
+        reportTypes,
+        jurisdictions,
+        summary: {
+          reportTypeCount: reportTypes.length,
+          jurisdictionCount: jurisdictions.length,
+          enabledReportTypeCount: reportTypes.filter((row) => row.isOfficialEnabled).length,
+          enabledJurisdictionCount: jurisdictions.filter((row) => row.isOfficialEnabled).length,
+          officialActivation: 'DISABLED',
+        },
+      },
+    };
+  }
+
   async listReportExportAudits(limit = 25) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 25));
 
