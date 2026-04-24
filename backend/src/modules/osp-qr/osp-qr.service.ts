@@ -819,6 +819,43 @@ export class OspQrService {
 
 
 
+
+  async listFeeClearanceExceptions(limit = 50) {
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
+
+    const data = await this.prisma.complianceException.findMany({
+      where: {
+        resolutionNotes: {
+          contains: 'FEE_CLEARANCE_REQUIRED',
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: safeLimit,
+      select: {
+        id: true,
+        qrEventId: true,
+        travelerUserId: true,
+        tripId: true,
+        operatorUserId: true,
+        checkpointId: true,
+        exceptionType: true,
+        severity: true,
+        resolutionStatus: true,
+        resolutionNotes: true,
+        resolvedByUserId: true,
+        resolvedAt: true,
+        createdAt: true,
+      },
+    });
+
+    return {
+      ok: true,
+      data,
+    };
+  }
+
   async getInterIslandFeeClearanceSummary(movementId: string) {
     const paymentSummary = await this.getInterIslandFeePaymentSummary(movementId);
     const receiptSummary = await this.getInterIslandFeeReceipt(movementId);
