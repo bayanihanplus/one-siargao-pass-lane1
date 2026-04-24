@@ -963,6 +963,96 @@ export class OspQrService {
     };
   }
 
+  async getManifestApprovalDraftReport(user: any, limit = 100) {
+    const manifestSubmissions = await this.listLguManifestSubmissions(limit);
+    const rows = manifestSubmissions.data ?? [];
+
+    const reportRows = rows.map((row: any) => {
+      const manifest = row.manifest ?? {};
+      const activity = manifest.activityInstance ?? {};
+      const template = activity.activityTemplate ?? {};
+      const operator = manifest.operator ?? {};
+      const latestAction = row.latestAction ?? {};
+      const latestActor = latestAction.actor ?? {};
+
+      return {
+        requestId: row.id,
+        manifestId: row.manifestId,
+        manifestReference: manifest.manifestReference ?? null,
+        requestStatus: row.requestStatus ?? null,
+        manifestStatus: manifest.manifestStatus ?? null,
+        operatorUserId: manifest.operatorUserId ?? null,
+        operatorName: operator.fullName ?? null,
+        operatorEmail: operator.email ?? null,
+        operatorRole: operator.primaryRole ?? null,
+        activityTitle: template.title ?? null,
+        scheduledDate: activity.scheduledDate ?? null,
+        membersListed: manifest.listedMembersCount ?? 0,
+        totalMembers: manifest.totalMembers ?? 0,
+        latestAction: latestAction.actionType ?? null,
+        latestActionNotes: latestAction.actionNotes ?? null,
+        latestActorUserId: latestAction.actedByUserId ?? null,
+        latestActorName: latestActor.fullName ?? null,
+        latestActorEmail: latestActor.email ?? null,
+        latestActorRole: latestActor.primaryRole ?? null,
+        latestActionAt: latestAction.createdAt ?? null,
+        reviewedBy: row.reviewedBy ?? null,
+        reviewedAt: row.reviewedAt ?? null,
+        reviewNotes: row.reviewNotes ?? null,
+        requestCreatedAt: row.createdAt ?? null,
+      };
+    });
+
+    const approvalEvents = rows.flatMap((row: any) =>
+      (row.approvalActions ?? []).map((action: any) => ({
+        id: action.id,
+        requestId: row.id,
+        manifestId: row.manifestId,
+        manifestReference: row.manifest?.manifestReference ?? row.manifestId,
+        actionType: action.actionType,
+        actionNotes: action.actionNotes,
+        actedByUserId: action.actedByUserId,
+        actor: action.actor ?? null,
+        createdAt: action.createdAt,
+      })),
+    );
+
+    const approvedCount = reportRows.filter((row: any) => row.requestStatus === 'APPROVED').length;
+    const underReviewCount = reportRows.filter((row: any) => row.requestStatus === 'UNDER_REVIEW').length;
+    const deniedCount = reportRows.filter(
+      (row: any) => row.requestStatus === 'DENIED' || row.requestStatus === 'RETURNED',
+    ).length;
+
+    return {
+      ok: true,
+      data: {
+        reportType: 'MANIFEST_APPROVAL_DRAFT',
+        reportMode: 'DRAFT',
+        official: false,
+        watermark: 'DRAFT — NOT OFFICIAL LGU/DOT REPORT',
+        generatedAt: new Date().toISOString(),
+        generatedBy: {
+          id: user?.sub ?? user?.id ?? null,
+          email: user?.email ?? null,
+          role: user?.role ?? user?.primaryRole ?? null,
+        },
+        limits: {
+          requestedLimit: limit,
+          returnedRows: reportRows.length,
+        },
+        summary: {
+          totalRows: reportRows.length,
+          underReviewCount,
+          approvedCount,
+          deniedCount,
+          approvalEventCount: approvalEvents.length,
+        },
+        rows: reportRows,
+        approvalEvents,
+      },
+    };
+  }
+
   async listFeeClearanceExceptions(limit = 50) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
 

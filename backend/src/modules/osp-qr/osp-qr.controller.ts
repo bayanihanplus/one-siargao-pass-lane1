@@ -159,6 +159,13 @@ export class OspQrController {
 
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
+  @Get('reports/manifest-approval/draft')
+  getManifestApprovalDraftReport(@Req() req: any, @Query('limit') limit?: string) {
+    return this.ospQrService.getManifestApprovalDraftReport(req.user, limit ? Number(limit) : 100);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('compliance/fee-clearance-exceptions')
   listFeeClearanceExceptions(@Query('limit') limit?: string) {
     return this.ospQrService.listFeeClearanceExceptions(limit ? Number(limit) : 50);
