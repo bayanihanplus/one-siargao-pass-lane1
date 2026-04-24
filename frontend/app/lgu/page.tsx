@@ -83,6 +83,33 @@ function ApprovalRule(props: {
   );
 }
 
+
+function ComplianceRecordCard(props: {
+  title: string;
+  status: string;
+  primary: string;
+  secondary?: string;
+  meta?: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="font-black text-slate-950">{props.title}</div>
+          <div className="mt-1 text-sm text-slate-600">{props.primary}</div>
+          {props.secondary ? (
+            <div className="mt-1 text-sm text-slate-500">{props.secondary}</div>
+          ) : null}
+        </div>
+        <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
+          {props.status}
+        </div>
+      </div>
+      {props.meta ? <div className="mt-3 text-xs font-semibold text-slate-400">{props.meta}</div> : null}
+    </div>
+  );
+}
+
 function FeeItemCard(props: {
   name: string;
   code: string;
@@ -128,13 +155,19 @@ function FeeItemCard(props: {
 }
 
 export default async function LguConsolePage() {
-  const [summary, feePrograms] = await Promise.all([
+  const [summary, feePrograms, feeClearanceExceptions, feeReceipts, feePaymentAudits] = await Promise.all([
     apiGet("/osp-qr/inter-island/compliance-summary"),
     apiGet("/osp-qr/compliance/fee-programs"),
+    apiGet("/osp-qr/compliance/fee-clearance-exceptions?limit=5"),
+    apiGet("/osp-qr/compliance/fee-receipts?limit=5"),
+    apiGet("/osp-qr/compliance/fee-payment-audits?limit=5"),
   ]);
 
   const counts = summary?.data?.counts;
   const primaryFeeProgram = feePrograms?.data?.[0];
+  const clearanceExceptionRows = feeClearanceExceptions?.ok ? feeClearanceExceptions.data || [] : [];
+  const receiptRows = feeReceipts?.ok ? feeReceipts.data || [] : [];
+  const paymentAuditRows = feePaymentAudits?.ok ? feePaymentAudits.data || [] : [];
 
   return (
     <main className="min-h-screen bg-slate-50 px-5 py-6 text-slate-950">
@@ -211,15 +244,113 @@ export default async function LguConsolePage() {
                   description="Passenger list counts must reconcile against manifest members. Current mismatches mean passenger-level compliance is not yet clean."
                 />
                 <ApprovalRule
-                  title="5. Payment clearance visibility"
+                  title="5. Fee payment + receipt clearance"
                   status={counts.paymentNeedsReviewMovementCount > 0 ? "NEEDS_REVIEW" : "ACTIVE"}
-                  description="Payment clearance is visible through manifest member bookings, but enforcement is intentionally not active yet."
+                  description="Inter-island departure now requires generated fee charges, paid fee state, and issued receipt before the backend allows departure scan."
                 />
                 <ApprovalRule
                   title="6. Departure / arrival / return trail"
                   status={counts.overdueDepartedMovements > 0 ? "NEEDS_REVIEW" : "ACTIVE"}
                   description="Departed boats without arrival or return events are flagged as overdue or incomplete movement trails."
                 />
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 lg:grid-cols-3">
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-lg font-black">Fee-clearance exceptions</h2>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Departure blocks caused by unpaid, ungenerated, or unreceipted inter-island fees.
+                    </p>
+                  </div>
+                  <div className="rounded-full bg-red-100 px-3 py-1 text-xs font-black text-red-700">
+                    READ ONLY
+                  </div>
+                </div>
+                <div className="mt-4 grid gap-3">
+                  {clearanceExceptionRows.length > 0 ? (
+                    clearanceExceptionRows.map((row: any) => (
+                      <ComplianceRecordCard
+                        key={row.id}
+                        title={row.exceptionType}
+                        status={row.resolutionStatus}
+                        primary={row.resolutionNotes || "No resolution note recorded"}
+                        secondary={`Operator: ${row.operatorUserId || "N/A"}`}
+                        meta={`Created: ${row.createdAt}`}
+                      />
+                    ))
+                  ) : (
+                    <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500">
+                      No fee-clearance exceptions found.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-lg font-black">Issued fee receipts</h2>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Latest issued inter-island LGU/barangay/environmental fee receipts.
+                    </p>
+                  </div>
+                  <div className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-700">
+                    READ ONLY
+                  </div>
+                </div>
+                <div className="mt-4 grid gap-3">
+                  {receiptRows.length > 0 ? (
+                    receiptRows.map((row: any) => (
+                      <ComplianceRecordCard
+                        key={row.id}
+                        title={row.receiptReference}
+                        status={row.receiptStatus}
+                        primary={`Paid: ₱${row.totalPaidAmountPhp}`}
+                        secondary={`Payment ref: ${row.paymentReference}`}
+                        meta={`Issued: ${row.issuedAt}`}
+                      />
+                    ))
+                  ) : (
+                    <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500">
+                      No issued fee receipts found.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-lg font-black">Fee payment audit</h2>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Manual fee payment recording audit trail. Payment recording remains admin-only.
+                    </p>
+                  </div>
+                  <div className="rounded-full bg-blue-100 px-3 py-1 text-xs font-black text-blue-700">
+                    READ ONLY
+                  </div>
+                </div>
+                <div className="mt-4 grid gap-3">
+                  {paymentAuditRows.length > 0 ? (
+                    paymentAuditRows.map((row: any) => (
+                      <ComplianceRecordCard
+                        key={row.id}
+                        title={row.paymentReference}
+                        status={row.newPaymentStatus}
+                        primary={`Paid: ₱${row.paidAmountPhp} / Total: ₱${row.totalAmountPhp}`}
+                        secondary={`Method: ${row.paymentMethod} • Actor: ${row.actorRole}`}
+                        meta={`Recorded: ${row.createdAt}`}
+                      />
+                    ))
+                  ) : (
+                    <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500">
+                      No fee payment audit records found.
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
