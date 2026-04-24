@@ -10,14 +10,14 @@ export class ManifestApprovalsController {
   constructor(private readonly service: ManifestApprovalsService) {}
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'LGU_APPROVER')
   @Post(':requestId/approve')
   approve(@CurrentUserId() userId: string, @Param('requestId') requestId: string, @Body('notes') notes?: string) {
     return this.service.approve(requestId, userId, notes);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'LGU_APPROVER')
   @Post(':requestId/deny')
   deny(@CurrentUserId() userId: string, @Param('requestId') requestId: string, @Body('notes') notes?: string) {
     return this.service.deny(requestId, userId, notes);
