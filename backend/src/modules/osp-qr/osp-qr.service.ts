@@ -450,6 +450,9 @@ export class OspQrService {
       blockedMovements,
       openComplianceExceptions,
       noManifestExceptions,
+      approvedVessels,
+      pendingVessels,
+      nonApprovedVessels,
       latestMovements,
       latestExceptions,
     ] = await Promise.all([
@@ -464,6 +467,15 @@ export class OspQrService {
         where: {
           resolutionStatus: 'OPEN',
           exceptionType: 'NO_MANIFEST',
+        },
+      }),
+      this.prisma.ospVessel.count({ where: { complianceStatus: 'APPROVED' } }),
+      this.prisma.ospVessel.count({ where: { complianceStatus: 'PENDING_REVIEW' } }),
+      this.prisma.ospVessel.count({
+        where: {
+          NOT: {
+            complianceStatus: 'APPROVED',
+          },
         },
       }),
       this.prisma.interIslandMovement.findMany({
@@ -554,6 +566,9 @@ export class OspQrService {
           blockedMovements,
           openComplianceExceptions,
           noManifestExceptions,
+          approvedVessels,
+          pendingVessels,
+          nonApprovedVessels,
         },
         latestMovements: latestMovements.map((movement) => ({
           ...movement,
