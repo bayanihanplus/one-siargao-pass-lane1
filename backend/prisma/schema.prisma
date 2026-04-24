@@ -1132,3 +1132,26 @@ model OspFeeChangeAudit {
   @@index([createdAt])
   @@map("osp_fee_change_audits")
 }
+
+model OspFeeProgramApprovalAudit {
+  id                     String   @id @default(cuid())
+  actorUserId            String?
+  actorRole              String?
+  feeProgramId           String
+  feeProgramCodeSnapshot String
+  feeProgramNameSnapshot String
+  previousApprovalStatus String
+  newApprovalStatus      String
+  previousNotes          String?
+  newNotes               String?
+  createdAt              DateTime @default(now())
+
+  @@index([actorUserId])
+  @@index([actorRole])
+  @@index([feeProgramId])
+  @@index([feeProgramCodeSnapshot])
+  @@index([previousApprovalStatus])
+  @@index([newApprovalStatus])
+  @@index([createdAt])
+  @@map("osp_fee_program_approval_audits")
+}

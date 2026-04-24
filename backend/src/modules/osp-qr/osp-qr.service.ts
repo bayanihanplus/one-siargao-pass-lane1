@@ -739,48 +739,68 @@ export class OspQrService {
       }
     }
 
-    const updated = await this.prisma.ospComplianceFeeProgram.update({
-      where: {
-        id: feeProgramId,
-      },
-      data: {
-        approvalStatus,
-        notes: body.notes === undefined ? existing.notes : body.notes,
-      },
-      select: {
-        id: true,
-        code: true,
-        name: true,
-        scopeType: true,
-        municipality: true,
-        barangay: true,
-        checkpointId: true,
-        appliesToRoute: true,
-        approvalStatus: true,
-        isActive: true,
-        effectiveFrom: true,
-        effectiveTo: true,
-        notes: true,
-        createdAt: true,
-        updatedAt: true,
-        feeItems: {
-          orderBy: {
-            sortOrder: 'asc',
-          },
-          select: {
-            id: true,
-            code: true,
-            name: true,
-            feeCategory: true,
-            chargeBasis: true,
-            amountPhp: true,
-            isRequiredForApproval: true,
-            isLguFillable: true,
-            isTravelerFacing: true,
-            sortOrder: true,
+    const nextNotes = body.notes === undefined ? existing.notes : body.notes;
+
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const feeProgram = await tx.ospComplianceFeeProgram.update({
+        where: {
+          id: feeProgramId,
+        },
+        data: {
+          approvalStatus,
+          notes: nextNotes,
+        },
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          scopeType: true,
+          municipality: true,
+          barangay: true,
+          checkpointId: true,
+          appliesToRoute: true,
+          approvalStatus: true,
+          isActive: true,
+          effectiveFrom: true,
+          effectiveTo: true,
+          notes: true,
+          createdAt: true,
+          updatedAt: true,
+          feeItems: {
+            orderBy: {
+              sortOrder: 'asc',
+            },
+            select: {
+              id: true,
+              code: true,
+              name: true,
+              feeCategory: true,
+              chargeBasis: true,
+              amountPhp: true,
+              isRequiredForApproval: true,
+              isLguFillable: true,
+              isTravelerFacing: true,
+              sortOrder: true,
+            },
           },
         },
-      },
+      });
+
+      await tx.ospFeeProgramApprovalAudit.create({
+        data: {
+          actorUserId: actor?.id ?? null,
+          actorRole: actor?.role ?? null,
+          feeProgramId: existing.id,
+          feeProgramCodeSnapshot: existing.code,
+          feeProgramNameSnapshot: existing.name,
+          previousApprovalStatus: existing.approvalStatus,
+          newApprovalStatus: approvalStatus,
+          previousNotes: existing.notes,
+          newNotes: nextNotes,
+        },
+      });
+
+      return feeProgram;
     });
 
     return {
