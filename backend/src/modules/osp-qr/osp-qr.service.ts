@@ -3117,6 +3117,19 @@ export class OspQrService {
 
     const validOrigin = origin as NonNullable<typeof origin>;
 
+    const feeClearance = await this.getInterIslandFeeClearanceSummary(movement.id);
+
+    if (feeClearance.data.feeClearanceStatus !== 'CLEARED') {
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: originCheckpointId,
+        exceptionType: 'DOT_LGU_REVIEW_REQUIRED',
+        reasonMessage: `FEE_CLEARANCE_REQUIRED: Fee clearance is required before departure scan. Current status: ${feeClearance.data.feeClearanceStatus}`,
+      });
+    }
+
     const event = await this.prisma.ospQrEvent.create({
       data: {
         eventType: 'INTER_ISLAND_DEPARTURE_SCAN',
