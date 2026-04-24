@@ -311,13 +311,13 @@ export default async function OperatorManifestsPage({
                     ) : null}
 
                     <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                      <PrimaryLink href={`http://localhost:3001/operator/access-scan?activityInstanceId=${activity?.id || ""}`}>
+                      <PrimaryLink href={`http://localhost:3000/operator/access-scan?activityInstanceId=${activity?.id || ""}`}>
                         Open Scan
                       </PrimaryLink>
-                      <SecondaryLink href={`http://localhost:3001/operator/activities`}>
+                      <SecondaryLink href={`http://localhost:3000/operator/activities`}>
                         Activities
                       </SecondaryLink>
-                      <SecondaryLink href={`http://localhost:3001/operator/records?activityInstanceId=${activity?.id || ""}`}>
+                      <SecondaryLink href={`http://localhost:3000/operator/records?activityInstanceId=${activity?.id || ""}`}>
                         Records
                       </SecondaryLink>
                     </div>

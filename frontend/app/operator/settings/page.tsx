@@ -190,12 +190,12 @@ export default async function OperatorSettingsPage() {
 
         <Card title="Quick Support Links">
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <LinkButton href="http://localhost:3001/operator">Dashboard</LinkButton>
-            <LinkButton href="http://localhost:3001/operator/activities">Activities</LinkButton>
-            <LinkButton href="http://localhost:3001/operator/manifests">Manifests</LinkButton>
-            <LinkButton href="http://localhost:3001/operator/access-scan">Access Scan</LinkButton>
-            <LinkButton href="http://localhost:3001/operator/records">Records</LinkButton>
-            <LinkButton href="http://localhost:3001/operator/guides">Guides</LinkButton>
+            <LinkButton href="http://localhost:3000/operator">Dashboard</LinkButton>
+            <LinkButton href="http://localhost:3000/operator/activities">Activities</LinkButton>
+            <LinkButton href="http://localhost:3000/operator/manifests">Manifests</LinkButton>
+            <LinkButton href="http://localhost:3000/operator/access-scan">Access Scan</LinkButton>
+            <LinkButton href="http://localhost:3000/operator/records">Records</LinkButton>
+            <LinkButton href="http://localhost:3000/operator/guides">Guides</LinkButton>
           </div>
         </Card>
       </div>

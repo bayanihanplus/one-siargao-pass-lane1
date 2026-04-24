@@ -143,10 +143,10 @@ export default async function OperatorAccessRecordDetailPage({
             The requested operator access record could not be loaded.
           </p>
           <a
-            href="http://localhost:3002/operator/access-scan"
+            href="http://localhost:3000/operator/access-scan"
             style={{ textDecoration: "none", fontWeight: 800, color: "#0f172a" }}
           >
-            http://localhost:3002/operator/access-scan
+            http://localhost:3000/operator/access-scan
           </a>
         </section>
       </OperatorShell>

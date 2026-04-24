@@ -178,7 +178,7 @@ export default async function OperatorActivitiesPage() {
 
                   <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
                     <a
-                      href={`http://localhost:3001/operator/access-scan?activityInstanceId=${row.id}`}
+                      href={`http://localhost:3000/operator/access-scan?activityInstanceId=${row.id}`}
                       style={{
                         padding: "10px 12px",
                         borderRadius: 10,
@@ -192,7 +192,7 @@ export default async function OperatorActivitiesPage() {
                     </a>
 
                     <a
-                      href={`http://localhost:3001/operator/manifests?activityInstanceId=${row.id}`}
+                      href={`http://localhost:3000/operator/manifests?activityInstanceId=${row.id}`}
                       style={{
                         padding: "10px 12px",
                         borderRadius: 10,
@@ -206,7 +206,7 @@ export default async function OperatorActivitiesPage() {
                     </a>
 
                     <a
-                      href={`http://localhost:3001/operator/records?activityInstanceId=${row.id}`}
+                      href={`http://localhost:3000/operator/records?activityInstanceId=${row.id}`}
                       style={{
                         padding: "10px 12px",
                         borderRadius: 10,
