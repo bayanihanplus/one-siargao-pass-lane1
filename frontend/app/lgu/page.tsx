@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getCurrentUser, requireAccessToken } from "../../src/lib/server-auth";
 
 type LguPanel =
@@ -65,6 +66,64 @@ async function apiGet(path: string, token: string) {
       error: "Unable to connect to OSP compliance API.",
     };
   }
+}
+
+async function approveManifestAction(formData: FormData) {
+  "use server";
+
+  const requestId = String(formData.get("requestId") || "");
+  const notes = String(formData.get("notes") || "LGU manifest approved from LGU Console.");
+
+  if (!requestId) {
+    redirect("/lgu?panel=manifests&action=missing-request");
+  }
+
+  const token = await requireAccessToken();
+
+  const res = await fetch(`${getApiBaseUrl()}/manifest-approvals/${requestId}/approve`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ notes }),
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    redirect(`/lgu?panel=manifests&action=approve-failed&status=${res.status}`);
+  }
+
+  redirect("/lgu?panel=manifests&action=approved");
+}
+
+async function denyManifestAction(formData: FormData) {
+  "use server";
+
+  const requestId = String(formData.get("requestId") || "");
+  const notes = String(formData.get("notes") || "LGU manifest returned/denied from LGU Console.");
+
+  if (!requestId) {
+    redirect("/lgu?panel=manifests&action=missing-request");
+  }
+
+  const token = await requireAccessToken();
+
+  const res = await fetch(`${getApiBaseUrl()}/manifest-approvals/${requestId}/deny`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ notes }),
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    redirect(`/lgu?panel=manifests&action=deny-failed&status=${res.status}`);
+  }
+
+  redirect("/lgu?panel=manifests&action=denied");
 }
 
 function money(value: any) {
@@ -257,7 +316,7 @@ function EmptyState(props: { message: string }) {
 export default async function LguPage({
   searchParams,
 }: {
-  searchParams?: { panel?: string };
+  searchParams?: { panel?: string; action?: string; status?: string };
 }) {
   const user = await getCurrentUser();
 
@@ -308,6 +367,8 @@ export default async function LguPage({
   const activePanel: LguPanel = navItems.some((item) => item.panel === requestedPanel)
     ? requestedPanel!
     : "overview";
+
+  const actionStatus = searchParams?.action || "";
 
   const fullName = user.fullName || "LGU User";
   const email = user.email || "-";
@@ -644,10 +705,39 @@ export default async function LguPage({
       return (
         <div style={{ display: "grid", gap: 18 }}>
           <PanelCard title="Manifest Submissions">
+            {actionStatus ? (
+              <div
+                style={{
+                  marginBottom: 16,
+                  borderRadius: 14,
+                  padding: "12px 14px",
+                  border:
+                    actionStatus === "approved" || actionStatus === "denied"
+                      ? "1px solid #a7f3d0"
+                      : "1px solid #fecaca",
+                  background:
+                    actionStatus === "approved" || actionStatus === "denied"
+                      ? "#ecfdf5"
+                      : "#fef2f2",
+                  color:
+                    actionStatus === "approved" || actionStatus === "denied"
+                      ? "#065f46"
+                      : "#991b1b",
+                  fontWeight: 900,
+                }}
+              >
+                {actionStatus === "approved"
+                  ? "Manifest approved successfully."
+                  : actionStatus === "denied"
+                    ? "Manifest returned/denied successfully."
+                    : `Manifest action did not complete: ${actionStatus}`}
+              </div>
+            ) : null}
+
             <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-              DB-backed read-only manifest queue for LGU/DOT visibility. Operators submit manifests from their
+              DB-backed manifest queue for LGU/DOT visibility. Operators submit manifests from their
               own workspace; LGU receives submitted records for review visibility. Approval and denial actions
-              remain excluded from this lane.
+              are exposed only to ADMIN and LGU_APPROVER.
             </p>
 
             <div
@@ -805,41 +895,73 @@ export default async function LguPage({
                             View Details
                           </button>
 
-                          {canApproveManifests(role) ? (
+                          {canApproveManifests(role) && row.requestStatus === "UNDER_REVIEW" ? (
                             <>
-                              <button
-                                type="button"
-                                disabled
-                                style={{
-                                  borderRadius: 12,
-                                  padding: "10px 13px",
-                                  border: "1px solid #a7f3d0",
-                                  background: "#ecfdf5",
-                                  color: "#065f46",
-                                  fontWeight: 950,
-                                  cursor: "not-allowed",
-                                }}
-                                title="Approve action will be wired in the next mutation lane."
-                              >
-                                Approve Manifest
-                              </button>
-                              <button
-                                type="button"
-                                disabled
-                                style={{
-                                  borderRadius: 12,
-                                  padding: "10px 13px",
-                                  border: "1px solid #fecaca",
-                                  background: "#fef2f2",
-                                  color: "#991b1b",
-                                  fontWeight: 950,
-                                  cursor: "not-allowed",
-                                }}
-                                title="Return/Deny action will be wired in the next mutation lane."
-                              >
-                                Return / Deny
-                              </button>
+                              <form action={approveManifestAction}>
+                                <input type="hidden" name="requestId" value={row.id} />
+                                <input
+                                  type="hidden"
+                                  name="notes"
+                                  value="LGU manifest approved from LGU Console."
+                                />
+                                <button
+                                  type="submit"
+                                  style={{
+                                    borderRadius: 12,
+                                    padding: "10px 13px",
+                                    border: "1px solid #a7f3d0",
+                                    background: "#ecfdf5",
+                                    color: "#065f46",
+                                    fontWeight: 950,
+                                    cursor: "pointer",
+                                  }}
+                                  title="Approve this manifest approval request."
+                                >
+                                  Approve Manifest
+                                </button>
+                              </form>
+
+                              <form action={denyManifestAction}>
+                                <input type="hidden" name="requestId" value={row.id} />
+                                <input
+                                  type="hidden"
+                                  name="notes"
+                                  value="LGU manifest returned/denied from LGU Console."
+                                />
+                                <button
+                                  type="submit"
+                                  style={{
+                                    borderRadius: 12,
+                                    padding: "10px 13px",
+                                    border: "1px solid #fecaca",
+                                    background: "#fef2f2",
+                                    color: "#991b1b",
+                                    fontWeight: 950,
+                                    cursor: "pointer",
+                                  }}
+                                  title="Return or deny this manifest approval request."
+                                >
+                                  Return / Deny
+                                </button>
+                              </form>
                             </>
+                          ) : canApproveManifests(role) ? (
+                            <button
+                              type="button"
+                              disabled
+                              style={{
+                                borderRadius: 12,
+                                padding: "10px 13px",
+                                border: "1px solid #cbd5e1",
+                                background: "#f8fafc",
+                                color: colors.muted,
+                                fontWeight: 950,
+                                cursor: "not-allowed",
+                              }}
+                              title="Only UNDER_REVIEW requests can be actioned."
+                            >
+                              Action Closed
+                            </button>
                           ) : (
                             <button
                               type="button"
