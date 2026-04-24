@@ -638,3 +638,17 @@ model GuideAssignment {
   @@index([operatorUserId, activityInstanceId])
   @@index([guideUserId])
 }
+
+model OperatorMembership {
+  id             String   @id @default(cuid())
+  operatorUserId String
+  memberUserId   String
+  workspaceRole  String
+  status         String   @default("ACTIVE")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([operatorUserId, memberUserId])
+  @@index([memberUserId])
+  @@index([operatorUserId])
+}

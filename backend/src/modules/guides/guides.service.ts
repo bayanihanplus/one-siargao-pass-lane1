@@ -9,6 +9,24 @@ export class GuidesService {
     return role === 'ADMIN' || role === 'OPERATOR_OWNER';
   }
 
+  private async resolveOperatorUserId(actor: any) {
+    if (actor.role === 'ADMIN' || actor.role === 'OPERATOR_OWNER') {
+      return actor.id;
+    }
+
+    const membership = await this.prisma.operatorMembership.findFirst({
+      where: {
+        memberUserId: actor.id,
+        status: 'ACTIVE',
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+
+    return membership?.operatorUserId || actor.id;
+  }
+
   private stripGuideMoney(row: any) {
     return {
       id: row.id,
@@ -24,7 +42,14 @@ export class GuidesService {
   }
 
   async listAssignableActivities(actor: any) {
+    const operatorUserId = await this.resolveOperatorUserId(actor);
+
     const rows = await this.prisma.activityInstance.findMany({
+      where: {
+        activityTemplate: {
+          ownerUserId: actor.role === 'ADMIN' ? undefined : operatorUserId,
+        },
+      },
       include: {
         activityTemplate: true,
       },
@@ -39,8 +64,10 @@ export class GuidesService {
   }
 
   async listAssignments(actor: any) {
+    const operatorUserId = await this.resolveOperatorUserId(actor);
+
     const rows = await this.prisma.guideAssignment.findMany({
-      where: { operatorUserId: actor.id },
+      where: { operatorUserId },
       orderBy: { createdAt: 'desc' },
       take: 50,
     });
@@ -58,7 +85,7 @@ export class GuidesService {
 
     const row = await this.prisma.guideAssignment.create({
       data: {
-        operatorUserId: actor.id,
+        operatorUserId: await this.resolveOperatorUserId(actor),
         guideUserId: body.guideUserId || null,
         guideNameSnapshot: body.guideNameSnapshot || 'Unnamed Guide',
         activityInstanceId: body.activityInstanceId || null,
@@ -80,7 +107,9 @@ export class GuidesService {
   async updateAssignment(actor: any, id: string, body: any) {
     const existing = await this.prisma.guideAssignment.findUnique({ where: { id } });
 
-    if (!existing || existing.operatorUserId !== actor.id) {
+    const operatorUserId = await this.resolveOperatorUserId(actor);
+
+    if (!existing || existing.operatorUserId !== operatorUserId) {
       throw new Error('Guide assignment not found');
     }
 
