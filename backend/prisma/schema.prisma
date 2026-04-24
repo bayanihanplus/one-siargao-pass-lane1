@@ -1157,25 +1157,31 @@ model OspFeeProgramApprovalAudit {
 }
 
 model OspInterIslandFeeCharge {
-  id                     String   @id @default(cuid())
-  movementId             String?
-  manifestId             String?
-  bookingId              String?
-  travelerUserId         String?
-  feeProgramId           String
-  feeProgramCodeSnapshot String
-  feeItemId              String
-  feeItemCodeSnapshot    String
-  feeItemNameSnapshot    String
-  feeCategorySnapshot    String
-  chargeBasisSnapshot    String
-  amountPhp              Decimal  @db.Decimal(12, 2)
-  quantity               Int      @default(1)
-  totalAmountPhp         Decimal  @db.Decimal(12, 2)
-  chargeStatus           String   @default("PENDING")
-  source                 String   @default("APPROVED_FEE_PROGRAM")
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
+  id                      String    @id @default(cuid())
+  movementId              String?
+  manifestId              String?
+  bookingId               String?
+  travelerUserId          String?
+  feeProgramId            String
+  feeProgramCodeSnapshot  String
+  feeItemId               String
+  feeItemCodeSnapshot     String
+  feeItemNameSnapshot     String
+  feeCategorySnapshot     String
+  chargeBasisSnapshot     String
+  amountPhp               Decimal   @db.Decimal(12, 2)
+  quantity                Int       @default(1)
+  totalAmountPhp          Decimal   @db.Decimal(12, 2)
+  chargeStatus            String    @default("PENDING")
+  paymentStatus           String    @default("UNPAID")
+  paidAmountPhp           Decimal?  @db.Decimal(12, 2)
+  unpaidAmountPhp         Decimal?  @db.Decimal(12, 2)
+  paymentReference        String?
+  paidAt                  DateTime?
+  paymentRecordedByUserId String?
+  source                  String    @default("APPROVED_FEE_PROGRAM")
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
 
   @@index([movementId])
   @@index([manifestId])
@@ -1184,6 +1190,8 @@ model OspInterIslandFeeCharge {
   @@index([feeProgramId])
   @@index([feeItemId])
   @@index([chargeStatus])
+  @@index([paymentStatus])
+  @@index([paymentRecordedByUserId])
   @@index([createdAt])
   @@map("osp_inter_island_fee_charges")
 }

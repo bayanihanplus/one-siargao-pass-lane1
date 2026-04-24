@@ -813,6 +813,86 @@ export class OspQrService {
 
 
 
+
+  async getInterIslandFeePaymentSummary(movementId: string) {
+    const movement = await this.prisma.interIslandMovement.findUnique({
+      where: {
+        id: movementId,
+      },
+      select: {
+        id: true,
+        manifestId: true,
+        bookingId: true,
+        operatorUserId: true,
+        vesselId: true,
+        movementStatus: true,
+      },
+    });
+
+    if (!movement) {
+      throw new NotFoundException('Inter-island movement not found');
+    }
+
+    const charges = await this.prisma.ospInterIslandFeeCharge.findMany({
+      where: {
+        movementId,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+      select: {
+        id: true,
+        feeItemCodeSnapshot: true,
+        feeItemNameSnapshot: true,
+        totalAmountPhp: true,
+        chargeStatus: true,
+        paymentStatus: true,
+        paidAmountPhp: true,
+        unpaidAmountPhp: true,
+        paymentReference: true,
+        paidAt: true,
+        paymentRecordedByUserId: true,
+      },
+    });
+
+    const totalAmountPhp = charges.reduce(
+      (sum, charge) => sum + Number(charge.totalAmountPhp ?? 0),
+      0,
+    );
+
+    const paidAmountPhp = charges.reduce(
+      (sum, charge) => sum + Number(charge.paidAmountPhp ?? 0),
+      0,
+    );
+
+    const unpaidAmountPhp = charges.reduce(
+      (sum, charge) => sum + Number(charge.unpaidAmountPhp ?? charge.totalAmountPhp ?? 0),
+      0,
+    );
+
+    const paymentStatus =
+      charges.length === 0
+        ? 'NO_CHARGES'
+        : unpaidAmountPhp <= 0
+          ? 'PAID'
+          : paidAmountPhp > 0
+            ? 'PARTIALLY_PAID'
+            : 'UNPAID';
+
+    return {
+      ok: true,
+      data: {
+        movement,
+        chargeCount: charges.length,
+        totalAmountPhp,
+        paidAmountPhp,
+        unpaidAmountPhp,
+        paymentStatus,
+        charges,
+      },
+    };
+  }
+
   async listInterIslandFeeCharges(movementId: string) {
     const movement = await this.prisma.interIslandMovement.findUnique({
       where: {
