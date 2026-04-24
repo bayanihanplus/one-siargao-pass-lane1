@@ -895,8 +895,61 @@ export class OspQrService {
       throw new BadRequestException('Movement must be PLANNED or BOARDING before departure scan');
     }
 
+    if (!movement.operatorUserId) {
+      throw new BadRequestException('Movement must have an operator before departure scan');
+    }
+
+    if (!movement.manifestId) {
+      throw new BadRequestException('Movement must have an approved manifest before departure scan');
+    }
+
+    const manifest = await this.prisma.manifest.findFirst({
+      where: {
+        id: movement.manifestId,
+        manifestStatus: 'APPROVED',
+      },
+      select: {
+        id: true,
+        manifestReference: true,
+        manifestStatus: true,
+        operatorUserId: true,
+        totalMembers: true,
+        activityInstanceId: true,
+      },
+    });
+
+    if (!manifest) {
+      throw new BadRequestException('Approved manifest not found for movement');
+    }
+
+    if (manifest.operatorUserId && manifest.operatorUserId !== movement.operatorUserId) {
+      throw new BadRequestException('Movement operator does not match manifest operator');
+    }
+
     if (!movement.originCheckpointId) {
       throw new BadRequestException('Movement has no origin checkpoint');
+    }
+
+    if (!movement.destinationCheckpointId) {
+      throw new BadRequestException('Movement has no destination checkpoint');
+    }
+
+    const destination = await this.prisma.ospCheckpoint.findFirst({
+      where: {
+        id: movement.destinationCheckpointId,
+        isActive: true,
+        supportsInterIsland: true,
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        checkpointType: true,
+      },
+    });
+
+    if (!destination) {
+      throw new BadRequestException('Destination checkpoint is not active or does not support inter-island movement');
     }
 
     const origin = await this.prisma.ospCheckpoint.findFirst({
@@ -925,6 +978,7 @@ export class OspQrService {
         trailBookingId: movement.trailBookingId ?? null,
         manifestId: movement.manifestId ?? null,
         operatorUserId: movement.operatorUserId ?? null,
+        manifestStatus: manifest.manifestStatus,
         vesselId: movement.vesselId ?? null,
         checkpointId: movement.originCheckpointId,
         checkpointType: origin.checkpointType,
@@ -954,7 +1008,9 @@ export class OspQrService {
       data: {
         movement: updated,
         qrEvent: event,
+        manifest,
         originCheckpoint: origin,
+        destinationCheckpoint: destination,
       },
     };
   }
