@@ -1005,7 +1005,7 @@ function TravelerShellFrame(props: {
               </a>
 
               <a
-                href={props.latestTravelerTrip?.id ? `/traveler/trips/${props.latestTravelerTrip.id}` : "/traveler/trips"}
+                href="/traveler/passport-map"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -1386,7 +1386,7 @@ function TravelerReassuranceAndJourney(props: {
           />
 
           <TravelerJourneyCard
-            href="/traveler/trips"
+            href="/traveler/passport-map"
             title="Passport Map"
             subtitle="Explore Siargao"
             icon={
