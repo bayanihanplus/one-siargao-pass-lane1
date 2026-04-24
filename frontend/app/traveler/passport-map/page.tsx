@@ -36,26 +36,31 @@ export default function TravelerPassportMapPage() {
               href="/"
               aria-label="Back to One Siargao Pass home"
               style={{
-                width: 78,
-                height: 78,
+                width: 76,
+                height: 76,
                 borderRadius: "50%",
+                border: "2px solid #13a8b7",
+                color: "#13a8b7",
+                background: "rgba(255,255,255,0.92)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                textAlign: "center",
                 textDecoration: "none",
+                lineHeight: 0.9,
+                fontWeight: 950,
+                letterSpacing: "-0.04em",
+                boxShadow: "0 8px 18px rgba(18,169,186,0.10)",
                 flex: "0 0 auto",
               }}
             >
-              <img
-                src="/osp/one-siargao-pass-logo.png"
-                alt="One Siargao Pass"
-                style={{
-                  width: "78px",
-                  height: "78px",
-                  objectFit: "contain",
-                  display: "block",
-                }}
-              />
+              <span>
+                <span style={{ fontSize: 9, letterSpacing: "0.04em" }}>ONE</span>
+                <br />
+                <span style={{ fontSize: 18 }}>SIARGAO</span>
+                <br />
+                <span style={{ fontSize: 11, letterSpacing: "0.03em" }}>PASS</span>
+              </span>
             </a>
 
             <div
