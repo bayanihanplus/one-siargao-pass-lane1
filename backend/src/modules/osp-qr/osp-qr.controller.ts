@@ -140,6 +140,14 @@ export class OspQrController {
 
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'LGU_FEE_EDITOR')
+  @Post('inter-island/movements/:id/fee-charges/generate')
+  generateInterIslandFeeCharges(@Req() req: any, @Param('id') id: string) {
+    return this.ospQrService.generateInterIslandFeeCharges(req.user, id);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
   @Get('inter-island/movements/:id/fee-charge-preview')

@@ -811,6 +811,86 @@ export class OspQrService {
 
 
 
+
+  async generateInterIslandFeeCharges(actor: any, movementId: string) {
+    const existingCharges = await this.prisma.ospInterIslandFeeCharge.findMany({
+      where: {
+        movementId,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+
+    if (existingCharges.length > 0) {
+      return {
+        ok: true,
+        data: {
+          generationStatus: 'ALREADY_GENERATED',
+          movementId,
+          charges: existingCharges,
+          totalAmountPhp: existingCharges.reduce(
+            (sum, charge) => sum + Number(charge.totalAmountPhp ?? 0),
+            0,
+          ),
+        },
+      };
+    }
+
+    const preview = await this.previewInterIslandFeeCharges(movementId);
+    const previewData = preview.data;
+
+    if (previewData.previewStatus !== 'READY') {
+      throw new BadRequestException(
+        `Fee charges cannot be generated because preview status is ${previewData.previewStatus}`,
+      );
+    }
+
+    const createdCharges = await this.prisma.$transaction(async (tx) => {
+      const rows = [];
+
+      for (const charge of previewData.charges) {
+        const row = await tx.ospInterIslandFeeCharge.create({
+          data: {
+            movementId: previewData.movement.id,
+            manifestId: previewData.movement.manifestId ?? null,
+            bookingId: previewData.movement.bookingId ?? null,
+            travelerUserId: null,
+            feeProgramId: charge.feeProgramId,
+            feeProgramCodeSnapshot: charge.feeProgramCodeSnapshot,
+            feeItemId: charge.feeItemId,
+            feeItemCodeSnapshot: charge.feeItemCodeSnapshot,
+            feeItemNameSnapshot: charge.feeItemNameSnapshot,
+            feeCategorySnapshot: charge.feeCategorySnapshot,
+            chargeBasisSnapshot: charge.chargeBasisSnapshot,
+            amountPhp: Number(charge.amountPhp),
+            quantity: charge.quantity,
+            totalAmountPhp: charge.totalAmountPhp,
+            chargeStatus: 'PENDING',
+            source: 'APPROVED_FEE_PROGRAM',
+          },
+        });
+
+        rows.push(row);
+      }
+
+      return rows;
+    });
+
+    return {
+      ok: true,
+      data: {
+        generationStatus: 'GENERATED',
+        movementId,
+        charges: createdCharges,
+        totalAmountPhp: createdCharges.reduce(
+          (sum, charge) => sum + Number(charge.totalAmountPhp ?? 0),
+          0,
+        ),
+      },
+    };
+  }
+
   async previewInterIslandFeeCharges(movementId: string) {
     const movement = await this.prisma.interIslandMovement.findUnique({
       where: {
