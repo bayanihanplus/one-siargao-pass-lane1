@@ -1158,6 +1158,49 @@ model OspFeeProgramApprovalAudit {
 }
 
 
+
+model OfficialReportTypeRegistry {
+  id                    String   @id @default(cuid())
+  code                  String   @unique
+  name                  String
+  description           String?
+  isActive              Boolean  @default(true)
+  isOfficialEnabled     Boolean  @default(false)
+  requiresPeriod        Boolean  @default(true)
+  requiresJurisdiction  Boolean  @default(true)
+  requiresSignature     Boolean  @default(true)
+  requiresFileHash      Boolean  @default(true)
+  sortOrder             Int      @default(0)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+  @@index([isOfficialEnabled])
+  @@map("official_report_type_registry")
+}
+
+model OfficialJurisdictionRegistry {
+  id                String   @id @default(cuid())
+  code              String   @unique
+  name              String
+  jurisdictionType  String
+  parentCode        String?
+  isActive          Boolean  @default(true)
+  isOfficialEnabled Boolean  @default(false)
+  sortOrder         Int      @default(0)
+  metadataJson      Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([code])
+  @@index([jurisdictionType])
+  @@index([parentCode])
+  @@index([isActive])
+  @@index([isOfficialEnabled])
+  @@map("official_jurisdiction_registry")
+}
+
 model ReportExportAudit {
   id                 String    @id @default(cuid())
   reportType         String
