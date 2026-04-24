@@ -14,27 +14,27 @@ export class ActivitiesController {
   constructor(private readonly activitiesService: ActivitiesService) {}
 
   @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
-  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Post()
   createTemplate(@OperatorCtx() ctx: OperatorContext, @Body() dto: CreateActivityTemplateDto) {
     return this.activitiesService.createTemplate(ctx.operatorUserId, dto);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
-  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Post('instances')
   createInstance(@OperatorCtx() ctx: OperatorContext, @Body() dto: CreateActivityInstanceDto) {
     return this.activitiesService.createInstance(ctx.operatorUserId, dto);
   }
   @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
-  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Get('instances')
   listInstances(@OperatorCtx() ctx: OperatorContext) {
     return this.activitiesService.listInstances(ctx.operatorUserId);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
-  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Get('templates')
   listTemplates(@OperatorCtx() ctx: OperatorContext) {
     return this.activitiesService.listTemplates(ctx.operatorUserId);
