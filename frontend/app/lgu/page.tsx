@@ -72,10 +72,16 @@ async function approveManifestAction(formData: FormData) {
   "use server";
 
   const requestId = String(formData.get("requestId") || "");
-  const notes = String(formData.get("notes") || "LGU manifest approved from LGU Console.");
+  const confirmApprove = String(formData.get("confirmApprove") || "").trim().toUpperCase();
+  const notes =
+    String(formData.get("notes") || "").trim() || "LGU manifest approved from LGU Console.";
 
   if (!requestId) {
     redirect("/lgu?panel=manifests&action=missing-request");
+  }
+
+  if (confirmApprove !== "APPROVE") {
+    redirect("/lgu?panel=manifests&action=approve-confirm-required");
   }
 
   const token = await requireAccessToken();
@@ -101,10 +107,14 @@ async function denyManifestAction(formData: FormData) {
   "use server";
 
   const requestId = String(formData.get("requestId") || "");
-  const notes = String(formData.get("notes") || "LGU manifest returned/denied from LGU Console.");
+  const notes = String(formData.get("notes") || "").trim();
 
   if (!requestId) {
     redirect("/lgu?panel=manifests&action=missing-request");
+  }
+
+  if (notes.length < 10) {
+    redirect("/lgu?panel=manifests&action=deny-reason-required");
   }
 
   const token = await requireAccessToken();
@@ -734,7 +744,11 @@ export default async function LguPage({
                   ? "Manifest approved successfully."
                   : actionStatus === "denied"
                     ? "Manifest returned/denied successfully."
-                    : `Manifest action did not complete: ${actionStatus}`}
+                    : actionStatus === "approve-confirm-required"
+                      ? "Approval blocked. Type APPROVE before submitting."
+                      : actionStatus === "deny-reason-required"
+                        ? "Return/Deny blocked. A clear reason of at least 10 characters is required."
+                        : `Manifest action did not complete: ${actionStatus}`}
               </div>
             ) : null}
 
@@ -903,12 +917,32 @@ export default async function LguPage({
 
                           {canApproveManifests(role) && row.requestStatus === "UNDER_REVIEW" ? (
                             <>
-                              <form action={approveManifestAction}>
+                              <form
+                                action={approveManifestAction}
+                                style={{
+                                  display: "flex",
+                                  gap: 8,
+                                  alignItems: "center",
+                                  flexWrap: "wrap",
+                                }}
+                              >
                                 <input type="hidden" name="requestId" value={row.id} />
+                                <input
+                                  name="confirmApprove"
+                                  placeholder="Type APPROVE"
+                                  aria-label="Type APPROVE to confirm manifest approval"
+                                  style={{
+                                    borderRadius: 12,
+                                    padding: "10px 11px",
+                                    border: "1px solid #a7f3d0",
+                                    minWidth: 130,
+                                    fontWeight: 800,
+                                  }}
+                                />
                                 <input
                                   type="hidden"
                                   name="notes"
-                                  value="LGU manifest approved from LGU Console."
+                                  value="LGU manifest approved from LGU Console after typed confirmation."
                                 />
                                 <button
                                   type="submit"
@@ -927,12 +961,29 @@ export default async function LguPage({
                                 </button>
                               </form>
 
-                              <form action={denyManifestAction}>
+                              <form
+                                action={denyManifestAction}
+                                style={{
+                                  display: "flex",
+                                  gap: 8,
+                                  alignItems: "center",
+                                  flexWrap: "wrap",
+                                }}
+                              >
                                 <input type="hidden" name="requestId" value={row.id} />
                                 <input
-                                  type="hidden"
                                   name="notes"
-                                  value="LGU manifest returned/denied from LGU Console."
+                                  placeholder="Reason required"
+                                  aria-label="Reason for returning or denying manifest"
+                                  minLength={10}
+                                  required
+                                  style={{
+                                    borderRadius: 12,
+                                    padding: "10px 11px",
+                                    border: "1px solid #fecaca",
+                                    minWidth: 170,
+                                    fontWeight: 800,
+                                  }}
                                 />
                                 <button
                                   type="submit"
