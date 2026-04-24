@@ -417,6 +417,29 @@ export default async function LguPage({
     (row: any) => row.id === selectedManifestRequestId,
   );
 
+  const approvalEventRows = manifestSubmissionRows
+    .flatMap((row: any) =>
+      (row.approvalActions || []).map((action: any) => ({
+        ...action,
+        requestId: row.id,
+        requestStatus: row.requestStatus,
+        manifestReference: row.manifest?.manifestReference || row.manifestId,
+        operatorName: row.manifest?.operator?.fullName || row.manifest?.operatorUserId || "N/A",
+        activityTitle: row.manifest?.activityInstance?.activityTemplate?.title || "N/A",
+      })),
+    )
+    .sort((a: any, b: any) => String(b.createdAt || "").localeCompare(String(a.createdAt || "")));
+
+  const approvalEventApprovedCount = approvalEventRows.filter(
+    (row: any) => row.actionType === "approve",
+  ).length;
+
+  const approvalEventDeniedCount = approvalEventRows.filter(
+    (row: any) => row.actionType === "deny" || row.actionType === "return" || row.actionType === "returned",
+  ).length;
+
+  const latestApprovalEvent = approvalEventRows[0] || null;
+
   function renderPanel() {
     if (activePanel === "overview") {
       return (
@@ -702,6 +725,92 @@ export default async function LguPage({
               value={safeCount(paymentAuditRows.length)}
               note="Latest visible manual fee payment audit records."
             />
+          </div>
+
+          <div style={{ marginTop: 24 }}>
+            <h2 style={{ marginBottom: 12, color: colors.dark }}>Manifest Approval Event Dashboard</h2>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 16 }}>
+              <IntelligenceMetricCard
+                label="Approval Events"
+                value={safeCount(approvalEventRows.length)}
+                note="Total visible approval/return actions from manifest approval history."
+                tone="blue"
+              />
+              <IntelligenceMetricCard
+                label="Approved Actions"
+                value={safeCount(approvalEventApprovedCount)}
+                note="Visible approve actions recorded in ManifestApprovalAction."
+                tone="green"
+              />
+              <IntelligenceMetricCard
+                label="Returned / Denied"
+                value={safeCount(approvalEventDeniedCount)}
+                note="Visible deny/return actions recorded in ManifestApprovalAction."
+                tone={approvalEventDeniedCount > 0 ? "amber" : "green"}
+              />
+              <IntelligenceMetricCard
+                label="Latest Actor"
+                value={latestApprovalEvent?.actor?.fullName || latestApprovalEvent?.actedByUserId || "N/A"}
+                note={latestApprovalEvent?.actionType ? `${latestApprovalEvent.actionType} / ${latestApprovalEvent.createdAt}` : "No approval event visible yet."}
+                tone="blue"
+              />
+            </div>
+
+            <div style={{ marginTop: 16, display: "grid", gap: 12 }}>
+              {approvalEventRows.length > 0 ? (
+                approvalEventRows.slice(0, 6).map((event: any) => (
+                  <div
+                    key={event.id}
+                    style={{
+                      border: `1px solid ${colors.border}`,
+                      borderRadius: 18,
+                      background: "#ffffff",
+                      padding: 16,
+                      display: "grid",
+                      gridTemplateColumns: "1.1fr 1.2fr 1fr",
+                      gap: 14,
+                      alignItems: "start",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          letterSpacing: "0.08em",
+                          textTransform: "uppercase",
+                          fontWeight: 950,
+                          color: event.actionType === "approve" ? "#065f46" : "#991b1b",
+                        }}
+                      >
+                        {event.actionType || "ACTION"}
+                      </div>
+                      <div style={{ marginTop: 8, color: colors.dark, fontWeight: 950 }}>
+                        {event.manifestReference}
+                      </div>
+                      <div style={{ marginTop: 4, color: colors.muted, fontSize: 13 }}>
+                        {event.activityTitle}
+                      </div>
+                    </div>
+
+                    <div style={{ color: colors.muted, fontSize: 13, lineHeight: 1.6 }}>
+                      <strong style={{ color: colors.dark }}>Notes</strong><br />
+                      {event.actionNotes || "No action notes recorded."}
+                    </div>
+
+                    <div style={{ color: colors.muted, fontSize: 13, lineHeight: 1.6 }}>
+                      <strong style={{ color: colors.dark }}>Actor</strong><br />
+                      {event.actor?.fullName || event.actedByUserId || "N/A"}<br />
+                      {event.actor?.email || "N/A"}<br />
+                      {event.actor?.primaryRole || "N/A"}<br />
+                      <span>{event.createdAt || "N/A"}</span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <EmptyState message="No manifest approval events visible yet." />
+              )}
+            </div>
           </div>
         </PanelCard>
       );
