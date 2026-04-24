@@ -1189,6 +1189,47 @@ export class OspQrService {
       });
     }
 
+    if (!movement.vesselId) {
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: movement.originCheckpointId,
+        exceptionType: 'UNREGISTERED_VESSEL',
+        reasonMessage: 'Movement must have an approved vessel before departure scan',
+      });
+    }
+
+    const vessel = await this.prisma.ospVessel.findFirst({
+      where: {
+        id: movement.vesselId as string,
+        operatorUserId: movement.operatorUserId as string,
+        complianceStatus: 'APPROVED',
+      },
+      select: {
+        id: true,
+        operatorUserId: true,
+        vesselName: true,
+        vesselRegistrationNumber: true,
+        vesselType: true,
+        capacity: true,
+        complianceStatus: true,
+      },
+    });
+
+    if (!vessel) {
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: movement.originCheckpointId,
+        exceptionType: 'UNREGISTERED_VESSEL',
+        reasonMessage: 'Approved vessel not found for movement',
+      });
+    }
+
+    const approvedVessel = vessel as NonNullable<typeof vessel>;
+
     const manifestId = movement.manifestId as string;
     const originCheckpointId = movement.originCheckpointId as string;
     const destinationCheckpointId = movement.destinationCheckpointId as string;
@@ -1295,7 +1336,7 @@ export class OspQrService {
         manifestId: movement.manifestId ?? null,
         operatorUserId: movement.operatorUserId ?? null,
         manifestStatus: approvedManifest.manifestStatus,
-        vesselId: movement.vesselId ?? null,
+        vesselId: approvedVessel.id,
         checkpointId: originCheckpointId,
         checkpointType: validOrigin.checkpointType,
         direction: 'DEPARTURE',
@@ -1325,6 +1366,7 @@ export class OspQrService {
         movement: updated,
         qrEvent: event,
         manifest: approvedManifest,
+        vessel: approvedVessel,
         originCheckpoint: validOrigin,
         destinationCheckpoint: validDestination,
       },
