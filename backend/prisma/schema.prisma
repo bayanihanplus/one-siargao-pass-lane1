@@ -15,6 +15,7 @@ enum UserRole {
   GUIDE
   ADMIN
   SILENT_LGU_ANALYTICS
+  LGU_FEE_EDITOR
 }
 
 enum AccountStatus {
