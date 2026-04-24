@@ -51,6 +51,18 @@ export class OspQrController {
     return this.ospQrService.interIslandDepartureScan(req.user, id, body);
   }
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Post('inter-island/movements/:id/arrival-scan')
+  interIslandArrivalScan(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Body() body: { channel?: string | null },
+  ) {
+    return this.ospQrService.interIslandArrivalScan(req.user, id, body);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('inter-island/movements')
