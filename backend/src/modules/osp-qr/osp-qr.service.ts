@@ -812,6 +812,70 @@ export class OspQrService {
 
 
 
+
+  async listInterIslandFeeCharges(movementId: string) {
+    const movement = await this.prisma.interIslandMovement.findUnique({
+      where: {
+        id: movementId,
+      },
+      select: {
+        id: true,
+        manifestId: true,
+        bookingId: true,
+        operatorUserId: true,
+        vesselId: true,
+        movementStatus: true,
+      },
+    });
+
+    if (!movement) {
+      throw new NotFoundException('Inter-island movement not found');
+    }
+
+    const charges = await this.prisma.ospInterIslandFeeCharge.findMany({
+      where: {
+        movementId,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+      select: {
+        id: true,
+        movementId: true,
+        manifestId: true,
+        bookingId: true,
+        travelerUserId: true,
+        feeProgramId: true,
+        feeProgramCodeSnapshot: true,
+        feeItemId: true,
+        feeItemCodeSnapshot: true,
+        feeItemNameSnapshot: true,
+        feeCategorySnapshot: true,
+        chargeBasisSnapshot: true,
+        amountPhp: true,
+        quantity: true,
+        totalAmountPhp: true,
+        chargeStatus: true,
+        source: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return {
+      ok: true,
+      data: {
+        movement,
+        chargeCount: charges.length,
+        totalAmountPhp: charges.reduce(
+          (sum, charge) => sum + Number(charge.totalAmountPhp ?? 0),
+          0,
+        ),
+        charges,
+      },
+    };
+  }
+
   async generateInterIslandFeeCharges(actor: any, movementId: string) {
     const existingCharges = await this.prisma.ospInterIslandFeeCharge.findMany({
       where: {
