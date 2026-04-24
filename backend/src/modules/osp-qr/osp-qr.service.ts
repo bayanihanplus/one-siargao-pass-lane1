@@ -699,6 +699,96 @@ export class OspQrService {
   }
 
 
+
+  async updateComplianceFeeProgramApprovalStatus(
+    actor: any,
+    feeProgramId: string,
+    body: {
+      approvalStatus?: string;
+      notes?: string | null;
+    },
+  ) {
+    const allowedStatuses = ['DRAFT', 'READY_FOR_REVIEW', 'APPROVED', 'SUSPENDED'];
+
+    const approvalStatus = body.approvalStatus || '';
+
+    if (!allowedStatuses.includes(approvalStatus)) {
+      throw new BadRequestException('Invalid fee program approval status');
+    }
+
+    const existing = await this.prisma.ospComplianceFeeProgram.findUnique({
+      where: {
+        id: feeProgramId,
+      },
+      include: {
+        feeItems: true,
+      },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Compliance fee program not found');
+    }
+
+    if (approvalStatus === 'APPROVED') {
+      const requiredMissingAmount = existing.feeItems.filter(
+        (item) => item.isRequiredForApproval && item.amountPhp === null,
+      ).length;
+
+      if (requiredMissingAmount > 0) {
+        throw new BadRequestException('Cannot approve fee program while required fee amounts are missing');
+      }
+    }
+
+    const updated = await this.prisma.ospComplianceFeeProgram.update({
+      where: {
+        id: feeProgramId,
+      },
+      data: {
+        approvalStatus,
+        notes: body.notes === undefined ? existing.notes : body.notes,
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        scopeType: true,
+        municipality: true,
+        barangay: true,
+        checkpointId: true,
+        appliesToRoute: true,
+        approvalStatus: true,
+        isActive: true,
+        effectiveFrom: true,
+        effectiveTo: true,
+        notes: true,
+        createdAt: true,
+        updatedAt: true,
+        feeItems: {
+          orderBy: {
+            sortOrder: 'asc',
+          },
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            feeCategory: true,
+            chargeBasis: true,
+            amountPhp: true,
+            isRequiredForApproval: true,
+            isLguFillable: true,
+            isTravelerFacing: true,
+            sortOrder: true,
+          },
+        },
+      },
+    });
+
+    return {
+      ok: true,
+      data: updated,
+    };
+  }
+
   async listFeeChangeAudits(limit = 50) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
 

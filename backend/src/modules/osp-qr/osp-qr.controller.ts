@@ -122,6 +122,22 @@ export class OspQrController {
   }
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Patch('compliance/fee-programs/:id/approval-status')
+  updateComplianceFeeProgramApprovalStatus(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Body()
+    body: {
+      approvalStatus?: string;
+      notes?: string | null;
+    },
+  ) {
+    return this.ospQrService.updateComplianceFeeProgramApprovalStatus(req.user, id, body);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
   @Get('compliance/fee-audits')
