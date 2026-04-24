@@ -1067,6 +1067,42 @@ export class OspQrService {
     const data = report.data;
     const rows = data.rows ?? [];
 
+    const generatedAt = new Date();
+    const fileName = `osp-manifest-approval-draft-${generatedAt.toISOString().slice(0, 10)}.csv`;
+
+    await this.prisma.reportExportAudit.create({
+      data: {
+        reportType: data.reportType || 'MANIFEST_APPROVAL_DRAFT',
+        reportMode: data.reportMode || 'DRAFT',
+        official: false,
+        reportNumber: null,
+        generatedByUserId: user?.sub ?? user?.id ?? null,
+        generatedByRole: user?.role ?? user?.primaryRole ?? null,
+        generatedAt,
+        format: 'CSV',
+        sourceEndpoint: '/api/v1/osp-qr/reports/manifest-approval/draft.csv',
+        sourceFiltersJson: {
+          limit,
+        },
+        rowCount: data.summary?.totalRows ?? rows.length,
+        approvalEventCount: data.summary?.approvalEventCount ?? 0,
+        jurisdictionScope: null,
+        periodStart: null,
+        periodEnd: null,
+        watermark: data.watermark || 'DRAFT — NOT OFFICIAL LGU/DOT REPORT',
+        fileName,
+        fileHash: null,
+        storageKey: null,
+        status: 'GENERATED',
+        metadataJson: {
+          generatedByEmail: user?.email ?? null,
+          sourceReportType: data.reportType,
+          sourceReportMode: data.reportMode,
+          returnedRows: data.limits?.returnedRows ?? rows.length,
+        },
+      },
+    });
+
     const lines = [
       this.csvLine(['DRAFT — NOT OFFICIAL LGU/DOT REPORT']),
       this.csvLine(['reportType', data.reportType]),
