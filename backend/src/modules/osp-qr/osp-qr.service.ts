@@ -1152,6 +1152,67 @@ export class OspQrService {
     };
   }
 
+
+  async resolveComplianceException(
+    actor: any,
+    exceptionId: string,
+    body: {
+      resolutionNotes?: string | null;
+    },
+  ) {
+    const existing = await this.prisma.complianceException.findUnique({
+      where: {
+        id: exceptionId,
+      },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Compliance exception not found');
+    }
+
+    if (existing.resolutionStatus === 'RESOLVED') {
+      throw new BadRequestException('Compliance exception is already resolved');
+    }
+
+    const previousNotes = existing.resolutionNotes || '';
+    const addedNotes = body.resolutionNotes || 'Resolved by admin.';
+    const resolutionNotes = previousNotes
+      ? `${previousNotes}\n\nResolution: ${addedNotes}`
+      : `Resolution: ${addedNotes}`;
+
+    const updated = await this.prisma.complianceException.update({
+      where: {
+        id: exceptionId,
+      },
+      data: {
+        resolutionStatus: 'RESOLVED',
+        resolvedByUserId: actor.id,
+        resolvedAt: new Date(),
+        resolutionNotes,
+      },
+      select: {
+        id: true,
+        qrEventId: true,
+        travelerUserId: true,
+        tripId: true,
+        operatorUserId: true,
+        checkpointId: true,
+        exceptionType: true,
+        severity: true,
+        resolutionStatus: true,
+        resolutionNotes: true,
+        resolvedByUserId: true,
+        resolvedAt: true,
+        createdAt: true,
+      },
+    });
+
+    return {
+      ok: true,
+      data: updated,
+    };
+  }
+
   async listComplianceExceptions(limit = 25) {
     const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(100, Number(limit))) : 25;
 

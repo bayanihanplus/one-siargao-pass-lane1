@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -130,6 +130,18 @@ export class OspQrController {
   @Get('inter-island/compliance-summary')
   getInterIslandComplianceSummary() {
     return this.ospQrService.getInterIslandComplianceSummary();
+  }
+
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Patch('compliance/exceptions/:id/resolve')
+  resolveComplianceException(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Body() body: { resolutionNotes?: string | null },
+  ) {
+    return this.ospQrService.resolveComplianceException(req.user, id, body);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
