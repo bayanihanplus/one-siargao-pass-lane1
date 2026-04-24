@@ -93,6 +93,16 @@ export class OspQrController {
 
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('inter-island/overdue-movements')
+  listOverdueInterIslandMovements(@Query('thresholdMinutes') thresholdMinutes?: string) {
+    return this.ospQrService.listOverdueInterIslandMovements(
+      thresholdMinutes ? Number(thresholdMinutes) : 60,
+    );
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('inter-island/movements/:id/passenger-reconciliation')

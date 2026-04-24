@@ -416,6 +416,98 @@ export class OspQrService {
 
 
 
+
+  async listOverdueInterIslandMovements(thresholdMinutes = 60) {
+    const safeThreshold = Number.isFinite(thresholdMinutes)
+      ? Math.max(1, Math.min(1440, Number(thresholdMinutes)))
+      : 60;
+
+    const now = new Date();
+    const thresholdAt = new Date(now.getTime() - safeThreshold * 60 * 1000);
+
+    const rows = await this.prisma.interIslandMovement.findMany({
+      where: {
+        movementStatus: 'DEPARTED',
+        actualDepartureAt: {
+          lte: thresholdAt,
+        },
+        arrivalQrEventId: null,
+      },
+      orderBy: {
+        actualDepartureAt: 'asc',
+      },
+      select: {
+        id: true,
+        manifestId: true,
+        operatorUserId: true,
+        vesselId: true,
+        originCheckpointId: true,
+        destinationCheckpointId: true,
+        movementStatus: true,
+        departureQrEventId: true,
+        arrivalQrEventId: true,
+        returnQrEventId: true,
+        scheduledDepartureAt: true,
+        actualDepartureAt: true,
+        actualArrivalAt: true,
+        actualReturnAt: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    const checkpointIds = Array.from(
+      new Set(rows.flatMap((row) => [row.originCheckpointId, row.destinationCheckpointId]).filter(Boolean) as string[]),
+    );
+
+    const checkpoints = checkpointIds.length
+      ? await this.prisma.ospCheckpoint.findMany({
+          where: {
+            id: {
+              in: checkpointIds,
+            },
+          },
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            checkpointType: true,
+            locationLabel: true,
+          },
+        })
+      : [];
+
+    const checkpointById = new Map(checkpoints.map((checkpoint) => [checkpoint.id, checkpoint]));
+
+    return {
+      ok: true,
+      data: {
+        thresholdMinutes: safeThreshold,
+        now,
+        count: rows.length,
+        movements: rows.map((movement) => {
+          const departedAt = movement.actualDepartureAt ? new Date(movement.actualDepartureAt) : null;
+          const minutesSinceDeparture = departedAt
+            ? Math.round((now.getTime() - departedAt.getTime()) / 60000)
+            : null;
+
+          return {
+            ...movement,
+            minutesSinceDeparture,
+            missingArrival: !movement.arrivalQrEventId,
+            missingReturn: !movement.returnQrEventId,
+            originCheckpoint: movement.originCheckpointId
+              ? checkpointById.get(movement.originCheckpointId) ?? null
+              : null,
+            destinationCheckpoint: movement.destinationCheckpointId
+              ? checkpointById.get(movement.destinationCheckpointId) ?? null
+              : null,
+          };
+        }),
+      },
+    };
+  }
+
   async getInterIslandPassengerReconciliation(movementId: string) {
     const movement = await this.prisma.interIslandMovement.findUnique({
       where: {
