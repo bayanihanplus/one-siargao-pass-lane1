@@ -166,6 +166,13 @@ export class OspQrController {
 
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
+  @Get('reports/export-audits')
+  listReportExportAudits(@Query('limit') limit?: string) {
+    return this.ospQrService.listReportExportAudits(limit ? Number(limit) : 25);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
   @Get('reports/manifest-approval/draft.csv')
   async getManifestApprovalDraftReportCsv(
     @Req() req: any,

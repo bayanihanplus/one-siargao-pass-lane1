@@ -1053,6 +1053,51 @@ export class OspQrService {
     };
   }
 
+  async listReportExportAudits(limit = 25) {
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 25));
+
+    const data = await this.prisma.reportExportAudit.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: safeLimit,
+      select: {
+        id: true,
+        reportType: true,
+        reportMode: true,
+        official: true,
+        reportNumber: true,
+        generatedByUserId: true,
+        generatedByRole: true,
+        generatedAt: true,
+        format: true,
+        sourceEndpoint: true,
+        sourceFiltersJson: true,
+        rowCount: true,
+        approvalEventCount: true,
+        jurisdictionScope: true,
+        periodStart: true,
+        periodEnd: true,
+        watermark: true,
+        fileName: true,
+        fileHash: true,
+        storageKey: true,
+        status: true,
+        voidedAt: true,
+        voidedByUserId: true,
+        voidReason: true,
+        metadataJson: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return {
+      ok: true,
+      data,
+    };
+  }
+
   private csvCell(value: any) {
     const raw = value === null || value === undefined ? '' : String(value);
     return `"${raw.replace(/"/g, '""')}"`;
