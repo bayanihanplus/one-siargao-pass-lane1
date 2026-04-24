@@ -1,6 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { assertAdminLikeRole, assertOperatorLikeRole, getCurrentUserOrThrow } from '../auth/utils/current-user.util';
+import { resolveOperatorContext } from '../auth/utils/operator-context.util';
 import { CreateActivityTemplateDto } from './dto/create-activity-template.dto';
 import { CreateActivityInstanceDto } from './dto/create-activity-instance.dto';
 
@@ -49,7 +50,12 @@ export class ActivitiesService {
       throw new NotFoundException('Activity template not found');
     }
 
-    if (user.primaryRole !== 'ADMIN' && template.ownerUserId !== userId) {
+    const operatorContext = await resolveOperatorContext(this.prisma, {
+      id: userId,
+      role: user.primaryRole,
+    });
+
+    if (user.primaryRole !== 'ADMIN' && template.ownerUserId !== operatorContext.operatorUserId) {
       throw new ForbiddenException('Cannot create instance for another operator template');
     }
 
@@ -90,12 +96,17 @@ export class ActivitiesService {
       assertOperatorLikeRole(user.primaryRole);
     }
 
+    const operatorContext = await resolveOperatorContext(this.prisma, {
+      id: userId,
+      role: user.primaryRole,
+    });
+
     const where =
       user.primaryRole === 'ADMIN'
         ? {}
         : {
             activityTemplate: {
-              ownerUserId: userId,
+              ownerUserId: operatorContext.operatorUserId,
             },
           };
 
@@ -142,11 +153,16 @@ export class ActivitiesService {
       assertOperatorLikeRole(user.primaryRole);
     }
 
+    const operatorContext = await resolveOperatorContext(this.prisma, {
+      id: userId,
+      role: user.primaryRole,
+    });
+
     const where =
       user.primaryRole === 'ADMIN'
         ? {}
         : {
-            ownerUserId: userId,
+            ownerUserId: operatorContext.operatorUserId,
           };
 
     const rows = await this.prisma.activityTemplate.findMany({
