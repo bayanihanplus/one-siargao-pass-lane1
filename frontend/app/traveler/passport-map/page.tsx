@@ -3,8 +3,7 @@ export default function TravelerPassportMapPage() {
     <main
       style={{
         minHeight: "100vh",
-        background:
-          "linear-gradient(180deg, #f8fcff 0%, #eef8fb 42%, #ffffff 100%)",
+        background: "#f5f9fc",
         color: "#14264b",
       }}
     >
@@ -12,257 +11,319 @@ export default function TravelerPassportMapPage() {
         style={{
           width: "100%",
           maxWidth: 430,
+          minHeight: "100vh",
           margin: "0 auto",
-          padding: "18px 16px 28px",
+          background: "linear-gradient(180deg, #ffffff 0%, #eef6fa 48%, #ffffff 100%)",
+          position: "relative",
+          overflow: "hidden",
+          boxShadow: "0 0 40px rgba(15,23,42,0.08)",
         }}
       >
-        <header
+        <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 14,
+            padding: "18px 14px 92px",
           }}
         >
-          <a
-            href="/"
+          <header
             style={{
-              color: "#0f9aaa",
-              fontSize: 13,
-              fontWeight: 800,
-              textDecoration: "none",
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              gap: 12,
             }}
           >
-            ← Home
-          </a>
-
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 800,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "#70839e",
-            }}
-          >
-            One Siargao Pass
-          </div>
-        </header>
-
-        <section
-          style={{
-            marginTop: 22,
-            borderRadius: 30,
-            border: "1px solid rgba(20, 169, 186, 0.18)",
-            background: "#ffffff",
-            boxShadow: "0 18px 50px rgba(15, 23, 42, 0.08)",
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              minHeight: 260,
-              padding: "26px 22px",
-              background:
-                "linear-gradient(135deg, rgba(18,176,196,0.16), rgba(255,255,255,0.94) 42%, rgba(244,211,94,0.16))",
-              position: "relative",
-            }}
-          >
-            <div
+            <a
+              href="/"
+              aria-label="Back to One Siargao Pass home"
               style={{
-                width: 74,
-                height: 74,
+                width: 76,
+                height: 76,
                 borderRadius: "50%",
-                border: "2px solid #18aaba",
-                color: "#18aaba",
+                border: "2px solid #13a8b7",
+                color: "#13a8b7",
+                background: "rgba(255,255,255,0.92)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontWeight: 900,
-                lineHeight: 1,
-                fontSize: 13,
                 textAlign: "center",
-                background: "rgba(255,255,255,0.72)",
-              }}
-            >
-              ONE
-              <br />
-              PASS
-            </div>
-
-            <h1
-              style={{
-                margin: "22px 0 0",
-                fontSize: 34,
-                lineHeight: 1.02,
+                textDecoration: "none",
+                lineHeight: 0.9,
+                fontWeight: 950,
                 letterSpacing: "-0.04em",
-                color: "#14264b",
+                boxShadow: "0 8px 18px rgba(18,169,186,0.10)",
+                flex: "0 0 auto",
               }}
             >
-              Siargao
-              <br />
-              Passport Map
-            </h1>
-
-            <p
-              style={{
-                margin: "10px 0 0",
-                color: "#667894",
-                fontSize: 16,
-                lineHeight: 1.35,
-                fontWeight: 600,
-              }}
-            >
-              Follow the Trails. Build the Journey.
-            </p>
+              <span>
+                <span style={{ fontSize: 9, letterSpacing: "0.04em" }}>ONE</span>
+                <br />
+                <span style={{ fontSize: 18 }}>SIARGAO</span>
+                <br />
+                <span style={{ fontSize: 11, letterSpacing: "0.03em" }}>PASS</span>
+              </span>
+            </a>
 
             <div
-              aria-hidden="true"
               style={{
-                position: "absolute",
-                right: -36,
-                bottom: -40,
-                width: 210,
-                height: 210,
-                borderRadius: "44% 56% 48% 52%",
-                background:
-                  "radial-gradient(circle at 35% 28%, #ffffff 0 10%, #bceef4 11% 26%, #67c8d4 27% 44%, #168f9e 45% 62%, transparent 63%)",
-                opacity: 0.95,
-              }}
-            />
-          </div>
-
-          <div style={{ padding: "18px 18px 20px" }}>
-            <div
-              style={{
-                borderRadius: 22,
-                border: "1px solid #d9edf2",
-                background: "#f3fbfd",
-                padding: 16,
+                flex: 1,
+                minWidth: 0,
+                paddingTop: 7,
               }}
             >
-              <div
+              <h1
                 style={{
-                  fontSize: 12,
-                  fontWeight: 900,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: "#1598a8",
-                }}
-              >
-                Route Shell Active
-              </div>
-
-              <h2
-                style={{
-                  margin: "8px 0 0",
-                  fontSize: 20,
-                  lineHeight: 1.15,
+                  margin: 0,
+                  fontFamily: 'Georgia, "Times New Roman", Times, serif',
+                  fontSize: 30,
+                  lineHeight: 1.02,
+                  letterSpacing: "-0.045em",
                   color: "#14264b",
+                  fontWeight: 900,
+                  whiteSpace: "nowrap",
                 }}
               >
-                Passport Trails are being prepared.
-              </h2>
+                Siargao Passport Map
+              </h1>
 
               <p
                 style={{
-                  margin: "10px 0 0",
-                  fontSize: 14,
-                  lineHeight: 1.45,
-                  color: "#5d708d",
+                  margin: "6px 0 0",
+                  color: "#6c7890",
+                  fontSize: 16,
+                  lineHeight: 1.15,
+                  fontWeight: 700,
+                  whiteSpace: "nowrap",
                 }}
               >
-                This page is reserved for the approved map-first SPM experience.
-                Verified stops, Passport Stamps, trail progress, and route
-                completion will only appear when backed by governed OSP/SPM
-                validation records.
+                Follow the Trails. Build the Journey.
               </p>
             </div>
 
-            <div
+            <a
+              href="/traveler/pass"
+              aria-label="Open One Siargao Pass"
               style={{
-                marginTop: 16,
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 10,
+                width: 42,
+                height: 42,
+                borderRadius: "50%",
+                color: "#14264b",
+                background: "rgba(255,255,255,0.86)",
+                border: "1px solid rgba(20,38,75,0.08)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textDecoration: "none",
+                position: "relative",
+                marginTop: 8,
+                flex: "0 0 auto",
               }}
             >
-              <a
-                href="/traveler/trips"
+              <span
+                aria-hidden="true"
                 style={{
-                  borderRadius: 18,
-                  background: "#14264b",
-                  color: "#ffffff",
-                  padding: "14px 12px",
-                  textAlign: "center",
-                  textDecoration: "none",
-                  fontWeight: 800,
-                  fontSize: 14,
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  width: 7,
+                  height: 7,
+                  borderRadius: "50%",
+                  background: "#ff5638",
                 }}
-              >
-                View Trips
-              </a>
+              />
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none">
+                <path
+                  d="M18 8.5a6 6 0 1 0-12 0c0 7-2.5 7.7-2.5 9h17c0-1.3-2.5-2-2.5-9Z"
+                  stroke="currentColor"
+                  strokeWidth="1.9"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M9.8 20.2a2.4 2.4 0 0 0 4.4 0"
+                  stroke="currentColor"
+                  strokeWidth="1.9"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </a>
+          </header>
 
-              <a
-                href="/traveler/pass"
-                style={{
-                  borderRadius: 18,
-                  background: "#12a9ba",
-                  color: "#ffffff",
-                  padding: "14px 12px",
-                  textAlign: "center",
-                  textDecoration: "none",
-                  fontWeight: 800,
-                  fontSize: 14,
-                }}
-              >
-                View Pass
-              </a>
+          <section
+            style={{
+              marginTop: 22,
+              minHeight: 520,
+              borderRadius: 28,
+              border: "1px solid rgba(19,168,183,0.14)",
+              background:
+                "linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(238,248,251,0.94) 52%, rgba(255,255,255,0.96) 100%)",
+              boxShadow: "0 18px 46px rgba(15,23,42,0.07)",
+              padding: 18,
+            }}
+          >
+            <div
+              style={{
+                minHeight: 450,
+                borderRadius: 24,
+                border: "1px dashed rgba(19,168,183,0.36)",
+                background: "rgba(255,255,255,0.62)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: 24,
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 950,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "#13a8b7",
+                  }}
+                >
+                  4-C.1 Frame Active
+                </div>
+
+                <p
+                  style={{
+                    margin: "10px 0 0",
+                    fontSize: 15,
+                    lineHeight: 1.45,
+                    fontWeight: 650,
+                    color: "#64748b",
+                  }}
+                >
+                  Approved SPM frame is now in place. Hero copy, map visual,
+                  trail cards, verified stops, and progress sections will be
+                  imported in controlled micro-slices.
+                </p>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
 
         <nav
           style={{
-            marginTop: 18,
-            border: "1px solid #e5edf2",
-            borderRadius: 24,
-            background: "#ffffff",
-            padding: "12px 18px",
+            position: "fixed",
+            left: "50%",
+            bottom: 0,
+            transform: "translateX(-50%)",
+            width: "100%",
+            maxWidth: 430,
+            borderTop: "1px solid rgba(203,213,225,0.78)",
+            background: "rgba(255,255,255,0.96)",
+            backdropFilter: "blur(16px)",
+            padding: "10px 28px 18px",
+            boxSizing: "border-box",
             display: "flex",
-            alignItems: "center",
+            alignItems: "flex-end",
             justifyContent: "space-between",
-            boxShadow: "0 8px 30px rgba(15,23,42,0.06)",
+            boxShadow: "0 -8px 28px rgba(15,23,42,0.05)",
           }}
         >
-          <a href="/" style={navLinkStyle}>
-            Home
-          </a>
-          <a href="/traveler/trips" style={navLinkStyle}>
-            Trips
-          </a>
-          <a href="/traveler/passport-map" style={activeNavLinkStyle}>
-            Map
-          </a>
-          <a href="/traveler/pass" style={navLinkStyle}>
-            Pass
-          </a>
+          <BottomNavItem href="/traveler/passport-map" label="Map" active icon="map" />
+          <BottomNavItem href="/traveler/trips" label="Trails" icon="trail" />
+          <BottomNavItem href="/traveler/pass" label="Pass" icon="pass" />
+          <BottomNavItem href="/" label="Profile" icon="profile" />
         </nav>
       </div>
     </main>
   );
 }
 
-const navLinkStyle = {
-  color: "#6b7f9f",
-  fontSize: 12,
-  fontWeight: 800,
-  textDecoration: "none",
-};
+function BottomNavItem(props: {
+  href: string;
+  label: string;
+  active?: boolean;
+  icon: "map" | "trail" | "pass" | "profile";
+}) {
+  const color = props.active ? "#13a8b7" : "#6b7890";
 
-const activeNavLinkStyle = {
-  color: "#12a9ba",
-  fontSize: 12,
-  fontWeight: 900,
-  textDecoration: "none",
-};
+  return (
+    <a
+      href={props.href}
+      style={{
+        minWidth: 54,
+        color,
+        textDecoration: "none",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 5,
+        fontSize: 11,
+        fontWeight: props.active ? 900 : 750,
+      }}
+    >
+      <span
+        style={{
+          width: 28,
+          height: 28,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <NavIcon type={props.icon} active={props.active} />
+      </span>
+      <span>{props.label}</span>
+    </a>
+  );
+}
+
+function NavIcon(props: {
+  type: "map" | "trail" | "pass" | "profile";
+  active?: boolean;
+}) {
+  if (props.type === "map") {
+    return (
+      <svg viewBox="0 0 24 24" width="27" height="27" fill={props.active ? "currentColor" : "none"}>
+        <path
+          d="M3.5 5.8 8.7 3.8l6.6 2.4 5.2-2v14l-5.2 2-6.6-2.4-5.2 2v-14Z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <path d="M8.7 3.8v14M15.3 6.2v14" stroke="currentColor" strokeWidth="1.8" />
+      </svg>
+    );
+  }
+
+  if (props.type === "trail") {
+    return (
+      <svg viewBox="0 0 24 24" width="27" height="27" fill="none">
+        <path
+          d="M6 18c3-7 9-5 12-12"
+          stroke="currentColor"
+          strokeWidth="1.9"
+          strokeLinecap="round"
+          strokeDasharray="3 3"
+        />
+        <circle cx="6" cy="18" r="2.4" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="18" cy="6" r="2.4" stroke="currentColor" strokeWidth="1.8" />
+      </svg>
+    );
+  }
+
+  if (props.type === "pass") {
+    return (
+      <svg viewBox="0 0 24 24" width="27" height="27" fill="none">
+        <rect x="5" y="4" width="14" height="16" rx="3" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M9 9h6M9 13h6M9 17h3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" width="27" height="27" fill="none">
+      <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="M5.5 20a6.5 6.5 0 0 1 13 0"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
