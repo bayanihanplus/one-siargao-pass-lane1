@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { LinkBookingToTripDto } from './dto/link-booking-to-trip.dto';
@@ -8,6 +8,25 @@ export class BookingsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(primaryTravelerUserId: string | undefined, dto: CreateBookingDto) {
+    if (!primaryTravelerUserId) {
+      throw new NotFoundException('Traveler not found');
+    }
+
+    if (!dto.bookingTotalPhp || Number(dto.bookingTotalPhp) <= 0) {
+      throw new BadRequestException('Booking total must be greater than zero');
+    }
+
+    if (dto.activityInstanceId) {
+      const activityInstance = await this.prisma.activityInstance.findUnique({
+        where: { id: dto.activityInstanceId },
+        select: { id: true },
+      });
+
+      if (!activityInstance) {
+        throw new NotFoundException('Activity instance not found');
+      }
+    }
+
     const booking = await this.prisma.booking.create({
       data: {
         primaryTravelerUserId,
