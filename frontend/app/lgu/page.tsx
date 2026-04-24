@@ -77,6 +77,10 @@ function safeCount(value: any) {
   return Number(value).toLocaleString("en-PH");
 }
 
+function canApproveManifests(role: string) {
+  return role === "ADMIN" || role === "LGU_APPROVER";
+}
+
 function PanelCard(props: { title: string; children: React.ReactNode }) {
   return (
     <div
@@ -319,6 +323,7 @@ export default async function LguPage({
     feePaymentAudits,
     feePrograms,
     overdueMovements,
+    manifestSubmissions,
   ] = await Promise.all([
     apiGet("/osp-qr/inter-island/compliance-summary", token),
     apiGet("/osp-qr/compliance/fee-clearance-exceptions?limit=5", token),
@@ -326,6 +331,7 @@ export default async function LguPage({
     apiGet("/osp-qr/compliance/fee-payment-audits?limit=5", token),
     apiGet("/osp-qr/compliance/fee-programs", token),
     apiGet("/osp-qr/inter-island/overdue-movements", token),
+    apiGet("/osp-qr/compliance/manifest-submissions?limit=10", token),
   ]);
 
   const counts = summary?.data?.counts || {};
@@ -334,6 +340,7 @@ export default async function LguPage({
   const paymentAuditRows = feePaymentAudits?.ok ? feePaymentAudits.data || [] : [];
   const feeProgramRows = feePrograms?.ok ? feePrograms.data || [] : [];
   const overdueRows = overdueMovements?.ok ? overdueMovements.data || [] : [];
+  const manifestSubmissionRows = manifestSubmissions?.ok ? manifestSubmissions.data || [] : [];
 
   function renderPanel() {
     if (activePanel === "overview") {
@@ -626,18 +633,254 @@ export default async function LguPage({
     }
 
     if (activePanel === "manifests") {
+      const underReviewCount = manifestSubmissionRows.filter(
+        (row: any) => row.requestStatus === "UNDER_REVIEW",
+      ).length;
+
+      const approvedCount = manifestSubmissionRows.filter(
+        (row: any) => row.requestStatus === "APPROVED" || row.manifest?.manifestStatus === "APPROVED",
+      ).length;
+
       return (
-        <PanelCard title="Manifest Submissions">
-          <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-            Operators submit manifests into the compliance spine. LGU receives them as a review queue.
-            This lane is read-only. Approval actions remain locked behind governed backend workflows.
-          </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 16, marginTop: 18 }}>
-            <StatCard label="Operator action" value="Submit manifest" note="Operators prepare manifests from their own workspace." />
-            <StatCard label="LGU action" value="Review queue" note="LGU reviews manifest readiness, vessel compliance, and fee clearance." />
-            <StatCard label="Audit rule" value="Backend source" note="No manual import button. Submission queue is system-driven." />
-          </div>
-        </PanelCard>
+        <div style={{ display: "grid", gap: 18 }}>
+          <PanelCard title="Manifest Submissions">
+            <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
+              DB-backed read-only manifest queue for LGU/DOT visibility. Operators submit manifests from their
+              own workspace; LGU receives submitted records for review visibility. Approval and denial actions
+              remain excluded from this lane.
+            </p>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                gap: 16,
+                marginTop: 18,
+              }}
+            >
+              <IntelligenceMetricCard
+                label="Visible Submissions"
+                value={safeCount(manifestSubmissionRows.length)}
+                note="Latest manifest approval request records visible to LGU console."
+                tone="blue"
+              />
+              <IntelligenceMetricCard
+                label="Under Review"
+                value={safeCount(underReviewCount)}
+                note="Submitted manifests currently waiting for review outcome."
+                tone={underReviewCount > 0 ? "amber" : "green"}
+              />
+              <IntelligenceMetricCard
+                label="Approved Visible"
+                value={safeCount(approvedCount)}
+                note="Visible manifests already approved in the approval request stream."
+                tone="green"
+              />
+              <IntelligenceMetricCard
+                label="Approval Access"
+                value={canApproveManifests(role) ? "ENABLED" : "LOCKED"}
+                note={
+                  canApproveManifests(role)
+                    ? "Approver role may act on manifest approval requests."
+                    : "Current LGU analytics role can inspect only. Approval actions are locked."
+                }
+                tone={canApproveManifests(role) ? "green" : "amber"}
+              />
+            </div>
+          </PanelCard>
+
+          <PanelCard title="Submitted Manifest Queue">
+            {manifestSubmissionRows.length > 0 ? (
+              <div style={{ display: "grid", gap: 12 }}>
+                {manifestSubmissionRows.map((row: any) => {
+                  const manifest = row.manifest || {};
+                  const activity = manifest.activityInstance || {};
+                  const template = activity.activityTemplate || {};
+                  const submission = row.latestSubmission || {};
+                  const operator = manifest.operator || {};
+
+                  return (
+                    <div
+                      key={row.id}
+                      style={{
+                        border: `1px solid ${colors.border}`,
+                        borderRadius: 18,
+                        background: "#ffffff",
+                        padding: 16,
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+                        <div>
+                          <div
+                            style={{
+                              fontSize: 12,
+                              color: "#075985",
+                              fontWeight: 950,
+                              letterSpacing: "0.08em",
+                            }}
+                          >
+                            {row.requestStatus || "UNKNOWN"}
+                          </div>
+                          <div style={{ marginTop: 8, fontSize: 20, fontWeight: 950, color: colors.dark }}>
+                            {manifest.manifestReference || row.manifestId}
+                          </div>
+                          <div style={{ marginTop: 6, color: colors.muted, fontSize: 14 }}>
+                            {template.title || "Activity title not available"}
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            borderRadius: 999,
+                            padding: "7px 10px",
+                            background: manifest.manifestStatus === "APPROVED" ? "#ecfdf5" : "#fffbeb",
+                            color: manifest.manifestStatus === "APPROVED" ? "#065f46" : "#92400e",
+                            border: manifest.manifestStatus === "APPROVED" ? "1px solid #a7f3d0" : "1px solid #fde68a",
+                            fontSize: 12,
+                            fontWeight: 950,
+                            height: "fit-content",
+                          }}
+                        >
+                          {manifest.manifestStatus || "NO_STATUS"}
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                          gap: 10,
+                          marginTop: 14,
+                          fontSize: 13,
+                          color: colors.muted,
+                        }}
+                      >
+                        <div><strong>Operator:</strong><br />{operator.fullName || manifest.operatorUserId || "N/A"}</div>
+                        <div><strong>Members:</strong><br />{safeCount(manifest.listedMembersCount)} / {safeCount(manifest.totalMembers)}</div>
+                        <div><strong>Submitted:</strong><br />{submission.submissionTime || row.createdAt || "N/A"}</div>
+                        <div><strong>Schedule:</strong><br />{activity.scheduledDate || "N/A"}</div>
+                      </div>
+
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                          gap: 10,
+                          marginTop: 12,
+                          fontSize: 13,
+                          color: colors.muted,
+                        }}
+                      >
+                        <div><strong>Capacity:</strong><br />{safeCount(activity.capacity)}</div>
+                        <div><strong>Booked:</strong><br />{safeCount(activity.bookedCount)}</div>
+                        <div><strong>Latest Action:</strong><br />{row.latestAction?.actionType || "N/A"}</div>
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 10,
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          marginTop: 16,
+                          paddingTop: 14,
+                          borderTop: `1px solid ${colors.border}`,
+                        }}
+                      >
+                        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                          <button
+                            type="button"
+                            disabled
+                            style={{
+                              borderRadius: 12,
+                              padding: "10px 13px",
+                              border: "1px solid #bfdbfe",
+                              background: "#eff6ff",
+                              color: "#075985",
+                              fontWeight: 950,
+                              cursor: "not-allowed",
+                            }}
+                            title="Manifest details modal is not yet wired in this lane."
+                          >
+                            View Details
+                          </button>
+
+                          {canApproveManifests(role) ? (
+                            <>
+                              <button
+                                type="button"
+                                disabled
+                                style={{
+                                  borderRadius: 12,
+                                  padding: "10px 13px",
+                                  border: "1px solid #a7f3d0",
+                                  background: "#ecfdf5",
+                                  color: "#065f46",
+                                  fontWeight: 950,
+                                  cursor: "not-allowed",
+                                }}
+                                title="Approve action will be wired in the next mutation lane."
+                              >
+                                Approve Manifest
+                              </button>
+                              <button
+                                type="button"
+                                disabled
+                                style={{
+                                  borderRadius: 12,
+                                  padding: "10px 13px",
+                                  border: "1px solid #fecaca",
+                                  background: "#fef2f2",
+                                  color: "#991b1b",
+                                  fontWeight: 950,
+                                  cursor: "not-allowed",
+                                }}
+                                title="Return/Deny action will be wired in the next mutation lane."
+                              >
+                                Return / Deny
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              type="button"
+                              disabled
+                              style={{
+                                borderRadius: 12,
+                                padding: "10px 13px",
+                                border: "1px solid #fde68a",
+                                background: "#fffbeb",
+                                color: "#92400e",
+                                fontWeight: 950,
+                                cursor: "not-allowed",
+                              }}
+                              title="SILENT_LGU_ANALYTICS is read-only."
+                            >
+                              Approval Locked
+                            </button>
+                          )}
+                        </div>
+
+                        <div
+                          style={{
+                            fontSize: 12,
+                            color: colors.muted,
+                            fontWeight: 800,
+                            textAlign: "right",
+                          }}
+                        >
+                          Request ID<br />
+                          <span style={{ color: colors.dark }}>{row.id}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <EmptyState message="No submitted manifest records visible yet." />
+            )}
+          </PanelCard>
+        </div>
       );
     }
 
