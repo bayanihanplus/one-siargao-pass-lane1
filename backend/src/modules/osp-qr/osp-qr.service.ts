@@ -858,14 +858,14 @@ export class OspQrService {
           orderBy: {
             createdAt: 'desc',
           },
-          take: 1,
         },
       },
     });
 
     const data = rows.map((row) => {
       const latestSubmission = row.manifest?.submissions?.[0] ?? null;
-      const latestAction = row.actions?.[0] ?? null;
+      const approvalActions = row.actions ?? [];
+      const latestAction = approvalActions[0] ?? null;
 
       return {
         id: row.id,
@@ -876,6 +876,7 @@ export class OspQrService {
         reviewNotes: row.reviewNotes,
         createdAt: row.createdAt,
         latestAction,
+        approvalActions,
         latestSubmission,
         manifest: row.manifest
           ? {
@@ -885,6 +886,15 @@ export class OspQrService {
               operatorUserId: row.manifest.operatorUserId,
               totalMembers: row.manifest.totalMembers,
               listedMembersCount: row.manifest.members?.length ?? 0,
+              members: (row.manifest.members ?? []).map((member) => ({
+                id: member.id,
+                manifestId: member.manifestId,
+                tripId: member.tripId,
+                bookingId: member.bookingId,
+                travelerNameSnapshot: member.travelerNameSnapshot,
+                memberStatus: member.memberStatus,
+                createdAt: member.createdAt,
+              })),
               createdAt: row.manifest.createdAt,
               updatedAt: row.manifest.updatedAt,
               operator: row.manifest.operator,

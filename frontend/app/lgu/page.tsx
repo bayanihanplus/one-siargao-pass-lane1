@@ -1068,6 +1068,7 @@ export default async function LguPage({
                 const template = activity.activityTemplate || {};
                 const submission = selectedManifestRequest.latestSubmission || {};
                 const latestAction = selectedManifestRequest.latestAction || {};
+                const approvalActions = selectedManifestRequest.approvalActions || [];
                 const operator = manifest.operator || {};
                 const members = manifest.members || [];
 
@@ -1184,6 +1185,65 @@ export default async function LguPage({
                         </div>
                       ) : (
                         <EmptyState message="No manifest member rows available in this detail record." />
+                      )}
+                    </div>
+
+                    <div
+                      style={{
+                        border: `1px solid ${colors.border}`,
+                        borderRadius: 18,
+                        background: "#ffffff",
+                        padding: 16,
+                      }}
+                    >
+                      <h3 style={{ marginTop: 0, color: colors.dark }}>Approval History Timeline</h3>
+                      {approvalActions.length > 0 ? (
+                        <div style={{ display: "grid", gap: 12 }}>
+                          {approvalActions.map((action: any) => (
+                            <div
+                              key={action.id}
+                              style={{
+                                borderLeft: action.actionType === "approve" ? "4px solid #10b981" : "4px solid #ef4444",
+                                background: action.actionType === "approve" ? "#ecfdf5" : "#fef2f2",
+                                borderRadius: 14,
+                                padding: 14,
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  gap: 12,
+                                  alignItems: "flex-start",
+                                }}
+                              >
+                                <div>
+                                  <div
+                                    style={{
+                                      fontSize: 12,
+                                      letterSpacing: "0.08em",
+                                      textTransform: "uppercase",
+                                      fontWeight: 950,
+                                      color: action.actionType === "approve" ? "#065f46" : "#991b1b",
+                                    }}
+                                  >
+                                    {action.actionType || "ACTION"}
+                                  </div>
+                                  <div style={{ marginTop: 8, color: colors.dark, fontWeight: 900 }}>
+                                    {action.actionNotes || "No action notes recorded."}
+                                  </div>
+                                </div>
+                                <div style={{ color: colors.muted, fontSize: 12, textAlign: "right" }}>
+                                  <strong>Actor</strong><br />
+                                  {action.actedByUserId || "N/A"}<br />
+                                  <span>{action.createdAt || "N/A"}</span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <EmptyState message="No approval history actions recorded yet." />
                       )}
                     </div>
                   </div>
