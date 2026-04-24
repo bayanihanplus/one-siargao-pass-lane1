@@ -814,6 +814,150 @@ export class OspQrService {
 
 
 
+
+  async recordInterIslandFeePayment(
+    actor: any,
+    movementId: string,
+    body: {
+      paymentReference?: string;
+      paymentMethod?: string;
+      notes?: string | null;
+    },
+  ) {
+    const paymentReference = body.paymentReference?.trim();
+    const paymentMethod = body.paymentMethod?.trim() || 'MANUAL';
+
+    if (!paymentReference) {
+      throw new BadRequestException('paymentReference is required');
+    }
+
+    const movement = await this.prisma.interIslandMovement.findUnique({
+      where: {
+        id: movementId,
+      },
+      select: {
+        id: true,
+        manifestId: true,
+        bookingId: true,
+        operatorUserId: true,
+        vesselId: true,
+        movementStatus: true,
+      },
+    });
+
+    if (!movement) {
+      throw new NotFoundException('Inter-island movement not found');
+    }
+
+    const charges = await this.prisma.ospInterIslandFeeCharge.findMany({
+      where: {
+        movementId,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+
+    if (charges.length === 0) {
+      throw new BadRequestException('No generated fee charges found for movement');
+    }
+
+    const alreadyPaid = charges.every((charge) => charge.paymentStatus === 'PAID');
+
+    if (alreadyPaid) {
+      throw new BadRequestException('Fee charges are already marked as paid');
+    }
+
+    const previousPaidAmountPhp = charges.reduce(
+      (sum, charge) => sum + Number(charge.paidAmountPhp ?? 0),
+      0,
+    );
+    const previousUnpaidAmountPhp = charges.reduce(
+      (sum, charge) => sum + Number(charge.unpaidAmountPhp ?? charge.totalAmountPhp ?? 0),
+      0,
+    );
+    const totalAmountPhp = charges.reduce(
+      (sum, charge) => sum + Number(charge.totalAmountPhp ?? 0),
+      0,
+    );
+
+    const previousPaymentStatus =
+      previousUnpaidAmountPhp <= 0
+        ? 'PAID'
+        : previousPaidAmountPhp > 0
+          ? 'PARTIALLY_PAID'
+          : 'UNPAID';
+
+    const paidAt = new Date();
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      for (const charge of charges) {
+        await tx.ospInterIslandFeeCharge.update({
+          where: {
+            id: charge.id,
+          },
+          data: {
+            chargeStatus: 'PAID',
+            paymentStatus: 'PAID',
+            paidAmountPhp: charge.totalAmountPhp,
+            unpaidAmountPhp: 0,
+            paymentReference,
+            paidAt,
+            paymentRecordedByUserId: actor?.id ?? null,
+          },
+        });
+      }
+
+      const audit = await tx.ospFeePaymentAudit.create({
+        data: {
+          actorUserId: actor?.id ?? null,
+          actorRole: actor?.role ?? null,
+          movementId: movement.id,
+          manifestId: movement.manifestId ?? null,
+          bookingId: movement.bookingId ?? null,
+          paymentReference,
+          paymentMethod,
+          previousPaymentStatus,
+          newPaymentStatus: 'PAID',
+          totalAmountPhp,
+          paidAmountPhp: totalAmountPhp,
+          unpaidAmountPhp: 0,
+          chargeIdsJson: charges.map((charge) => charge.id),
+          notes: body.notes ?? null,
+        },
+      });
+
+      const updatedCharges = await tx.ospInterIslandFeeCharge.findMany({
+        where: {
+          movementId,
+        },
+        orderBy: {
+          createdAt: 'asc',
+        },
+      });
+
+      return {
+        audit,
+        updatedCharges,
+      };
+    });
+
+    return {
+      ok: true,
+      data: {
+        movement,
+        paymentStatus: 'PAID',
+        totalAmountPhp,
+        paidAmountPhp: totalAmountPhp,
+        unpaidAmountPhp: 0,
+        paymentReference,
+        paymentMethod,
+        audit: result.audit,
+        charges: result.updatedCharges,
+      },
+    };
+  }
+
   async getInterIslandFeePaymentSummary(movementId: string) {
     const movement = await this.prisma.interIslandMovement.findUnique({
       where: {

@@ -143,6 +143,23 @@ export class OspQrController {
 
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Patch('inter-island/movements/:id/fee-payments/record')
+  recordInterIslandFeePayment(
+    @Req() req: any,
+    @Param('id') id: string,
+    @Body()
+    body: {
+      paymentReference?: string;
+      paymentMethod?: string;
+      notes?: string | null;
+    },
+  ) {
+    return this.ospQrService.recordInterIslandFeePayment(req.user, id, body);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
   @Get('inter-island/movements/:id/fee-payment-summary')
