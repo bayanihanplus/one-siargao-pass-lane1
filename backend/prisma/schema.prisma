@@ -1157,6 +1157,48 @@ model OspFeeProgramApprovalAudit {
   @@map("osp_fee_program_approval_audits")
 }
 
+
+model ReportExportAudit {
+  id                 String    @id @default(cuid())
+  reportType         String
+  reportMode         String    @default("DRAFT")
+  official           Boolean   @default(false)
+  reportNumber       String?
+  generatedByUserId  String?
+  generatedByRole    String?
+  generatedAt        DateTime  @default(now())
+  format             String
+  sourceEndpoint     String?
+  sourceFiltersJson  Json?
+  rowCount           Int       @default(0)
+  approvalEventCount Int       @default(0)
+  jurisdictionScope  String?
+  periodStart        DateTime?
+  periodEnd          DateTime?
+  watermark          String?
+  fileName           String?
+  fileHash           String?
+  storageKey         String?
+  status             String    @default("GENERATED")
+  voidedAt           DateTime?
+  voidedByUserId     String?
+  voidReason         String?
+  metadataJson       Json?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([reportType])
+  @@index([reportMode])
+  @@index([official])
+  @@index([generatedByUserId])
+  @@index([generatedByRole])
+  @@index([generatedAt])
+  @@index([format])
+  @@index([status])
+  @@index([reportNumber])
+  @@map("report_export_audits")
+}
+
 model OspInterIslandFeeCharge {
   id                      String    @id @default(cuid())
   movementId              String?
