@@ -815,6 +815,41 @@ export class OspQrService {
 
 
 
+
+  async listFeePaymentAudits(limit = 50) {
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
+
+    const data = await this.prisma.ospFeePaymentAudit.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: safeLimit,
+      select: {
+        id: true,
+        actorUserId: true,
+        actorRole: true,
+        movementId: true,
+        manifestId: true,
+        bookingId: true,
+        paymentReference: true,
+        paymentMethod: true,
+        previousPaymentStatus: true,
+        newPaymentStatus: true,
+        totalAmountPhp: true,
+        paidAmountPhp: true,
+        unpaidAmountPhp: true,
+        chargeIdsJson: true,
+        notes: true,
+        createdAt: true,
+      },
+    });
+
+    return {
+      ok: true,
+      data,
+    };
+  }
+
   async recordInterIslandFeePayment(
     actor: any,
     movementId: string,
