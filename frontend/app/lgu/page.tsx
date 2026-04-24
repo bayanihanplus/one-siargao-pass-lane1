@@ -11,6 +11,7 @@ type LguPanel =
   | "receipts"
   | "payment-audit"
   | "fee-programs"
+  | "reports"
   | "notifications"
   | "session";
 
@@ -23,6 +24,7 @@ const navItems: Array<{ label: string; panel: LguPanel }> = [
   { label: "Receipts Read", panel: "receipts" },
   { label: "Payment Audit Read", panel: "payment-audit" },
   { label: "Fee Programs Config", panel: "fee-programs" },
+  { label: "Reports / Export", panel: "reports" },
   { label: "Notifications", panel: "notifications" },
   { label: "Session / Access", panel: "session" },
 ];
@@ -144,6 +146,15 @@ function money(value: any) {
 function safeCount(value: any) {
   if (value === null || value === undefined || Number.isNaN(Number(value))) return "0";
   return Number(value).toLocaleString("en-PH");
+}
+
+function csvCell(value: any) {
+  const raw = value === null || value === undefined ? "" : String(value);
+  return `"${raw.replace(/"/g, '""')}"`;
+}
+
+function csvLine(values: any[]) {
+  return values.map(csvCell).join(",");
 }
 
 function canApproveManifests(role: string) {
@@ -439,6 +450,91 @@ export default async function LguPage({
   ).length;
 
   const latestApprovalEvent = approvalEventRows[0] || null;
+
+  const reportGeneratedAt = new Date().toISOString();
+
+  const manifestApprovalReportRows = manifestSubmissionRows.map((row: any) => {
+    const manifest = row.manifest || {};
+    const activity = manifest.activityInstance || {};
+    const template = activity.activityTemplate || {};
+    const operator = manifest.operator || {};
+    const latestAction = row.latestAction || {};
+    const latestActor = latestAction.actor || {};
+
+    return {
+      requestId: row.id,
+      manifestReference: manifest.manifestReference || row.manifestId || "",
+      requestStatus: row.requestStatus || "",
+      manifestStatus: manifest.manifestStatus || "",
+      operatorName: operator.fullName || manifest.operatorUserId || "",
+      operatorEmail: operator.email || "",
+      activityTitle: template.title || "",
+      scheduledDate: activity.scheduledDate || "",
+      membersListed: manifest.listedMembersCount ?? "",
+      totalMembers: manifest.totalMembers ?? "",
+      latestAction: latestAction.actionType || "",
+      latestActionNotes: latestAction.actionNotes || "",
+      latestActorName: latestActor.fullName || latestAction.actedByUserId || "",
+      latestActorEmail: latestActor.email || "",
+      latestActorRole: latestActor.primaryRole || "",
+      latestActionAt: latestAction.createdAt || "",
+      reviewedBy: row.reviewedBy || "",
+      reviewedAt: row.reviewedAt || "",
+      reviewNotes: row.reviewNotes || "",
+      requestCreatedAt: row.createdAt || "",
+    };
+  });
+
+  const manifestApprovalCsv = [
+    csvLine([
+      "requestId",
+      "manifestReference",
+      "requestStatus",
+      "manifestStatus",
+      "operatorName",
+      "operatorEmail",
+      "activityTitle",
+      "scheduledDate",
+      "membersListed",
+      "totalMembers",
+      "latestAction",
+      "latestActionNotes",
+      "latestActorName",
+      "latestActorEmail",
+      "latestActorRole",
+      "latestActionAt",
+      "reviewedBy",
+      "reviewedAt",
+      "reviewNotes",
+      "requestCreatedAt",
+    ]),
+    ...manifestApprovalReportRows.map((row: any) =>
+      csvLine([
+        row.requestId,
+        row.manifestReference,
+        row.requestStatus,
+        row.manifestStatus,
+        row.operatorName,
+        row.operatorEmail,
+        row.activityTitle,
+        row.scheduledDate,
+        row.membersListed,
+        row.totalMembers,
+        row.latestAction,
+        row.latestActionNotes,
+        row.latestActorName,
+        row.latestActorEmail,
+        row.latestActorRole,
+        row.latestActionAt,
+        row.reviewedBy,
+        row.reviewedAt,
+        row.reviewNotes,
+        row.requestCreatedAt,
+      ]),
+    ),
+  ].join("\n");
+
+  const manifestApprovalCsvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(manifestApprovalCsv)}`;
 
   function renderPanel() {
     if (activePanel === "overview") {
@@ -1874,6 +1970,216 @@ export default async function LguPage({
               </div>
             ) : (
               <EmptyState message="No fee programs visible yet." />
+            )}
+          </PanelCard>
+        </div>
+      );
+    }
+
+    if (activePanel === "reports") {
+      return (
+        <div style={{ display: "grid", gap: 18 }}>
+          <PanelCard title="Reports / Export">
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 18, alignItems: "flex-start" }}>
+              <div>
+                <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
+                  Draft export and print-ready report surface for LGU/DOT review. These outputs are generated
+                  from currently visible backend-backed LGU data and are marked as draft until official report
+                  registry, signatures, report numbers, and immutable report audit records are added.
+                </p>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    borderRadius: 999,
+                    padding: "8px 12px",
+                    background: "#fffbeb",
+                    border: "1px solid #fde68a",
+                    color: "#92400e",
+                    fontSize: 12,
+                    fontWeight: 950,
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  DRAFT — NOT OFFICIAL LGU/DOT REPORT
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                <a
+                  href={manifestApprovalCsvHref}
+                  download={`osp-manifest-approval-draft-${reportGeneratedAt.slice(0, 10)}.csv`}
+                  style={{
+                    borderRadius: 14,
+                    padding: "12px 14px",
+                    background: "#103a33",
+                    color: "#f4d35e",
+                    fontWeight: 950,
+                    textDecoration: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                  }}
+                >
+                  Export Draft CSV
+                </a>
+
+                <a
+                  href="javascript:window.print()"
+                  style={{
+                    borderRadius: 14,
+                    padding: "12px 14px",
+                    background: "#eff6ff",
+                    color: "#075985",
+                    border: "1px solid #bfdbfe",
+                    fontWeight: 950,
+                    textDecoration: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                  }}
+                >
+                  Print / Save as PDF
+                </a>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 16, marginTop: 22 }}>
+              <IntelligenceMetricCard
+                label="Draft Rows"
+                value={safeCount(manifestApprovalReportRows.length)}
+                note="Rows included in the draft manifest approval report."
+                tone="blue"
+              />
+              <IntelligenceMetricCard
+                label="Approval Events"
+                value={safeCount(approvalEventRows.length)}
+                note="Visible approval history events available for reporting context."
+                tone="green"
+              />
+              <IntelligenceMetricCard
+                label="Report Mode"
+                value="DRAFT"
+                note="No official report number, signature, or immutable report audit record yet."
+                tone="amber"
+              />
+              <IntelligenceMetricCard
+                label="Generated By"
+                value={fullName}
+                note={`${role} / ${reportGeneratedAt}`}
+                tone="blue"
+              />
+            </div>
+          </PanelCard>
+
+          <PanelCard title="Manifest Approval Draft Report">
+            <div
+              style={{
+                border: "2px dashed #f59e0b",
+                borderRadius: 18,
+                padding: 18,
+                background: "#fffbeb",
+                color: "#92400e",
+                fontWeight: 900,
+                marginBottom: 18,
+              }}
+            >
+              DRAFT REPORT ONLY — This report is for internal LGU/DOT review and validation. It is not an
+              official signed report, not a statutory filing, and not a final DOT/LGU export.
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                gap: 12,
+                marginBottom: 18,
+              }}
+            >
+              <StatCard label="Generated At" value={reportGeneratedAt} />
+              <StatCard label="Generated By" value={fullName} note={email} />
+              <StatCard label="Role" value={role} />
+              <StatCard label="Source" value="ManifestApprovalRequest" note="With ManifestApprovalAction context" />
+            </div>
+
+            {manifestApprovalReportRows.length > 0 ? (
+              <div style={{ display: "grid", gap: 12 }}>
+                {manifestApprovalReportRows.map((row: any) => (
+                  <div
+                    key={row.requestId}
+                    style={{
+                      border: `1px solid ${colors.border}`,
+                      borderRadius: 18,
+                      background: "#ffffff",
+                      padding: 16,
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+                      <div>
+                        <div style={{ fontSize: 12, color: "#075985", fontWeight: 950, letterSpacing: "0.08em" }}>
+                          {row.requestStatus}
+                        </div>
+                        <div style={{ marginTop: 8, fontSize: 20, fontWeight: 950, color: colors.dark }}>
+                          {row.manifestReference}
+                        </div>
+                        <div style={{ marginTop: 6, color: colors.muted, fontSize: 14 }}>
+                          {row.activityTitle || "Activity title not available"}
+                        </div>
+                      </div>
+
+                      <div
+                        style={{
+                          borderRadius: 999,
+                          padding: "7px 10px",
+                          background: row.manifestStatus === "APPROVED" ? "#ecfdf5" : "#fffbeb",
+                          color: row.manifestStatus === "APPROVED" ? "#065f46" : "#92400e",
+                          border: row.manifestStatus === "APPROVED" ? "1px solid #a7f3d0" : "1px solid #fde68a",
+                          fontSize: 12,
+                          fontWeight: 950,
+                          height: "fit-content",
+                        }}
+                      >
+                        {row.manifestStatus || "NO_STATUS"}
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                        gap: 10,
+                        marginTop: 14,
+                        fontSize: 13,
+                        color: colors.muted,
+                      }}
+                    >
+                      <div><strong>Operator:</strong><br />{row.operatorName}<br />{row.operatorEmail}</div>
+                      <div><strong>Members:</strong><br />{safeCount(row.membersListed)} / {safeCount(row.totalMembers)}</div>
+                      <div><strong>Schedule:</strong><br />{row.scheduledDate || "N/A"}</div>
+                      <div><strong>Request ID:</strong><br />{row.requestId}</div>
+                    </div>
+
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                        gap: 10,
+                        marginTop: 14,
+                        fontSize: 13,
+                        color: colors.muted,
+                      }}
+                    >
+                      <div><strong>Latest Action:</strong><br />{row.latestAction || "N/A"}</div>
+                      <div><strong>Latest Actor:</strong><br />{row.latestActorName || "N/A"}<br />{row.latestActorEmail || ""}<br />{row.latestActorRole || ""}</div>
+                      <div><strong>Latest Action At:</strong><br />{row.latestActionAt || "N/A"}</div>
+                    </div>
+
+                    <div style={{ marginTop: 14, color: "#475569", lineHeight: 1.6 }}>
+                      <strong style={{ color: colors.dark }}>Notes:</strong><br />
+                      {row.latestActionNotes || row.reviewNotes || "No notes recorded."}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState message="No manifest approval rows available for draft report." />
             )}
           </PanelCard>
         </div>
