@@ -138,6 +138,28 @@ async function denyManifestAction(formData: FormData) {
   redirect("/lgu?panel=manifests&action=denied");
 }
 
+async function recordDraftPrintAuditAction() {
+  "use server";
+
+  const token = await requireAccessToken();
+
+  const res = await fetch(`${getApiBaseUrl()}/osp-qr/reports/manifest-approval/draft-print-audit`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ limit: 100 }),
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    redirect(`/lgu?panel=reports&action=print-audit-failed&status=${res.status}`);
+  }
+
+  redirect("/lgu?panel=reports&action=print-audit-recorded&print=1");
+}
+
 function money(value: any) {
   if (value === null || value === undefined || value === "") return "₱0";
   return `₱${Number(value).toLocaleString("en-PH")}`;
@@ -337,7 +359,7 @@ function EmptyState(props: { message: string }) {
 export default async function LguPage({
   searchParams,
 }: {
-  searchParams?: { panel?: string; action?: string; status?: string; manifestRequestId?: string };
+  searchParams?: { panel?: string; action?: string; status?: string; manifestRequestId?: string; print?: string };
 }) {
   const user = await getCurrentUser();
 
@@ -390,6 +412,7 @@ export default async function LguPage({
     : "overview";
 
   const actionStatus = searchParams?.action || "";
+  const shouldAutoPrint = searchParams?.print === "1";
 
   const fullName = user.fullName || "LGU User";
   const email = user.email || "-";
@@ -1962,6 +1985,15 @@ export default async function LguPage({
     if (activePanel === "reports") {
       return (
         <div style={{ display: "grid", gap: 18 }}>
+          {shouldAutoPrint ? (
+            <script
+              dangerouslySetInnerHTML={{
+                __html:
+                  "window.addEventListener('load',function(){setTimeout(function(){window.print();},250);});",
+              }}
+            />
+          ) : null}
+
           <PanelCard title="Reports / Export">
             <div style={{ display: "flex", justifyContent: "space-between", gap: 18, alignItems: "flex-start" }}>
               <div>
@@ -2005,22 +2037,27 @@ export default async function LguPage({
                   Export Draft CSV
                 </a>
 
-                <a
-                  href="javascript:window.print()"
-                  style={{
-                    borderRadius: 14,
-                    padding: "12px 14px",
-                    background: "#eff6ff",
-                    color: "#075985",
-                    border: "1px solid #bfdbfe",
-                    fontWeight: 950,
-                    textDecoration: "none",
-                    display: "inline-flex",
-                    alignItems: "center",
-                  }}
-                >
-                  Print / Save as PDF
-                </a>
+                <form action={recordDraftPrintAuditAction}>
+                  <button
+                    type="submit"
+                    style={{
+                      borderRadius: 14,
+                      padding: "12px 14px",
+                      background: "#eff6ff",
+                      color: "#075985",
+                      border: "1px solid #bfdbfe",
+                      fontWeight: 950,
+                      textDecoration: "none",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      cursor: "pointer",
+                      fontSize: 16,
+                      lineHeight: 1.1,
+                    }}
+                  >
+                    Print / Save as PDF
+                  </button>
+                </form>
               </div>
             </div>
 

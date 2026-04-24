@@ -1053,6 +1053,52 @@ export class OspQrService {
     };
   }
 
+  async recordManifestApprovalDraftPrintAudit(user: any, limit = 100) {
+    const report = await this.getManifestApprovalDraftReport(user, limit);
+    const data = report.data;
+    const rows = data.rows ?? [];
+    const generatedAt = new Date();
+
+    const audit = await this.prisma.reportExportAudit.create({
+      data: {
+        reportType: data.reportType || 'MANIFEST_APPROVAL_DRAFT',
+        reportMode: data.reportMode || 'DRAFT',
+        official: false,
+        reportNumber: null,
+        generatedByUserId: user?.sub ?? user?.id ?? null,
+        generatedByRole: user?.role ?? user?.primaryRole ?? null,
+        generatedAt,
+        format: 'PRINT_VIEW',
+        sourceEndpoint: '/api/v1/osp-qr/reports/manifest-approval/draft-print-audit',
+        sourceFiltersJson: {
+          limit,
+        },
+        rowCount: data.summary?.totalRows ?? rows.length,
+        approvalEventCount: data.summary?.approvalEventCount ?? 0,
+        jurisdictionScope: null,
+        periodStart: null,
+        periodEnd: null,
+        watermark: data.watermark || 'DRAFT — NOT OFFICIAL LGU/DOT REPORT',
+        fileName: null,
+        fileHash: null,
+        storageKey: null,
+        status: 'GENERATED',
+        metadataJson: {
+          generatedByEmail: user?.email ?? null,
+          sourceReportType: data.reportType,
+          sourceReportMode: data.reportMode,
+          returnedRows: data.limits?.returnedRows ?? rows.length,
+          printMode: 'BROWSER_PRINT_SAVE_AS_PDF',
+        },
+      },
+    });
+
+    return {
+      ok: true,
+      data: audit,
+    };
+  }
+
   async listReportExportAudits(limit = 25) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 25));
 
