@@ -91,6 +91,14 @@ export class OspQrController {
 
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('vessels')
+  listVessels(@Query('limit') limit?: string) {
+    return this.ospQrService.listVessels(limit ? Number(limit) : 25);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('inter-island/compliance-summary')

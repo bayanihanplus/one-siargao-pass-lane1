@@ -414,6 +414,32 @@ export class OspQrService {
 
 
 
+
+  async listVessels(limit = 25) {
+    const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(100, Number(limit))) : 25;
+
+    const data = await this.prisma.ospVessel.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: safeLimit,
+      select: {
+        id: true,
+        operatorUserId: true,
+        vesselName: true,
+        vesselRegistrationNumber: true,
+        vesselType: true,
+        capacity: true,
+        complianceStatus: true,
+        notes: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return { ok: true, data };
+  }
+
   async getInterIslandComplianceSummary() {
     const [
       totalMovements,
