@@ -1,7 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { assertAdminLikeRole, assertOperatorLikeRole, getCurrentUserOrThrow } from '../auth/utils/current-user.util';
-import { resolveOperatorContext } from '../auth/utils/operator-context.util';
 import { CreateActivityTemplateDto } from './dto/create-activity-template.dto';
 import { CreateActivityInstanceDto } from './dto/create-activity-instance.dto';
 
@@ -50,12 +49,8 @@ export class ActivitiesService {
       throw new NotFoundException('Activity template not found');
     }
 
-    const operatorContext = await resolveOperatorContext(this.prisma, {
-      id: userId,
-      role: user.primaryRole,
-    });
-
-    if (user.primaryRole !== 'ADMIN' && template.ownerUserId !== operatorContext.operatorUserId) {
+    
+    if (user.primaryRole !== 'ADMIN' && template.ownerUserId !== userId) {
       throw new ForbiddenException('Cannot create instance for another operator template');
     }
 
@@ -96,17 +91,13 @@ export class ActivitiesService {
       assertOperatorLikeRole(user.primaryRole);
     }
 
-    const operatorContext = await resolveOperatorContext(this.prisma, {
-      id: userId,
-      role: user.primaryRole,
-    });
-
+    
     const where =
       user.primaryRole === 'ADMIN'
         ? {}
         : {
             activityTemplate: {
-              ownerUserId: operatorContext.operatorUserId,
+              ownerUserId: userId,
             },
           };
 
@@ -153,16 +144,12 @@ export class ActivitiesService {
       assertOperatorLikeRole(user.primaryRole);
     }
 
-    const operatorContext = await resolveOperatorContext(this.prisma, {
-      id: userId,
-      role: user.primaryRole,
-    });
-
+    
     const where =
       user.primaryRole === 'ADMIN'
         ? {}
         : {
-            ownerUserId: operatorContext.operatorUserId,
+            ownerUserId: userId,
           };
 
     const rows = await this.prisma.activityTemplate.findMany({
