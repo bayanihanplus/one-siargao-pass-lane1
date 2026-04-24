@@ -316,7 +316,7 @@ function EmptyState(props: { message: string }) {
 export default async function LguPage({
   searchParams,
 }: {
-  searchParams?: { panel?: string; action?: string; status?: string };
+  searchParams?: { panel?: string; action?: string; status?: string; manifestRequestId?: string };
 }) {
   const user = await getCurrentUser();
 
@@ -402,6 +402,10 @@ export default async function LguPage({
   const feeProgramRows = feePrograms?.ok ? feePrograms.data || [] : [];
   const overdueRows = overdueMovements?.ok ? overdueMovements.data || [] : [];
   const manifestSubmissionRows = manifestSubmissions?.ok ? manifestSubmissions.data || [] : [];
+  const selectedManifestRequestId = searchParams?.manifestRequestId || "";
+  const selectedManifestRequest = manifestSubmissionRows.find(
+    (row: any) => row.id === selectedManifestRequestId,
+  );
 
   function renderPanel() {
     if (activePanel === "overview") {
@@ -878,9 +882,9 @@ export default async function LguPage({
                         }}
                       >
                         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                          <button
-                            type="button"
-                            disabled
+                          <Link
+                            href={`/lgu?panel=manifests&manifestRequestId=${row.id}`}
+                            scroll={false}
                             style={{
                               borderRadius: 12,
                               padding: "10px 13px",
@@ -888,12 +892,14 @@ export default async function LguPage({
                               background: "#eff6ff",
                               color: "#075985",
                               fontWeight: 950,
-                              cursor: "not-allowed",
+                              textDecoration: "none",
+                              display: "inline-flex",
+                              alignItems: "center",
                             }}
-                            title="Manifest details modal is not yet wired in this lane."
+                            title="Open manifest detail review panel."
                           >
                             View Details
-                          </button>
+                          </Link>
 
                           {canApproveManifests(role) && row.requestStatus === "UNDER_REVIEW" ? (
                             <>
@@ -1002,6 +1008,142 @@ export default async function LguPage({
               <EmptyState message="No submitted manifest records visible yet." />
             )}
           </PanelCard>
+
+          {selectedManifestRequest ? (
+            <PanelCard title="Manifest Detail Review">
+              {(() => {
+                const manifest = selectedManifestRequest.manifest || {};
+                const activity = manifest.activityInstance || {};
+                const template = activity.activityTemplate || {};
+                const submission = selectedManifestRequest.latestSubmission || {};
+                const latestAction = selectedManifestRequest.latestAction || {};
+                const operator = manifest.operator || {};
+                const members = manifest.members || [];
+
+                return (
+                  <div style={{ display: "grid", gap: 18 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        gap: 16,
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <div>
+                        <div
+                          style={{
+                            fontSize: 12,
+                            color: "#075985",
+                            fontWeight: 950,
+                            letterSpacing: "0.08em",
+                          }}
+                        >
+                          {selectedManifestRequest.requestStatus || "UNKNOWN"}
+                        </div>
+                        <h2 style={{ marginTop: 8, marginBottom: 0, color: colors.dark }}>
+                          {manifest.manifestReference || selectedManifestRequest.manifestId}
+                        </h2>
+                        <p style={{ marginTop: 8, marginBottom: 0, color: colors.muted }}>
+                          {template.title || "Activity title not available"}
+                        </p>
+                      </div>
+
+                      <Link
+                        href="/lgu?panel=manifests"
+                        scroll={false}
+                        style={{
+                          borderRadius: 12,
+                          padding: "10px 13px",
+                          border: `1px solid ${colors.border}`,
+                          background: "#ffffff",
+                          color: colors.dark,
+                          fontWeight: 900,
+                          textDecoration: "none",
+                        }}
+                      >
+                        Close Details
+                      </Link>
+                    </div>
+
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                        gap: 14,
+                      }}
+                    >
+                      <StatCard label="Operator" value={operator.fullName || manifest.operatorUserId || "N/A"} />
+                      <StatCard label="Manifest Status" value={manifest.manifestStatus || "N/A"} />
+                      <StatCard label="Members" value={`${safeCount(manifest.listedMembersCount)} / ${safeCount(manifest.totalMembers)}`} />
+                      <StatCard label="Schedule" value={activity.scheduledDate || "N/A"} />
+                    </div>
+
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                        gap: 14,
+                      }}
+                    >
+                      <RecordRow
+                        title="Submission"
+                        meta={submission.submissionNotes || "No submission notes captured."}
+                      />
+                      <RecordRow
+                        title="Latest Action"
+                        meta={latestAction.actionType ? `${latestAction.actionType}: ${latestAction.actionNotes || "No notes"}` : "No approval action yet."}
+                      />
+                      <RecordRow
+                        title="Approval Boundary"
+                        meta={canApproveManifests(role) ? "Current role may approve or return UNDER_REVIEW requests." : "Current role is read-only."}
+                      />
+                    </div>
+
+                    <div
+                      style={{
+                        border: `1px solid ${colors.border}`,
+                        borderRadius: 18,
+                        background: "#ffffff",
+                        padding: 16,
+                      }}
+                    >
+                      <h3 style={{ marginTop: 0, color: colors.dark }}>Manifest Members</h3>
+                      {members.length > 0 ? (
+                        <div style={{ display: "grid", gap: 10 }}>
+                          {members.map((member: any) => (
+                            <div
+                              key={member.id}
+                              style={{
+                                display: "grid",
+                                gridTemplateColumns: "1.2fr 1fr 1fr 1fr",
+                                gap: 10,
+                                borderTop: `1px solid ${colors.border}`,
+                                paddingTop: 10,
+                                color: "#475569",
+                                fontSize: 13,
+                              }}
+                            >
+                              <div><strong>Member:</strong><br />{member.fullName || member.travelerName || member.id}</div>
+                              <div><strong>Booking:</strong><br />{member.bookingId || "N/A"}</div>
+                              <div><strong>Trip:</strong><br />{member.tripId || "N/A"}</div>
+                              <div><strong>Status:</strong><br />{member.memberStatus || "N/A"}</div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <EmptyState message="No manifest member rows available in this detail record." />
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+            </PanelCard>
+          ) : selectedManifestRequestId ? (
+            <PanelCard title="Manifest Detail Review">
+              <EmptyState message="Selected manifest request was not found in the current read window." />
+            </PanelCard>
+          ) : null}
         </div>
       );
     }
