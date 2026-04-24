@@ -588,6 +588,55 @@ export class OspQrService {
     };
   }
 
+
+  async listComplianceFeePrograms() {
+    const data = await this.prisma.ospComplianceFeeProgram.findMany({
+      where: {
+        isActive: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        scopeType: true,
+        municipality: true,
+        barangay: true,
+        checkpointId: true,
+        appliesToRoute: true,
+        approvalStatus: true,
+        isActive: true,
+        effectiveFrom: true,
+        effectiveTo: true,
+        notes: true,
+        createdAt: true,
+        updatedAt: true,
+        feeItems: {
+          orderBy: {
+            sortOrder: 'asc',
+          },
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            description: true,
+            feeCategory: true,
+            chargeBasis: true,
+            amountPhp: true,
+            isRequiredForApproval: true,
+            isLguFillable: true,
+            isTravelerFacing: true,
+            sortOrder: true,
+          },
+        },
+      },
+    });
+
+    return { ok: true, data };
+  }
+
   async listOverdueInterIslandMovements(thresholdMinutes = 60) {
     const safeThreshold = Number.isFinite(thresholdMinutes)
       ? Math.max(1, Math.min(1440, Number(thresholdMinutes)))

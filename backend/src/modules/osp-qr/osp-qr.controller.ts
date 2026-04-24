@@ -102,6 +102,14 @@ export class OspQrController {
     return this.ospQrService.getInterIslandPaymentClearance(id);
   }
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
+  @Get('compliance/fee-programs')
+  listComplianceFeePrograms() {
+    return this.ospQrService.listComplianceFeePrograms();
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN', 'SILENT_LGU_ANALYTICS')
   @Get('inter-island/overdue-movements')
