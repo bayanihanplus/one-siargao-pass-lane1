@@ -412,6 +412,64 @@ export class OspQrService {
     };
   }
 
+
+  async listComplianceExceptions(limit = 25) {
+    const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(100, Number(limit))) : 25;
+
+    const rows = await this.prisma.complianceException.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: safeLimit,
+      select: {
+        id: true,
+        qrEventId: true,
+        travelerUserId: true,
+        tripId: true,
+        operatorUserId: true,
+        checkpointId: true,
+        exceptionType: true,
+        severity: true,
+        resolutionStatus: true,
+        resolutionNotes: true,
+        resolvedByUserId: true,
+        resolvedAt: true,
+        createdAt: true,
+      },
+    });
+
+    const checkpointIds = Array.from(
+      new Set(rows.map((row) => row.checkpointId).filter(Boolean) as string[]),
+    );
+
+    const checkpoints = checkpointIds.length
+      ? await this.prisma.ospCheckpoint.findMany({
+          where: {
+            id: {
+              in: checkpointIds,
+            },
+          },
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            checkpointType: true,
+            locationLabel: true,
+          },
+        })
+      : [];
+
+    const checkpointById = new Map(checkpoints.map((checkpoint) => [checkpoint.id, checkpoint]));
+
+    return {
+      ok: true,
+      data: rows.map((row) => ({
+        ...row,
+        checkpoint: row.checkpointId ? checkpointById.get(row.checkpointId) ?? null : null,
+      })),
+    };
+  }
+
   async getCheckpointEvents(limit = 15) {
     const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(50, Number(limit))) : 15;
 

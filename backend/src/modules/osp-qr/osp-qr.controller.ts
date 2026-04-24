@@ -89,6 +89,14 @@ export class OspQrController {
     return this.ospQrService.listCheckpoints();
   }
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('compliance/exceptions')
+  listComplianceExceptions(@Query('limit') limit?: string) {
+    return this.ospQrService.listComplianceExceptions(limit ? Number(limit) : 25);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('checkpoint/events')
