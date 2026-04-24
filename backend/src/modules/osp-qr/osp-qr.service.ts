@@ -698,6 +698,42 @@ export class OspQrService {
     };
   }
 
+
+  async listFeeChangeAudits(limit = 50) {
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
+
+    const data = await this.prisma.ospFeeChangeAudit.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: safeLimit,
+      select: {
+        id: true,
+        actorUserId: true,
+        actorRole: true,
+        feeProgramId: true,
+        feeItemId: true,
+        feeItemCodeSnapshot: true,
+        feeItemNameSnapshot: true,
+        previousAmountPhp: true,
+        newAmountPhp: true,
+        previousDescription: true,
+        newDescription: true,
+        previousRequiredForApproval: true,
+        newRequiredForApproval: true,
+        previousTravelerFacing: true,
+        newTravelerFacing: true,
+        changeReason: true,
+        createdAt: true,
+      },
+    });
+
+    return {
+      ok: true,
+      data,
+    };
+  }
+
   async listComplianceFeePrograms() {
     const data = await this.prisma.ospComplianceFeeProgram.findMany({
       where: {
