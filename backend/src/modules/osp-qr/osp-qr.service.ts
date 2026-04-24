@@ -413,6 +413,139 @@ export class OspQrService {
   }
 
 
+
+  async getInterIslandComplianceSummary() {
+    const [
+      totalMovements,
+      plannedMovements,
+      departedMovements,
+      arrivedMovements,
+      completedMovements,
+      blockedMovements,
+      openComplianceExceptions,
+      noManifestExceptions,
+      latestMovements,
+      latestExceptions,
+    ] = await Promise.all([
+      this.prisma.interIslandMovement.count(),
+      this.prisma.interIslandMovement.count({ where: { movementStatus: 'PLANNED' } }),
+      this.prisma.interIslandMovement.count({ where: { movementStatus: 'DEPARTED' } }),
+      this.prisma.interIslandMovement.count({ where: { movementStatus: 'ARRIVED' } }),
+      this.prisma.interIslandMovement.count({ where: { movementStatus: 'COMPLETED' } }),
+      this.prisma.interIslandMovement.count({ where: { movementStatus: 'BLOCKED' } }),
+      this.prisma.complianceException.count({ where: { resolutionStatus: 'OPEN' } }),
+      this.prisma.complianceException.count({
+        where: {
+          resolutionStatus: 'OPEN',
+          exceptionType: 'NO_MANIFEST',
+        },
+      }),
+      this.prisma.interIslandMovement.findMany({
+        orderBy: {
+          updatedAt: 'desc',
+        },
+        take: 5,
+        select: {
+          id: true,
+          manifestId: true,
+          operatorUserId: true,
+          vesselId: true,
+          originCheckpointId: true,
+          destinationCheckpointId: true,
+          movementStatus: true,
+          departureQrEventId: true,
+          arrivalQrEventId: true,
+          returnQrEventId: true,
+          scheduledDepartureAt: true,
+          actualDepartureAt: true,
+          actualArrivalAt: true,
+          actualReturnAt: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      }),
+      this.prisma.complianceException.findMany({
+        where: {
+          resolutionStatus: 'OPEN',
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: 5,
+        select: {
+          id: true,
+          qrEventId: true,
+          travelerUserId: true,
+          tripId: true,
+          operatorUserId: true,
+          checkpointId: true,
+          exceptionType: true,
+          severity: true,
+          resolutionStatus: true,
+          resolutionNotes: true,
+          createdAt: true,
+        },
+      }),
+    ]);
+
+    const checkpointIds = Array.from(
+      new Set(
+        [
+          ...latestMovements.flatMap((row) => [row.originCheckpointId, row.destinationCheckpointId]),
+          ...latestExceptions.map((row) => row.checkpointId),
+        ].filter(Boolean) as string[],
+      ),
+    );
+
+    const checkpoints = checkpointIds.length
+      ? await this.prisma.ospCheckpoint.findMany({
+          where: {
+            id: {
+              in: checkpointIds,
+            },
+          },
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            checkpointType: true,
+            locationLabel: true,
+          },
+        })
+      : [];
+
+    const checkpointById = new Map(checkpoints.map((checkpoint) => [checkpoint.id, checkpoint]));
+
+    return {
+      ok: true,
+      data: {
+        counts: {
+          totalMovements,
+          plannedMovements,
+          departedMovements,
+          arrivedMovements,
+          completedMovements,
+          blockedMovements,
+          openComplianceExceptions,
+          noManifestExceptions,
+        },
+        latestMovements: latestMovements.map((movement) => ({
+          ...movement,
+          originCheckpoint: movement.originCheckpointId
+            ? checkpointById.get(movement.originCheckpointId) ?? null
+            : null,
+          destinationCheckpoint: movement.destinationCheckpointId
+            ? checkpointById.get(movement.destinationCheckpointId) ?? null
+            : null,
+        })),
+        latestExceptions: latestExceptions.map((exception) => ({
+          ...exception,
+          checkpoint: exception.checkpointId ? checkpointById.get(exception.checkpointId) ?? null : null,
+        })),
+      },
+    };
+  }
+
   async listComplianceExceptions(limit = 25) {
     const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(100, Number(limit))) : 25;
 

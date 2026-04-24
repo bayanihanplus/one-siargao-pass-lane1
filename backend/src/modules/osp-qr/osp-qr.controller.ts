@@ -90,6 +90,14 @@ export class OspQrController {
   }
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('inter-island/compliance-summary')
+  getInterIslandComplianceSummary() {
+    return this.ospQrService.getInterIslandComplianceSummary();
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('compliance/exceptions')
