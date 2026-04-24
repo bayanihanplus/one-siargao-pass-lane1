@@ -261,6 +261,8 @@ export default function TravelerPassportMapPage() {
           </section>
 
           <SpmTrailCardsPreview />
+
+          <SpmVerifiedStopsPreview />
         </div>
 
         <nav
@@ -289,6 +291,176 @@ export default function TravelerPassportMapPage() {
         </nav>
       </div>
     </main>
+  );
+}
+
+function SpmVerifiedStopsPreview() {
+  return (
+    <section
+      aria-label="Preview-only verified stops cards"
+      style={{
+        marginTop: 18,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          gap: 12,
+          padding: "0 2px",
+        }}
+      >
+        <div>
+          <h2
+            style={{
+              margin: 0,
+              fontFamily: 'Georgia, "Times New Roman", Times, serif',
+              fontSize: 24,
+              lineHeight: 1,
+              letterSpacing: "-0.04em",
+              color: "#14264b",
+              fontWeight: 900,
+            }}
+          >
+            Verified Stops
+          </h2>
+          <p
+            style={{
+              margin: "6px 0 0",
+              fontSize: 12,
+              lineHeight: 1.25,
+              color: "#6b7890",
+              fontWeight: 750,
+            }}
+          >
+            Visual preview only. Real verification requires governed QR/stamp records.
+          </p>
+        </div>
+
+        <a
+          href="/traveler/passport-map"
+          style={{
+            color: "#13a8b7",
+            fontSize: 12,
+            fontWeight: 900,
+            textDecoration: "none",
+            whiteSpace: "nowrap",
+          }}
+        >
+          See all
+        </a>
+      </div>
+
+      <div
+        style={{
+          marginTop: 12,
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: 9,
+        }}
+      >
+        <StopPreviewCard name="General Luna" meta="Town Start" icon="📍" />
+        <StopPreviewCard name="Cloud 9" meta="Surf Zone" icon="🌊" />
+        <StopPreviewCard name="Magpupungko" meta="Tide Pool" icon="🪨" />
+      </div>
+    </section>
+  );
+}
+
+function StopPreviewCard(props: {
+  name: string;
+  meta: string;
+  icon: string;
+}) {
+  return (
+    <a
+      href="/traveler/passport-map"
+      aria-label={`${props.name} preview stop. Visual only.`}
+      style={{
+        minHeight: 116,
+        borderRadius: 20,
+        border: "1px solid rgba(203,213,225,0.72)",
+        background: "rgba(255,255,255,0.96)",
+        boxShadow: "0 10px 24px rgba(15,23,42,0.05)",
+        padding: "12px 10px",
+        textDecoration: "none",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <div
+        style={{
+          width: 38,
+          height: 38,
+          borderRadius: "50%",
+          background: "linear-gradient(135deg, #e8f9fb 0%, #ffffff 100%)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 21,
+          boxShadow: "inset 0 0 0 1px rgba(19,168,183,0.14)",
+        }}
+      >
+        {props.icon}
+      </div>
+
+      <div>
+        <h3
+          style={{
+            margin: 0,
+            color: "#14264b",
+            fontSize: 12,
+            lineHeight: 1.12,
+            fontWeight: 950,
+            letterSpacing: "-0.015em",
+          }}
+        >
+          {props.name}
+        </h3>
+
+        <p
+          style={{
+            margin: "5px 0 0",
+            color: "#6b7890",
+            fontSize: 10,
+            lineHeight: 1.2,
+            fontWeight: 750,
+          }}
+        >
+          {props.meta}
+        </p>
+
+        <div
+          style={{
+            marginTop: 8,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+            borderRadius: 999,
+            background: "rgba(31,164,91,0.10)",
+            color: "#1fa45b",
+            padding: "5px 7px",
+            fontSize: 9,
+            lineHeight: 1,
+            fontWeight: 950,
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+          }}
+        >
+          <span
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: "#1fa45b",
+            }}
+          />
+          Preview
+        </div>
+      </div>
+    </a>
   );
 }
 
