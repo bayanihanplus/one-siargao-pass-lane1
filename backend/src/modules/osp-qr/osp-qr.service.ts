@@ -20,6 +20,58 @@ export class OspQrService {
    * Existing QrEvent rows are retained for backward compatibility and audit continuity.
    */
 
+
+  private async createComplianceException(input: {
+    qrEventId?: string | null;
+    travelerUserId?: string | null;
+    tripId?: string | null;
+    operatorUserId?: string | null;
+    checkpointId?: string | null;
+    exceptionType: string;
+    severity?: string;
+    resolutionStatus?: string;
+    resolutionNotes?: string | null;
+  }) {
+    return this.prisma.complianceException.create({
+      data: {
+        qrEventId: input.qrEventId ?? null,
+        travelerUserId: input.travelerUserId ?? null,
+        tripId: input.tripId ?? null,
+        operatorUserId: input.operatorUserId ?? null,
+        checkpointId: input.checkpointId ?? null,
+        exceptionType: input.exceptionType as any,
+        severity: (input.severity || 'HIGH') as any,
+        resolutionStatus: (input.resolutionStatus || 'OPEN') as any,
+        resolutionNotes: input.resolutionNotes ?? null,
+      },
+    });
+  }
+
+  private async blockInterIslandDeparture(input: {
+    movementId: string;
+    tripId?: string | null;
+    operatorUserId?: string | null;
+    checkpointId?: string | null;
+    exceptionType: string;
+    reasonMessage: string;
+  }): Promise<never> {
+    const exception = await this.createComplianceException({
+      tripId: input.tripId ?? null,
+      operatorUserId: input.operatorUserId ?? null,
+      checkpointId: input.checkpointId ?? null,
+      exceptionType: input.exceptionType,
+      severity: 'HIGH',
+      resolutionStatus: 'OPEN',
+      resolutionNotes: `Movement ${input.movementId}: ${input.reasonMessage}`,
+    });
+
+    throw new BadRequestException({
+      message: input.reasonMessage,
+      complianceExceptionId: exception.id,
+      exceptionType: input.exceptionType,
+    });
+  }
+
   private deriveEffectiveStatus(trip: any): {
     storedPassStatus: string | null;
     effectivePassStatus: EffectivePassStatus;
@@ -892,20 +944,67 @@ export class OspQrService {
     }
 
     if (!['PLANNED', 'BOARDING'].includes(movement.movementStatus)) {
-      throw new BadRequestException('Movement must be PLANNED or BOARDING before departure scan');
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: movement.originCheckpointId,
+        exceptionType: 'DOT_LGU_REVIEW_REQUIRED',
+        reasonMessage: 'Movement must be PLANNED or BOARDING before departure scan',
+      });
     }
 
     if (!movement.operatorUserId) {
-      throw new BadRequestException('Movement must have an operator before departure scan');
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: movement.originCheckpointId,
+        exceptionType: 'UNAPPROVED_OPERATOR',
+        reasonMessage: 'Movement must have an operator before departure scan',
+      });
     }
 
     if (!movement.manifestId) {
-      throw new BadRequestException('Movement must have an approved manifest before departure scan');
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: movement.originCheckpointId,
+        exceptionType: 'NO_MANIFEST',
+        reasonMessage: 'Movement must have an approved manifest before departure scan',
+      });
     }
+
+    if (!movement.originCheckpointId) {
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: movement.originCheckpointId,
+        exceptionType: 'DOT_LGU_REVIEW_REQUIRED',
+        reasonMessage: 'Movement has no origin checkpoint',
+      });
+    }
+
+    if (!movement.destinationCheckpointId) {
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: movement.originCheckpointId,
+        exceptionType: 'DOT_LGU_REVIEW_REQUIRED',
+        reasonMessage: 'Movement has no destination checkpoint',
+      });
+    }
+
+    const manifestId = movement.manifestId as string;
+    const originCheckpointId = movement.originCheckpointId as string;
+    const destinationCheckpointId = movement.destinationCheckpointId as string;
 
     const manifest = await this.prisma.manifest.findFirst({
       where: {
-        id: movement.manifestId,
+        id: manifestId,
         manifestStatus: 'APPROVED',
       },
       select: {
@@ -919,24 +1018,32 @@ export class OspQrService {
     });
 
     if (!manifest) {
-      throw new BadRequestException('Approved manifest not found for movement');
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: originCheckpointId,
+        exceptionType: 'NO_MANIFEST',
+        reasonMessage: 'Approved manifest not found for movement',
+      });
     }
 
-    if (manifest.operatorUserId && manifest.operatorUserId !== movement.operatorUserId) {
-      throw new BadRequestException('Movement operator does not match manifest operator');
-    }
+    const approvedManifest = manifest as NonNullable<typeof manifest>;
 
-    if (!movement.originCheckpointId) {
-      throw new BadRequestException('Movement has no origin checkpoint');
-    }
-
-    if (!movement.destinationCheckpointId) {
-      throw new BadRequestException('Movement has no destination checkpoint');
+    if (approvedManifest.operatorUserId && approvedManifest.operatorUserId !== movement.operatorUserId) {
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: originCheckpointId,
+        exceptionType: 'WRONG_OPERATOR',
+        reasonMessage: 'Movement operator does not match manifest operator',
+      });
     }
 
     const destination = await this.prisma.ospCheckpoint.findFirst({
       where: {
-        id: movement.destinationCheckpointId,
+        id: destinationCheckpointId,
         isActive: true,
         supportsInterIsland: true,
       },
@@ -949,12 +1056,21 @@ export class OspQrService {
     });
 
     if (!destination) {
-      throw new BadRequestException('Destination checkpoint is not active or does not support inter-island movement');
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: destinationCheckpointId,
+        exceptionType: 'DOT_LGU_REVIEW_REQUIRED',
+        reasonMessage: 'Destination checkpoint is not active or does not support inter-island movement',
+      });
     }
+
+    const validDestination = destination as NonNullable<typeof destination>;
 
     const origin = await this.prisma.ospCheckpoint.findFirst({
       where: {
-        id: movement.originCheckpointId,
+        id: originCheckpointId,
         isActive: true,
         supportsInterIsland: true,
       },
@@ -967,8 +1083,17 @@ export class OspQrService {
     });
 
     if (!origin) {
-      throw new BadRequestException('Origin checkpoint is not active or does not support inter-island movement');
+      await this.blockInterIslandDeparture({
+        movementId: movement.id,
+        tripId: movement.tripId,
+        operatorUserId: movement.operatorUserId,
+        checkpointId: originCheckpointId,
+        exceptionType: 'DOT_LGU_REVIEW_REQUIRED',
+        reasonMessage: 'Origin checkpoint is not active or does not support inter-island movement',
+      });
     }
+
+    const validOrigin = origin as NonNullable<typeof origin>;
 
     const event = await this.prisma.ospQrEvent.create({
       data: {
@@ -978,10 +1103,10 @@ export class OspQrService {
         trailBookingId: movement.trailBookingId ?? null,
         manifestId: movement.manifestId ?? null,
         operatorUserId: movement.operatorUserId ?? null,
-        manifestStatus: manifest.manifestStatus,
+        manifestStatus: approvedManifest.manifestStatus,
         vesselId: movement.vesselId ?? null,
-        checkpointId: movement.originCheckpointId,
-        checkpointType: origin.checkpointType,
+        checkpointId: originCheckpointId,
+        checkpointType: validOrigin.checkpointType,
         direction: 'DEPARTURE',
         scannerActorId: actor.id,
         scannerActorRole: actor.role,
@@ -1008,13 +1133,12 @@ export class OspQrService {
       data: {
         movement: updated,
         qrEvent: event,
-        manifest,
-        originCheckpoint: origin,
-        destinationCheckpoint: destination,
+        manifest: approvedManifest,
+        originCheckpoint: validOrigin,
+        destinationCheckpoint: validDestination,
       },
     };
   }
-
 
   async interIslandArrivalScan(
     actor: any,
