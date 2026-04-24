@@ -146,6 +146,14 @@ export class OspQrController {
 
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Get('compliance/fee-receipts')
+  listFeeReceipts(@Query('limit') limit?: string) {
+    return this.ospQrService.listFeeReceipts(limit ? Number(limit) : 50);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Post('inter-island/movements/:id/fee-receipts/issue')

@@ -817,6 +817,38 @@ export class OspQrService {
 
 
 
+
+  async listFeeReceipts(limit = 50) {
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
+
+    const data = await this.prisma.ospFeeReceipt.findMany({
+      orderBy: {
+        issuedAt: 'desc',
+      },
+      take: safeLimit,
+      select: {
+        id: true,
+        receiptReference: true,
+        movementId: true,
+        manifestId: true,
+        bookingId: true,
+        paymentReference: true,
+        totalPaidAmountPhp: true,
+        receiptStatus: true,
+        issuedByUserId: true,
+        issuedAt: true,
+        notes: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return {
+      ok: true,
+      data,
+    };
+  }
+
   private buildFeeReceiptReference(movementId: string) {
     const suffix = movementId.slice(-8).toUpperCase();
     return `OSP-FEE-${suffix}`;
