@@ -16,6 +16,7 @@ import { ManifestsModule } from './modules/manifests/manifests.module';
 import { ManifestApprovalsModule } from './modules/manifest-approvals/manifest-approvals.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { GuidesModule } from './modules/guides/guides.module';
+import { SpmModule } from './modules/spm/spm.module';
 import { PrismaService } from './database/prisma.service';
 
 @Module({
@@ -37,6 +38,7 @@ import { PrismaService } from './database/prisma.service';
     ManifestApprovalsModule,
     NotificationsModule,
     GuidesModule,
+    SpmModule,
   ],
   providers: [PrismaService],
 })

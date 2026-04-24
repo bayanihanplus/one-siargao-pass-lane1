@@ -680,6 +680,40 @@ export class OspQrService {
     };
   }
 
+
+  async listCheckpoints() {
+    const data = await this.prisma.ospCheckpoint.findMany({
+      where: {
+        isActive: true,
+      },
+      orderBy: [
+        { checkpointType: 'asc' },
+        { code: 'asc' },
+      ],
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        checkpointType: true,
+        locationLabel: true,
+        municipality: true,
+        barangay: true,
+        latitude: true,
+        longitude: true,
+        isActive: true,
+        requiresManifest: true,
+        requiresBooking: true,
+        requiresOperator: true,
+        requiresPaymentClearance: true,
+        supportsIngress: true,
+        supportsEgress: true,
+        supportsInterIsland: true,
+      },
+    });
+
+    return { ok: true, data };
+  }
+
   async egressScan(actor: any, body: { qrToken: string; checkpointId: string; channel: string }) {
     const trip = await this.getTripByQrToken(body.qrToken);
 

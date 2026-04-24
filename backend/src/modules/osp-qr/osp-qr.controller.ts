@@ -17,6 +17,14 @@ export class OspQrController {
     return this.ospQrService.getEffectivePassStatus(req.user.id, tripId);
   }
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('checkpoints')
+  listCheckpoints() {
+    return this.ospQrService.listCheckpoints();
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('checkpoint/events')
