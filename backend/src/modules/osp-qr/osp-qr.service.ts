@@ -728,6 +728,151 @@ export class OspQrService {
   }
 
 
+
+  async createInterIslandMovement(body: {
+    tripId?: string | null;
+    bookingId?: string | null;
+    trailBookingId?: string | null;
+    manifestId?: string | null;
+    operatorUserId?: string | null;
+    vesselId?: string | null;
+    originCheckpointId?: string | null;
+    destinationCheckpointId?: string | null;
+    scheduledDepartureAt?: string | null;
+  }) {
+    if (!body.originCheckpointId) {
+      throw new BadRequestException('originCheckpointId is required');
+    }
+
+    if (!body.destinationCheckpointId) {
+      throw new BadRequestException('destinationCheckpointId is required');
+    }
+
+    const origin = await this.prisma.ospCheckpoint.findFirst({
+      where: {
+        id: body.originCheckpointId,
+        isActive: true,
+        supportsInterIsland: true,
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        checkpointType: true,
+      },
+    });
+
+    if (!origin) {
+      throw new BadRequestException('Origin checkpoint is not active or does not support inter-island movement');
+    }
+
+    const destination = await this.prisma.ospCheckpoint.findFirst({
+      where: {
+        id: body.destinationCheckpointId,
+        isActive: true,
+        supportsInterIsland: true,
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        checkpointType: true,
+      },
+    });
+
+    if (!destination) {
+      throw new BadRequestException('Destination checkpoint is not active or does not support inter-island movement');
+    }
+
+    if (body.vesselId) {
+      const vessel = await this.prisma.ospVessel.findFirst({
+        where: {
+          id: body.vesselId,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!vessel) {
+        throw new BadRequestException('Vessel not found');
+      }
+    }
+
+    const row = await this.prisma.interIslandMovement.create({
+      data: {
+        tripId: body.tripId ?? null,
+        bookingId: body.bookingId ?? null,
+        trailBookingId: body.trailBookingId ?? null,
+        manifestId: body.manifestId ?? null,
+        operatorUserId: body.operatorUserId ?? null,
+        vesselId: body.vesselId ?? null,
+        originCheckpointId: body.originCheckpointId,
+        destinationCheckpointId: body.destinationCheckpointId,
+        movementStatus: 'PLANNED',
+        scheduledDepartureAt: body.scheduledDepartureAt ? new Date(body.scheduledDepartureAt) : null,
+      },
+    });
+
+    return {
+      ok: true,
+      data: {
+        ...row,
+        originCheckpoint: origin,
+        destinationCheckpoint: destination,
+      },
+    };
+  }
+
+  async listInterIslandMovements(limit = 25) {
+    const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(100, Number(limit))) : 25;
+
+    const rows = await this.prisma.interIslandMovement.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: safeLimit,
+    });
+
+    const checkpointIds = Array.from(
+      new Set(
+        rows
+          .flatMap((row) => [row.originCheckpointId, row.destinationCheckpointId])
+          .filter(Boolean) as string[],
+      ),
+    );
+
+    const checkpoints = checkpointIds.length
+      ? await this.prisma.ospCheckpoint.findMany({
+          where: {
+            id: {
+              in: checkpointIds,
+            },
+          },
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            checkpointType: true,
+            locationLabel: true,
+          },
+        })
+      : [];
+
+    const checkpointById = new Map(checkpoints.map((checkpoint) => [checkpoint.id, checkpoint]));
+
+    return {
+      ok: true,
+      data: rows.map((row) => ({
+        ...row,
+        originCheckpoint: row.originCheckpointId ? checkpointById.get(row.originCheckpointId) ?? null : null,
+        destinationCheckpoint: row.destinationCheckpointId
+          ? checkpointById.get(row.destinationCheckpointId) ?? null
+          : null,
+      })),
+    };
+  }
+
   async listCheckpoints() {
     const data = await this.prisma.ospCheckpoint.findMany({
       where: {

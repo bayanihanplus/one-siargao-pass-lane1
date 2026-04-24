@@ -18,6 +18,34 @@ export class OspQrController {
   }
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Post('inter-island/movements')
+  createInterIslandMovement(
+    @Body()
+    body: {
+      tripId?: string | null;
+      bookingId?: string | null;
+      trailBookingId?: string | null;
+      manifestId?: string | null;
+      operatorUserId?: string | null;
+      vesselId?: string | null;
+      originCheckpointId?: string | null;
+      destinationCheckpointId?: string | null;
+      scheduledDepartureAt?: string | null;
+    },
+  ) {
+    return this.ospQrService.createInterIslandMovement(body);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('inter-island/movements')
+  listInterIslandMovements(@Query('limit') limit?: string) {
+    return this.ospQrService.listInterIslandMovements(limit ? Number(limit) : 25);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('checkpoints')
