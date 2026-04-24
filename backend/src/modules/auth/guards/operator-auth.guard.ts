@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
+import { OperatorContext } from '../types/operator-context.type';
 
 @Injectable()
 export class OperatorAuthGuard implements CanActivate {
@@ -15,21 +16,23 @@ export class OperatorAuthGuard implements CanActivate {
 
     // ADMIN bypass
     if (user.role === 'ADMIN') {
-      request.operatorContext = {
+      const ctx: OperatorContext = {
         operatorUserId: user.id,
         workspaceRole: 'ADMIN',
         isAdmin: true,
       };
+      request.operatorContext = ctx;
       return true;
     }
 
     // OWNER shortcut
     if (user.role === 'OPERATOR_OWNER') {
-      request.operatorContext = {
+      const ctx: OperatorContext = {
         operatorUserId: user.id,
         workspaceRole: 'OWNER',
         isAdmin: false,
       };
+      request.operatorContext = ctx;
       return true;
     }
 
@@ -46,12 +49,13 @@ export class OperatorAuthGuard implements CanActivate {
       throw new ForbiddenException('No active operator membership');
     }
 
-    request.operatorContext = {
+    const ctx: OperatorContext = {
       operatorUserId: membership.operatorUserId,
       workspaceRole: membership.workspaceRole,
       isAdmin: false,
     };
 
+    request.operatorContext = ctx;
     return true;
   }
 }
