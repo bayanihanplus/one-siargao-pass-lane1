@@ -514,7 +514,7 @@ export default async function LguPage({
     ),
   ].join("\n");
 
-  const manifestApprovalCsvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(manifestApprovalCsv)}`;
+  const manifestApprovalCsvHref = `${getApiBaseUrl()}/osp-qr/reports/manifest-approval/draft.csv?limit=100`;
 
   function renderPanel() {
     if (activePanel === "overview") {

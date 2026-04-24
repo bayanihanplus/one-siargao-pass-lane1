@@ -1053,6 +1053,88 @@ export class OspQrService {
     };
   }
 
+  private csvCell(value: any) {
+    const raw = value === null || value === undefined ? '' : String(value);
+    return `"${raw.replace(/"/g, '""')}"`;
+  }
+
+  private csvLine(values: any[]) {
+    return values.map((value) => this.csvCell(value)).join(',');
+  }
+
+  async getManifestApprovalDraftReportCsv(user: any, limit = 100) {
+    const report = await this.getManifestApprovalDraftReport(user, limit);
+    const data = report.data;
+    const rows = data.rows ?? [];
+
+    const lines = [
+      this.csvLine(['DRAFT — NOT OFFICIAL LGU/DOT REPORT']),
+      this.csvLine(['reportType', data.reportType]),
+      this.csvLine(['reportMode', data.reportMode]),
+      this.csvLine(['official', data.official]),
+      this.csvLine(['generatedAt', data.generatedAt]),
+      this.csvLine(['generatedByEmail', data.generatedBy?.email]),
+      this.csvLine(['generatedByRole', data.generatedBy?.role]),
+      this.csvLine([]),
+      this.csvLine([
+        'requestId',
+        'manifestId',
+        'manifestReference',
+        'requestStatus',
+        'manifestStatus',
+        'operatorUserId',
+        'operatorName',
+        'operatorEmail',
+        'operatorRole',
+        'activityTitle',
+        'scheduledDate',
+        'membersListed',
+        'totalMembers',
+        'latestAction',
+        'latestActionNotes',
+        'latestActorUserId',
+        'latestActorName',
+        'latestActorEmail',
+        'latestActorRole',
+        'latestActionAt',
+        'reviewedBy',
+        'reviewedAt',
+        'reviewNotes',
+        'requestCreatedAt',
+      ]),
+      ...rows.map((row: any) =>
+        this.csvLine([
+          row.requestId,
+          row.manifestId,
+          row.manifestReference,
+          row.requestStatus,
+          row.manifestStatus,
+          row.operatorUserId,
+          row.operatorName,
+          row.operatorEmail,
+          row.operatorRole,
+          row.activityTitle,
+          row.scheduledDate,
+          row.membersListed,
+          row.totalMembers,
+          row.latestAction,
+          row.latestActionNotes,
+          row.latestActorUserId,
+          row.latestActorName,
+          row.latestActorEmail,
+          row.latestActorRole,
+          row.latestActionAt,
+          row.reviewedBy,
+          row.reviewedAt,
+          row.reviewNotes,
+          row.requestCreatedAt,
+        ]),
+      ),
+    ];
+
+    return lines.join('\n');
+  }
+
   async listFeeClearanceExceptions(limit = 50) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
 

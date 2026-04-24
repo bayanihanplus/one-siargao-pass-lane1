@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -162,6 +162,28 @@ export class OspQrController {
   @Get('reports/manifest-approval/draft')
   getManifestApprovalDraftReport(@Req() req: any, @Query('limit') limit?: string) {
     return this.ospQrService.getManifestApprovalDraftReport(req.user, limit ? Number(limit) : 100);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_APPROVER', 'LGU_FEE_EDITOR')
+  @Get('reports/manifest-approval/draft.csv')
+  async getManifestApprovalDraftReportCsv(
+    @Req() req: any,
+    @Res() res: any,
+    @Query('limit') limit?: string,
+  ) {
+    const csv = await this.ospQrService.getManifestApprovalDraftReportCsv(
+      req.user,
+      limit ? Number(limit) : 100,
+    );
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="osp-manifest-approval-draft-${new Date().toISOString().slice(0, 10)}.csv"`,
+    );
+
+    return res.send(csv);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)
