@@ -887,6 +887,9 @@ export class OspQrService {
       manifestLinkedMovementRows,
       overdueDepartedMovements,
       movementRowsForPaymentClearance,
+      activeFeePrograms,
+      requiredFeeItems,
+      requiredFeeItemsMissingAmount,
       latestMovements,
       latestExceptions,
     ] = await Promise.all([
@@ -947,6 +950,31 @@ export class OspQrService {
           manifestId: true,
         },
       }),
+      this.prisma.ospComplianceFeeProgram.count({
+        where: {
+          isActive: true,
+          scopeType: 'INTER_ISLAND_MOVEMENT',
+        },
+      }),
+      this.prisma.ospComplianceFeeItem.count({
+        where: {
+          isRequiredForApproval: true,
+          feeProgram: {
+            isActive: true,
+            scopeType: 'INTER_ISLAND_MOVEMENT',
+          },
+        },
+      }),
+      this.prisma.ospComplianceFeeItem.count({
+        where: {
+          isRequiredForApproval: true,
+          amountPhp: null,
+          feeProgram: {
+            isActive: true,
+            scopeType: 'INTER_ISLAND_MOVEMENT',
+          },
+        },
+      }),
       this.prisma.interIslandMovement.findMany({
         orderBy: {
           updatedAt: 'desc',
@@ -994,6 +1022,9 @@ export class OspQrService {
         },
       }),
     ]);
+
+    const feeConfigurationStatus =
+      requiredFeeItems > 0 && requiredFeeItemsMissingAmount === 0 ? 'READY' : 'NEEDS_REVIEW';
 
     const paymentClearanceManifestIds = Array.from(
       new Set(
@@ -1183,6 +1214,10 @@ export class OspQrService {
           overdueDepartedMovements,
           paymentClearMovementCount,
           paymentNeedsReviewMovementCount,
+          activeFeePrograms,
+          requiredFeeItems,
+          requiredFeeItemsMissingAmount,
+          feeConfigurationStatus,
         },
         latestMovements: latestMovements.map((movement) => ({
           ...movement,
