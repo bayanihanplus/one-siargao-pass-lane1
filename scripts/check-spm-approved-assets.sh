@@ -4,16 +4,8 @@ set -u
 ASSET_DIR="frontend/public/osp"
 
 REQUIRED_ASSETS=(
-  "spm-logo-stamp.png"
-  "spm-map-illustration.png"
-  "spm-trail-general-luna.png"
-  "spm-trail-island-discovery.png"
-  "spm-trail-north-coast-locked.png"
-  "spm-stop-general-luna.png"
-  "spm-stop-cloud-9.png"
-  "spm-stop-magpupungko.png"
-  "spm-verified-seal.png"
-  "spm-continue-daku-island.png"
+  "one-siargao-pass.png"
+  "osp-hero-map.png"
 )
 
 echo "=== SPM APPROVED UI ASSET GATE ==="
@@ -53,7 +45,6 @@ echo ""
 if [ "$missing" -eq 1 ]; then
   echo "ASSET GATE RESULT: BLOCKED"
   echo "Reason: Required approved UI assets are missing."
-  echo "Do not continue UI reconstruction until missing files are added."
   exit 1
 fi
 

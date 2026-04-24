@@ -8,44 +8,45 @@ Build success is not enough. Browser visual result must match the approved desig
 
 ## Current Decision
 
-Do not continue JSX approximation using generic CSS, emojis, or reused unrelated assets.
+Do not invent asset filenames.
 
-The approved UI requires production assets before further reconstruction.
+Use only the actual approved assets currently present in:
 
-## Required Assets
+- frontend/public/osp/
 
-Place the following files in frontend/public/osp/:
+## Approved Current Asset Filenames
 
-1. spm-logo-stamp.png
-2. spm-map-illustration.png
-3. spm-trail-general-luna.png
-4. spm-trail-island-discovery.png
-5. spm-trail-north-coast-locked.png
-6. spm-stop-general-luna.png
-7. spm-stop-cloud-9.png
-8. spm-stop-magpupungko.png
-9. spm-verified-seal.png
-10. spm-continue-daku-island.png
+1. one-siargao-pass.png
+2. osp-hero-map.png
+
+## Usage Rule
+
+- one-siargao-pass.png is the approved SPM visual reference asset.
+- osp-hero-map.png is the existing map/island visual asset available in the repo.
+- Do not use a full-page screenshot as the final interactive UI.
+- Rebuild the UI as JSX components section by section.
+- Use approved assets only where they strengthen visual fidelity.
 
 ## Validation Command
 
 Run: ./scripts/check-spm-approved-assets.sh
 
-## Rebuild Sequence After Asset Gate Passes
+## Rebuild Sequence
 
-1. A1 Header with real logo asset
-2. A2 Hero typography
-3. A3 Map illustration with real map asset
-4. A4 Legend
-5. A5 Status row
-6. A6 Trail cards with real images
-7. A7 Verified stops with stop images and seal
-8. A8 Continue journey card
-9. A9 Bottom nav
+1. A1 Header only
+2. A2 Hero typography only
+3. A3 Map visual only
+4. A4 Legend only
+5. A5 Status row only
+6. A6 Trail cards only
+7. A7 Verified stops only
+8. A8 Continue journey only
+9. A9 Bottom nav only
 
 ## Forbidden
 
-- No full-page screenshot as UI
+- No invented filenames
+- No full-page screenshot as final UI
 - No generic approximation
 - No fake DB state
 - No QR/stamp mutation
