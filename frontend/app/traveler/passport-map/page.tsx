@@ -164,42 +164,110 @@ export default function TravelerPassportMapPage() {
               style={{
                 minHeight: 450,
                 borderRadius: 24,
-                border: "1px dashed rgba(19,168,183,0.36)",
-                background: "rgba(255,255,255,0.62)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-                padding: 24,
+                background:
+                  "linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(238,248,251,0.62) 52%, rgba(255,255,255,0.86) 100%)",
+                padding: "18px 6px 24px",
+                position: "relative",
+                overflow: "hidden",
               }}
             >
-              <div>
+              <div
+                style={{
+                  maxWidth: 265,
+                  position: "relative",
+                  zIndex: 2,
+                }}
+              >
                 <div
                   style={{
-                    fontSize: 12,
-                    fontWeight: 950,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    color: "#13a8b7",
+                    fontFamily:
+                      '"Bradley Hand", "Segoe Print", "Comic Sans MS", cursive',
+                    fontSize: 22,
+                    lineHeight: 1,
+                    color: "#14264b",
+                    letterSpacing: "-0.02em",
+                    transform: "rotate(-2deg)",
                   }}
                 >
-                  4-C.1 Frame Active
+                  Hello, Explorer! <span style={{ fontSize: 23 }}>🌴</span>
                 </div>
+
+                <h2
+                  style={{
+                    margin: "18px 0 0",
+                    fontFamily: 'Georgia, "Times New Roman", Times, serif',
+                    fontSize: 42,
+                    lineHeight: 1.03,
+                    letterSpacing: "-0.052em",
+                    color: "#14264b",
+                    fontWeight: 900,
+                  }}
+                >
+                  Your Siargao
+                  <br />
+                  Journey,
+                  <br />
+                  <span
+                    style={{
+                      position: "relative",
+                      display: "inline-block",
+                      fontFamily:
+                        '"Bradley Hand", "Segoe Print", "Comic Sans MS", cursive',
+                      fontSize: 53,
+                      lineHeight: 0.92,
+                      fontWeight: 400,
+                      color: "#159aaa",
+                      letterSpacing: "-0.06em",
+                      transform: "rotate(-2deg)",
+                    }}
+                  >
+                    Mapped
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        position: "absolute",
+                        left: 2,
+                        right: -10,
+                        bottom: -8,
+                        height: 4,
+                        borderRadius: 999,
+                        background: "#f2b705",
+                        transform: "rotate(-8deg)",
+                      }}
+                    />
+                  </span>
+                </h2>
 
                 <p
                   style={{
-                    margin: "10px 0 0",
-                    fontSize: 15,
+                    margin: "32px 0 0",
+                    color: "#53657f",
+                    fontSize: 16,
                     lineHeight: 1.45,
-                    fontWeight: 650,
-                    color: "#64748b",
+                    fontWeight: 750,
+                    maxWidth: 250,
                   }}
                 >
-                  Approved SPM frame is now in place. Hero copy, map visual,
-                  trail cards, verified stops, and progress sections will be
-                  imported in controlled micro-slices.
+                  Collect stamps. Unlock trails.
+                  <br />
+                  Create memories that last.
                 </p>
               </div>
+
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  right: -64,
+                  top: 30,
+                  width: 250,
+                  height: 250,
+                  borderRadius: "48% 52% 46% 54%",
+                  background:
+                    "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.96) 0 9%, rgba(188,238,244,0.72) 10% 24%, rgba(103,200,212,0.46) 25% 42%, rgba(22,143,158,0.22) 43% 62%, transparent 63%)",
+                  opacity: 0.7,
+                }}
+              />
             </div>
           </section>
         </div>
