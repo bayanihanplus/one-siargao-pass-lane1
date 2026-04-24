@@ -5,54 +5,104 @@ import { PrismaService } from '../../database/prisma.service';
 export class GuidesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async listAssignments(userId: string) {
-    const rows = await this.prisma.guideAssignment.findMany({
-      where: { operatorUserId: userId },
-      orderBy: { createdAt: 'desc' },
+  private canViewGuideMoney(role?: string) {
+    return role === 'ADMIN' || role === 'OPERATOR_OWNER';
+  }
+
+  private stripGuideMoney(row: any) {
+    return {
+      id: row.id,
+      operatorUserId: row.operatorUserId,
+      guideUserId: row.guideUserId,
+      guideNameSnapshot: row.guideNameSnapshot,
+      activityInstanceId: row.activityInstanceId,
+      paymentStatus: 'HIDDEN',
+      notes: row.notes,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+    };
+  }
+
+  async listAssignableActivities(actor: any) {
+    const rows = await this.prisma.activityInstance.findMany({
+      include: {
+        activityTemplate: true,
+      },
+      orderBy: [
+        { scheduledDate: 'asc' },
+        { createdAt: 'desc' },
+      ],
       take: 50,
     });
 
     return { ok: true, data: rows };
   }
 
-  async createAssignment(userId: string, body: any) {
+  async listAssignments(actor: any) {
+    const rows = await this.prisma.guideAssignment.findMany({
+      where: { operatorUserId: actor.id },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+
+    return {
+      ok: true,
+      data: this.canViewGuideMoney(actor.role)
+        ? rows
+        : rows.map((row) => this.stripGuideMoney(row)),
+    };
+  }
+
+  async createAssignment(actor: any, body: any) {
+    const canManageMoney = this.canViewGuideMoney(actor.role);
+
     const row = await this.prisma.guideAssignment.create({
       data: {
-        operatorUserId: userId,
+        operatorUserId: actor.id,
         guideUserId: body.guideUserId || null,
         guideNameSnapshot: body.guideNameSnapshot || 'Unnamed Guide',
         activityInstanceId: body.activityInstanceId || null,
-        basePayAmount: body.basePayAmount ? Number(body.basePayAmount) : null,
-        tipAmount: body.tipAmount ? Number(body.tipAmount) : null,
-        commissionAmount: body.commissionAmount ? Number(body.commissionAmount) : null,
-        paymentStatus: body.paymentStatus || 'PENDING',
-        paymentMethod: body.paymentMethod || null,
+        basePayAmount: canManageMoney && body.basePayAmount ? Number(body.basePayAmount) : null,
+        tipAmount: canManageMoney && body.tipAmount ? Number(body.tipAmount) : null,
+        commissionAmount: canManageMoney && body.commissionAmount ? Number(body.commissionAmount) : null,
+        paymentStatus: canManageMoney ? body.paymentStatus || 'PENDING' : 'PENDING',
+        paymentMethod: canManageMoney ? body.paymentMethod || null : null,
         notes: body.notes || null,
       },
     });
 
-    return { ok: true, data: row };
+    return {
+      ok: true,
+      data: canManageMoney ? row : this.stripGuideMoney(row),
+    };
   }
 
-  async updateAssignment(userId: string, id: string, body: any) {
+  async updateAssignment(actor: any, id: string, body: any) {
+    const existing = await this.prisma.guideAssignment.findUnique({ where: { id } });
+
+    if (!existing || existing.operatorUserId !== actor.id) {
+      throw new Error('Guide assignment not found');
+    }
+
+    const canManageMoney = this.canViewGuideMoney(actor.role);
+
     const row = await this.prisma.guideAssignment.update({
       where: { id },
       data: {
         ...(body.guideNameSnapshot !== undefined ? { guideNameSnapshot: body.guideNameSnapshot } : {}),
         ...(body.activityInstanceId !== undefined ? { activityInstanceId: body.activityInstanceId || null } : {}),
-        ...(body.basePayAmount !== undefined ? { basePayAmount: body.basePayAmount ? Number(body.basePayAmount) : null } : {}),
-        ...(body.tipAmount !== undefined ? { tipAmount: body.tipAmount ? Number(body.tipAmount) : null } : {}),
-        ...(body.commissionAmount !== undefined ? { commissionAmount: body.commissionAmount ? Number(body.commissionAmount) : null } : {}),
-        ...(body.paymentStatus !== undefined ? { paymentStatus: body.paymentStatus || 'PENDING' } : {}),
-        ...(body.paymentMethod !== undefined ? { paymentMethod: body.paymentMethod || null } : {}),
+        ...(canManageMoney && body.basePayAmount !== undefined ? { basePayAmount: body.basePayAmount ? Number(body.basePayAmount) : null } : {}),
+        ...(canManageMoney && body.tipAmount !== undefined ? { tipAmount: body.tipAmount ? Number(body.tipAmount) : null } : {}),
+        ...(canManageMoney && body.commissionAmount !== undefined ? { commissionAmount: body.commissionAmount ? Number(body.commissionAmount) : null } : {}),
+        ...(canManageMoney && body.paymentStatus !== undefined ? { paymentStatus: body.paymentStatus || 'PENDING' } : {}),
+        ...(canManageMoney && body.paymentMethod !== undefined ? { paymentMethod: body.paymentMethod || null } : {}),
         ...(body.notes !== undefined ? { notes: body.notes || null } : {}),
       },
     });
 
-    if (row.operatorUserId !== userId) {
-      throw new Error('Guide assignment not found');
-    }
-
-    return { ok: true, data: row };
+    return {
+      ok: true,
+      data: canManageMoney ? row : this.stripGuideMoney(row),
+    };
   }
 }

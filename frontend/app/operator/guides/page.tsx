@@ -25,13 +25,13 @@ async function getAssignments() {
 
 async function getActivityInstances() {
   const token = await requireAccessToken();
-  const res = await fetch(`${getApiBaseUrl()}/activities/instances`, {
+  const res = await fetch(`${getApiBaseUrl()}/guides/assignable-activities`, {
     headers: { Authorization: `Bearer ${token}` },
     cache: "no-store",
   });
   if (!res.ok) return [];
-  const json = await res.json().catch(() => []);
-  return Array.isArray(json) ? json : [];
+  const json = await res.json().catch(() => ({ data: [] }));
+  return Array.isArray(json?.data) ? json.data : [];
 }
 
 async function createGuideAssignmentAction(formData: FormData) {
