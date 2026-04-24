@@ -415,6 +415,124 @@ export class OspQrService {
 
 
 
+
+  async getInterIslandPassengerReconciliation(movementId: string) {
+    const movement = await this.prisma.interIslandMovement.findUnique({
+      where: {
+        id: movementId,
+      },
+      select: {
+        id: true,
+        manifestId: true,
+        operatorUserId: true,
+        vesselId: true,
+        movementStatus: true,
+        departureQrEventId: true,
+        arrivalQrEventId: true,
+        returnQrEventId: true,
+        actualDepartureAt: true,
+        actualArrivalAt: true,
+        actualReturnAt: true,
+        originCheckpointId: true,
+        destinationCheckpointId: true,
+      },
+    });
+
+    if (!movement) {
+      throw new NotFoundException('Inter-island movement not found');
+    }
+
+    const issues: string[] = [];
+
+    if (!movement.manifestId) {
+      issues.push('MOVEMENT_HAS_NO_MANIFEST');
+    }
+
+    const manifest = movement.manifestId
+      ? await this.prisma.manifest.findUnique({
+          where: {
+            id: movement.manifestId,
+          },
+          select: {
+            id: true,
+            manifestReference: true,
+            manifestStatus: true,
+            operatorUserId: true,
+            totalMembers: true,
+            members: {
+              select: {
+                id: true,
+                tripId: true,
+                bookingId: true,
+                travelerNameSnapshot: true,
+                memberStatus: true,
+              },
+            },
+          },
+        })
+      : null;
+
+    if (!manifest) {
+      issues.push('MANIFEST_NOT_FOUND');
+    }
+
+    if (manifest && manifest.manifestStatus !== 'APPROVED') {
+      issues.push('MANIFEST_NOT_APPROVED');
+    }
+
+    if (manifest && manifest.operatorUserId !== movement.operatorUserId) {
+      issues.push('MANIFEST_OPERATOR_MISMATCH');
+    }
+
+    const manifestTotalMembers = manifest?.totalMembers ?? 0;
+    const listedMembersCount = manifest?.members.length ?? 0;
+
+    if (manifest && manifestTotalMembers !== listedMembersCount) {
+      issues.push('MANIFEST_TOTAL_DOES_NOT_MATCH_LISTED_MEMBERS');
+    }
+
+    if (movement.movementStatus === 'DEPARTED' && !movement.departureQrEventId) {
+      issues.push('DEPARTED_WITHOUT_DEPARTURE_QR_EVENT');
+    }
+
+    if (['ARRIVED', 'COMPLETED'].includes(movement.movementStatus) && !movement.arrivalQrEventId) {
+      issues.push('ARRIVED_OR_COMPLETED_WITHOUT_ARRIVAL_QR_EVENT');
+    }
+
+    if (movement.movementStatus === 'COMPLETED' && !movement.returnQrEventId) {
+      issues.push('COMPLETED_WITHOUT_RETURN_QR_EVENT');
+    }
+
+    const reconciliationStatus = issues.length === 0 ? 'PASS' : 'NEEDS_REVIEW';
+
+    return {
+      ok: true,
+      data: {
+        movement,
+        manifest: manifest
+          ? {
+              id: manifest.id,
+              manifestReference: manifest.manifestReference,
+              manifestStatus: manifest.manifestStatus,
+              operatorUserId: manifest.operatorUserId,
+              totalMembers: manifest.totalMembers,
+              listedMembersCount,
+              members: manifest.members,
+            }
+          : null,
+        reconciliation: {
+          reconciliationStatus,
+          manifestTotalMembers,
+          listedMembersCount,
+          departureEventExists: Boolean(movement.departureQrEventId),
+          arrivalEventExists: Boolean(movement.arrivalQrEventId),
+          returnEventExists: Boolean(movement.returnQrEventId),
+          issues,
+        },
+      },
+    };
+  }
+
   async listVessels(limit = 25) {
     const safeLimit = Number.isFinite(limit) ? Math.max(1, Math.min(100, Number(limit))) : 25;
 

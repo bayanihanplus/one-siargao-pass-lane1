@@ -92,6 +92,14 @@ export class OspQrController {
 
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('inter-island/movements/:id/passenger-reconciliation')
+  getInterIslandPassengerReconciliation(@Param('id') id: string) {
+    return this.ospQrService.getInterIslandPassengerReconciliation(id);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('vessels')
