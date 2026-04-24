@@ -816,6 +816,115 @@ export class OspQrService {
 
 
 
+
+  private buildFeeReceiptReference(movementId: string) {
+    const suffix = movementId.slice(-8).toUpperCase();
+    return `OSP-FEE-${suffix}`;
+  }
+
+  async issueInterIslandFeeReceipt(
+    actor: any,
+    movementId: string,
+    body: {
+      notes?: string | null;
+    },
+  ) {
+    const existingReceipt = await this.prisma.ospFeeReceipt.findUnique({
+      where: {
+        movementId,
+      },
+    });
+
+    if (existingReceipt) {
+      return {
+        ok: true,
+        data: {
+          issuanceStatus: 'ALREADY_ISSUED',
+          receipt: existingReceipt,
+        },
+      };
+    }
+
+    const summary = await this.getInterIslandFeePaymentSummary(movementId);
+    const summaryData = summary.data;
+
+    if (summaryData.paymentStatus !== 'PAID') {
+      throw new BadRequestException('Cannot issue fee receipt until fee payment status is PAID');
+    }
+
+    const paymentReferences = Array.from(
+      new Set(
+        summaryData.charges
+          .map((charge) => charge.paymentReference)
+          .filter((reference): reference is string => Boolean(reference)),
+      ),
+    );
+
+    if (paymentReferences.length === 0) {
+      throw new BadRequestException('Cannot issue fee receipt without payment reference');
+    }
+
+    const receiptReference = this.buildFeeReceiptReference(movementId);
+
+    const receipt = await this.prisma.ospFeeReceipt.create({
+      data: {
+        receiptReference,
+        movementId: summaryData.movement.id,
+        manifestId: summaryData.movement.manifestId ?? null,
+        bookingId: summaryData.movement.bookingId ?? null,
+        paymentReference: paymentReferences.join(','),
+        totalPaidAmountPhp: summaryData.paidAmountPhp,
+        receiptStatus: 'ISSUED',
+        issuedByUserId: actor?.id ?? null,
+        issuedAt: new Date(),
+        notes: body.notes ?? null,
+      },
+    });
+
+    return {
+      ok: true,
+      data: {
+        issuanceStatus: 'ISSUED',
+        receipt,
+      },
+    };
+  }
+
+  async getInterIslandFeeReceipt(movementId: string) {
+    const movement = await this.prisma.interIslandMovement.findUnique({
+      where: {
+        id: movementId,
+      },
+      select: {
+        id: true,
+        manifestId: true,
+        bookingId: true,
+        operatorUserId: true,
+        vesselId: true,
+        movementStatus: true,
+      },
+    });
+
+    if (!movement) {
+      throw new NotFoundException('Inter-island movement not found');
+    }
+
+    const receipt = await this.prisma.ospFeeReceipt.findUnique({
+      where: {
+        movementId,
+      },
+    });
+
+    return {
+      ok: true,
+      data: {
+        movement,
+        receipt,
+        receiptStatus: receipt?.receiptStatus ?? 'NOT_ISSUED',
+      },
+    };
+  }
+
   async listFeePaymentAudits(limit = 50) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
 

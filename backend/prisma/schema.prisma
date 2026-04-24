@@ -1225,3 +1225,29 @@ model OspFeePaymentAudit {
   @@index([createdAt])
   @@map("osp_fee_payment_audits")
 }
+
+model OspFeeReceipt {
+  id                 String   @id @default(cuid())
+  receiptReference   String   @unique
+  movementId         String   @unique
+  manifestId         String?
+  bookingId          String?
+  paymentReference   String
+  totalPaidAmountPhp Decimal  @db.Decimal(12, 2)
+  receiptStatus      String   @default("ISSUED")
+  issuedByUserId     String?
+  issuedAt           DateTime @default(now())
+  notes              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([receiptReference])
+  @@index([movementId])
+  @@index([manifestId])
+  @@index([bookingId])
+  @@index([paymentReference])
+  @@index([receiptStatus])
+  @@index([issuedByUserId])
+  @@index([issuedAt])
+  @@map("osp_fee_receipts")
+}
