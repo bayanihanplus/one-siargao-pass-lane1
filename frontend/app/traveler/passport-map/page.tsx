@@ -263,6 +263,8 @@ export default function TravelerPassportMapPage() {
           <SpmTrailCardsPreview />
 
           <SpmVerifiedStopsPreview />
+
+          <SpmContinueJourneyPreview />
         </div>
 
         <nav
@@ -291,6 +293,145 @@ export default function TravelerPassportMapPage() {
         </nav>
       </div>
     </main>
+  );
+}
+
+function SpmContinueJourneyPreview() {
+  return (
+    <section
+      aria-label="Preview-only continue journey card"
+      style={{
+        marginTop: 18,
+        marginBottom: 8,
+      }}
+    >
+      <div
+        style={{
+          borderRadius: 28,
+          background:
+            "linear-gradient(135deg, #14264b 0%, #17446f 52%, #13a8b7 100%)",
+          color: "#ffffff",
+          padding: 18,
+          boxShadow: "0 16px 34px rgba(20,38,75,0.18)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: -28,
+            top: -36,
+            width: 132,
+            height: 132,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.12)",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: 22,
+            bottom: -34,
+            width: 110,
+            height: 110,
+            borderRadius: "50%",
+            background: "rgba(242,183,5,0.22)",
+          }}
+        />
+
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 950,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.72)",
+            }}
+          >
+            Continue Your Journey
+          </div>
+
+          <h2
+            style={{
+              margin: "8px 0 0",
+              fontFamily: 'Georgia, "Times New Roman", Times, serif',
+              fontSize: 25,
+              lineHeight: 1.05,
+              letterSpacing: "-0.04em",
+              fontWeight: 900,
+            }}
+          >
+            Next preview stop:
+            <br />
+            Daku Island
+          </h2>
+
+          <p
+            style={{
+              margin: "10px 0 0",
+              maxWidth: 250,
+              fontSize: 13,
+              lineHeight: 1.35,
+              fontWeight: 750,
+              color: "rgba(255,255,255,0.78)",
+            }}
+          >
+            This card is visual-only until SPM is connected to governed trail,
+            QR, booking, and Passport Stamp records.
+          </p>
+
+          <div
+            style={{
+              marginTop: 14,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              flexWrap: "wrap",
+            }}
+          >
+            <a
+              href="/traveler/trips"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 42,
+                borderRadius: 999,
+                background: "#ffffff",
+                color: "#14264b",
+                padding: "0 16px",
+                fontSize: 13,
+                fontWeight: 950,
+                textDecoration: "none",
+                boxShadow: "0 8px 18px rgba(15,23,42,0.14)",
+              }}
+            >
+              View Trips
+            </a>
+
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                minHeight: 42,
+                borderRadius: 999,
+                border: "1px solid rgba(255,255,255,0.36)",
+                color: "rgba(255,255,255,0.82)",
+                padding: "0 14px",
+                fontSize: 12,
+                fontWeight: 900,
+              }}
+            >
+              No stamp action yet
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
