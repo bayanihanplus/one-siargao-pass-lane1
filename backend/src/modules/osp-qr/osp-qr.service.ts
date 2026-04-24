@@ -1045,6 +1045,92 @@ export class OspQrService {
     };
   }
 
+
+  async interIslandReturnScan(
+    actor: any,
+    movementId: string,
+    body: {
+      channel?: string | null;
+    },
+  ) {
+    const movement = await this.prisma.interIslandMovement.findUnique({
+      where: {
+        id: movementId,
+      },
+    });
+
+    if (!movement) {
+      throw new NotFoundException('Inter-island movement not found');
+    }
+
+    if (movement.movementStatus !== 'ARRIVED') {
+      throw new BadRequestException('Movement must be ARRIVED before return scan');
+    }
+
+    if (!movement.originCheckpointId) {
+      throw new BadRequestException('Movement has no origin checkpoint for return');
+    }
+
+    const origin = await this.prisma.ospCheckpoint.findFirst({
+      where: {
+        id: movement.originCheckpointId,
+        isActive: true,
+        supportsInterIsland: true,
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        checkpointType: true,
+      },
+    });
+
+    if (!origin) {
+      throw new BadRequestException('Origin checkpoint is not active or does not support inter-island return');
+    }
+
+    const event = await this.prisma.ospQrEvent.create({
+      data: {
+        eventType: 'INTER_ISLAND_ARRIVAL_SCAN',
+        tripId: movement.tripId ?? null,
+        bookingId: movement.bookingId ?? null,
+        trailBookingId: movement.trailBookingId ?? null,
+        manifestId: movement.manifestId ?? null,
+        operatorUserId: movement.operatorUserId ?? null,
+        vesselId: movement.vesselId ?? null,
+        checkpointId: movement.originCheckpointId,
+        checkpointType: origin.checkpointType,
+        direction: 'ARRIVAL',
+        scannerActorId: actor.id,
+        scannerActorRole: actor.role,
+        scanChannel: body.channel || 'ADMIN_INTER_ISLAND_RETURN',
+        outcome: 'ALLOWED',
+        reasonCode: null,
+        reasonMessage: null,
+      },
+    });
+
+    const updated = await this.prisma.interIslandMovement.update({
+      where: {
+        id: movement.id,
+      },
+      data: {
+        returnQrEventId: event.id,
+        movementStatus: 'COMPLETED',
+        actualReturnAt: new Date(),
+      },
+    });
+
+    return {
+      ok: true,
+      data: {
+        movement: updated,
+        qrEvent: event,
+        returnCheckpoint: origin,
+      },
+    };
+  }
+
   async listCheckpoints() {
     const data = await this.prisma.ospCheckpoint.findMany({
       where: {
