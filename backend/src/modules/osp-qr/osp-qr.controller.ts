@@ -94,6 +94,14 @@ export class OspQrController {
 
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('inter-island/movements/:id/payment-clearance')
+  getInterIslandPaymentClearance(@Param('id') id: string) {
+    return this.ospQrService.getInterIslandPaymentClearance(id);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('inter-island/overdue-movements')

@@ -417,6 +417,177 @@ export class OspQrService {
 
 
 
+
+  async getInterIslandPaymentClearance(movementId: string) {
+    const movement = await this.prisma.interIslandMovement.findUnique({
+      where: {
+        id: movementId,
+      },
+      select: {
+        id: true,
+        manifestId: true,
+        operatorUserId: true,
+        vesselId: true,
+        movementStatus: true,
+        departureQrEventId: true,
+        actualDepartureAt: true,
+      },
+    });
+
+    if (!movement) {
+      throw new NotFoundException('Inter-island movement not found');
+    }
+
+    const issues: string[] = [];
+
+    if (!movement.manifestId) {
+      issues.push('MOVEMENT_HAS_NO_MANIFEST');
+    }
+
+    const manifest = movement.manifestId
+      ? await this.prisma.manifest.findUnique({
+          where: {
+            id: movement.manifestId,
+          },
+          select: {
+            id: true,
+            manifestReference: true,
+            manifestStatus: true,
+            operatorUserId: true,
+            totalMembers: true,
+            members: {
+              select: {
+                id: true,
+                bookingId: true,
+                tripId: true,
+                travelerNameSnapshot: true,
+                memberStatus: true,
+              },
+            },
+          },
+        })
+      : null;
+
+    if (!manifest) {
+      issues.push('MANIFEST_NOT_FOUND');
+    }
+
+    const members = manifest?.members ?? [];
+    const bookingIds = Array.from(
+      new Set(members.map((member) => member.bookingId).filter(Boolean) as string[]),
+    );
+
+    const bookings = bookingIds.length
+      ? await this.prisma.booking.findMany({
+          where: {
+            id: {
+              in: bookingIds,
+            },
+          },
+          select: {
+            id: true,
+            primaryTravelerUserId: true,
+            bookingReference: true,
+            bookingSource: true,
+            bookingStatus: true,
+            bookingTotalPhp: true,
+            currencyCode: true,
+            paymentState: {
+              select: {
+                state: true,
+                paidAmountPhp: true,
+                unpaidAmountPhp: true,
+                lastPaymentIntentId: true,
+                stateUpdatedAt: true,
+              },
+            },
+            paymentIntents: {
+              select: {
+                id: true,
+                intentReference: true,
+                amountPhp: true,
+                currencyCode: true,
+                status: true,
+                confirmedAt: true,
+              },
+            },
+          },
+        })
+      : [];
+
+    const bookingById = new Map(bookings.map((booking) => [booking.id, booking]));
+
+    const memberClearance = members.map((member) => {
+      const booking = member.bookingId ? bookingById.get(member.bookingId) ?? null : null;
+      const paymentState = booking?.paymentState?.state ?? null;
+      const isPaid = paymentState === 'PAID';
+
+      return {
+        manifestMemberId: member.id,
+        travelerNameSnapshot: member.travelerNameSnapshot,
+        memberStatus: member.memberStatus,
+        tripId: member.tripId,
+        bookingId: member.bookingId,
+        booking,
+        paymentState,
+        isPaid,
+        issue: !member.bookingId
+          ? 'MEMBER_HAS_NO_BOOKING'
+          : !booking
+            ? 'BOOKING_NOT_FOUND'
+            : !isPaid
+              ? 'BOOKING_NOT_PAID'
+              : null,
+      };
+    });
+
+    const manifestMemberCount = members.length;
+    const bookingLinkedMemberCount = members.filter((member) => Boolean(member.bookingId)).length;
+    const missingBookingCount = memberClearance.filter((row) => row.issue === 'MEMBER_HAS_NO_BOOKING' || row.issue === 'BOOKING_NOT_FOUND').length;
+    const paidBookingCount = memberClearance.filter((row) => row.isPaid).length;
+    const unpaidBookingCount = memberClearance.filter((row) => row.bookingId && !row.isPaid).length;
+
+    if (manifestMemberCount === 0) {
+      issues.push('MANIFEST_HAS_NO_MEMBERS');
+    }
+
+    if (missingBookingCount > 0) {
+      issues.push('MANIFEST_MEMBERS_MISSING_BOOKINGS');
+    }
+
+    if (unpaidBookingCount > 0) {
+      issues.push('MANIFEST_HAS_UNPAID_BOOKINGS');
+    }
+
+    const clearanceStatus = issues.length === 0 ? 'CLEAR' : 'NEEDS_REVIEW';
+
+    return {
+      ok: true,
+      data: {
+        movement,
+        manifest: manifest
+          ? {
+              id: manifest.id,
+              manifestReference: manifest.manifestReference,
+              manifestStatus: manifest.manifestStatus,
+              operatorUserId: manifest.operatorUserId,
+              totalMembers: manifest.totalMembers,
+            }
+          : null,
+        clearance: {
+          clearanceStatus,
+          manifestMemberCount,
+          bookingLinkedMemberCount,
+          paidBookingCount,
+          unpaidBookingCount,
+          missingBookingCount,
+          issues,
+        },
+        memberClearance,
+      },
+    };
+  }
+
   async listOverdueInterIslandMovements(thresholdMinutes = 60) {
     const safeThreshold = Number.isFinite(thresholdMinutes)
       ? Math.max(1, Math.min(1440, Number(thresholdMinutes)))
