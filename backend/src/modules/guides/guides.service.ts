@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
-import { resolveOperatorContext } from '../auth/utils/operator-context.util';
 
 @Injectable()
 export class GuidesService {
@@ -10,17 +9,13 @@ export class GuidesService {
     return role === 'ADMIN' || role === 'OPERATOR_OWNER';
   }
 
-  private async resolveOperatorUserId(actor: any) {
-    const context = await resolveOperatorContext(this.prisma, actor);
-    return context.operatorUserId;
-  }
 
-  private async assertActivityBelongsToOperator(actor: any, activityInstanceId?: string | null) {
+  private async assertActivityBelongsToOperator(operatorContext: any, activityInstanceId?: string | null) {
     if (!activityInstanceId) {
       return null;
     }
 
-    const operatorUserId = await this.resolveOperatorUserId(actor);
+    const operatorUserId = operatorContext.operatorUserId;
 
     const instance = await this.prisma.activityInstance.findFirst({
       where: {
@@ -53,8 +48,8 @@ export class GuidesService {
     };
   }
 
-  async listAssignableActivities(actor: any) {
-    const operatorUserId = await this.resolveOperatorUserId(actor);
+  async listAssignableActivities(operatorContext: any) {
+    const operatorUserId = operatorContext.operatorUserId;
 
     const rows = await this.prisma.activityInstance.findMany({
       where: {
@@ -76,8 +71,8 @@ export class GuidesService {
     return { ok: true, data: rows };
   }
 
-  async listAssignments(actor: any) {
-    const operatorUserId = await this.resolveOperatorUserId(actor);
+  async listAssignments(operatorContext: any) {
+    const operatorUserId = operatorContext.operatorUserId;
 
     const rows = await this.prisma.guideAssignment.findMany({
       where: { operatorUserId },
@@ -87,16 +82,16 @@ export class GuidesService {
 
     return {
       ok: true,
-      data: this.canViewGuideMoney(actor.role)
+      data: this.canViewGuideMoney(operatorContext.workspaceRole)
         ? rows
         : rows.map((row) => this.stripGuideMoney(row)),
     };
   }
 
-  async createAssignment(actor: any, body: any) {
-    const canManageMoney = this.canViewGuideMoney(actor.role);
-    const operatorUserId = await this.resolveOperatorUserId(actor);
-    const activityInstanceId = await this.assertActivityBelongsToOperator(actor, body.activityInstanceId || null);
+  async createAssignment(operatorContext: any, body: any) {
+    const canManageMoney = this.canViewGuideMoney(operatorContext.workspaceRole);
+    const operatorUserId = operatorContext.operatorUserId;
+    const activityInstanceId = await this.assertActivityBelongsToOperator(operatorContext, body.activityInstanceId || null);
 
     const row = await this.prisma.guideAssignment.create({
       data: {
@@ -119,20 +114,20 @@ export class GuidesService {
     };
   }
 
-  async updateAssignment(actor: any, id: string, body: any) {
+  async updateAssignment(operatorContext: any, id: string, body: any) {
     const existing = await this.prisma.guideAssignment.findUnique({ where: { id } });
 
-    const operatorUserId = await this.resolveOperatorUserId(actor);
+    const operatorUserId = operatorContext.operatorUserId;
 
     if (!existing || existing.operatorUserId !== operatorUserId) {
       throw new Error('Guide assignment not found');
     }
 
-    const canManageMoney = this.canViewGuideMoney(actor.role);
+    const canManageMoney = this.canViewGuideMoney(operatorContext.workspaceRole);
 
     const activityInstanceId =
       body.activityInstanceId !== undefined
-        ? await this.assertActivityBelongsToOperator(actor, body.activityInstanceId || null)
+        ? await this.assertActivityBelongsToOperator(operatorContext, body.activityInstanceId || null)
         : undefined;
 
     const row = await this.prisma.guideAssignment.update({

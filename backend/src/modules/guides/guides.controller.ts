@@ -10,24 +10,24 @@ export class GuidesController {
   @UseGuards(DevAuthGuard, OperatorAuthGuard)
   @Get('assignable-activities')
   listAssignableActivities(@Req() req: any) {
-    return this.guidesService.listAssignableActivities(req.user);
+    return this.guidesService.listAssignableActivities(req.operatorContext);
   }
 
   @UseGuards(DevAuthGuard, OperatorAuthGuard)
   @Get('assignments')
   listAssignments(@Req() req: any) {
-    return this.guidesService.listAssignments(req.user);
+    return this.guidesService.listAssignments(req.operatorContext);
   }
 
   @UseGuards(DevAuthGuard, OperatorAuthGuard)
   @Post('assignments')
   createAssignment(@Req() req: any, @Body() body: any) {
-    return this.guidesService.createAssignment(req.user, body);
+    return this.guidesService.createAssignment(req.operatorContext, body);
   }
 
   @UseGuards(DevAuthGuard, OperatorAuthGuard)
   @Patch('assignments/:id')
   updateAssignment(@Req() req: any, @Param('id') id: string, @Body() body: any) {
-    return this.guidesService.updateAssignment(req.user, id, body);
+    return this.guidesService.updateAssignment(req.operatorContext, id, body);
   }
 }
