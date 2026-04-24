@@ -154,6 +154,70 @@ function FeeItemCard(props: {
   );
 }
 
+
+const lguNavItems = [
+  { label: "Overview", href: "#overview", status: "Active" },
+  { label: "Intelligence Layer", href: "#intelligence-layer", status: "Core" },
+  { label: "Manifest Submissions", href: "#manifest-submissions", status: "Queue" },
+  { label: "Inter-Island Clearance", href: "#inter-island-clearance", status: "Live" },
+  { label: "Fee Exceptions", href: "#exceptions", status: "Watch" },
+  { label: "Receipts", href: "#receipts", status: "Read" },
+  { label: "Payment Audit", href: "#payment-audit", status: "Read" },
+  { label: "Fee Programs", href: "#fee-programs", status: "Config" },
+];
+
+function LguSideNav() {
+  return (
+    <aside className="w-full shrink-0 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm lg:sticky lg:top-6 lg:w-72 lg:self-start">
+      <div className="rounded-2xl bg-slate-950 p-4 text-white">
+        <div className="text-xs font-black uppercase tracking-[0.22em] text-cyan-200">
+          LGU Console
+        </div>
+        <div className="mt-2 text-xl font-black">Compliance Desk</div>
+        <div className="mt-3 inline-flex rounded-full bg-cyan-100 px-3 py-1 text-xs font-black text-slate-950">
+          READ ONLY
+        </div>
+      </div>
+
+      <nav className="mt-4 grid gap-2">
+        {lguNavItems.map((item, index) => {
+          const isActive = index === 0;
+          return (
+            <a
+              key={item.href}
+              href={item.href}
+              className={
+                isActive
+                  ? "flex items-center justify-between rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white shadow-sm"
+                  : "flex items-center justify-between rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-black text-slate-950 hover:border-slate-950 hover:bg-slate-100"
+              }
+            >
+              <span>{item.label}</span>
+              <span
+                className={
+                  isActive
+                    ? "rounded-full bg-white px-2 py-1 text-[10px] font-black uppercase text-slate-950"
+                    : "rounded-full bg-slate-950 px-2 py-1 text-[10px] font-black uppercase text-white"
+                }
+              >
+                {item.status}
+              </span>
+            </a>
+          );
+        })}
+      </nav>
+
+      <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+        <div className="font-black">Operating rule</div>
+        <p className="mt-1 leading-6">
+          LGU users review submitted records. Operators submit manifests. The console receives and audits.
+        </p>
+      </div>
+    </aside>
+  );
+}
+
+
 export default async function LguConsolePage() {
   const [summary, feePrograms, feeClearanceExceptions, feeReceipts, feePaymentAudits] = await Promise.all([
     apiGet("/osp-qr/inter-island/compliance-summary"),
@@ -171,8 +235,10 @@ export default async function LguConsolePage() {
 
   return (
     <main className="min-h-screen bg-slate-50 px-5 py-6 text-slate-950">
-      <section className="mx-auto max-w-6xl">
-        <div className="rounded-3xl bg-slate-950 p-6 text-white shadow-lg">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 lg:flex-row">
+        <LguSideNav />
+        <section className="min-w-0 flex-1">
+        <div id="overview" className="rounded-3xl bg-slate-950 p-6 text-white shadow-lg">
           <div className="text-sm font-semibold uppercase tracking-[0.2em] text-cyan-200">
             One Siargao Pass
           </div>
@@ -183,6 +249,26 @@ export default async function LguConsolePage() {
             Read-only operational view for inter-island movement compliance, approval gates,
             and LGU/barangay fee configuration status.
           </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href="#intelligence-layer"
+              className="rounded-2xl bg-emerald-300 px-5 py-3 text-sm font-black text-slate-950 shadow-sm hover:bg-emerald-200"
+            >
+              Intelligence Layer
+            </a>
+            <a
+              href="#manifest-submissions"
+              className="rounded-2xl bg-cyan-300 px-5 py-3 text-sm font-black text-slate-950 shadow-sm hover:bg-cyan-200"
+            >
+              Manifest Submissions
+            </a>
+            <a
+              href="#exceptions"
+              className="rounded-2xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-black text-white hover:bg-white/20"
+            >
+              View Fee-Clearance Exceptions
+            </a>
+          </div>
         </div>
 
         {!summary?.ok ? (
@@ -209,10 +295,100 @@ export default async function LguConsolePage() {
               <MetricCard label="Missing Fee Amounts" value={counts.requiredFeeItemsMissingAmount} />
             </div>
 
+            <div id="intelligence-layer" className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <div className="text-xs font-black uppercase tracking-[0.22em] text-emerald-700">
+                    DOT / LGU Intelligence Layer
+                  </div>
+                  <h2 className="mt-2 text-2xl font-black text-slate-950">Operational Intelligence Dashboard</h2>
+                  <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
+                    Read-only decision layer for monitoring inter-island movement pressure, fee clearance,
+                    exception risk, overdue boats, and receipt-backed compliance readiness.
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-slate-950 px-5 py-3 text-xs font-black uppercase tracking-wide text-white">
+                  Read-only intelligence
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <a
+                  href="#inter-island-clearance"
+                  className="rounded-2xl border border-slate-300 bg-slate-950 p-5 text-white shadow-sm hover:bg-slate-800"
+                >
+                  <div className="text-xs font-black uppercase tracking-wide text-cyan-200">Movement Intelligence</div>
+                  <div className="mt-3 text-3xl font-black">{counts.totalMovements}</div>
+                  <p className="mt-2 text-sm leading-6 text-slate-300">
+                    Total tracked inter-island movements under the compliance spine.
+                  </p>
+                </a>
+
+                <a
+                  href="#exceptions"
+                  className="rounded-2xl border border-red-200 bg-red-50 p-5 text-red-950 shadow-sm hover:border-red-400"
+                >
+                  <div className="text-xs font-black uppercase tracking-wide text-red-700">Exception Intelligence</div>
+                  <div className="mt-3 text-3xl font-black">{counts.openComplianceExceptions}</div>
+                  <p className="mt-2 text-sm leading-6 text-red-800">
+                    Open exceptions requiring operational or compliance attention.
+                  </p>
+                </a>
+
+                <a
+                  href="#fee-programs"
+                  className="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-amber-950 shadow-sm hover:border-amber-400"
+                >
+                  <div className="text-xs font-black uppercase tracking-wide text-amber-700">Fee Intelligence</div>
+                  <div className="mt-3 text-3xl font-black">{counts.requiredFeeItemsMissingAmount}</div>
+                  <p className="mt-2 text-sm leading-6 text-amber-800">
+                    Required fee items still missing configured amounts.
+                  </p>
+                </a>
+
+                <a
+                  href="#receipts"
+                  className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-emerald-950 shadow-sm hover:border-emerald-400"
+                >
+                  <div className="text-xs font-black uppercase tracking-wide text-emerald-700">Receipt Intelligence</div>
+                  <div className="mt-3 text-3xl font-black">{receiptRows.length}</div>
+                  <p className="mt-2 text-sm leading-6 text-emerald-800">
+                    Latest issued fee receipts visible in the LGU read layer.
+                  </p>
+                </a>
+              </div>
+
+              <div className="mt-5 grid gap-4 md:grid-cols-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="text-xs font-black uppercase tracking-wide text-slate-500">Overdue movement signal</div>
+                  <div className="mt-2 text-2xl font-black text-slate-950">{counts.overdueDepartedMovements}</div>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Departed movements without clean arrival/return trail.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="text-xs font-black uppercase tracking-wide text-slate-500">Fee configuration status</div>
+                  <div className="mt-2 text-2xl font-black text-slate-950">{counts.feeConfigurationStatus}</div>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Current readiness of LGU/barangay/environmental fee configuration.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="text-xs font-black uppercase tracking-wide text-slate-500">Fee-clearance blocked cases</div>
+                  <div className="mt-2 text-2xl font-black text-slate-950">{clearanceExceptionRows.length}</div>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Latest blocked departure cases caused by fee-clearance requirements.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
                 <div>
-                  <h2 className="text-lg font-black">Inter-island approval logic</h2>
+                  <h2 id="inter-island-clearance" className="text-lg font-black">Inter-island approval logic</h2>
                   <p className="mt-1 text-sm text-slate-500">
                     A movement is not LGU-ready just because it exists. It must pass each compliance gate below.
                   </p>
@@ -256,8 +432,52 @@ export default async function LguConsolePage() {
               </div>
             </div>
 
+            <div id="manifest-submissions" className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className="text-lg font-black">Manifest Submissions</h2>
+                  <p className="mt-1 text-sm leading-6 text-slate-500">
+                    Operators submit manifests into the compliance spine. LGU receives them as a review queue.
+                    This first UI lane is read-only; approval actions remain locked behind backend-governed lanes.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <div className="rounded-2xl bg-slate-950 px-4 py-3 text-xs font-black uppercase tracking-wide text-white">
+                    Submission queue
+                  </div>
+                  <div className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-xs font-black uppercase tracking-wide text-slate-950">
+                    No manual import
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-4 md:grid-cols-3">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="text-xs font-black uppercase tracking-wide text-slate-500">Operator action</div>
+                  <div className="mt-2 font-black text-slate-950">Submit manifest</div>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Operators prepare and submit passenger manifests from their own workspace.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="text-xs font-black uppercase tracking-wide text-slate-500">LGU action</div>
+                  <div className="mt-2 font-black text-slate-950">Review submitted queue</div>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    LGU reviews manifest readiness, vessel compliance, fee clearance, and exception flags.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="text-xs font-black uppercase tracking-wide text-slate-500">Audit rule</div>
+                  <div className="mt-2 font-black text-slate-950">Backend source of truth</div>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    No manual import button is used as the primary workflow. Sync is backend-driven.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="mt-6 grid gap-4 lg:grid-cols-3">
-              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div id="exceptions" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="text-lg font-black">Fee-clearance exceptions</h2>
@@ -289,7 +509,7 @@ export default async function LguConsolePage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div id="receipts" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="text-lg font-black">Issued fee receipts</h2>
@@ -321,7 +541,7 @@ export default async function LguConsolePage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div id="payment-audit" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="text-lg font-black">Fee payment audit</h2>
@@ -357,7 +577,7 @@ export default async function LguConsolePage() {
             <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
                 <div>
-                  <h2 className="text-lg font-black">LGU / Barangay fee configuration</h2>
+                  <h2 id="fee-programs" className="text-lg font-black">LGU / Barangay fee configuration</h2>
                   <p className="mt-1 text-sm text-slate-500">
                     Fees are backend-configured compliance requirements. This console is read-only until a governed LGU fee editor role is approved.
                   </p>
@@ -410,7 +630,8 @@ export default async function LguConsolePage() {
             </div>
           </>
         )}
-      </section>
+        </section>
+      </div>
     </main>
   );
 }
