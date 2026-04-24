@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import { resolveOperatorContext } from '../auth/utils/operator-context.util';
 
 @Injectable()
 export class GuidesService {
@@ -10,21 +11,32 @@ export class GuidesService {
   }
 
   private async resolveOperatorUserId(actor: any) {
-    if (actor.role === 'ADMIN' || actor.role === 'OPERATOR_OWNER') {
-      return actor.id;
+    const context = await resolveOperatorContext(this.prisma, actor);
+    return context.operatorUserId;
+  }
+
+  private async assertActivityBelongsToOperator(actor: any, activityInstanceId?: string | null) {
+    if (!activityInstanceId) {
+      return null;
     }
 
-    const membership = await this.prisma.operatorMembership.findFirst({
+    const operatorUserId = await this.resolveOperatorUserId(actor);
+
+    const instance = await this.prisma.activityInstance.findFirst({
       where: {
-        memberUserId: actor.id,
-        status: 'ACTIVE',
+        id: activityInstanceId,
+        activityTemplate: {
+          ownerUserId: operatorUserId,
+        },
       },
-      orderBy: {
-        createdAt: 'asc',
-      },
+      select: { id: true },
     });
 
-    return membership?.operatorUserId || actor.id;
+    if (!instance) {
+      throw new ForbiddenException('Activity instance not available for this operator');
+    }
+
+    return instance.id;
   }
 
   private stripGuideMoney(row: any) {
@@ -46,8 +58,9 @@ export class GuidesService {
 
     const rows = await this.prisma.activityInstance.findMany({
       where: {
+        instanceStatus: 'scheduled',
         activityTemplate: {
-          ownerUserId: actor.role === 'ADMIN' ? undefined : operatorUserId,
+          ownerUserId: operatorUserId,
         },
       },
       include: {
@@ -82,13 +95,15 @@ export class GuidesService {
 
   async createAssignment(actor: any, body: any) {
     const canManageMoney = this.canViewGuideMoney(actor.role);
+    const operatorUserId = await this.resolveOperatorUserId(actor);
+    const activityInstanceId = await this.assertActivityBelongsToOperator(actor, body.activityInstanceId || null);
 
     const row = await this.prisma.guideAssignment.create({
       data: {
-        operatorUserId: await this.resolveOperatorUserId(actor),
+        operatorUserId,
         guideUserId: body.guideUserId || null,
         guideNameSnapshot: body.guideNameSnapshot || 'Unnamed Guide',
-        activityInstanceId: body.activityInstanceId || null,
+        activityInstanceId,
         basePayAmount: canManageMoney && body.basePayAmount ? Number(body.basePayAmount) : null,
         tipAmount: canManageMoney && body.tipAmount ? Number(body.tipAmount) : null,
         commissionAmount: canManageMoney && body.commissionAmount ? Number(body.commissionAmount) : null,
@@ -115,11 +130,16 @@ export class GuidesService {
 
     const canManageMoney = this.canViewGuideMoney(actor.role);
 
+    const activityInstanceId =
+      body.activityInstanceId !== undefined
+        ? await this.assertActivityBelongsToOperator(actor, body.activityInstanceId || null)
+        : undefined;
+
     const row = await this.prisma.guideAssignment.update({
       where: { id },
       data: {
         ...(body.guideNameSnapshot !== undefined ? { guideNameSnapshot: body.guideNameSnapshot } : {}),
-        ...(body.activityInstanceId !== undefined ? { activityInstanceId: body.activityInstanceId || null } : {}),
+        ...(body.activityInstanceId !== undefined ? { activityInstanceId } : {}),
         ...(canManageMoney && body.basePayAmount !== undefined ? { basePayAmount: body.basePayAmount ? Number(body.basePayAmount) : null } : {}),
         ...(canManageMoney && body.tipAmount !== undefined ? { tipAmount: body.tipAmount ? Number(body.tipAmount) : null } : {}),
         ...(canManageMoney && body.commissionAmount !== undefined ? { commissionAmount: body.commissionAmount ? Number(body.commissionAmount) : null } : {}),
