@@ -820,6 +820,104 @@ export class OspQrService {
 
 
 
+
+  async listLguManifestSubmissions(limit = 50) {
+    const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
+
+    const rows = await this.prisma.manifestApprovalRequest.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: safeLimit,
+      include: {
+        manifest: {
+          include: {
+            operator: {
+              select: {
+                id: true,
+                email: true,
+                fullName: true,
+                primaryRole: true,
+              },
+            },
+            submissions: {
+              orderBy: {
+                submissionTime: 'desc',
+              },
+              take: 1,
+            },
+            members: true,
+            activityInstance: {
+              include: {
+                activityTemplate: true,
+              },
+            },
+          },
+        },
+        actions: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+        },
+      },
+    });
+
+    const data = rows.map((row) => {
+      const latestSubmission = row.manifest?.submissions?.[0] ?? null;
+      const latestAction = row.actions?.[0] ?? null;
+
+      return {
+        id: row.id,
+        manifestId: row.manifestId,
+        requestStatus: row.requestStatus,
+        reviewedBy: row.reviewedBy,
+        reviewedAt: row.reviewedAt,
+        reviewNotes: row.reviewNotes,
+        createdAt: row.createdAt,
+        latestAction,
+        latestSubmission,
+        manifest: row.manifest
+          ? {
+              id: row.manifest.id,
+              manifestReference: row.manifest.manifestReference,
+              manifestStatus: row.manifest.manifestStatus,
+              operatorUserId: row.manifest.operatorUserId,
+              totalMembers: row.manifest.totalMembers,
+              listedMembersCount: row.manifest.members?.length ?? 0,
+              createdAt: row.manifest.createdAt,
+              updatedAt: row.manifest.updatedAt,
+              operator: row.manifest.operator,
+              activityInstance: row.manifest.activityInstance
+                ? {
+                    id: row.manifest.activityInstance.id,
+                    scheduledDate: row.manifest.activityInstance.scheduledDate,
+                    startTime: row.manifest.activityInstance.startTime,
+                    endTime: row.manifest.activityInstance.endTime,
+                    capacity: row.manifest.activityInstance.capacity,
+                    bookedCount: row.manifest.activityInstance.bookedCount,
+                    instanceStatus: row.manifest.activityInstance.instanceStatus,
+                    activityTemplate: row.manifest.activityInstance.activityTemplate
+                      ? {
+                          id: row.manifest.activityInstance.activityTemplate.id,
+                          title: row.manifest.activityInstance.activityTemplate.title,
+                          requiresManifest: row.manifest.activityInstance.activityTemplate.requiresManifest,
+                          requiresGuide: row.manifest.activityInstance.activityTemplate.requiresGuide,
+                        }
+                      : null,
+                  }
+                : null,
+            }
+          : null,
+      };
+    });
+
+    return {
+      ok: true,
+      data,
+    };
+  }
+
   async listFeeClearanceExceptions(limit = 50) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
 
