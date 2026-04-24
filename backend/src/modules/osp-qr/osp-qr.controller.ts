@@ -139,6 +139,14 @@ export class OspQrController {
   }
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Get('inter-island/movements/:id/fee-charge-preview')
+  previewInterIslandFeeCharges(@Param('id') id: string) {
+    return this.ospQrService.previewInterIslandFeeCharges(id);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
   @Get('compliance/fee-program-approval-audits')

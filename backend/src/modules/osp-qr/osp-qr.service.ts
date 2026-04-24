@@ -810,6 +810,167 @@ export class OspQrService {
   }
 
 
+
+  async previewInterIslandFeeCharges(movementId: string) {
+    const movement = await this.prisma.interIslandMovement.findUnique({
+      where: {
+        id: movementId,
+      },
+      select: {
+        id: true,
+        manifestId: true,
+        bookingId: true,
+        trailBookingId: true,
+        operatorUserId: true,
+        vesselId: true,
+        movementStatus: true,
+      },
+    });
+
+    if (!movement) {
+      throw new NotFoundException('Inter-island movement not found');
+    }
+
+    const manifest = movement.manifestId
+      ? await this.prisma.manifest.findUnique({
+          where: {
+            id: movement.manifestId,
+          },
+          select: {
+            id: true,
+            manifestReference: true,
+            manifestStatus: true,
+            totalMembers: true,
+            members: {
+              select: {
+                id: true,
+                bookingId: true,
+                travelerNameSnapshot: true,
+                memberStatus: true,
+              },
+            },
+          },
+        })
+      : null;
+
+    const approvedFeeProgram = await this.prisma.ospComplianceFeeProgram.findFirst({
+      where: {
+        scopeType: 'INTER_ISLAND_MOVEMENT',
+        isActive: true,
+        approvalStatus: 'APPROVED',
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        municipality: true,
+        approvalStatus: true,
+        feeItems: {
+          where: {
+            isRequiredForApproval: true,
+          },
+          orderBy: {
+            sortOrder: 'asc',
+          },
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            feeCategory: true,
+            chargeBasis: true,
+            amountPhp: true,
+            isRequiredForApproval: true,
+            isTravelerFacing: true,
+          },
+        },
+      },
+    });
+
+    if (!approvedFeeProgram) {
+      return {
+        ok: true,
+        data: {
+          movement,
+          manifest,
+          feeProgram: null,
+          previewStatus: 'NO_APPROVED_FEE_PROGRAM',
+          quantityBasis: 0,
+          charges: [],
+          totalAmountPhp: 0,
+          issues: ['NO_APPROVED_FEE_PROGRAM'],
+        },
+      };
+    }
+
+    const issues: string[] = [];
+
+    const quantityBasis =
+      manifest?.members?.length && manifest.members.length > 0
+        ? manifest.members.length
+        : manifest?.totalMembers ?? 0;
+
+    if (!movement.manifestId) {
+      issues.push('MOVEMENT_HAS_NO_MANIFEST');
+    }
+
+    if (!manifest) {
+      issues.push('MANIFEST_NOT_FOUND');
+    }
+
+    if (quantityBasis <= 0) {
+      issues.push('NO_PASSENGER_QUANTITY_BASIS');
+    }
+
+    const charges = approvedFeeProgram.feeItems.map((item) => {
+      const amount = Number(item.amountPhp ?? 0);
+      const quantity = item.chargeBasis === 'PER_TRAVELER' ? quantityBasis : 1;
+      const totalAmountPhp = amount * quantity;
+
+      if (item.amountPhp === null) {
+        issues.push(`FEE_ITEM_MISSING_AMOUNT:${item.code}`);
+      }
+
+      return {
+        feeProgramId: approvedFeeProgram.id,
+        feeProgramCodeSnapshot: approvedFeeProgram.code,
+        feeItemId: item.id,
+        feeItemCodeSnapshot: item.code,
+        feeItemNameSnapshot: item.name,
+        feeCategorySnapshot: item.feeCategory,
+        chargeBasisSnapshot: item.chargeBasis,
+        amountPhp: item.amountPhp,
+        quantity,
+        totalAmountPhp,
+      };
+    });
+
+    const totalAmountPhp = charges.reduce((sum, charge) => sum + charge.totalAmountPhp, 0);
+    const previewStatus = issues.length === 0 ? 'READY' : 'NEEDS_REVIEW';
+
+    return {
+      ok: true,
+      data: {
+        movement,
+        manifest,
+        feeProgram: {
+          id: approvedFeeProgram.id,
+          code: approvedFeeProgram.code,
+          name: approvedFeeProgram.name,
+          municipality: approvedFeeProgram.municipality,
+          approvalStatus: approvedFeeProgram.approvalStatus,
+        },
+        previewStatus,
+        quantityBasis,
+        charges,
+        totalAmountPhp,
+        issues,
+      },
+    };
+  }
+
   async listFeeProgramApprovalAudits(limit = 50) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
 
