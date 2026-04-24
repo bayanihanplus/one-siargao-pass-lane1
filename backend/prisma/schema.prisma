@@ -1048,3 +1048,58 @@ model SpmTrailVariantNode {
   @@index([trailNodeId])
   @@map("spm_trail_variant_nodes")
 }
+
+model OspComplianceFeeProgram {
+  id             String    @id @default(cuid())
+  code           String    @unique
+  name           String
+  scopeType      String
+  municipality   String?
+  barangay       String?
+  checkpointId   String?
+  appliesToRoute String?
+  approvalStatus String    @default("DRAFT")
+  isActive       Boolean   @default(true)
+  effectiveFrom  DateTime?
+  effectiveTo    DateTime?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  feeItems OspComplianceFeeItem[]
+
+  @@index([scopeType])
+  @@index([municipality])
+  @@index([barangay])
+  @@index([checkpointId])
+  @@index([approvalStatus])
+  @@index([isActive])
+  @@map("osp_compliance_fee_programs")
+}
+
+model OspComplianceFeeItem {
+  id                    String   @id @default(cuid())
+  feeProgramId          String
+  code                  String
+  name                  String
+  description           String?
+  feeCategory           String
+  chargeBasis           String
+  amountPhp             Decimal? @db.Decimal(12, 2)
+  isRequiredForApproval Boolean  @default(true)
+  isLguFillable         Boolean  @default(true)
+  isTravelerFacing      Boolean  @default(true)
+  sortOrder             Int      @default(0)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  feeProgram OspComplianceFeeProgram @relation(fields: [feeProgramId], references: [id], onDelete: Cascade)
+
+  @@unique([feeProgramId, code])
+  @@index([feeProgramId])
+  @@index([feeCategory])
+  @@index([chargeBasis])
+  @@index([isRequiredForApproval])
+  @@index([isLguFillable])
+  @@map("osp_compliance_fee_items")
+}
