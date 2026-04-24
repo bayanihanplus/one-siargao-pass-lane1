@@ -3,6 +3,9 @@ import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { OspQrService } from './osp-qr.service';
+import { OperatorAuthGuard } from '../auth/guards/operator-auth.guard';
+import { OperatorCtx } from '../auth/decorators/operator-context.decorator';
+import { OperatorContext } from '../auth/types/operator-context.type';
 
 @Controller('osp-qr')
 @UseGuards(DevAuthGuard)
@@ -21,56 +24,56 @@ export class OspQrController {
     return this.ospQrService.getCheckpointEvents(limit ? Number(limit) : 15);
   }
 
-  @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Get('operator-access/summary')
-  getOperatorAccessSummary(@Req() req: any) {
-    return this.ospQrService.getOperatorAccessSummary(req.user);
+  getOperatorAccessSummary(@OperatorCtx() operatorContext: OperatorContext) {
+    return this.ospQrService.getOperatorAccessSummary(operatorContext);
   }
 
-  @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Get('operator-access/recent')
   getRecentOperatorAccess(
-    @Req() req: any,
+    @OperatorCtx() operatorContext: OperatorContext,
     @Query('activityInstanceId') activityInstanceId?: string,
     @Query('limit') limit?: string,
   ) {
-    return this.ospQrService.getRecentOperatorAccess(req.user, {
+    return this.ospQrService.getRecentOperatorAccess(operatorContext, {
       activityInstanceId,
       limit: limit ? Number(limit) : 15,
     });
   }
 
-  @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Get('operator-access/:id')
   getOperatorAccessRecord(
-    @Req() req: any,
+    @OperatorCtx() operatorContext: OperatorContext,
     @Param('id') id: string,
   ) {
-    return this.ospQrService.getOperatorAccessRecord(req.user, id);
+    return this.ospQrService.getOperatorAccessRecord(operatorContext, id);
   }
 
-  @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Post('operator-access/:id/status')
   updateOperatorAccessStatus(
-    @Req() req: any,
+    @OperatorCtx() operatorContext: OperatorContext,
     @Param('id') id: string,
     @Body() body: { nextStatus: string },
   ) {
-    return this.ospQrService.updateOperatorAccessStatus(req.user, id, body);
+    return this.ospQrService.updateOperatorAccessStatus(operatorContext, id, body);
   }
 
-  @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN')
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Post('operator-access/scan')
   operatorAccessScan(
-    @Req() req: any,
+    @OperatorCtx() operatorContext: OperatorContext,
     @Body() body: { qrToken: string; activityInstanceId: string; accessChannel: string },
   ) {
-    return this.ospQrService.operatorAccessScan(req.user, body);
+    return this.ospQrService.operatorAccessScan(operatorContext, body);
   }
 
   @UseGuards(DevAuthGuard, RolesGuard)

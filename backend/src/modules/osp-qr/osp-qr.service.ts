@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import { OperatorContext } from '../auth/types/operator-context.type';
 
 type EffectivePassStatus =
   | 'NOT_ISSUED'
@@ -217,12 +218,10 @@ export class OspQrService {
   }
 
 
-  async getOperatorAccessSummary(actor: any) {
-    const where: any = {};
-
-    if (actor.role !== 'ADMIN') {
-      where.operatorUserId = actor.id;
-    }
+  async getOperatorAccessSummary(operatorContext: OperatorContext) {
+    const where: any = {
+      operatorUserId: operatorContext.operatorUserId,
+    };
 
     const rows = await this.prisma.operatorAccessRecord.groupBy({
       by: ['activityInstanceId', 'accessStatus'],
@@ -269,7 +268,7 @@ export class OspQrService {
   }
 
   async getRecentOperatorAccess(
-    actor: any,
+    operatorContext: OperatorContext,
     input: { activityInstanceId?: string; limit?: number },
   ) {
     const safeLimit = Number.isFinite(input.limit)
@@ -282,9 +281,7 @@ export class OspQrService {
       where.activityInstanceId = input.activityInstanceId;
     }
 
-    if (actor.role !== 'ADMIN') {
-      where.operatorUserId = actor.id;
-    }
+    where.operatorUserId = operatorContext.operatorUserId;
 
     const rows = await this.prisma.operatorAccessRecord.findMany({
       where,
@@ -300,16 +297,15 @@ export class OspQrService {
     };
   }
 
-  async getOperatorAccessRecord(actor: any, id: string) {
-    const row = await this.prisma.operatorAccessRecord.findUnique({
-      where: { id },
+  async getOperatorAccessRecord(operatorContext: OperatorContext, id: string) {
+    const row = await this.prisma.operatorAccessRecord.findFirst({
+      where: {
+        id,
+        operatorUserId: operatorContext.operatorUserId,
+      },
     });
 
     if (!row) {
-      throw new NotFoundException('Operator access record not found');
-    }
-
-    if (actor.role !== 'ADMIN' && row.operatorUserId !== actor.id) {
       throw new NotFoundException('Operator access record not found');
     }
 
@@ -341,19 +337,18 @@ export class OspQrService {
 
 
   async updateOperatorAccessStatus(
-    actor: any,
+    operatorContext: OperatorContext,
     id: string,
     body: { nextStatus: string },
   ) {
-    const record = await this.prisma.operatorAccessRecord.findUnique({
-      where: { id },
+    const record = await this.prisma.operatorAccessRecord.findFirst({
+      where: {
+        id,
+        operatorUserId: operatorContext.operatorUserId,
+      },
     });
 
     if (!record) {
-      throw new NotFoundException('Operator access record not found');
-    }
-
-    if (actor.role !== 'ADMIN' && record.operatorUserId !== actor.id) {
       throw new NotFoundException('Operator access record not found');
     }
 
@@ -393,11 +388,16 @@ export class OspQrService {
   }
 
   async operatorAccessScan(
-    actor: any,
+    operatorContext: OperatorContext,
     body: { qrToken: string; activityInstanceId: string; accessChannel: string },
   ) {
-    const activityInstance = await this.prisma.activityInstance.findUnique({
-      where: { id: body.activityInstanceId },
+    const activityInstance = await this.prisma.activityInstance.findFirst({
+      where: {
+        id: body.activityInstanceId,
+        activityTemplate: {
+          ownerUserId: operatorContext.operatorUserId,
+        },
+      },
       include: {
         activityTemplate: true,
       },
@@ -407,11 +407,7 @@ export class OspQrService {
       throw new NotFoundException('Activity instance not found');
     }
 
-    const operatorUserId = activityInstance.activityTemplate.ownerUserId;
-
-    if (actor.role !== 'ADMIN' && operatorUserId !== actor.id) {
-      throw new NotFoundException('Activity instance not found');
-    }
+    const operatorUserId = operatorContext.operatorUserId;
 
     const approvedManifest = await this.prisma.manifest.findFirst({
       where: {
@@ -428,8 +424,8 @@ export class OspQrService {
         eventType: 'OPERATOR_ACCESS_SCAN',
         contextType: 'OPERATOR_ACCESS',
         contextReferenceId: body.activityInstanceId,
-        scannerActorId: actor.id,
-        scannerActorRole: actor.role,
+        scannerActorId: operatorContext.operatorUserId,
+        scannerActorRole: operatorContext.workspaceRole,
         outcome: 'BLOCKED',
         reasonCode: 'MANIFEST_NOT_APPROVED',
         reasonMessage: 'Activity manifest is not approved yet.',
@@ -445,8 +441,8 @@ export class OspQrService {
           accessChannel: body.accessChannel,
           accessStatus: 'BLOCKED',
           sourceQrEventId: qrEvent.id,
-          scannedByUserId: actor.id,
-          scannedByRole: actor.role,
+          scannedByUserId: operatorContext.operatorUserId,
+          scannedByRole: operatorContext.workspaceRole,
           reasonCode: 'MANIFEST_NOT_APPROVED',
           reasonMessage: 'Activity manifest is not approved yet.',
           occurredAt: new Date(),
@@ -473,8 +469,8 @@ export class OspQrService {
         eventType: 'OPERATOR_ACCESS_SCAN',
         contextType: 'OPERATOR_ACCESS',
         contextReferenceId: body.activityInstanceId,
-        scannerActorId: actor.id,
-        scannerActorRole: actor.role,
+        scannerActorId: operatorContext.operatorUserId,
+        scannerActorRole: operatorContext.workspaceRole,
         outcome: 'BLOCKED',
         reasonCode: 'QR_NOT_FOUND',
         reasonMessage: 'Traveler has no valid OSP QR.',
@@ -490,8 +486,8 @@ export class OspQrService {
           accessChannel: body.accessChannel,
           accessStatus: 'BLOCKED',
           sourceQrEventId: qrEvent.id,
-          scannedByUserId: actor.id,
-          scannedByRole: actor.role,
+          scannedByUserId: operatorContext.operatorUserId,
+          scannedByRole: operatorContext.workspaceRole,
           reasonCode: 'QR_NOT_FOUND',
           reasonMessage: 'Traveler has no valid OSP QR.',
           occurredAt: new Date(),
@@ -534,8 +530,8 @@ export class OspQrService {
       passId: trip.pass?.id ?? null,
       qrCredentialId: trip.pass?.qrCredential?.id ?? null,
       effectivePassStatus: derived.effectivePassStatus,
-      scannerActorId: actor.id,
-      scannerActorRole: actor.role,
+      scannerActorId: operatorContext.operatorUserId,
+      scannerActorRole: operatorContext.workspaceRole,
       contextType: 'OPERATOR_ACCESS',
       contextReferenceId: body.activityInstanceId,
       outcome: derived.effectivePassStatus === 'ACTIVE' ? 'ALLOWED' : 'BLOCKED',
@@ -573,8 +569,8 @@ export class OspQrService {
               manifestMemberId: latestManifestMember?.id ?? existing.manifestMemberId,
               sourceQrEventId: qrEvent.id,
               scannedQrCredentialId: trip.pass?.qrCredential?.id ?? existing.scannedQrCredentialId,
-              scannedByUserId: actor.id,
-              scannedByRole: actor.role,
+              scannedByUserId: operatorContext.operatorUserId,
+              scannedByRole: operatorContext.workspaceRole,
               accessStatus,
               reasonCode: finalReasonCode,
               reasonMessage: finalReasonMessage,
@@ -595,8 +591,8 @@ export class OspQrService {
               accessStatus,
               sourceQrEventId: qrEvent.id,
               scannedQrCredentialId: trip.pass?.qrCredential?.id ?? null,
-              scannedByUserId: actor.id,
-              scannedByRole: actor.role,
+              scannedByUserId: operatorContext.operatorUserId,
+              scannedByRole: operatorContext.workspaceRole,
               reasonCode: finalReasonCode,
               reasonMessage: finalReasonMessage,
               occurredAt: new Date(),
