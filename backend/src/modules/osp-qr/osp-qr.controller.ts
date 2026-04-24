@@ -147,6 +147,14 @@ export class OspQrController {
 
 
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
+  @Get('inter-island/movements/:id/fee-clearance-summary')
+  getInterIslandFeeClearanceSummary(@Param('id') id: string) {
+    return this.ospQrService.getInterIslandFeeClearanceSummary(id);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard)
   @Roles('ADMIN', 'SILENT_LGU_ANALYTICS', 'LGU_FEE_EDITOR')
   @Get('compliance/fee-receipts')

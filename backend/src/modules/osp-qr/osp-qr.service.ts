@@ -818,6 +818,55 @@ export class OspQrService {
 
 
 
+
+  async getInterIslandFeeClearanceSummary(movementId: string) {
+    const paymentSummary = await this.getInterIslandFeePaymentSummary(movementId);
+    const receiptSummary = await this.getInterIslandFeeReceipt(movementId);
+
+    const paymentData = paymentSummary.data;
+    const receiptData = receiptSummary.data;
+
+    let feeClearanceStatus = 'NO_CHARGES';
+    const issues: string[] = [];
+
+    if (paymentData.chargeCount <= 0) {
+      feeClearanceStatus = 'NO_CHARGES';
+      issues.push('NO_GENERATED_FEE_CHARGES');
+    } else if (paymentData.paymentStatus !== 'PAID') {
+      feeClearanceStatus = 'UNPAID';
+      issues.push('FEE_PAYMENT_NOT_PAID');
+    } else if (receiptData.receiptStatus !== 'ISSUED') {
+      feeClearanceStatus = 'PAID_NO_RECEIPT';
+      issues.push('FEE_RECEIPT_NOT_ISSUED');
+    } else {
+      feeClearanceStatus = 'CLEARED';
+    }
+
+    return {
+      ok: true,
+      data: {
+        movement: paymentData.movement,
+        feeClearanceStatus,
+        issues,
+        payment: {
+          chargeCount: paymentData.chargeCount,
+          totalAmountPhp: paymentData.totalAmountPhp,
+          paidAmountPhp: paymentData.paidAmountPhp,
+          unpaidAmountPhp: paymentData.unpaidAmountPhp,
+          paymentStatus: paymentData.paymentStatus,
+        },
+        receipt: {
+          receiptStatus: receiptData.receiptStatus,
+          receiptReference: receiptData.receipt?.receiptReference ?? null,
+          totalPaidAmountPhp: receiptData.receipt?.totalPaidAmountPhp ?? null,
+          paymentReference: receiptData.receipt?.paymentReference ?? null,
+          issuedByUserId: receiptData.receipt?.issuedByUserId ?? null,
+          issuedAt: receiptData.receipt?.issuedAt ?? null,
+        },
+      },
+    };
+  }
+
   async listFeeReceipts(limit = 50) {
     const safeLimit = Math.max(1, Math.min(100, Number(limit) || 50));
 
