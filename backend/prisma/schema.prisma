@@ -366,10 +366,10 @@ model Booking {
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt
 
-  items         BookingItem[]
-  links         BookingLink[]
-  externalLinks ExternalBookingLink[]
-  paymentState  PaymentStateRecord?
+  items          BookingItem[]
+  links          BookingLink[]
+  externalLinks  ExternalBookingLink[]
+  paymentState   PaymentStateRecord?
   paymentIntents PaymentIntent[]
   paymentEvents  PaymentEventLedger[]
 }
@@ -563,7 +563,6 @@ model Notification {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-
 model QrEvent {
   id                  String   @id @default(cuid())
   eventType           String
@@ -582,7 +581,6 @@ model QrEvent {
   createdAt           DateTime @default(now())
 }
 
-
 enum OperatorAccessStatus {
   BLOCKED
   ALLOWED
@@ -594,27 +592,27 @@ enum OperatorAccessStatus {
 }
 
 model OperatorAccessRecord {
-  id                  String               @id @default(cuid())
-  travelerId          String
-  tripId              String
-  bookingId           String?
-  manifestId          String?
-  manifestMemberId    String?
-  operatorUserId      String
-  activityTemplateId  String
-  activityInstanceId  String
-  accessChannel       String
-  accessStatus        OperatorAccessStatus
-  sourceQrEventId     String
+  id                    String               @id @default(cuid())
+  travelerId            String
+  tripId                String
+  bookingId             String?
+  manifestId            String?
+  manifestMemberId      String?
+  operatorUserId        String
+  activityTemplateId    String
+  activityInstanceId    String
+  accessChannel         String
+  accessStatus          OperatorAccessStatus
+  sourceQrEventId       String
   scannedQrCredentialId String?
-  scannedByUserId     String
-  scannedByRole       String
-  reasonCode          String?
-  reasonMessage       String?
-  occurredAt          DateTime
-  completedAt         DateTime?
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
+  scannedByUserId       String
+  scannedByRole         String
+  reasonCode            String?
+  reasonMessage         String?
+  occurredAt            DateTime
+  completedAt           DateTime?
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
 
   @@index([operatorUserId, activityInstanceId, occurredAt])
   @@index([travelerId, activityInstanceId, occurredAt])
@@ -623,7 +621,7 @@ model OperatorAccessRecord {
 model GuideAssignment {
   id                 String   @id @default(cuid())
   operatorUserId     String
-  guideUserId         String?
+  guideUserId        String?
   guideNameSnapshot  String
   activityInstanceId String?
   basePayAmount      Int?
@@ -651,4 +649,402 @@ model OperatorMembership {
   @@unique([operatorUserId, memberUserId])
   @@index([memberUserId])
   @@index([operatorUserId])
+}
+
+// === LANE 2-A: QR COMPLIANCE + PASSPORT TRAILS FOUNDATION ===
+
+enum OspQrEventType {
+  TRAVELER_INGRESS_SCAN
+  TRAVELER_EGRESS_SCAN
+  INTER_ISLAND_DEPARTURE_SCAN
+  INTER_ISLAND_ARRIVAL_SCAN
+  BOAT_BOARDING_SCAN
+  BOAT_DISEMBARKATION_SCAN
+  ACTIVITY_CHECK_IN_SCAN
+  ACTIVITY_CHECK_OUT_SCAN
+  OPERATOR_ACCESS_SCAN
+  GUIDE_VALIDATION_SCAN
+  PARTNER_NODE_CHECK_IN_SCAN
+  PASSPORT_STAMP_SCAN
+  MANIFEST_PARTICIPATION_SCAN
+  COMPLIANCE_EXCEPTION_SCAN
+}
+
+enum OspCheckpointType {
+  AIRPORT
+  SEAPORT
+  BOAT_DEPARTURE
+  BOAT_ARRIVAL
+  ISLAND_STOP
+  ACTIVITY_SITE
+  OPERATOR_SITE
+  GUIDE_SITE
+  PARTNER_SITE
+  RESTAURANT_NODE
+  COMMUNITY_NODE
+  SCENIC_NODE
+  ADMIN_CHECKPOINT
+}
+
+enum OspQrDirection {
+  INGRESS
+  EGRESS
+  DEPARTURE
+  ARRIVAL
+  CHECK_IN
+  CHECK_OUT
+  BOARDING
+  DISEMBARKATION
+  VALIDATION
+}
+
+enum OspQrOutcome {
+  ALLOWED
+  BLOCKED
+  REGULARIZATION_REQUIRED
+  MANIFEST_REQUIRED
+  PASS_NOT_FOUND
+  PASS_EXPIRED
+  PAYMENT_PENDING
+  OPERATOR_NOT_APPROVED
+  BOOKING_NOT_FOUND
+  WRONG_OPERATOR
+  WRONG_ACTIVITY_INSTANCE
+  ALREADY_CHECKED_IN
+  ALREADY_COMPLETED
+  MANUAL_REVIEW_REQUIRED
+}
+
+enum InterIslandMovementStatus {
+  PLANNED
+  BOARDING
+  DEPARTED
+  ARRIVED
+  RETURNING
+  COMPLETED
+  BLOCKED
+  CANCELLED
+  MANUAL_REVIEW
+}
+
+enum ComplianceExceptionType {
+  QR_NOT_FOUND
+  PASS_EXPIRED
+  NO_VALID_BOOKING
+  NO_MANIFEST
+  WRONG_OPERATOR
+  PAYMENT_PENDING
+  UNAPPROVED_OPERATOR
+  UNREGISTERED_VESSEL
+  MANUAL_ENTRY_REQUIRED
+  SAFETY_BLOCK
+  DOT_LGU_REVIEW_REQUIRED
+}
+
+enum ComplianceExceptionSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ComplianceResolutionStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  REJECTED
+}
+
+enum SpmTrailFamilyCode {
+  ISLAND_HOPPING
+  SURF_EXPLORER
+  NORTH_SIARGAO
+  INLAND_DISCOVERY
+  CULTURE_COMMUNITY
+  SUNSET_SCENIC
+  ADVENTURE
+  RETURN_TRAVELER_CONTINUITY
+}
+
+enum SpmTrailNodeType {
+  PLACE
+  ACTIVITY
+  RESTAURANT
+  COMMUNITY
+  SCENIC
+  SURF
+  ADVENTURE
+  TRANSPORT
+  MILESTONE
+  CONDITIONAL_PACKAGE_NODE
+}
+
+enum SpmNodeRequirementType {
+  FREE_PUBLIC_NODE
+  QR_STAMP_NODE
+  BOOKING_REQUIRED_NODE
+  GUIDE_RECOMMENDED_NODE
+  GUIDE_REQUIRED_NODE
+  OPERATOR_REQUIRED_NODE
+  PARTNER_SITE_NODE
+  RESTAURANT_PARTNER_NODE
+  REQUEST_TO_CONFIRM_NODE
+  PACKAGE_ONLY_NODE
+  TRANSPORT_REQUIRED_NODE
+  SAFETY_CONTROLLED_NODE
+}
+
+enum SpmApprovalStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  SUSPENDED
+  ARCHIVED
+}
+
+model OspQrEvent {
+  id                  String             @id @default(cuid())
+  eventType           OspQrEventType
+  travelerUserId      String?
+  tripId              String?
+  passId              String?
+  qrCredentialId      String?
+  bookingId           String?
+  trailBookingId      String?
+  manifestId          String?
+  operatorUserId      String?
+  guideProfileId      String?
+  partnerId           String?
+  vesselId            String?
+  checkpointId        String?
+  checkpointType      OspCheckpointType?
+  direction           OspQrDirection?
+  locationLabel       String?
+  latitude            Float?
+  longitude           Float?
+  scannerActorId      String?
+  scannerActorRole    String?
+  scanChannel         String?
+  effectivePassStatus String?
+  paymentStatus       String?
+  manifestStatus      String?
+  outcome             OspQrOutcome
+  reasonCode          String?
+  reasonMessage       String?
+  occurredAt          DateTime           @default(now())
+  createdAt           DateTime           @default(now())
+
+  @@index([eventType])
+  @@index([tripId])
+  @@index([passId])
+  @@index([qrCredentialId])
+  @@index([checkpointId])
+  @@index([operatorUserId])
+  @@index([occurredAt])
+  @@map("osp_qr_events")
+}
+
+model OspCheckpoint {
+  id                       String            @id @default(cuid())
+  code                     String            @unique
+  name                     String
+  checkpointType           OspCheckpointType
+  locationLabel            String?
+  municipality             String?
+  barangay                 String?
+  latitude                 Float?
+  longitude                Float?
+  isActive                 Boolean           @default(true)
+  requiresManifest         Boolean           @default(false)
+  requiresBooking          Boolean           @default(false)
+  requiresOperator         Boolean           @default(false)
+  requiresPaymentClearance Boolean           @default(false)
+  supportsIngress          Boolean           @default(false)
+  supportsEgress           Boolean           @default(false)
+  supportsInterIsland      Boolean           @default(false)
+  createdAt                DateTime          @default(now())
+  updatedAt                DateTime          @updatedAt
+
+  @@index([checkpointType])
+  @@index([isActive])
+  @@map("osp_checkpoints")
+}
+
+model OspVessel {
+  id                       String   @id @default(cuid())
+  operatorUserId           String
+  vesselName               String
+  vesselRegistrationNumber String?
+  vesselType               String?
+  capacity                 Int?
+  complianceStatus         String   @default("PENDING_REVIEW")
+  notes                    String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@index([operatorUserId])
+  @@index([complianceStatus])
+  @@map("osp_vessels")
+}
+
+model InterIslandMovement {
+  id                      String                    @id @default(cuid())
+  tripId                  String?
+  bookingId               String?
+  trailBookingId          String?
+  manifestId              String?
+  operatorUserId          String?
+  vesselId                String?
+  originCheckpointId      String?
+  destinationCheckpointId String?
+  departureQrEventId      String?
+  arrivalQrEventId        String?
+  returnQrEventId         String?
+  movementStatus          InterIslandMovementStatus @default(PLANNED)
+  scheduledDepartureAt    DateTime?
+  actualDepartureAt       DateTime?
+  actualArrivalAt         DateTime?
+  actualReturnAt          DateTime?
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+
+  @@index([tripId])
+  @@index([manifestId])
+  @@index([operatorUserId])
+  @@index([vesselId])
+  @@index([movementStatus])
+  @@map("inter_island_movements")
+}
+
+model ComplianceException {
+  id               String                      @id @default(cuid())
+  qrEventId        String?
+  travelerUserId   String?
+  tripId           String?
+  operatorUserId   String?
+  checkpointId     String?
+  exceptionType    ComplianceExceptionType
+  severity         ComplianceExceptionSeverity @default(MEDIUM)
+  resolutionStatus ComplianceResolutionStatus  @default(OPEN)
+  resolutionNotes  String?
+  resolvedByUserId String?
+  resolvedAt       DateTime?
+  createdAt        DateTime                    @default(now())
+
+  @@index([qrEventId])
+  @@index([tripId])
+  @@index([operatorUserId])
+  @@index([checkpointId])
+  @@index([exceptionType])
+  @@index([resolutionStatus])
+  @@map("compliance_exceptions")
+}
+
+model SpmTrailFamily {
+  id                String             @id @default(cuid())
+  code              SpmTrailFamilyCode @unique
+  name              String
+  description       String?
+  publicLabel       String?
+  officialSortOrder Int
+  isActive          Boolean            @default(true)
+  isOfficial        Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  @@index([isActive])
+  @@index([isOfficial])
+  @@map("spm_trail_families")
+}
+
+model SpmTrailTrack {
+  id            String   @id @default(cuid())
+  trailFamilyId String
+  code          String   @unique
+  name          String
+  description   String?
+  isPublic      Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([trailFamilyId])
+  @@index([isActive])
+  @@map("spm_trail_tracks")
+}
+
+model SpmTrailNode {
+  id                String                 @id @default(cuid())
+  trailFamilyId     String
+  trailTrackId      String?
+  code              String                 @unique
+  name              String
+  description       String?
+  nodeType          SpmTrailNodeType
+  requirementType   SpmNodeRequirementType
+  approvalStatus    SpmApprovalStatus      @default(DRAFT)
+  isOfficialNode    Boolean                @default(false)
+  isCandidateNode   Boolean                @default(false)
+  isConditionalNode Boolean                @default(false)
+  conditionNote     String?
+  latitude          Float?
+  longitude         Float?
+  locationLabel     String?
+  municipality      String?
+  barangay          String?
+  publicAccessLevel String?
+  stampEligible     Boolean                @default(false)
+  bookingRequired   Boolean                @default(false)
+  operatorRequired  Boolean                @default(false)
+  guideRequirement  String?
+  safetyControlled  Boolean                @default(false)
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+
+  @@index([trailFamilyId])
+  @@index([trailTrackId])
+  @@index([approvalStatus])
+  @@index([isOfficialNode])
+  @@index([isCandidateNode])
+  @@index([stampEligible])
+  @@map("spm_trail_nodes")
+}
+
+model SpmTrailVariant {
+  id                   String   @id @default(cuid())
+  trailFamilyId        String
+  code                 String   @unique
+  name                 String
+  description          String?
+  variantType          String?
+  isActive             Boolean  @default(true)
+  isPublic             Boolean  @default(false)
+  minimumRequiredNodes Int?
+  completionRuleJson   Json?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([trailFamilyId])
+  @@index([isActive])
+  @@map("spm_trail_variants")
+}
+
+model SpmTrailVariantNode {
+  id             String   @id @default(cuid())
+  trailVariantId String
+  trailNodeId    String
+  isRequired     Boolean  @default(false)
+  isOptional     Boolean  @default(false)
+  isConditional  Boolean  @default(false)
+  sortOrder      Int      @default(0)
+  conditionNote  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([trailVariantId, trailNodeId])
+  @@index([trailVariantId])
+  @@index([trailNodeId])
+  @@map("spm_trail_variant_nodes")
 }
