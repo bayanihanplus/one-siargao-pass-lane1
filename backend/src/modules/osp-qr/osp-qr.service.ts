@@ -622,46 +622,74 @@ export class OspQrService {
       throw new BadRequestException('amountPhp must be a non-negative number or null');
     }
 
-    const updated = await this.prisma.ospComplianceFeeItem.update({
-      where: {
-        id: feeItemId,
-      },
-      data: {
-        amountPhp,
-        description: body.description === undefined ? existing.description : body.description,
-        isRequiredForApproval:
-          body.isRequiredForApproval === undefined
-            ? existing.isRequiredForApproval
-            : body.isRequiredForApproval,
-        isTravelerFacing:
-          body.isTravelerFacing === undefined ? existing.isTravelerFacing : body.isTravelerFacing,
-      },
-      select: {
-        id: true,
-        feeProgramId: true,
-        code: true,
-        name: true,
-        description: true,
-        feeCategory: true,
-        chargeBasis: true,
-        amountPhp: true,
-        isRequiredForApproval: true,
-        isLguFillable: true,
-        isTravelerFacing: true,
-        sortOrder: true,
-        updatedAt: true,
-        feeProgram: {
-          select: {
-            id: true,
-            code: true,
-            name: true,
-            scopeType: true,
-            municipality: true,
-            approvalStatus: true,
-            isActive: true,
+    const nextDescription = body.description === undefined ? existing.description : body.description;
+    const nextRequiredForApproval =
+      body.isRequiredForApproval === undefined
+        ? existing.isRequiredForApproval
+        : body.isRequiredForApproval;
+    const nextTravelerFacing =
+      body.isTravelerFacing === undefined ? existing.isTravelerFacing : body.isTravelerFacing;
+
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const feeItem = await tx.ospComplianceFeeItem.update({
+        where: {
+          id: feeItemId,
+        },
+        data: {
+          amountPhp,
+          description: nextDescription,
+          isRequiredForApproval: nextRequiredForApproval,
+          isTravelerFacing: nextTravelerFacing,
+        },
+        select: {
+          id: true,
+          feeProgramId: true,
+          code: true,
+          name: true,
+          description: true,
+          feeCategory: true,
+          chargeBasis: true,
+          amountPhp: true,
+          isRequiredForApproval: true,
+          isLguFillable: true,
+          isTravelerFacing: true,
+          sortOrder: true,
+          updatedAt: true,
+          feeProgram: {
+            select: {
+              id: true,
+              code: true,
+              name: true,
+              scopeType: true,
+              municipality: true,
+              approvalStatus: true,
+              isActive: true,
+            },
           },
         },
-      },
+      });
+
+      await tx.ospFeeChangeAudit.create({
+        data: {
+          actorUserId: actor?.id ?? null,
+          actorRole: actor?.role ?? null,
+          feeProgramId: existing.feeProgramId,
+          feeItemId: existing.id,
+          feeItemCodeSnapshot: existing.code,
+          feeItemNameSnapshot: existing.name,
+          previousAmountPhp: existing.amountPhp,
+          newAmountPhp: amountPhp,
+          previousDescription: existing.description,
+          newDescription: nextDescription,
+          previousRequiredForApproval: existing.isRequiredForApproval,
+          newRequiredForApproval: nextRequiredForApproval,
+          previousTravelerFacing: existing.isTravelerFacing,
+          newTravelerFacing: nextTravelerFacing,
+          changeReason: body.description ? 'Fee item updated with description change.' : 'Fee item updated.',
+        },
+      });
+
+      return feeItem;
     });
 
     return {
