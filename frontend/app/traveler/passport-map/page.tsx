@@ -255,6 +255,8 @@ export default function TravelerPassportMapPage() {
               </div>
 
               <SpmMapVisualPreview />
+
+              <SpmLegendAndStatus />
             </div>
           </section>
         </div>
@@ -285,6 +287,186 @@ export default function TravelerPassportMapPage() {
         </nav>
       </div>
     </main>
+  );
+}
+
+function SpmLegendAndStatus() {
+  return (
+    <div
+      style={{
+        position: "relative",
+        zIndex: 3,
+        marginTop: 24,
+      }}
+    >
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 7,
+          borderRadius: 999,
+          background: "rgba(20,38,75,0.08)",
+          color: "#14264b",
+          padding: "6px 10px",
+          fontSize: 10,
+          fontWeight: 900,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+        }}
+      >
+        <span
+          style={{
+            width: 7,
+            height: 7,
+            borderRadius: "50%",
+            background: "#f2b705",
+          }}
+        />
+        Preview Mode
+      </div>
+
+      <div
+        style={{
+          marginTop: 12,
+          display: "grid",
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+          gap: 8,
+          maxWidth: 245,
+        }}
+      >
+        <LegendItem color="#1fa45b" label="Completed" />
+        <LegendItem color="#13a8b7" label="Available" />
+        <LegendItem color="#8b95a1" label="Locked" />
+        <LegendRouteItem label="Your Route" />
+      </div>
+
+      <div
+        style={{
+          marginTop: 16,
+          display: "grid",
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+          gap: 10,
+        }}
+      >
+        <StatusCard value="5" label="Trails Unlocked" />
+        <StatusCard value="3" label="Places Verified" />
+        <StatusCard value="42%" label="Journey Progress" />
+        <StatusCard value="Active" label="Pass Status" />
+      </div>
+
+      <p
+        style={{
+          margin: "10px 2px 0",
+          fontSize: 10,
+          lineHeight: 1.35,
+          color: "#718096",
+          fontWeight: 700,
+        }}
+      >
+        Preview values are visual-only until connected to governed OSP/SPM stamp,
+        QR, and traveler progress records.
+      </p>
+    </div>
+  );
+}
+
+function LegendItem(props: {
+  color: string;
+  label: string;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 7,
+        color: "#42526b",
+        fontSize: 11,
+        fontWeight: 850,
+      }}
+    >
+      <span
+        style={{
+          width: 11,
+          height: 11,
+          borderRadius: "50%",
+          background: props.color,
+          boxShadow: "0 2px 6px rgba(15,23,42,0.12)",
+        }}
+      />
+      {props.label}
+    </div>
+  );
+}
+
+function LegendRouteItem(props: {
+  label: string;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 7,
+        color: "#42526b",
+        fontSize: 11,
+        fontWeight: 850,
+      }}
+    >
+      <span
+        style={{
+          width: 18,
+          height: 0,
+          borderTop: "3px dashed #1976d2",
+          display: "inline-block",
+        }}
+      />
+      {props.label}
+    </div>
+  );
+}
+
+function StatusCard(props: {
+  value: string;
+  label: string;
+}) {
+  return (
+    <div
+      style={{
+        minHeight: 72,
+        borderRadius: 18,
+        background: "rgba(255,255,255,0.92)",
+        border: "1px solid rgba(203,213,225,0.64)",
+        boxShadow: "0 8px 22px rgba(15,23,42,0.05)",
+        padding: "12px 10px",
+      }}
+    >
+      <div
+        style={{
+          fontFamily: 'Georgia, "Times New Roman", Times, serif',
+          fontSize: 24,
+          lineHeight: 1,
+          fontWeight: 900,
+          color: "#14264b",
+          letterSpacing: "-0.04em",
+        }}
+      >
+        {props.value}
+      </div>
+      <div
+        style={{
+          marginTop: 7,
+          fontSize: 10,
+          lineHeight: 1.2,
+          fontWeight: 900,
+          letterSpacing: "0.04em",
+          textTransform: "uppercase",
+          color: "#68758c",
+        }}
+      >
+        {props.label}
+      </div>
+    </div>
   );
 }
 
