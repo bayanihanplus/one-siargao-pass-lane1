@@ -1235,7 +1235,11 @@ export default async function LguPage({
                                 </div>
                                 <div style={{ color: colors.muted, fontSize: 12, textAlign: "right" }}>
                                   <strong>Actor</strong><br />
-                                  {action.actedByUserId || "N/A"}<br />
+                                  <span style={{ color: colors.dark, fontWeight: 900 }}>
+                                    {action.actor?.fullName || action.actedByUserId || "N/A"}
+                                  </span><br />
+                                  {action.actor?.email ? <span>{action.actor.email}</span> : null}<br />
+                                  {action.actor?.primaryRole ? <span>{action.actor.primaryRole}</span> : null}<br />
                                   <span>{action.createdAt || "N/A"}</span>
                                 </div>
                               </div>

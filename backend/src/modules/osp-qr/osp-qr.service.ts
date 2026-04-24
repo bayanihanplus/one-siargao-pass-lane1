@@ -862,9 +862,44 @@ export class OspQrService {
       },
     });
 
+    const actorIds = Array.from(
+      new Set(
+        rows
+          .flatMap((row) => row.actions ?? [])
+          .map((action) => action.actedByUserId)
+          .filter(Boolean),
+      ),
+    );
+
+    const actors = actorIds.length
+      ? await this.prisma.user.findMany({
+          where: {
+            id: {
+              in: actorIds,
+            },
+          },
+          select: {
+            id: true,
+            email: true,
+            fullName: true,
+            primaryRole: true,
+          },
+        })
+      : [];
+
+    const actorById = new Map(actors.map((actor) => [actor.id, actor]));
+
     const data = rows.map((row) => {
       const latestSubmission = row.manifest?.submissions?.[0] ?? null;
-      const approvalActions = row.actions ?? [];
+      const approvalActions = (row.actions ?? []).map((action) => ({
+        id: action.id,
+        manifestApprovalRequestId: action.manifestApprovalRequestId,
+        actionType: action.actionType,
+        actedByUserId: action.actedByUserId,
+        actor: actorById.get(action.actedByUserId) ?? null,
+        actionNotes: action.actionNotes,
+        createdAt: action.createdAt,
+      }));
       const latestAction = approvalActions[0] ?? null;
 
       return {
