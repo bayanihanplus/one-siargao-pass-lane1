@@ -619,3 +619,22 @@ model OperatorAccessRecord {
   @@index([operatorUserId, activityInstanceId, occurredAt])
   @@index([travelerId, activityInstanceId, occurredAt])
 }
+
+model GuideAssignment {
+  id                 String   @id @default(cuid())
+  operatorUserId     String
+  guideUserId         String?
+  guideNameSnapshot  String
+  activityInstanceId String?
+  basePayAmount      Int?
+  tipAmount          Int?
+  commissionAmount   Int?
+  paymentStatus      String   @default("PENDING")
+  paymentMethod      String?
+  notes              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([operatorUserId, activityInstanceId])
+  @@index([guideUserId])
+}
