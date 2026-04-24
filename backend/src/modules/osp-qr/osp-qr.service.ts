@@ -837,6 +837,7 @@ export class OspQrService {
       manifestLinkedMovements,
       manifestLinkedMovementRows,
       overdueDepartedMovements,
+      movementRowsForPaymentClearance,
       latestMovements,
       latestExceptions,
     ] = await Promise.all([
@@ -887,6 +888,17 @@ export class OspQrService {
         },
       }),
       this.prisma.interIslandMovement.findMany({
+        where: {
+          manifestId: {
+            not: null,
+          },
+        },
+        select: {
+          id: true,
+          manifestId: true,
+        },
+      }),
+      this.prisma.interIslandMovement.findMany({
         orderBy: {
           updatedAt: 'desc',
         },
@@ -933,6 +945,99 @@ export class OspQrService {
         },
       }),
     ]);
+
+    const paymentClearanceManifestIds = Array.from(
+      new Set(
+        movementRowsForPaymentClearance
+          .map((row: { manifestId: string | null }) => row.manifestId)
+          .filter(Boolean) as string[],
+      ),
+    );
+
+    const paymentClearanceManifests = paymentClearanceManifestIds.length
+      ? await this.prisma.manifest.findMany({
+          where: {
+            id: {
+              in: paymentClearanceManifestIds,
+            },
+          },
+          select: {
+            id: true,
+            members: {
+              select: {
+                id: true,
+                bookingId: true,
+              },
+            },
+          },
+        })
+      : [];
+
+    const paymentClearanceManifestById = new Map(
+      paymentClearanceManifests.map((manifest) => [manifest.id, manifest]),
+    );
+
+    const paymentClearanceBookingIds = Array.from(
+      new Set(
+        paymentClearanceManifests
+          .flatMap((manifest) => manifest.members.map((member) => member.bookingId))
+          .filter(Boolean) as string[],
+      ),
+    );
+
+    const paymentClearanceBookings = paymentClearanceBookingIds.length
+      ? await this.prisma.booking.findMany({
+          where: {
+            id: {
+              in: paymentClearanceBookingIds,
+            },
+          },
+          select: {
+            id: true,
+            paymentState: {
+              select: {
+                state: true,
+              },
+            },
+          },
+        })
+      : [];
+
+    const paymentClearanceBookingById = new Map(
+      paymentClearanceBookings.map((booking) => [booking.id, booking]),
+    );
+
+    let paymentClearMovementCount = 0;
+    let paymentNeedsReviewMovementCount = 0;
+
+    for (const movement of movementRowsForPaymentClearance as Array<{ id: string; manifestId: string | null }>) {
+      if (!movement.manifestId) {
+        paymentNeedsReviewMovementCount += 1;
+        continue;
+      }
+
+      const manifest = paymentClearanceManifestById.get(movement.manifestId);
+
+      if (!manifest || manifest.members.length === 0) {
+        paymentNeedsReviewMovementCount += 1;
+        continue;
+      }
+
+      const allMembersPaid = manifest.members.every((member) => {
+        if (!member.bookingId) {
+          return false;
+        }
+
+        const booking = paymentClearanceBookingById.get(member.bookingId);
+        return booking?.paymentState?.state === 'PAID';
+      });
+
+      if (allMembersPaid) {
+        paymentClearMovementCount += 1;
+      } else {
+        paymentNeedsReviewMovementCount += 1;
+      }
+    }
 
     const manifestIdsForReconciliation = Array.from(
       new Set(
@@ -1027,6 +1132,8 @@ export class OspQrService {
           manifestLinkedMovements,
           manifestMemberMismatchMovements,
           overdueDepartedMovements,
+          paymentClearMovementCount,
+          paymentNeedsReviewMovementCount,
         },
         latestMovements: latestMovements.map((movement) => ({
           ...movement,
