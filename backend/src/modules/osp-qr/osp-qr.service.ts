@@ -571,6 +571,8 @@ export class OspQrService {
       approvedVessels,
       pendingVessels,
       nonApprovedVessels,
+      manifestLinkedMovements,
+      manifestLinkedMovementRows,
       latestMovements,
       latestExceptions,
     ] = await Promise.all([
@@ -594,6 +596,24 @@ export class OspQrService {
           NOT: {
             complianceStatus: 'APPROVED',
           },
+        },
+      }),
+      this.prisma.interIslandMovement.count({
+        where: {
+          manifestId: {
+            not: null,
+          },
+        },
+      }),
+      this.prisma.interIslandMovement.findMany({
+        where: {
+          manifestId: {
+            not: null,
+          },
+        },
+        select: {
+          id: true,
+          manifestId: true,
         },
       }),
       this.prisma.interIslandMovement.findMany({
@@ -644,6 +664,53 @@ export class OspQrService {
       }),
     ]);
 
+    const manifestIdsForReconciliation = Array.from(
+      new Set(
+        manifestLinkedMovementRows
+          .map((row: { manifestId: string | null }) => row.manifestId)
+          .filter(Boolean) as string[],
+      ),
+    );
+
+    const reconciliationManifests = manifestIdsForReconciliation.length
+      ? await this.prisma.manifest.findMany({
+          where: {
+            id: {
+              in: manifestIdsForReconciliation,
+            },
+          },
+          select: {
+            id: true,
+            totalMembers: true,
+            members: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        })
+      : [];
+
+    const reconciliationManifestById = new Map(
+      reconciliationManifests.map((manifest) => [manifest.id, manifest]),
+    );
+
+    const manifestMemberMismatchMovements = manifestLinkedMovementRows.filter(
+      (movement: { manifestId: string | null }) => {
+        if (!movement.manifestId) {
+          return false;
+        }
+
+        const manifest = reconciliationManifestById.get(movement.manifestId);
+
+        if (!manifest) {
+          return true;
+        }
+
+        return manifest.totalMembers !== manifest.members.length;
+      },
+    ).length;
+
     const checkpointIds = Array.from(
       new Set(
         [
@@ -687,6 +754,8 @@ export class OspQrService {
           approvedVessels,
           pendingVessels,
           nonApprovedVessels,
+          manifestLinkedMovements,
+          manifestMemberMismatchMovements,
         },
         latestMovements: latestMovements.map((movement) => ({
           ...movement,
