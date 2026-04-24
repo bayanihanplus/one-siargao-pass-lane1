@@ -406,6 +406,7 @@ export default async function LguPage({
     feePrograms,
     overdueMovements,
     manifestSubmissions,
+    manifestApprovalDraftReport,
   ] = await Promise.all([
     apiGet("/osp-qr/inter-island/compliance-summary", token),
     apiGet("/osp-qr/compliance/fee-clearance-exceptions?limit=5", token),
@@ -414,6 +415,7 @@ export default async function LguPage({
     apiGet("/osp-qr/compliance/fee-programs", token),
     apiGet("/osp-qr/inter-island/overdue-movements", token),
     apiGet("/osp-qr/compliance/manifest-submissions?limit=10", token),
+    apiGet("/osp-qr/reports/manifest-approval/draft?limit=100", token),
   ]);
 
   const counts = summary?.data?.counts || {};
@@ -423,6 +425,9 @@ export default async function LguPage({
   const feeProgramRows = feePrograms?.ok ? feePrograms.data || [] : [];
   const overdueRows = overdueMovements?.ok ? overdueMovements.data || [] : [];
   const manifestSubmissionRows = manifestSubmissions?.ok ? manifestSubmissions.data || [] : [];
+  const manifestApprovalDraftReportData = manifestApprovalDraftReport?.ok
+    ? manifestApprovalDraftReport.data || {}
+    : {};
   const selectedManifestRequestId = searchParams?.manifestRequestId || "";
   const selectedManifestRequest = manifestSubmissionRows.find(
     (row: any) => row.id === selectedManifestRequestId,
@@ -451,39 +456,14 @@ export default async function LguPage({
 
   const latestApprovalEvent = approvalEventRows[0] || null;
 
-  const reportGeneratedAt = new Date().toISOString();
-
-  const manifestApprovalReportRows = manifestSubmissionRows.map((row: any) => {
-    const manifest = row.manifest || {};
-    const activity = manifest.activityInstance || {};
-    const template = activity.activityTemplate || {};
-    const operator = manifest.operator || {};
-    const latestAction = row.latestAction || {};
-    const latestActor = latestAction.actor || {};
-
-    return {
-      requestId: row.id,
-      manifestReference: manifest.manifestReference || row.manifestId || "",
-      requestStatus: row.requestStatus || "",
-      manifestStatus: manifest.manifestStatus || "",
-      operatorName: operator.fullName || manifest.operatorUserId || "",
-      operatorEmail: operator.email || "",
-      activityTitle: template.title || "",
-      scheduledDate: activity.scheduledDate || "",
-      membersListed: manifest.listedMembersCount ?? "",
-      totalMembers: manifest.totalMembers ?? "",
-      latestAction: latestAction.actionType || "",
-      latestActionNotes: latestAction.actionNotes || "",
-      latestActorName: latestActor.fullName || latestAction.actedByUserId || "",
-      latestActorEmail: latestActor.email || "",
-      latestActorRole: latestActor.primaryRole || "",
-      latestActionAt: latestAction.createdAt || "",
-      reviewedBy: row.reviewedBy || "",
-      reviewedAt: row.reviewedAt || "",
-      reviewNotes: row.reviewNotes || "",
-      requestCreatedAt: row.createdAt || "",
-    };
-  });
+  const fallbackReportGeneratedAt = new Date().toISOString();
+  const reportGeneratedAt = manifestApprovalDraftReportData.generatedAt || fallbackReportGeneratedAt;
+  const reportWatermark =
+    manifestApprovalDraftReportData.watermark || "DRAFT — NOT OFFICIAL LGU/DOT REPORT";
+  const reportSummary = manifestApprovalDraftReportData.summary || {};
+  const reportGeneratedBy = manifestApprovalDraftReportData.generatedBy || {};
+  const manifestApprovalReportRows = manifestApprovalDraftReportData.rows || [];
+  const backendApprovalEventRows = manifestApprovalDraftReportData.approvalEvents || approvalEventRows;
 
   const manifestApprovalCsv = [
     csvLine([
@@ -1983,8 +1963,8 @@ export default async function LguPage({
             <div style={{ display: "flex", justifyContent: "space-between", gap: 18, alignItems: "flex-start" }}>
               <div>
                 <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-                  Draft export and print-ready report surface for LGU/DOT review. These outputs are generated
-                  from currently visible backend-backed LGU data and are marked as draft until official report
+                  Draft export and print-ready report surface for LGU/DOT review. These outputs are now generated
+                  from the backend-owned draft report endpoint and remain marked as draft until official report
                   registry, signatures, report numbers, and immutable report audit records are added.
                 </p>
                 <div
@@ -2000,7 +1980,7 @@ export default async function LguPage({
                     letterSpacing: "0.06em",
                   }}
                 >
-                  DRAFT — NOT OFFICIAL LGU/DOT REPORT
+                  {reportWatermark}
                 </div>
               </div>
 
@@ -2044,26 +2024,26 @@ export default async function LguPage({
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 16, marginTop: 22 }}>
               <IntelligenceMetricCard
                 label="Draft Rows"
-                value={safeCount(manifestApprovalReportRows.length)}
-                note="Rows included in the draft manifest approval report."
+                value={safeCount(reportSummary.totalRows ?? manifestApprovalReportRows.length)}
+                note="Rows returned by the backend-owned draft manifest approval report."
                 tone="blue"
               />
               <IntelligenceMetricCard
                 label="Approval Events"
-                value={safeCount(approvalEventRows.length)}
-                note="Visible approval history events available for reporting context."
+                value={safeCount(reportSummary.approvalEventCount ?? backendApprovalEventRows.length)}
+                note="Approval history events returned by the backend-owned draft report."
                 tone="green"
               />
               <IntelligenceMetricCard
                 label="Report Mode"
-                value="DRAFT"
-                note="No official report number, signature, or immutable report audit record yet."
+                value={manifestApprovalDraftReportData.reportMode || "DRAFT"}
+                note={manifestApprovalDraftReportData.official ? "Official report mode." : "No official report number, signature, or immutable report audit record yet."}
                 tone="amber"
               />
               <IntelligenceMetricCard
                 label="Generated By"
                 value={fullName}
-                note={`${role} / ${reportGeneratedAt}`}
+                note={`${reportGeneratedBy.role || role} / ${reportGeneratedAt}`}
                 tone="blue"
               />
             </div>
@@ -2096,7 +2076,7 @@ export default async function LguPage({
               <StatCard label="Generated At" value={reportGeneratedAt} />
               <StatCard label="Generated By" value={fullName} note={email} />
               <StatCard label="Role" value={role} />
-              <StatCard label="Source" value="ManifestApprovalRequest" note="With ManifestApprovalAction context" />
+              <StatCard label="Source" value="Backend Draft Report" note={manifestApprovalDraftReportData.reportType || "MANIFEST_APPROVAL_DRAFT"} />
             </div>
 
             {manifestApprovalReportRows.length > 0 ? (
@@ -2179,7 +2159,7 @@ export default async function LguPage({
                 ))}
               </div>
             ) : (
-              <EmptyState message="No manifest approval rows available for draft report." />
+              <EmptyState message={manifestApprovalDraftReport?.ok ? "No manifest approval rows available for draft report." : "Backend draft report endpoint did not return report rows."} />
             )}
           </PanelCard>
         </div>
