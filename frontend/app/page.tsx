@@ -1539,6 +1539,10 @@ export default async function HomePage() {
   const user = await getCurrentUser();
 
   const userRole = user?.primaryRole || user?.role || "";
+
+  if (isOperatorRole(userRole)) {
+    redirect("/operator");
+  }
   if (
     userRole === "SILENT_LGU_ANALYTICS" ||
     userRole === "LGU_APPROVER" ||
