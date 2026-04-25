@@ -651,7 +651,7 @@ function SpmTrailCardsPreview() {
     <section
       aria-label="Preview-only Passport Trails cards"
       style={{
-        marginTop: 18,
+        marginTop: 2,
       }}
     >
       <div
@@ -663,7 +663,7 @@ function SpmTrailCardsPreview() {
           padding: "0 2px",
         }}
       >
-        <div>
+        <div style={{ minWidth: 0 }}>
           <h2
             style={{
               margin: 0,
@@ -706,36 +706,34 @@ function SpmTrailCardsPreview() {
 
       <div
         style={{
-          marginTop: 12,
+          marginTop: 8,
           display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
           gap: 10,
         }}
       >
         <TrailPreviewCard
           title="General Luna Explorer"
-          subtitle="Town center • surf culture • local stops"
-          status="Preview"
-          statusColor="#13a8b7"
-          progressText="Visual only"
-          icon="🌊"
+          progressLabel="3 / 5 completed"
+          variant="coast"
+          accent="#13a8b7"
+          icon="⛱"
         />
 
         <TrailPreviewCard
           title="Island Discovery Trail"
-          subtitle="Guyam • Daku • Naked Island"
-          status="Preview"
-          statusColor="#1fa45b"
-          progressText="Stamp-ready later"
-          icon="🏝️"
+          progressLabel="1 / 4 completed"
+          variant="lagoon"
+          accent="#13a8b7"
+          icon="🏝"
         />
 
         <TrailPreviewCard
           title="North Coast Adventure"
-          subtitle="Pacifico • Alegria • Taktak Falls"
-          status="Locked"
-          statusColor="#8b95a1"
-          progressText="Requires governed records"
-          icon="🛵"
+          progressLabel="Complete more trails to unlock"
+          variant="locked"
+          accent="#8b95a1"
+          icon="🔒"
         />
       </div>
     </section>
@@ -744,105 +742,213 @@ function SpmTrailCardsPreview() {
 
 function TrailPreviewCard(props: {
   title: string;
-  subtitle: string;
-  status: string;
-  statusColor: string;
-  progressText: string;
+  progressLabel: string;
+  variant: "coast" | "lagoon" | "locked";
+  accent: string;
   icon: string;
 }) {
+  const isLocked = props.variant === "locked";
+
+  const artBackground =
+    props.variant === "coast"
+      ? "linear-gradient(180deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.0) 100%), linear-gradient(135deg, #90d7e6 0%, #dff5f7 38%, #f4f8db 68%, #e8d3a6 100%)"
+      : props.variant === "lagoon"
+        ? "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.0) 100%), linear-gradient(135deg, #8fd7f2 0%, #dff6ff 36%, #e8f7df 70%, #c9e7c2 100%)"
+        : "linear-gradient(135deg, rgba(226,232,240,0.95) 0%, rgba(248,250,252,0.98) 100%)";
+
+  const cardBackground = isLocked
+    ? "linear-gradient(180deg, rgba(248,250,252,0.98) 0%, rgba(241,245,249,0.96) 100%)"
+    : "rgba(255,255,255,0.98)";
+
   return (
     <a
       href="/traveler/passport-map"
       aria-label={`${props.title} preview card. Visual only.`}
       style={{
-        minHeight: 88,
-        borderRadius: 22,
-        border: "1px solid rgba(203,213,225,0.74)",
-        background: "rgba(255,255,255,0.96)",
-        boxShadow: "0 10px 28px rgba(15,23,42,0.055)",
-        padding: "14px 14px",
+        minHeight: 160,
+        borderRadius: 18,
+        border: "1px solid rgba(203,213,225,0.84)",
+        background: cardBackground,
+        boxShadow: "0 10px 26px rgba(15,23,42,0.06)",
         textDecoration: "none",
+        overflow: "hidden",
         display: "grid",
-        gridTemplateColumns: "48px 1fr auto",
-        alignItems: "center",
-        gap: 12,
+        gridTemplateRows: "92px auto auto",
       }}
     >
       <div
         style={{
-          width: 48,
-          height: 48,
-          borderRadius: 16,
-          background: "linear-gradient(135deg, #e8f9fb 0%, #ffffff 100%)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 25,
-          boxShadow: "inset 0 0 0 1px rgba(19,168,183,0.14)",
+          position: "relative",
+          minHeight: 92,
+          background: artBackground,
+          borderBottom: "1px solid rgba(226,232,240,0.78)",
         }}
       >
-        {props.icon}
-      </div>
-
-      <div style={{ minWidth: 0 }}>
-        <h3
+        <div
           style={{
-            margin: 0,
-            color: "#14264b",
-            fontSize: 15,
-            lineHeight: 1.15,
-            fontWeight: 950,
-            letterSpacing: "-0.015em",
+            position: "absolute",
+            inset: 0,
+            background: isLocked
+              ? "linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(226,232,240,0.45) 100%)"
+              : "linear-gradient(180deg, rgba(255,255,255,0.00) 0%, rgba(20,38,75,0.08) 100%)",
           }}
-        >
-          {props.title}
-        </h3>
+        />
 
-        <p
-          style={{
-            margin: "5px 0 0",
-            color: "#6b7890",
-            fontSize: 11,
-            lineHeight: 1.25,
-            fontWeight: 700,
-          }}
-        >
-          {props.subtitle}
-        </p>
+        {!isLocked ? (
+          <>
+            <div
+              style={{
+                position: "absolute",
+                left: 10,
+                top: 12,
+                width: 30,
+                height: 30,
+                borderRadius: "50%",
+                background: "rgba(255,255,255,0.94)",
+                boxShadow: "0 8px 18px rgba(15,23,42,0.10)",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: 12,
+                top: 14,
+                width: 42,
+                height: 2,
+                borderRadius: 999,
+                background: "rgba(255,255,255,0.72)",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: 12,
+                top: 20,
+                width: 34,
+                height: 2,
+                borderRadius: 999,
+                background: "rgba(255,255,255,0.58)",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: 28,
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,0.0) 0%, rgba(255,255,255,0.62) 100%)",
+              }}
+            />
+          </>
+        ) : (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "radial-gradient(circle at 24% 24%, rgba(148,163,184,0.22) 0, rgba(148,163,184,0.22) 14px, transparent 15px), radial-gradient(circle at 72% 22%, rgba(148,163,184,0.18) 0, rgba(148,163,184,0.18) 16px, transparent 17px), linear-gradient(180deg, rgba(255,255,255,0.0) 0%, rgba(148,163,184,0.12) 100%)",
+            }}
+          />
+        )}
 
         <div
           style={{
-            marginTop: 8,
-            color: "#8090a6",
-            fontSize: 10,
-            fontWeight: 900,
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
+            position: "absolute",
+            left: 10,
+            bottom: 10,
+            width: 34,
+            height: 34,
+            borderRadius: "50%",
+            background: isLocked ? "#9aa5b1" : props.accent,
+            color: "#ffffff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 15,
+            boxShadow: "0 8px 18px rgba(15,23,42,0.12)",
           }}
         >
-          {props.progressText}
+          {props.icon}
         </div>
       </div>
 
       <div
         style={{
-          alignSelf: "flex-start",
-          borderRadius: 999,
-          background: `${props.statusColor}18`,
-          color: props.statusColor,
-          padding: "6px 8px",
-          fontSize: 10,
-          lineHeight: 1,
-          fontWeight: 950,
-          textTransform: "uppercase",
-          letterSpacing: "0.06em",
+          padding: "10px 10px 0",
+          minWidth: 0,
         }}
       >
-        {props.status}
+        <h3
+          style={{
+            margin: 0,
+            color: "#14264b",
+            fontSize: 11.5,
+            lineHeight: 1.1,
+            fontWeight: 950,
+            letterSpacing: "-0.03em",
+          }}
+        >
+          {props.title}
+        </h3>
+      </div>
+
+      <div
+        style={{
+          padding: "8px 10px 12px",
+          alignSelf: "end",
+        }}
+      >
+        {isLocked ? (
+          <div
+            style={{
+              color: "#7b8798",
+              fontSize: 10,
+              lineHeight: 1.22,
+              fontWeight: 800,
+            }}
+          >
+            {props.progressLabel}
+          </div>
+        ) : (
+          <>
+            <div
+              style={{
+                color: "#13a8b7",
+                fontSize: 11,
+                lineHeight: 1.15,
+                fontWeight: 900,
+              }}
+            >
+              {props.progressLabel}
+            </div>
+
+            <div
+              style={{
+                marginTop: 8,
+                height: 6,
+                borderRadius: 999,
+                background: "rgba(148,163,184,0.22)",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  width: props.progressLabel.startsWith("3 / 5") ? "60%" : "25%",
+                  height: "100%",
+                  borderRadius: 999,
+                  background: props.accent,
+                }}
+              />
+            </div>
+          </>
+        )}
       </div>
     </a>
   );
 }
+
 
 function SpmLegendAndStatus() {
   return (
