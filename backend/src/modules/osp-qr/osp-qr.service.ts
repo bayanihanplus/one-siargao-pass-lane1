@@ -87,14 +87,18 @@ export class OspQrService {
       .map((link: any) => link.booking)
       .filter(Boolean);
 
-    const latestLinkedBooking =
-      [...linkedBookings].sort(
-        (a: any, b: any) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      )[0] ?? null;
+    const sortedLinkedBookings = [...linkedBookings].sort(
+      (a: any, b: any) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
 
-    const hasCurrentBooking = Boolean(latestLinkedBooking?.id);
-    const paymentState = latestLinkedBooking?.paymentState?.state ?? null;
+    const paidLinkedBooking =
+      sortedLinkedBookings.find((booking: any) => booking?.paymentState?.state === 'PAID') ?? null;
+
+    const currentLinkedBooking = paidLinkedBooking ?? sortedLinkedBookings[0] ?? null;
+
+    const hasCurrentBooking = Boolean(currentLinkedBooking?.id);
+    const paymentState = currentLinkedBooking?.paymentState?.state ?? null;
 
     if (!pass) {
       return {
@@ -2996,6 +3000,225 @@ export class OspQrService {
         id: updated.id,
         accessStatus: updated.accessStatus,
         completedAt: updated.completedAt,
+      },
+    };
+  }
+
+  async passportStampScan(
+    actor: any,
+    body: { qrToken: string; trailNodeId: string; channel?: string | null },
+  ) {
+    const trip = await this.getTripByQrToken(body.qrToken);
+
+    if (!trip) {
+      const qrEvent = await this.createQrEvent({
+        eventType: 'PASSPORT_STAMP_SCAN',
+        contextType: body.channel ?? 'PASSPORT_STAMP',
+        contextReferenceId: body.trailNodeId,
+        scannerActorId: actor.id,
+        scannerActorRole: actor.role,
+        outcome: 'BLOCKED',
+        reasonCode: 'QR_NOT_FOUND',
+        reasonMessage: 'Traveler has no valid OSP QR.',
+      });
+
+      return {
+        ok: true,
+        data: {
+          outcome: 'BLOCKED',
+          reasonCode: 'QR_NOT_FOUND',
+          reasonMessage: 'Traveler has no valid OSP QR.',
+          qrEventId: qrEvent.id,
+        },
+      };
+    }
+
+    const node = await this.prisma.spmTrailNode.findFirst({
+      where: {
+        id: body.trailNodeId,
+        approvalStatus: 'APPROVED',
+        stampEligible: true,
+      },
+      select: {
+        id: true,
+        trailFamilyId: true,
+        trailTrackId: true,
+        name: true,
+      },
+    });
+
+    if (!node) {
+      const qrEvent = await this.createQrEvent({
+        eventType: 'PASSPORT_STAMP_SCAN',
+        travelerId: trip.travelerUserId,
+        tripId: trip.id,
+        passId: trip.pass?.id ?? null,
+        qrCredentialId: trip.pass?.qrCredential?.id ?? null,
+        contextType: body.channel ?? 'PASSPORT_STAMP',
+        contextReferenceId: body.trailNodeId,
+        scannerActorId: actor.id,
+        scannerActorRole: actor.role,
+        outcome: 'BLOCKED',
+        reasonCode: 'TRAIL_NODE_NOT_STAMP_ELIGIBLE',
+        reasonMessage: 'Trail node is not approved or stamp eligible.',
+      });
+
+      return {
+        ok: true,
+        data: {
+          outcome: 'BLOCKED',
+          reasonCode: 'TRAIL_NODE_NOT_STAMP_ELIGIBLE',
+          reasonMessage: 'Trail node is not approved or stamp eligible.',
+          qrEventId: qrEvent.id,
+        },
+      };
+    }
+
+    const derived = this.deriveEffectiveStatus(trip);
+    const isActive = derived.effectivePassStatus === 'ACTIVE';
+
+    const qrEvent = await this.createQrEvent({
+      eventType: 'PASSPORT_STAMP_SCAN',
+      travelerId: trip.travelerUserId,
+      tripId: trip.id,
+      passId: trip.pass?.id ?? null,
+      qrCredentialId: trip.pass?.qrCredential?.id ?? null,
+      effectivePassStatus: derived.effectivePassStatus,
+      scannerActorId: actor.id,
+      scannerActorRole: actor.role,
+      contextType: body.channel ?? 'PASSPORT_STAMP',
+      contextReferenceId: node.id,
+      outcome: isActive ? 'ALLOWED' : 'BLOCKED',
+      reasonCode: derived.reasonCode,
+      reasonMessage: derived.reasonMessage,
+    });
+
+    if (!isActive) {
+      return {
+        ok: true,
+        data: {
+          outcome: 'BLOCKED',
+          reasonCode: derived.reasonCode,
+          reasonMessage: derived.reasonMessage,
+          qrEventId: qrEvent.id,
+        },
+      };
+    }
+
+    const stamp = await this.prisma.spmTravelerStamp.upsert({
+      where: {
+        travelerUserId_trailNodeId_tripId: {
+          travelerUserId: trip.travelerUserId,
+          trailNodeId: node.id,
+          tripId: trip.id,
+        },
+      },
+      update: {
+        qrEventId: qrEvent.id,
+        passId: trip.pass?.id ?? null,
+        trailFamilyId: node.trailFamilyId,
+        trailTrackId: node.trailTrackId ?? null,
+        verificationSource: 'QR',
+        status: 'ACTIVE',
+        stampedAt: new Date(),
+      },
+      create: {
+        travelerUserId: trip.travelerUserId,
+        tripId: trip.id,
+        passId: trip.pass?.id ?? null,
+        trailFamilyId: node.trailFamilyId,
+        trailTrackId: node.trailTrackId ?? null,
+        trailNodeId: node.id,
+        qrEventId: qrEvent.id,
+        verificationSource: 'QR',
+        status: 'ACTIVE',
+      },
+    });
+
+    await this.prisma.spmTravelerStopVerification.upsert({
+      where: {
+        travelerUserId_trailNodeId_tripId: {
+          travelerUserId: trip.travelerUserId,
+          trailNodeId: node.id,
+          tripId: trip.id,
+        },
+      },
+      update: {
+        stampId: stamp.id,
+        verificationStatus: 'VERIFIED',
+        verificationSource: 'QR',
+        verifiedAt: new Date(),
+      },
+      create: {
+        travelerUserId: trip.travelerUserId,
+        trailNodeId: node.id,
+        tripId: trip.id,
+        stampId: stamp.id,
+        verificationStatus: 'VERIFIED',
+        verificationSource: 'QR',
+      },
+    });
+
+    const activeStampCount = await this.prisma.spmTravelerStamp.count({
+      where: {
+        travelerUserId: trip.travelerUserId,
+        trailFamilyId: node.trailFamilyId,
+        tripId: trip.id,
+        status: 'ACTIVE',
+      },
+    });
+
+    const requiredNodeCount = await this.prisma.spmTrailNode.count({
+      where: {
+        trailFamilyId: node.trailFamilyId,
+        approvalStatus: 'APPROVED',
+        stampEligible: true,
+      },
+    });
+
+    const safeRequired = Math.max(requiredNodeCount, 1);
+    const progressPercentage = Math.min(100, Math.round((activeStampCount / safeRequired) * 100));
+
+    await this.prisma.spmTravelerTrailProgress.upsert({
+      where: {
+        travelerUserId_trailFamilyId_tripId: {
+          travelerUserId: trip.travelerUserId,
+          trailFamilyId: node.trailFamilyId,
+          tripId: trip.id,
+        },
+      },
+      update: {
+        completedNodeCount: activeStampCount,
+        requiredNodeCount: safeRequired,
+        progressPercentage,
+        status: progressPercentage >= 100 ? 'COMPLETED' : 'IN_PROGRESS',
+        completedAt: progressPercentage >= 100 ? new Date() : null,
+        lastStampAt: new Date(),
+      },
+      create: {
+        travelerUserId: trip.travelerUserId,
+        trailFamilyId: node.trailFamilyId,
+        tripId: trip.id,
+        completedNodeCount: activeStampCount,
+        requiredNodeCount: safeRequired,
+        progressPercentage,
+        status: progressPercentage >= 100 ? 'COMPLETED' : 'IN_PROGRESS',
+        completedAt: progressPercentage >= 100 ? new Date() : null,
+        lastStampAt: new Date(),
+      },
+    });
+
+    return {
+      ok: true,
+      data: {
+        outcome: 'ALLOWED',
+        qrEventId: qrEvent.id,
+        stampId: stamp.id,
+        trailNodeId: node.id,
+        trailFamilyId: node.trailFamilyId,
+        completedNodeCount: activeStampCount,
+        requiredNodeCount: safeRequired,
+        progressPercentage,
       },
     };
   }

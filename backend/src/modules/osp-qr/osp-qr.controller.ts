@@ -12,6 +12,22 @@ import { OperatorContext } from '../auth/types/operator-context.type';
 export class OspQrController {
   constructor(private readonly ospQrService: OspQrService) {}
 
+
+  @UseGuards(DevAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'LGU_APPROVER', 'OPERATOR')
+  @Post('passport-stamp-scan')
+  passportStampScan(
+    @Req() req: any,
+    @Body()
+    body: {
+      qrToken: string;
+      trailNodeId: string;
+      channel?: string | null;
+    },
+  ) {
+    return this.ospQrService.passportStampScan(req.user, body);
+  }
+
   @Get('trips/:tripId/effective-pass-status')
   getEffectivePassStatus(@Req() req: any, @Param('tripId') tripId: string) {
     return this.ospQrService.getEffectivePassStatus(req.user.id, tripId);
