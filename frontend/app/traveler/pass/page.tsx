@@ -73,13 +73,26 @@ function Section(props: { title: string; children: any }) {
   return (
     <section
       style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 12,
-        padding: 16,
+        border: "1px solid #dbe8ef",
+        borderRadius: 22,
+        padding: 18,
         marginBottom: 16,
+        background: "#ffffff",
+        boxShadow: "0 12px 30px rgba(15,23,42,0.045)",
       }}
     >
-      <h2 style={{ marginTop: 0, marginBottom: 12 }}>{title}</h2>
+      <h2
+        style={{
+          marginTop: 0,
+          marginBottom: 14,
+          fontSize: 18,
+          lineHeight: 1.1,
+          letterSpacing: "-0.03em",
+          color: "#19305a",
+        }}
+      >
+        {title}
+      </h2>
       {children}
     </section>
   );
@@ -89,8 +102,30 @@ function KeyValue(props: { label: string; value: any }) {
   const { label, value } = props;
 
   return (
-    <div style={{ marginBottom: 8 }}>
-      <strong>{label}:</strong> {value ?? "—"}
+    <div
+      style={{
+        marginBottom: 10,
+        paddingBottom: 10,
+        borderBottom: "1px solid #eef3f7",
+        fontSize: 14,
+        lineHeight: 1.35,
+        color: "#334155",
+        wordBreak: "break-word",
+      }}
+    >
+      <div
+        style={{
+          fontSize: 11,
+          fontWeight: 900,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: "#7a93ad",
+          marginBottom: 4,
+        }}
+      >
+        {label}
+      </div>
+      <div style={{ fontWeight: 750, color: "#0f172a" }}>{value ?? "—"}</div>
     </div>
   );
 }
@@ -185,14 +220,26 @@ function StatusChip(props: { label: string; value: any }) {
   return (
     <div
       style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 12,
-        padding: "10px 12px",
-        background: "#ffffff",
+        border: "1px solid #dbe8ef",
+        borderRadius: 16,
+        padding: "12px 13px",
+        background: "linear-gradient(180deg, #ffffff 0%, #f8fbfd 100%)",
+        boxShadow: "0 8px 20px rgba(15,23,42,0.035)",
       }}
     >
-      <div style={{ fontSize: 12, color: "#64748b", marginBottom: 4 }}>{props.label}</div>
-      <div style={{ fontSize: 16, fontWeight: 700 }}>{props.value ?? "—"}</div>
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 900,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: "#7a93ad",
+          marginBottom: 5,
+        }}
+      >
+        {props.label}
+      </div>
+      <div style={{ fontSize: 15, fontWeight: 900, color: "#19305a" }}>{props.value ?? "—"}</div>
     </div>
   );
 }
@@ -204,17 +251,90 @@ export default async function TravelerPassPage() {
   const readiness = getPassReadinessSummary(trip, passUsageWarnings);
 
   return (
-    <main style={{ maxWidth: 920, margin: "0 auto", padding: 24 }}>
-      <h1 style={{ marginBottom: 8 }}>OSP Pass</h1>
-      <p style={{ marginTop: 0, marginBottom: 24 }}>
-        Traveler-facing pass view with issuance gating based on current trip status.
-      </p>
+    <main
+      style={{
+        maxWidth: 920,
+        margin: "0 auto",
+        padding: 24,
+        background: "linear-gradient(180deg, #f8fcff 0%, #ffffff 58%)",
+        minHeight: "100vh",
+      }}
+    >
+      <div
+        style={{
+          marginBottom: 18,
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: 16,
+        }}
+      >
+        <div>
+          <div
+            style={{
+              fontSize: 12,
+              fontWeight: 950,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "#0e7490",
+              marginBottom: 8,
+            }}
+          >
+            Official Traveler Pass
+          </div>
+          <h1
+            style={{
+              margin: 0,
+              fontSize: 36,
+              lineHeight: 0.98,
+              letterSpacing: "-0.055em",
+              color: "#19305a",
+            }}
+          >
+            OSP Pass
+          </h1>
+          <p style={{ marginTop: 10, marginBottom: 0, color: "#64748b", lineHeight: 1.45 }}>
+            View your issued pass, QR credential, trip status, and Passport Map bridge.
+          </p>
+        </div>
+      </div>
 
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
-        <a href="/">Home</a>
-        <a href="/traveler/trips">My Trips</a>
-        <a href="/traveler/passport-map">Passport Map</a>
-        <a href="/logout">Logout</a>
+      <div
+        style={{
+          display: "flex",
+          gap: 10,
+          flexWrap: "wrap",
+          marginBottom: 16,
+        }}
+      >
+        {[
+          { href: "/", label: "Home" },
+          { href: "/traveler/trips", label: "My Trips" },
+          { href: "/traveler/passport-map", label: "Passport Map" },
+          { href: "/logout", label: "Logout" },
+        ].map((item) => (
+          <a
+            key={item.href}
+            href={item.href}
+            style={{
+              minHeight: 38,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 999,
+              padding: "0 14px",
+              border: "1px solid #dbe8ef",
+              background: "#ffffff",
+              color: "#19305a",
+              textDecoration: "none",
+              fontSize: 13,
+              fontWeight: 850,
+              boxShadow: "0 8px 18px rgba(15,23,42,0.035)",
+            }}
+          >
+            {item.label}
+          </a>
+        ))}
       </div>
 
       <Section title="Pass Access Note">
@@ -244,13 +364,14 @@ export default async function TravelerPassPage() {
             <div
               style={{
                 borderLeft: `6px solid ${readiness.accent}`,
-                padding: 16,
-                borderRadius: 12,
-                background: "#f8fafc",
+                padding: 18,
+                borderRadius: 18,
+                background: "linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.72)",
               }}
             >
-              <div style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.05 }}>{readiness.title}</div>
-              <p style={{ marginTop: 8, marginBottom: 0, fontSize: 16 }}>{readiness.body}</p>
+              <div style={{ fontSize: 30, fontWeight: 950, lineHeight: 1.02, color: "#19305a", letterSpacing: "-0.04em" }}>{readiness.title}</div>
+              <p style={{ marginTop: 8, marginBottom: 0, fontSize: 15, lineHeight: 1.45, color: "#475569", fontWeight: 650 }}>{readiness.body}</p>
             </div>
           </Section>
 
@@ -260,10 +381,11 @@ export default async function TravelerPassPage() {
                 <div
                   style={{
                     display: "inline-block",
-                    padding: 12,
-                    borderRadius: 12,
+                    padding: 14,
+                    borderRadius: 22,
                     background: "#ffffff",
-                    border: "1px solid #e5e7eb",
+                    border: "1px solid #dbe8ef",
+                    boxShadow: "0 14px 32px rgba(15,23,42,0.07)",
                     opacity: passUsageWarnings.length > 0 ? 0.35 : 1,
                   }}
                 >
@@ -271,6 +393,9 @@ export default async function TravelerPassPage() {
                     value={trip.pass.qrCredential.qrToken}
                     size={220}
                     includeMargin={true}
+                    level="H"
+                    bgColor="#FFFFFF"
+                    fgColor="#111827"
                   />
                 </div>
                 {passUsageWarnings.length > 0 ? (
@@ -308,10 +433,11 @@ export default async function TravelerPassPage() {
           <Section title="Siargao Passport Map">
             <div
               style={{
-                border: "1px solid #bae6fd",
-                borderRadius: 18,
-                padding: 18,
-                background: "linear-gradient(135deg, #ecfeff 0%, #f8fafc 100%)",
+                border: "1px solid #b8e7ef",
+                borderRadius: 22,
+                padding: 20,
+                background: "linear-gradient(135deg, #ecfeff 0%, #ffffff 100%)",
+                boxShadow: "0 14px 32px rgba(14,116,144,0.08)",
                 display: "grid",
                 gap: 12,
               }}
