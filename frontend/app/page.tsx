@@ -1123,7 +1123,7 @@ function TravelerShellFrame(props: {
             }}
           />
 
-          <div style={{ position: "relative", zIndex: 1, maxWidth: 230 }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: 250 }}>
             <div
               style={{
                 marginBottom: 12,
@@ -1174,10 +1174,10 @@ function TravelerShellFrame(props: {
               style={{
                 margin: 0,
                 whiteSpace: "normal",
-                fontSize: 31,
+                fontSize: 29,
                 fontWeight: 760,
                 lineHeight: 1.02,
-                letterSpacing: "-0.055em",
+                letterSpacing: "-0.035em",
                 color: "#ffffff",
               }}
             >
@@ -1816,6 +1816,7 @@ function TravelerShell(props: {
   return (
     <div
       style={{
+        width: "min(100%, 430px)",
         maxWidth: 430,
         margin: "0 auto",
         paddingTop: 2,
@@ -1854,7 +1855,7 @@ export default async function HomePage() {
 
   if (!user) {
     return (
-      <main style={{ maxWidth: 960, margin: "0 auto", padding: 24 }}>
+      <main style={{ width: "100%", maxWidth: 960, margin: "0 auto", padding: "12px 8px 24px", boxSizing: "border-box" }}>
         <h1 style={{ marginBottom: 8 }}>One Siargao Pass</h1>
         <p style={{ marginTop: 0, marginBottom: 24 }}>
           Role-aware landing flow is now active. Please log in to continue.
@@ -1878,7 +1879,7 @@ export default async function HomePage() {
   const latestTravelerTrip = travelerTripResult.trip;
 
   return (
-    <main style={{ maxWidth: 960, margin: "0 auto", padding: 24 }}>
+    <main style={{ width: "100%", maxWidth: 960, margin: "0 auto", padding: "12px 8px 24px", boxSizing: "border-box" }}>
       {user.primaryRole === "TRAVELER" ? (
         <>
           {travelerTripResult.error ? (
