@@ -3077,6 +3077,16 @@ export class OspQrService {
     const derived = this.deriveEffectiveStatus(trip);
     const isActive = derived.effectivePassStatus === 'ACTIVE';
 
+    const existingActiveStamp = await this.prisma.spmTravelerStamp.findUnique({
+      where: {
+        travelerUserId_trailNodeId_tripId: {
+          travelerUserId: trip.travelerUserId,
+          trailNodeId: node.id,
+          tripId: trip.id,
+        },
+      },
+    });
+
     const qrEvent = await this.createQrEvent({
       eventType: 'PASSPORT_STAMP_SCAN',
       travelerId: trip.travelerUserId,
@@ -3089,9 +3099,50 @@ export class OspQrService {
       contextType: body.channel ?? 'PASSPORT_STAMP',
       contextReferenceId: node.id,
       outcome: isActive ? 'ALLOWED' : 'BLOCKED',
-      reasonCode: derived.reasonCode,
-      reasonMessage: derived.reasonMessage,
+      reasonCode: existingActiveStamp?.status === 'ACTIVE' ? 'ALREADY_STAMPED' : derived.reasonCode,
+      reasonMessage:
+        existingActiveStamp?.status === 'ACTIVE'
+          ? 'Traveler already has an active passport stamp for this trail node.'
+          : derived.reasonMessage,
     });
+
+    if (isActive && existingActiveStamp?.status === 'ACTIVE') {
+      const activeStampCount = await this.prisma.spmTravelerStamp.count({
+        where: {
+          travelerUserId: trip.travelerUserId,
+          trailFamilyId: node.trailFamilyId,
+          tripId: trip.id,
+          status: 'ACTIVE',
+        },
+      });
+
+      const requiredNodeCount = await this.prisma.spmTrailNode.count({
+        where: {
+          trailFamilyId: node.trailFamilyId,
+          approvalStatus: 'APPROVED',
+          stampEligible: true,
+        },
+      });
+
+      const safeRequired = Math.max(requiredNodeCount, 1);
+      const progressPercentage = Math.min(100, Math.round((activeStampCount / safeRequired) * 100));
+
+      return {
+        ok: true,
+        data: {
+          outcome: 'ALREADY_STAMPED',
+          reasonCode: 'ALREADY_STAMPED',
+          reasonMessage: 'Traveler already has an active passport stamp for this trail node.',
+          qrEventId: qrEvent.id,
+          stampId: existingActiveStamp.id,
+          trailNodeId: node.id,
+          trailFamilyId: node.trailFamilyId,
+          completedNodeCount: activeStampCount,
+          requiredNodeCount: safeRequired,
+          progressPercentage,
+        },
+      };
+    }
 
     if (!isActive) {
       return {
