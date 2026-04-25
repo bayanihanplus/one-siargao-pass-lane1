@@ -213,6 +213,7 @@ export default async function TravelerPassPage() {
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
         <a href="/">Home</a>
         <a href="/traveler/trips">My Trips</a>
+        <a href="/traveler/passport-map">Passport Map</a>
         <a href="/logout">Logout</a>
       </div>
 
@@ -302,6 +303,52 @@ export default async function TravelerPassPage() {
               </ul>
             </Section>
           ) : null}
+
+
+          <Section title="Siargao Passport Map">
+            <div
+              style={{
+                border: "1px solid #bae6fd",
+                borderRadius: 18,
+                padding: 18,
+                background: "linear-gradient(135deg, #ecfeff 0%, #f8fafc 100%)",
+                display: "grid",
+                gap: 12,
+              }}
+            >
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.08em", color: "#0e7490", textTransform: "uppercase" }}>
+                  Second Screen
+                </div>
+                <h2 style={{ margin: "6px 0 0", fontSize: 28, lineHeight: 1.05 }}>
+                  Continue to your Passport Map
+                </h2>
+                <p style={{ margin: "8px 0 0", color: "#475569", lineHeight: 1.5 }}>
+                  Your SPM trail progress uses governed OSP QR, stamp, pass, and trip records when available. Preview layout cards may appear only to preserve the approved map geometry.
+                </p>
+              </div>
+
+              <a
+                href="/traveler/passport-map"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "fit-content",
+                  minHeight: 44,
+                  borderRadius: 999,
+                  padding: "0 18px",
+                  background: "#0e7490",
+                  color: "#ffffff",
+                  textDecoration: "none",
+                  fontWeight: 900,
+                  boxShadow: "0 10px 20px rgba(14,116,144,0.18)",
+                }}
+              >
+                Open Siargao Passport Map
+              </a>
+            </div>
+          </Section>
 
           <Section title="Key Status Summary">
             <div
