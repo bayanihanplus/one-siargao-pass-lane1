@@ -1,0 +1,79 @@
+<svg width="1200" height="760" viewBox="0 0 1200 760" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">SPM Map Placeholder — Not Final</title>
+  <desc id="desc">Non-final Siargao Passport Map placeholder for coordinate and overlay testing only. Not geographically accepted artwork.</desc>
+
+  <rect width="1200" height="760" rx="40" fill="#EAF8F7"/>
+  <rect x="28" y="28" width="1144" height="704" rx="34" fill="#FFF7DF" stroke="#143D66" stroke-opacity="0.18" stroke-width="4"/>
+
+  <text x="600" y="74" text-anchor="middle" font-family="Georgia, serif" font-size="36" font-weight="700" fill="#143D66">
+    Siargao Passport Map
+  </text>
+  <text x="600" y="108" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="800" letter-spacing="3" fill="#B45309">
+    NON-FINAL PLACEHOLDER — LAYOUT TEST ONLY
+  </text>
+
+  <path d="M486 132
+           C560 120 628 152 664 215
+           C690 260 684 314 724 354
+           C770 400 776 472 733 522
+           C690 573 608 604 536 592
+           C456 579 391 532 361 464
+           C330 393 349 321 390 260
+           C420 214 424 152 486 132Z"
+        fill="#CBEFDC" stroke="#143D66" stroke-opacity="0.32" stroke-width="5"/>
+
+  <path d="M445 206
+           C500 190 568 212 602 258
+           C638 307 615 356 652 399
+           C690 443 674 510 617 535
+           C555 563 482 532 435 486
+           C384 435 379 360 409 298
+           C421 272 412 226 445 206Z"
+        fill="#9FE4D4" fill-opacity="0.38" stroke="#13A8B7" stroke-opacity="0.3" stroke-width="3"/>
+
+  <text x="518" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="900" fill="#143D66">
+    MAIN SIARGAO
+  </text>
+  <text x="518" y="408" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#607089">
+    placeholder silhouette only
+  </text>
+
+  <circle cx="768" cy="554" r="34" fill="#F2B705" fill-opacity="0.5" stroke="#143D66" stroke-opacity="0.25" stroke-width="3"/>
+  <circle cx="862" cy="514" r="46" fill="#F2B705" fill-opacity="0.38" stroke="#143D66" stroke-opacity="0.22" stroke-width="3"/>
+  <circle cx="982" cy="572" r="28" fill="#F2B705" fill-opacity="0.44" stroke="#143D66" stroke-opacity="0.22" stroke-width="3"/>
+
+  <path d="M768 554 C810 520 826 516 862 514 C910 516 936 550 982 572" stroke="#143D66" stroke-opacity="0.28" stroke-width="5" stroke-dasharray="12 12" stroke-linecap="round"/>
+
+  <text x="870" y="644" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="900" fill="#143D66">
+    ISLAND HOPPING TEST ZONE
+  </text>
+  <text x="870" y="670" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#607089">
+    Guyam • Daku • Naked overlay target
+  </text>
+
+  <rect x="78" y="560" width="298" height="108" rx="22" fill="#FFFFFF" fill-opacity="0.76" stroke="#13A8B7" stroke-opacity="0.25" stroke-width="3"/>
+  <text x="227" y="598" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="900" fill="#143D66">
+    GENERAL LUNA CONTEXT
+  </text>
+  <text x="227" y="624" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#607089">
+    rough jump-off / tourism-core hint
+  </text>
+  <text x="227" y="649" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="800" fill="#B45309">
+    NOT FINAL GEOGRAPHY ARTWORK
+  </text>
+
+  <rect x="808" y="150" width="258" height="118" rx="24" fill="#FFFFFF" fill-opacity="0.78" stroke="#143D66" stroke-opacity="0.18" stroke-width="3"/>
+  <text x="937" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="900" fill="#143D66">
+    FUTURE INSET AREA
+  </text>
+  <text x="937" y="217" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#607089">
+    Bucas Grande / Socorro
+  </text>
+  <text x="937" y="242" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="900" fill="#B45309">
+    placeholder only — not positioned
+  </text>
+
+  <text x="600" y="716" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="900" letter-spacing="2" fill="#B45309">
+    SPM MAP PLACEHOLDER — NOT FINAL — DO NOT USE AS PRODUCTION MAP
+  </text>
+</svg>
