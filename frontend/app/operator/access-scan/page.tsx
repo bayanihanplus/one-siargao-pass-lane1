@@ -36,6 +36,19 @@ type OperatorAccessScanResult = {
   } | null;
 };
 
+type PassportStampScanResult = {
+  outcome?: string;
+  reasonCode?: string | null;
+  reasonMessage?: string | null;
+  qrEventId?: string;
+  stampId?: string;
+  trailNodeId?: string;
+  trailFamilyId?: string;
+  completedNodeCount?: number;
+  requiredNodeCount?: number;
+  progressPercentage?: number;
+};
+
 type OperatorAccessRecordRow = {
   id: string;
   travelerId: string;
@@ -146,6 +159,48 @@ async function getRecentOperatorAccess(activityInstanceId?: string): Promise<Ope
   return Array.isArray(json?.data) ? json.data : [];
 }
 
+async function runPassportStampScan(
+  formData: FormData,
+): Promise<{ ok: boolean; error?: string; result?: PassportStampScanResult }> {
+  "use server";
+
+  const token = await requireAccessToken();
+  const qrToken = String(formData.get("stampQrToken") || "").trim();
+  const trailNodeId = String(formData.get("trailNodeId") || "").trim();
+  const channel = String(formData.get("stampChannel") || "PASSPORT_STAMP").trim();
+
+  if (!qrToken) return { ok: false, error: "QR token is required." };
+  if (!trailNodeId) return { ok: false, error: "Trail node ID is required." };
+
+  const res = await fetch(`${getApiBaseUrl()}/osp-qr/passport-stamp-scan`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    cache: "no-store",
+    body: JSON.stringify({
+      qrToken,
+      trailNodeId,
+      channel,
+    }),
+  });
+
+  const json = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    return {
+      ok: false,
+      error: json?.message || "Passport stamp scan failed.",
+    };
+  }
+
+  return {
+    ok: true,
+    result: json?.data || {},
+  };
+}
+
 async function runOperatorAccessScan(
   formData: FormData,
 ): Promise<{ ok: boolean; error?: string; result?: OperatorAccessScanResult }> {
@@ -214,10 +269,42 @@ export default async function OperatorAccessScanPage({
   const scannedPax = typeof params.scannedPax === "string" ? params.scannedPax : "";
   const remainingPax = typeof params.remainingPax === "string" ? params.remainingPax : "";
   const error = typeof params.error === "string" ? params.error : "";
+  const stampQrToken = typeof params.stampQrToken === "string" ? params.stampQrToken : "";
+  const trailNodeId = typeof params.trailNodeId === "string" ? params.trailNodeId : "";
+  const stampOutcome = typeof params.stampOutcome === "string" ? params.stampOutcome : "";
+  const stampReasonCode = typeof params.stampReasonCode === "string" ? params.stampReasonCode : "";
+  const stampReasonMessage = typeof params.stampReasonMessage === "string" ? params.stampReasonMessage : "";
+  const stampQrEventId = typeof params.stampQrEventId === "string" ? params.stampQrEventId : "";
+  const stampId = typeof params.stampId === "string" ? params.stampId : "";
+  const stampProgress = typeof params.stampProgress === "string" ? params.stampProgress : "";
 
   const instances = await getActivityInstances();
   const recentAccessRows = await getRecentOperatorAccess(activityInstanceId || undefined);
   const resultTone = getResultTone(outcome);
+
+  async function passportStampAction(formData: FormData) {
+    "use server";
+
+    const result = await runPassportStampScan(formData);
+    const qp = new URLSearchParams({
+      stampQrToken: String(formData.get("stampQrToken") || ""),
+      trailNodeId: String(formData.get("trailNodeId") || ""),
+    });
+
+    if (!result.ok) {
+      qp.set("error", result.error || "Passport stamp scan failed.");
+    } else {
+      qp.set("stampOutcome", result.result?.outcome || "");
+      qp.set("stampReasonCode", result.result?.reasonCode || "");
+      qp.set("stampReasonMessage", result.result?.reasonMessage || "");
+      qp.set("stampQrEventId", result.result?.qrEventId || "");
+      qp.set("stampId", result.result?.stampId || "");
+      qp.set("stampProgress", `${result.result?.completedNodeCount ?? ""}/${result.result?.requiredNodeCount ?? ""} · ${result.result?.progressPercentage ?? ""}%`);
+    }
+
+    const { redirect } = await import("next/navigation");
+    redirect(`/operator/access-scan?${qp.toString()}`);
+  }
 
   async function scanAction(formData: FormData) {
     "use server";
@@ -257,6 +344,118 @@ export default async function OperatorAccessScanPage({
       <p style={{ marginTop: 0, marginBottom: 24 }}>
         Rapid operator-side QR validation and attendance/access bridge for live activity operations.
       </p>
+
+
+      <section
+        style={{
+          border: "1px solid #dbeafe",
+          borderRadius: 18,
+          padding: 22,
+          background: "#f8fbff",
+          marginBottom: 20,
+          boxShadow: "0 8px 24px rgba(15, 23, 42, 0.04)",
+        }}
+      >
+        <h2 style={{ marginTop: 0, marginBottom: 8, fontSize: 26 }}>Passport Stamp Scan</h2>
+        <p style={{ marginTop: 0, color: "#475569" }}>
+          Issue governed SPM passport stamps against approved stamp-eligible trail nodes.
+        </p>
+
+        <form style={{ display: "grid", gap: 16 }}>
+          <div>
+            <label style={{ display: "block", fontWeight: 700, marginBottom: 8 }}>QR Token</label>
+            <input
+              name="stampQrToken"
+              defaultValue={stampQrToken}
+              placeholder="Scan or paste traveler QR token"
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: 12,
+                border: "1px solid #cbd5e1",
+                fontSize: 15,
+              }}
+            />
+          </div>
+
+          <div>
+            <label style={{ display: "block", fontWeight: 700, marginBottom: 8 }}>Trail Node ID</label>
+            <input
+              name="trailNodeId"
+              defaultValue={trailNodeId}
+              placeholder="Approved stamp-eligible SPM trail node ID"
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: 12,
+                border: "1px solid #cbd5e1",
+                fontSize: 15,
+              }}
+            />
+          </div>
+
+          <input type="hidden" name="stampChannel" value="PASSPORT_STAMP" />
+
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <a
+              href="/operator/access-scan?stampQrToken=QR-ACTIVE-1776950922313&trailNodeId=cmocek9no000ib712tmmiglil"
+              style={{
+                textDecoration: "none",
+                padding: "10px 14px",
+                borderRadius: 999,
+                background: "#ecfeff",
+                color: "#155e75",
+                border: "1px solid #67e8f9",
+                fontSize: 13,
+                fontWeight: 700,
+              }}
+            >
+              Dev Fill: Active QR + Corregidor
+            </a>
+          </div>
+
+          <button
+            formAction={passportStampAction}
+            style={{
+              padding: "14px 20px",
+              borderRadius: 12,
+              border: "none",
+              background: "#0e7490",
+              color: "#ffffff",
+              fontWeight: 800,
+              fontSize: 15,
+              cursor: "pointer",
+              minWidth: 220,
+            }}
+          >
+            Scan Passport Stamp
+          </button>
+        </form>
+
+        <div
+          style={{
+            marginTop: 18,
+            borderRadius: 16,
+            border: "1px solid #cbd5e1",
+            background: "#ffffff",
+            padding: 16,
+          }}
+        >
+          <div style={{ fontSize: 12, color: "#64748b", fontWeight: 800, marginBottom: 8 }}>
+            PASSPORT STAMP RESULT
+          </div>
+          <div style={{ fontSize: 26, fontWeight: 900, color: stampOutcome === "BLOCKED" ? "#991b1b" : "#155e75" }}>
+            {stampOutcome || "Awaiting Stamp Scan"}
+          </div>
+          <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 }}>
+            <div><strong>Reason:</strong> {stampReasonCode || "—"}</div>
+            <div><strong>Progress:</strong> {stampProgress || "—"}</div>
+            <div><strong>Stamp ID:</strong> {stampId || "—"}</div>
+            <div><strong>QR Event:</strong> {stampQrEventId || "—"}</div>
+            <div style={{ gridColumn: "1 / -1" }}><strong>Message:</strong> {stampReasonMessage || "—"}</div>
+          </div>
+        </div>
+      </section>
 
       <section
         style={{

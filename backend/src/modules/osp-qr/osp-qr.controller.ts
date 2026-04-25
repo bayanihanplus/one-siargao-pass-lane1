@@ -14,7 +14,7 @@ export class OspQrController {
 
 
   @UseGuards(DevAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'LGU_APPROVER', 'OPERATOR')
+  @Roles('ADMIN', 'LGU_APPROVER', 'OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Post('passport-stamp-scan')
   passportStampScan(
     @Req() req: any,
