@@ -1106,6 +1106,37 @@ model SpmTravelerTrailProgress {
   @@map("spm_traveler_trail_progress")
 }
 
+model SpmTravelerPackageProgress {
+  id                            String    @id @default(cuid())
+  travelerUserId                String
+  tripId                        String?
+  passId                        String?
+  trailPackageId                String
+  trailBookingId                String?
+  completedRequiredNodeCount    Int       @default(0)
+  requiredNodeCount             Int       @default(0)
+  completedOptionalNodeCount    Int       @default(0)
+  optionalNodeCount             Int       @default(0)
+  completedConditionalNodeCount Int       @default(0)
+  conditionalNodeCount          Int       @default(0)
+  progressPercentage            Int       @default(0)
+  completionStatus              String    @default("IN_PROGRESS")
+  completedAt                   DateTime?
+  lastStampAt                   DateTime?
+  createdAt                     DateTime  @default(now())
+  updatedAt                     DateTime  @updatedAt
+
+  @@unique([travelerUserId, trailPackageId, tripId])
+  @@index([travelerUserId])
+  @@index([tripId])
+  @@index([passId])
+  @@index([trailPackageId])
+  @@index([trailBookingId])
+  @@index([completionStatus])
+  @@index([completedAt])
+  @@map("spm_traveler_package_progress")
+}
+
 model SpmTravelerStopVerification {
   id                 String   @id @default(cuid())
   travelerUserId     String
