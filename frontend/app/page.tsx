@@ -1120,7 +1120,7 @@ function TravelerShellFrame(props: {
             }}
           />
 
-          <div style={{ position: "relative", zIndex: 1, maxWidth: "48%" }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: 230 }}>
             <div
               style={{
                 marginBottom: 12,
@@ -1170,10 +1170,10 @@ function TravelerShellFrame(props: {
             <h2
               style={{
                 margin: 0,
-                whiteSpace: "pre-line",
-                fontSize: 34,
-                fontWeight: 900,
-                lineHeight: 0.98,
+                whiteSpace: "normal",
+                fontSize: 31,
+                fontWeight: 760,
+                lineHeight: 1.02,
                 letterSpacing: "-0.055em",
                 color: "#ffffff",
               }}
@@ -1185,9 +1185,9 @@ function TravelerShellFrame(props: {
               style={{
                 marginTop: 16,
                 marginBottom: 0,
-                whiteSpace: "pre-line",
-                fontSize: 13,
-                lineHeight: 1.45,
+                whiteSpace: "normal",
+                fontSize: 12.5,
+                lineHeight: 1.42,
                 color: "rgba(255,255,255,0.9)",
               }}
             >
@@ -1201,14 +1201,15 @@ function TravelerShellFrame(props: {
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  minWidth: 188,
-                  height: 52,
+                  width: "100%",
+                  maxWidth: 188,
+                  height: 50,
                   borderRadius: 999,
                   background: "#16bfd3",
                   padding: "0 18px",
-                  fontSize: 14,
+                  fontSize: 12.5,
                   whiteSpace: "nowrap",
-                  fontWeight: 850,
+                  fontWeight: 760,
                   color: "#ffffff",
                   textDecoration: "none",
                   boxShadow: "0 12px 30px rgba(22,191,211,0.35)",
@@ -1247,9 +1248,9 @@ function TravelerShellFrame(props: {
                   border: "1px solid rgba(255,255,255,0.48)",
                   background: "rgba(255,255,255,0.08)",
                   padding: "0 18px",
-                  fontSize: 14,
+                  fontSize: 12.5,
                   whiteSpace: "nowrap",
-                  fontWeight: 800,
+                  fontWeight: 720,
                   color: "#ffffff",
                   textDecoration: "none",
                 }}
