@@ -16,6 +16,18 @@ const FALLBACK_LANGUAGE_OPTIONS: LanguageOption[] = [
   { code: "en", label: "English", group: "International" },
 ];
 
+const DISPLAY_CURRENCY_OPTIONS = [
+  { code: "PHP", label: "Philippine Peso", note: "Settlement source" },
+  { code: "USD", label: "US Dollar", note: "Display estimate" },
+  { code: "EUR", label: "Euro", note: "Display estimate" },
+  { code: "JPY", label: "Japanese Yen", note: "Display estimate" },
+  { code: "KRW", label: "Korean Won", note: "Display estimate" },
+  { code: "CNY", label: "Chinese Yuan", note: "Display estimate" },
+  { code: "HKD", label: "Hong Kong Dollar", note: "Display estimate" },
+  { code: "AUD", label: "Australian Dollar", note: "Display estimate" },
+  { code: "SGD", label: "Singapore Dollar", note: "Display estimate" },
+];
+
 async function getLanguagePacks(): Promise<LanguageOption[]> {
   try {
     const res = await fetch(`${getApiBaseUrl()}/language-packs`, {
@@ -111,6 +123,37 @@ async function updatePreferredLanguage(formData: FormData) {
   redirect("/traveler/settings?panel=language&saved=1");
 }
 
+async function updatePreferredDisplayCurrency(formData: FormData) {
+  "use server";
+
+  const preferredDisplayCurrencyCode = String(formData.get("preferredDisplayCurrencyCode") || "").trim().toUpperCase();
+
+  if (!DISPLAY_CURRENCY_OPTIONS.some((option) => option.code === preferredDisplayCurrencyCode)) {
+    throw new Error("Unsupported display currency");
+  }
+
+  const token = await requireAccessToken();
+
+  const res = await fetch(`${getApiBaseUrl()}/profile`, {
+    method: "PATCH",
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ preferredDisplayCurrencyCode }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Preferred currency update failed: HTTP ${res.status}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/traveler/settings");
+  revalidatePath("/traveler/trips");
+  redirect("/traveler/settings?panel=currency&saved=1");
+}
+
 function getPanel(searchParams?: { [key: string]: string | string[] | undefined }): PanelKey {
   const raw = searchParams?.panel;
   const value = Array.isArray(raw) ? raw[0] : raw;
@@ -179,7 +222,7 @@ function panelCopy(panel: PanelKey, dictionary: Record<string, string>) {
     return {
       eyebrow: "Currency / FX",
       title: "Review traveler currency options",
-      body: "Currency display must eventually be booking-linked and snapshot-based. No conversion value is shown here until FX logic is wired.",
+      body: "Choose the currency used for traveler display estimates. PHP remains the booking, payment, and settlement source of truth.",
       chips: ["PHP", "USD", "EUR", "JPY", "KRW", "CNY", "HKD", "AUD", "SGD"],
       accent: "#d97706",
       bg: "#fff8eb",
@@ -302,6 +345,103 @@ function LanguageSelector(props: {
   );
 }
 
+function CurrencySelector(props: {
+  currentCurrency: string;
+  accent: string;
+  border: string;
+  saved: boolean;
+}) {
+  return (
+    <div style={{ marginTop: 16, display: "grid", gap: 14 }}>
+      {props.saved ? (
+        <div
+          style={{
+            borderRadius: 16,
+            border: "1px solid #cdeed7",
+            background: "#eefdf3",
+            color: "#16a34a",
+            padding: "10px 12px",
+            fontSize: 12,
+            fontWeight: 900,
+          }}
+        >
+          Currency display preference saved to your OSP profile.
+        </div>
+      ) : null}
+
+      <div
+        style={{
+          borderRadius: 18,
+          border: `1px solid ${props.border}`,
+          background: "#ffffff",
+          padding: 12,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 950,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: props.accent,
+            marginBottom: 8,
+          }}
+        >
+          Display Currency
+        </div>
+
+        <div style={{ display: "grid", gap: 8 }}>
+          {DISPLAY_CURRENCY_OPTIONS.map((option) => {
+            const active = option.code === props.currentCurrency;
+
+            return (
+              <form key={option.code} action={updatePreferredDisplayCurrency}>
+                <input type="hidden" name="preferredDisplayCurrencyCode" value={option.code} />
+                <button
+                  type="submit"
+                  aria-label={`Set display currency to ${option.code}`}
+                  style={{
+                    width: "100%",
+                    minHeight: 46,
+                    borderRadius: 14,
+                    border: active ? `1px solid ${props.accent}` : `1px solid ${props.border}`,
+                    background: active ? props.accent : "#ffffff",
+                    color: active ? "#ffffff" : "#19305a",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 10,
+                    padding: "8px 12px",
+                    fontSize: 13,
+                    fontWeight: 950,
+                    textAlign: "left",
+                    boxShadow: active ? "0 10px 20px rgba(217,119,6,0.18)" : "none",
+                  }}
+                >
+                  <span>
+                    {active ? "✓ " : ""}
+                    {option.code}
+                    <span style={{ display: "block", fontSize: 11, fontWeight: 750, opacity: active ? 0.9 : 0.68 }}>
+                      {option.label}
+                    </span>
+                  </span>
+                  <span style={{ fontSize: 10, fontWeight: 900, opacity: active ? 0.9 : 0.66 }}>
+                    {option.note}
+                  </span>
+                </button>
+              </form>
+            );
+          })}
+        </div>
+
+        <p style={{ margin: "10px 0 0", color: "#64748b", fontSize: 12, lineHeight: 1.4, fontWeight: 700 }}>
+          This changes display estimates only. PHP remains the settlement amount for bookings and payments.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default async function TravelerSettingsPage({
   searchParams,
 }: {
@@ -312,6 +452,7 @@ export default async function TravelerSettingsPage({
   const activePanel = getPanel(searchParams);
   const saved = getSaved(searchParams);
   const currentLanguage = user?.preferredLanguage || "en";
+  const currentDisplayCurrency = user?.preferredDisplayCurrencyCode || "USD";
   const dictionary = await getTravelerDictionary(currentLanguage);
   const copy = panelCopy(activePanel, dictionary);
 
@@ -481,6 +622,13 @@ export default async function TravelerSettingsPage({
             saved={saved}
             languageOptions={languageOptions}
           />
+        ) : activePanel === "currency" ? (
+          <CurrencySelector
+            currentCurrency={currentDisplayCurrency}
+            accent={copy.accent}
+            border={copy.border}
+            saved={saved}
+          />
         ) : (
           <div
             style={{
@@ -527,7 +675,7 @@ export default async function TravelerSettingsPage({
           Controlled access only
         </div>
         <p style={{ margin: 0, color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
-          Language preference can now be saved to your OSP profile. Full translated content packs, live FX conversion, and AI runtime remain controlled future layers.
+          Language and currency display preferences can now be saved to your OSP profile. Live FX providers, settlement FX, and AI runtime remain controlled future layers.
         </p>
       </section>
     </main>
