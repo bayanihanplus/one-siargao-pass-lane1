@@ -41,7 +41,7 @@ export default async function TravelerPassportMapPage() {
       >
         <div
           style={{
-            padding: "16px 14px 88px",
+            padding: "16px 14px 18px",
           }}
         >
           <header
@@ -170,23 +170,23 @@ export default async function TravelerPassportMapPage() {
 
           <section
             style={{
-              marginTop: 18,
-              minHeight: 452,
-              borderRadius: 30,
+              marginTop: 16,
+              height: "auto",
+              borderRadius: 28,
               border: "1px solid rgba(19,168,183,0.16)",
               background:
                 "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(235,248,252,0.96) 50%, rgba(255,255,255,0.98) 100%)",
-              boxShadow: "0 22px 52px rgba(15,23,42,0.088)",
+              boxShadow: "0 20px 56px rgba(15,23,42,0.092)",
               padding: 18,
             }}
           >
             <div
               style={{
-                minHeight: 388,
-                borderRadius: 26,
+                height: 438,
+                borderRadius: 24,
                 background:
                   "radial-gradient(circle at 76% 16%, rgba(19,168,183,0.16) 0, transparent 78px), radial-gradient(circle at 22% 84%, rgba(242,183,5,0.15) 0, transparent 64px), linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(238,248,251,0.66) 52%, rgba(255,255,255,0.90) 100%)",
-                padding: "18px 8px 20px",
+                padding: "18px 8px 18px",
                 position: "relative",
                 overflow: "hidden",
               }}
@@ -330,12 +330,9 @@ export default async function TravelerPassportMapPage() {
 
         <nav
           style={{
-            position: "fixed",
-            left: "50%",
+            position: "sticky",
             bottom: 0,
-            transform: "translateX(-50%)",
             width: "100%",
-            maxWidth: 430,
             borderTop: "1px solid rgba(203,213,225,0.78)",
             background: "rgba(255,255,255,0.96)",
             backdropFilter: "blur(16px)",
@@ -375,7 +372,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
       aria-label="Continue journey recommendation card"
       style={{
         marginTop: 14,
-        marginBottom: 92,
+        marginBottom: 34,
       }}
     >
       <div
@@ -817,7 +814,9 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
     <section
       aria-label="Passport Trails cards"
       style={{
-        marginTop: 2,
+        marginTop: 14,
+        position: "relative",
+        zIndex: 4,
       }}
     >
       <div
@@ -949,7 +948,7 @@ function TrailPreviewCard(props: {
       href="/traveler/passport-trails"
       aria-label={`${props.title} preview card. ${props.governed ? "Governed progress." : "Visual placeholder only."}`}
       style={{
-        minHeight: 160,
+        minHeight: 132,
         borderRadius: 18,
         border: "1px solid rgba(203,213,225,0.84)",
         background: cardBackground,
@@ -958,13 +957,13 @@ function TrailPreviewCard(props: {
         textDecoration: "none",
         overflow: "hidden",
         display: "grid",
-        gridTemplateRows: "92px auto auto",
+        gridTemplateRows: "72px auto auto",
       }}
     >
       <div
         style={{
           position: "relative",
-          minHeight: 92,
+          minHeight: 72,
           background: artBackground,
           borderBottom: "1px solid rgba(226,232,240,0.78)",
         }}
@@ -985,8 +984,8 @@ function TrailPreviewCard(props: {
               style={{
                 position: "absolute",
                 left: 10,
-                top: 12,
-                width: 30,
+                top: 9,
+                width: 28,
                 height: 30,
                 borderRadius: "50%",
                 background: "rgba(255,255,255,0.94)",
@@ -997,8 +996,8 @@ function TrailPreviewCard(props: {
               style={{
                 position: "absolute",
                 right: 12,
-                top: 14,
-                width: 42,
+                top: 11,
+                width: 36,
                 height: 2,
                 borderRadius: 999,
                 background: "rgba(255,255,255,0.72)",
@@ -1042,9 +1041,9 @@ function TrailPreviewCard(props: {
           style={{
             position: "absolute",
             left: 10,
-            bottom: 10,
-            width: 34,
-            height: 34,
+            bottom: 8,
+            width: 30,
+            height: 30,
             borderRadius: "50%",
             background: isLocked ? "#9aa5b1" : props.accent,
             color: "#ffffff",
@@ -1061,7 +1060,7 @@ function TrailPreviewCard(props: {
 
       <div
         style={{
-          padding: "10px 10px 0",
+          padding: "8px 9px 0",
           minWidth: 0,
         }}
       >
@@ -1081,7 +1080,7 @@ function TrailPreviewCard(props: {
 
       <div
         style={{
-          padding: "8px 10px 12px",
+          padding: "6px 9px 9px",
           alignSelf: "end",
         }}
       >
@@ -1111,8 +1110,8 @@ function TrailPreviewCard(props: {
 
             <div
               style={{
-                marginTop: 8,
-                height: 6,
+                marginTop: 6,
+                height: 5,
                 borderRadius: 999,
                 background: "rgba(148,163,184,0.22)",
                 overflow: "hidden",
@@ -1152,9 +1151,11 @@ function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emp
   return (
     <div
       style={{
-        position: "relative",
+        position: "absolute",
+        left: 8,
+        right: 8,
+        bottom: 12,
         zIndex: 3,
-        marginTop: 24,
       }}
     >
       <div
@@ -1201,7 +1202,7 @@ function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emp
       <div
         aria-label="SPM governed journey metrics"
         style={{
-          marginTop: 78,
+          marginTop: 12,
           display: "grid",
           gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
           gap: 0,
@@ -1384,7 +1385,7 @@ function SpmMapVisualPreview() {
         position: "absolute",
         left: 0,
         right: 0,
-        top: 0,
+        top: -36,
         height: 430,
         zIndex: 1,
         borderRadius: "24px 24px 0 0",
