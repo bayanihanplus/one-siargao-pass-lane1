@@ -50,6 +50,22 @@ export class SpmController {
   }
 
   @Roles('ADMIN')
+  @Get('admin/packages/activation')
+  listAdminPackageActivationReadiness() {
+    return this.spmService.listAdminPackageActivationReadiness();
+  }
+
+  @Roles('ADMIN')
+  @Patch('admin/packages/activation/:packageCode')
+  updateAdminPackageActivationStatus(
+    @CurrentUserId() adminUserId: string,
+    @Param('packageCode') packageCode: string,
+    @Body() body: any,
+  ) {
+    return this.spmService.updateAdminPackageActivationStatus(adminUserId, packageCode, body);
+  }
+
+  @Roles('ADMIN')
   @Get('admin/pricing/review')
   listAdminPricingReviewQueue() {
     return this.spmService.listAdminPricingReviewQueue();

@@ -1379,4 +1379,280 @@ export class SpmService {
     };
   }
 
+  private async evaluatePackageActivationReadiness(packageId: string) {
+    const item = await this.prisma.spmTrailPackage.findFirst({
+      where: { id: packageId },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        publicLabel: true,
+        productType: true,
+        bookabilityStatus: true,
+        approvalStatus: true,
+        distributionEnabled: true,
+        instantCheckoutAllowed: true,
+        requiresPriceBeforePublish: true,
+      },
+    });
+
+    if (!item) {
+      return null;
+    }
+
+    const [pricingRules, packageNodes] = await Promise.all([
+      this.prisma.spmPricingRule.findMany({
+        where: { trailPackageId: item.id },
+        select: {
+          id: true,
+          operatorUserId: true,
+          partnerId: true,
+          pricingMode: true,
+          currencyCode: true,
+          basePrice: true,
+          packageFlatRate: true,
+          priceRangeMin: true,
+          priceRangeMax: true,
+          approvalStatus: true,
+          instantCheckoutAllowed: true,
+        },
+      }),
+      this.prisma.spmTrailPackageNode.findMany({
+        where: { trailPackageId: item.id },
+        select: {
+          trailNodeId: true,
+          isStampEligible: true,
+          isConditional: true,
+        },
+      }),
+    ]);
+
+    const nodeIds = packageNodes.map((link) => link.trailNodeId).filter((id): id is string => Boolean(id));
+
+    const nodes = await this.prisma.spmTrailNode.findMany({
+      where: { id: { in: nodeIds } },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        approvalStatus: true,
+        stampEligible: true,
+        isCandidateNode: true,
+        isConditionalNode: true,
+        safetyControlled: true,
+        operatorRequired: true,
+      },
+    });
+
+    const nodeById = new Map(nodes.map((node) => [node.id, node]));
+
+    const linkedNodes = packageNodes.map((link) => ({
+      ...link,
+      node: link.trailNodeId ? nodeById.get(link.trailNodeId) ?? null : null,
+    }));
+
+    const approvedOperatorPricing = pricingRules.filter(
+      (rule) => Boolean(rule.operatorUserId) && rule.approvalStatus === 'APPROVED',
+    );
+
+    const candidateNodes = linkedNodes.filter((link) => link.node?.isCandidateNode);
+    const safetyControlledNodes = linkedNodes.filter((link) => link.node?.safetyControlled);
+    const operatorRequiredNodes = linkedNodes.filter((link) => link.node?.operatorRequired);
+    const approvedStampNodes = linkedNodes.filter(
+      (link) => link.node?.approvalStatus === 'APPROVED' && link.node?.stampEligible,
+    );
+
+    const issues: string[] = [];
+    const warnings: string[] = [];
+
+    if (!linkedNodes.length && item.productType !== 'DIY_PASSPORT_TRAIL') {
+      issues.push('NO_LINKED_NODES');
+    }
+
+    if (candidateNodes.length) {
+      issues.push('HAS_CANDIDATE_NODES');
+    }
+
+    if (item.requiresPriceBeforePublish && !approvedOperatorPricing.length) {
+      issues.push('NO_APPROVED_OPERATOR_PRICING');
+    }
+
+    if (operatorRequiredNodes.length && !approvedOperatorPricing.length) {
+      issues.push('OPERATOR_REQUIRED_BUT_NO_APPROVED_OPERATOR_PRICING');
+    }
+
+    if (item.instantCheckoutAllowed) {
+      issues.push('PACKAGE_CHECKOUT_ALREADY_ENABLED_UNEXPECTED');
+    }
+
+    if (safetyControlledNodes.length) {
+      warnings.push('SAFETY_CONTROLLED_NODES_REQUIRE_EXTRA_ACTIVATION_REVIEW');
+    }
+
+    return {
+      package: item,
+      counts: {
+        linkedNodeCount: linkedNodes.length,
+        approvedStampNodeCount: approvedStampNodes.length,
+        approvedOperatorPricingCount: approvedOperatorPricing.length,
+        candidateNodeCount: candidateNodes.length,
+        safetyControlledNodeCount: safetyControlledNodes.length,
+        operatorRequiredNodeCount: operatorRequiredNodes.length,
+      },
+      issues,
+      warnings,
+      canActivateCatalogDistribution: issues.length === 0,
+      mustKeepCheckoutDisabled: true,
+    };
+  }
+
+  async listAdminPackageActivationReadiness() {
+    const packages = await this.prisma.spmTrailPackage.findMany({
+      orderBy: { code: 'asc' },
+      select: { id: true },
+    });
+
+    const readiness = [];
+    for (const item of packages) {
+      const result = await this.evaluatePackageActivationReadiness(item.id);
+      if (result) readiness.push(result);
+    }
+
+    return {
+      ok: true,
+      data: readiness.map((entry) => ({
+        packageId: entry.package.id,
+        packageCode: entry.package.code,
+        packageName: entry.package.name,
+        publicLabel: entry.package.publicLabel,
+        productType: entry.package.productType,
+        bookabilityStatus: entry.package.bookabilityStatus,
+        approvalStatus: entry.package.approvalStatus,
+        distributionEnabled: entry.package.distributionEnabled,
+        instantCheckoutAllowed: entry.package.instantCheckoutAllowed,
+        requiresPriceBeforePublish: entry.package.requiresPriceBeforePublish,
+        counts: entry.counts,
+        issues: entry.issues,
+        warnings: entry.warnings,
+        canActivateCatalogDistribution: entry.canActivateCatalogDistribution,
+        mustKeepCheckoutDisabled: true,
+      })),
+      dataIntegrity: {
+        activationReadinessIncluded: true,
+        checkoutIncluded: false,
+        paymentExecutionIncluded: false,
+        packageMutationIncluded: false,
+      },
+    };
+  }
+
+  async updateAdminPackageActivationStatus(adminUserId: string, packageCode: string, body: any) {
+    const normalizedCode = packageCode.toUpperCase().replaceAll('-', '_');
+    const action = String(body?.action ?? '').trim().toUpperCase();
+
+    const allowedActions = new Set(['ACTIVATE_CATALOG', 'SUSPEND_CATALOG']);
+    if (!allowedActions.has(action)) {
+      return {
+        ok: false,
+        error: 'INVALID_PACKAGE_ACTIVATION_ACTION',
+        data: {
+          allowedActions: Array.from(allowedActions),
+        },
+      };
+    }
+
+    const item = await this.prisma.spmTrailPackage.findFirst({
+      where: { code: normalizedCode },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        approvalStatus: true,
+        distributionEnabled: true,
+        instantCheckoutAllowed: true,
+      },
+    });
+
+    if (!item) {
+      return {
+        ok: false,
+        error: 'PASSPORT_TRAIL_PACKAGE_NOT_FOUND',
+        data: null,
+      };
+    }
+
+    const readiness = await this.evaluatePackageActivationReadiness(item.id);
+
+    if (!readiness) {
+      return {
+        ok: false,
+        error: 'PACKAGE_READINESS_NOT_FOUND',
+        data: null,
+      };
+    }
+
+    if (action === 'ACTIVATE_CATALOG' && !readiness.canActivateCatalogDistribution) {
+      return {
+        ok: false,
+        error: 'PACKAGE_NOT_READY_FOR_CATALOG_ACTIVATION',
+        data: {
+          packageCode: item.code,
+          issues: readiness.issues,
+          warnings: readiness.warnings,
+          counts: readiness.counts,
+        },
+      };
+    }
+
+    const nextData =
+      action === 'ACTIVATE_CATALOG'
+        ? {
+            approvalStatus: 'APPROVED' as any,
+            distributionEnabled: true,
+            instantCheckoutAllowed: false,
+          }
+        : {
+            approvalStatus: 'SUSPENDED' as any,
+            distributionEnabled: false,
+            instantCheckoutAllowed: false,
+          };
+
+    const updated = await this.prisma.spmTrailPackage.update({
+      where: { id: item.id },
+      data: nextData,
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        approvalStatus: true,
+        distributionEnabled: true,
+        instantCheckoutAllowed: true,
+        bookabilityStatus: true,
+      },
+    });
+
+    return {
+      ok: true,
+      data: {
+        packageId: updated.id,
+        packageCode: updated.code,
+        packageName: updated.name,
+        approvalStatus: updated.approvalStatus,
+        distributionEnabled: updated.distributionEnabled,
+        instantCheckoutAllowed: updated.instantCheckoutAllowed,
+        bookabilityStatus: updated.bookabilityStatus,
+        action,
+      },
+      dataIntegrity: {
+        adminReviewedBy: adminUserId,
+        catalogDistributionUpdated: true,
+        checkoutIncluded: false,
+        paymentExecutionIncluded: false,
+        instantCheckoutAllowed: false,
+        pricingInstantCheckoutChanged: false,
+        warnings: readiness.warnings,
+      },
+    };
+  }
+
 }
