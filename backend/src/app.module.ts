@@ -19,6 +19,7 @@ import { GuidesModule } from './modules/guides/guides.module';
 import { SpmModule } from './modules/spm/spm.module';
 import { PrismaService } from './database/prisma.service';
 import { LanguagePacksModule } from './modules/language-packs/language-packs.module';
+import { FxModule } from './modules/fx/fx.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { LanguagePacksModule } from './modules/language-packs/language-packs.mod
     RolesModule,
     ProfilesModule,
     LanguagePacksModule,
+    FxModule,
     GovernanceModule,
     AuditModule,
     TripsModule,
