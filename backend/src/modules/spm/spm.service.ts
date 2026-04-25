@@ -86,6 +86,7 @@ export class SpmService {
         select: {
           id: true,
           trailFamilyId: true,
+          trailTrackId: true,
           code: true,
           name: true,
           description: true,
@@ -99,17 +100,21 @@ export class SpmService {
           operatorRequired: true,
           guideRequirement: true,
           safetyControlled: true,
+          isOfficialNode: true,
+          isCandidateNode: true,
+          isConditionalNode: true,
+          conditionNote: true,
         },
       }),
       this.prisma.spmTravelerTrailProgress.findMany({
         where: { travelerUserId: userId },
         orderBy: [{ updatedAt: 'desc' }],
-        take: 3,
+        take: 8,
       }),
       this.prisma.spmTravelerStopVerification.findMany({
         where: { travelerUserId: userId, verificationStatus: 'VERIFIED' },
         orderBy: [{ verifiedAt: 'desc' }],
-        take: 3,
+        take: 8,
       }),
       this.prisma.spmTravelerRecommendationSnapshot.findFirst({
         where: {
@@ -138,22 +143,9 @@ export class SpmService {
         iconKey: family?.code ?? null,
         unlockRule: null,
         displayOrder: family?.officialSortOrder ?? 999,
+        source: 'governed_progress',
       };
     });
-
-    const fallbackTrails = families.slice(0, 3).map((family, index) => ({
-      trailId: family.id,
-      trailName: family.publicLabel ?? family.name,
-      trailSlug: String(family.code).toLowerCase().replaceAll('_', '-'),
-      trailStatus: index === 2 ? 'locked' : 'active',
-      stopsTotal: index === 0 ? 5 : index === 1 ? 4 : 0,
-      stopsCompleted: index === 0 ? 3 : index === 1 ? 1 : 0,
-      progressPercentage: index === 0 ? 60 : index === 1 ? 25 : 0,
-      thumbnailUrl: null,
-      iconKey: String(family.code),
-      unlockRule: index === 2 ? 'Complete more trails to unlock' : null,
-      displayOrder: family.officialSortOrder,
-    }));
 
     const realVerifiedStops = verifiedRows.map((verification, index) => {
       const node = nodeById.get(verification.trailNodeId);
@@ -170,53 +162,95 @@ export class SpmService {
         imageUrl: null,
         trailId: node?.trailFamilyId ?? null,
         displayOrder: index + 1,
+        source: 'governed_verification',
       };
     });
 
-    const fallbackVerifiedStops = nodes.slice(0, 3).map((node, index) => ({
+    const officialTrailFamilies = families.map((family) => ({
+      trailId: family.id,
+      trailName: family.publicLabel ?? family.name,
+      trailSlug: String(family.code).toLowerCase().replaceAll('_', '-'),
+      trailCode: family.code,
+      description: family.description,
+      displayOrder: family.officialSortOrder,
+      source: 'official_discovery',
+    }));
+
+    const approvedNodes = nodes.map((node, index) => ({
       stopId: node.id,
       stopName: node.name,
       stopSlug: node.code.toLowerCase().replaceAll('_', '-'),
       stopType: node.nodeType,
-      subtitle: node.locationLabel ?? node.barangay ?? node.municipality ?? 'Verified stop',
-      verificationStatus: 'verified',
-      verifiedAt: null,
-      verificationSource: 'preview',
-      imageUrl: null,
       trailId: node.trailFamilyId,
+      trailTrackId: node.trailTrackId,
+      requirementType: node.requirementType,
+      subtitle: node.locationLabel ?? node.barangay ?? node.municipality ?? 'Approved Passport Trails node',
+      stampEligible: node.stampEligible,
+      bookingRequired: node.bookingRequired,
+      operatorRequired: node.operatorRequired,
+      guideRequirement: node.guideRequirement,
+      safetyControlled: node.safetyControlled,
+      isOfficialNode: node.isOfficialNode,
+      isCandidateNode: node.isCandidateNode,
+      isConditionalNode: node.isConditionalNode,
+      conditionNote: node.conditionNote,
       displayOrder: index + 1,
+      source: 'official_discovery',
     }));
 
     const recommendedNode = recommendation?.recommendedTrailNodeId
       ? nodeById.get(recommendation.recommendedTrailNodeId)
-      : nodes[0];
+      : null;
+
+    const nextStop = recommendation && recommendedNode
+      ? {
+          recommendedStopId: recommendation.recommendedTrailNodeId,
+          recommendedStopName: recommendedNode.name,
+          recommendationReason:
+            recommendation.recommendationReason ??
+            recommendedNode.description ??
+            'Recommended from governed SPM recommendation snapshot.',
+          distanceOrEtaLabel: recommendation.distanceOrEtaLabel ?? null,
+          imageUrl: null,
+          linkedTripId: recommendation.tripId ?? null,
+          linkedTrailId: recommendation.recommendedTrailFamilyId ?? recommendedNode.trailFamilyId ?? null,
+          ctaRoute: recommendation.ctaRoute ?? '/traveler/trips',
+          source: 'recommendation_snapshot',
+        }
+      : null;
+
+    const totalCompleted = realTrails.reduce((sum, trail) => sum + Number(trail.stopsCompleted || 0), 0);
+    const totalRequired = realTrails.reduce((sum, trail) => sum + Number(trail.stopsTotal || 0), 0);
+    const journeyProgressPercent = totalRequired > 0 ? Math.min(100, Math.round((totalCompleted / totalRequired) * 100)) : 0;
 
     return {
       ok: true,
       data: {
         travelerUserId: userId,
         metrics: {
-          trailsUnlocked: realTrails.length || 5,
-          placesVerified: realVerifiedStops.length || 3,
-          journeyProgressPercent: realTrails[0]?.progressPercentage ?? 42,
+          trailsUnlocked: realTrails.length,
+          placesVerified: realVerifiedStops.length,
+          journeyProgressPercent,
           passStatus: 'Active',
         },
-        trails: realTrails.length ? realTrails : fallbackTrails,
-        verifiedStops: realVerifiedStops.length ? realVerifiedStops : fallbackVerifiedStops,
-        nextStop: {
-          recommendedStopId: recommendation?.recommendedTrailNodeId ?? recommendedNode?.id ?? null,
-          recommendedStopName: recommendedNode?.name ?? 'Daku Island',
-          recommendationReason:
-            recommendation?.recommendationReason ??
-            recommendedNode?.description ??
-            'Crystal clear waters and island vibes',
-          distanceOrEtaLabel: recommendation?.distanceOrEtaLabel ?? 'About 15 min by boat from GL',
-          imageUrl: null,
-          linkedTripId: recommendation?.tripId ?? null,
-          linkedTrailId: recommendation?.recommendedTrailFamilyId ?? recommendedNode?.trailFamilyId ?? null,
-          ctaRoute: recommendation?.ctaRoute ?? '/traveler/trips',
+        travelerProgress: {
+          trails: realTrails,
+          verifiedStops: realVerifiedStops,
         },
-        previewOnly: !realTrails.length && !realVerifiedStops.length,
+        officialDiscovery: {
+          trailFamilies: officialTrailFamilies,
+          approvedNodes,
+        },
+        trails: realTrails,
+        verifiedStops: realVerifiedStops,
+        nextStop,
+        previewOnly: false,
+        emptyState: realTrails.length === 0 && realVerifiedStops.length === 0,
+        dataIntegrity: {
+          governedProgressOnly: true,
+          fallbackProgressUsed: false,
+          visualPaddingAllowedOnFrontendOnly: true,
+        },
       },
     };
   }
