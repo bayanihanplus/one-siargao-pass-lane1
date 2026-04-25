@@ -1,4 +1,24 @@
-export default function TravelerPassportMapPage() {
+import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
+
+async function getSpmTravelerPreview() {
+  try {
+    const token = await requireAccessToken();
+    const res = await fetch(`${getApiBaseUrl()}/spm/traveler-preview`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+
+    if (!res.ok) return null;
+
+    const json = await res.json();
+    return json?.ok ? json.data : null;
+  } catch {
+    return null;
+  }
+}
+
+export default async function TravelerPassportMapPage() {
+  const spmPreview = await getSpmTravelerPreview();
   return (
     <main
       style={{
@@ -301,11 +321,11 @@ export default function TravelerPassportMapPage() {
             </div>
           </section>
 
-          <SpmTrailCardsPreview />
+          <SpmTrailCardsPreview trails={spmPreview?.trails} />
 
-          <SpmVerifiedStopsPreview />
+          <SpmVerifiedStopsPreview stops={spmPreview?.verifiedStops} />
 
-          <SpmContinueJourneyPreview />
+          <SpmContinueJourneyPreview nextStop={spmPreview?.nextStop} />
         </div>
 
         <nav
@@ -337,7 +357,19 @@ export default function TravelerPassportMapPage() {
   );
 }
 
-function SpmContinueJourneyPreview() {
+type SpmNextStopPreviewData = {
+  recommendedStopName?: string | null;
+  recommendationReason?: string | null;
+  distanceOrEtaLabel?: string | null;
+  ctaRoute?: string | null;
+};
+
+function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | null }) {
+  const nextStop = props.nextStop;
+  const title = nextStop?.recommendedStopName ?? "Daku Island";
+  const reason = nextStop?.recommendationReason ?? "Crystal clear waters and island vibes";
+  const eta = nextStop?.distanceOrEtaLabel ?? "About 15 min by boat from GL";
+  const ctaRoute = nextStop?.ctaRoute ?? "/traveler/trips";
   return (
     <section
       aria-label="Preview-only continue journey card"
@@ -467,7 +499,7 @@ function SpmContinueJourneyPreview() {
             </span>
 
             <a
-              href="/traveler/trips"
+              href={ctaRoute}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -495,7 +527,20 @@ function SpmContinueJourneyPreview() {
 
 
 
-function SpmVerifiedStopsPreview() {
+type SpmVerifiedStopPreviewData = {
+  stopName?: string;
+  subtitle?: string | null;
+  verificationStatus?: string;
+};
+
+function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] | null }) {
+  const stops = props.stops?.length
+    ? props.stops.slice(0, 3)
+    : [
+        { stopName: "General Luna", subtitle: "Surfer's Paradise", verificationStatus: "verified" },
+        { stopName: "Cloud 9", subtitle: "World Famous Wave", verificationStatus: "verified" },
+        { stopName: "Magpungko", subtitle: "Tide Pools", verificationStatus: "verified" },
+      ];
   return (
     <section
       aria-label="Preview-only verified stops cards"
@@ -561,24 +606,15 @@ function SpmVerifiedStopsPreview() {
           gap: 9,
         }}
       >
-        <StopPreviewCard
-          name="General Luna"
-          subtitle="Surfer's Paradise"
-          imageLabel="GL"
-          variant="town"
-        />
-        <StopPreviewCard
-          name="Cloud 9"
-          subtitle="World Famous Wave"
-          imageLabel="C9"
-          variant="surf"
-        />
-        <StopPreviewCard
-          name="Magpungko"
-          subtitle="Tide Pools"
-          imageLabel="MP"
-          variant="pool"
-        />
+        {stops.map((stop, index) => (
+          <StopPreviewCard
+            key={`${stop.stopName}-${index}`}
+            name={stop.stopName ?? "Verified Stop"}
+            subtitle={stop.subtitle ?? "Verified stop"}
+            imageLabel={(stop.stopName ?? "VS").slice(0, 2).toUpperCase()}
+            variant={index === 1 ? "surf" : index === 2 ? "pool" : "town"}
+          />
+        ))}
       </div>
     </section>
   );
@@ -731,7 +767,24 @@ function StopPreviewCard(props: {
 
 
 
-function SpmTrailCardsPreview() {
+type SpmTrailPreviewData = {
+  trailName?: string;
+  trailStatus?: string;
+  stopsTotal?: number;
+  stopsCompleted?: number;
+  progressPercentage?: number;
+  unlockRule?: string | null;
+  iconKey?: string | null;
+};
+
+function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) {
+  const trails = props.trails?.length
+    ? props.trails.slice(0, 3)
+    : [
+        { trailName: "General Luna Explorer", trailStatus: "active", stopsTotal: 5, stopsCompleted: 3, progressPercentage: 60, iconKey: "COAST" },
+        { trailName: "Island Discovery Trail", trailStatus: "active", stopsTotal: 4, stopsCompleted: 1, progressPercentage: 25, iconKey: "ISLAND_HOPPING" },
+        { trailName: "North Coast Adventure", trailStatus: "locked", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: "Complete more trails to unlock", iconKey: "NORTH_SIARGAO" },
+      ];
   return (
     <section
       aria-label="Preview-only Passport Trails cards"
@@ -797,29 +850,22 @@ function SpmTrailCardsPreview() {
           gap: 10,
         }}
       >
-        <TrailPreviewCard
-          title="General Luna Explorer"
-          progressLabel="3 / 5 completed"
-          variant="coast"
-          accent="#13a8b7"
-          icon="⛱"
-        />
+        {trails.map((trail, index) => {
+          const isLocked = trail.trailStatus === "locked";
+          const completed = trail.stopsCompleted ?? 0;
+          const total = trail.stopsTotal ?? 0;
 
-        <TrailPreviewCard
-          title="Island Discovery Trail"
-          progressLabel="1 / 4 completed"
-          variant="lagoon"
-          accent="#13a8b7"
-          icon="🏝"
-        />
-
-        <TrailPreviewCard
-          title="North Coast Adventure"
-          progressLabel="Complete more trails to unlock"
-          variant="locked"
-          accent="#8b95a1"
-          icon="🔒"
-        />
+          return (
+            <TrailPreviewCard
+              key={`${trail.trailName}-${index}`}
+              title={trail.trailName ?? "Passport Trail"}
+              progressLabel={isLocked ? trail.unlockRule ?? "Complete more trails to unlock" : `${completed} / ${total} completed`}
+              variant={isLocked ? "locked" : index === 1 ? "lagoon" : "coast"}
+              accent={isLocked ? "#8b95a1" : "#13a8b7"}
+              icon={isLocked ? "🔒" : index === 1 ? "🏝" : "⛱"}
+            />
+          );
+        })}
       </div>
     </section>
   );
