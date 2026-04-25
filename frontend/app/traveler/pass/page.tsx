@@ -74,9 +74,9 @@ function Section(props: { title: string; children: any }) {
     <section
       style={{
         border: "1px solid #dbe8ef",
-        borderRadius: 22,
-        padding: 18,
-        marginBottom: 16,
+        borderRadius: 20,
+        padding: 16,
+        marginBottom: 14,
         background: "#ffffff",
         boxShadow: "0 12px 30px rgba(15,23,42,0.045)",
       }}
@@ -290,11 +290,12 @@ export default async function TravelerPassPage() {
   return (
     <main
       style={{
-        maxWidth: 920,
+        maxWidth: 430,
         margin: "0 auto",
-        padding: 24,
+        padding: "18px 14px 22px",
         background: "linear-gradient(180deg, #f8fcff 0%, #ffffff 58%)",
         minHeight: "100vh",
+        boxSizing: "border-box",
       }}
     >
       <div
@@ -322,7 +323,7 @@ export default async function TravelerPassPage() {
           <h1
             style={{
               margin: 0,
-              fontSize: 36,
+              fontSize: 34,
               lineHeight: 0.98,
               letterSpacing: "-0.055em",
               color: "#19305a",
@@ -330,7 +331,7 @@ export default async function TravelerPassPage() {
           >
             OSP Pass
           </h1>
-          <p style={{ marginTop: 10, marginBottom: 0, color: "#64748b", lineHeight: 1.45 }}>
+          <p style={{ marginTop: 9, marginBottom: 0, color: "#64748b", lineHeight: 1.4, fontSize: 14 }}>
             View your issued pass, QR credential, trip status, and Passport Map bridge.
           </p>
         </div>
@@ -339,9 +340,9 @@ export default async function TravelerPassPage() {
       <div
         style={{
           display: "flex",
-          gap: 10,
+          gap: 8,
           flexWrap: "wrap",
-          marginBottom: 16,
+          marginBottom: 14,
         }}
       >
         {[
@@ -354,13 +355,13 @@ export default async function TravelerPassPage() {
             key={item.href}
             href={item.href}
             style={{
-              minHeight: 38,
+              minHeight: 36,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               gap: 7,
               borderRadius: 999,
-              padding: "0 14px",
+              padding: "0 12px",
               border: "1px solid #dbe8ef",
               background: "#ffffff",
               color: "#19305a",
@@ -403,8 +404,8 @@ export default async function TravelerPassPage() {
             <div
               style={{
                 borderLeft: `6px solid ${readiness.accent}`,
-                padding: 18,
-                borderRadius: 18,
+                padding: 15,
+                borderRadius: 16,
                 background: "linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)",
                 boxShadow: "inset 0 1px 0 rgba(255,255,255,0.72)",
               }}
@@ -412,9 +413,9 @@ export default async function TravelerPassPage() {
               <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
                 <div
                   style={{
-                    width: 42,
-                    height: 42,
-                    borderRadius: 14,
+                    width: 38,
+                    height: 38,
+                    borderRadius: 12,
                     background: "#ffffff",
                     border: "1px solid #dbe8ef",
                     color: readiness.accent,
@@ -430,8 +431,8 @@ export default async function TravelerPassPage() {
                   </svg>
                 </div>
                 <div>
-                  <div style={{ fontSize: 30, fontWeight: 950, lineHeight: 1.02, color: "#19305a", letterSpacing: "-0.04em" }}>{readiness.title}</div>
-                  <p style={{ marginTop: 8, marginBottom: 0, fontSize: 15, lineHeight: 1.45, color: "#475569", fontWeight: 650 }}>{readiness.body}</p>
+                  <div style={{ fontSize: 26, fontWeight: 950, lineHeight: 1.02, color: "#19305a", letterSpacing: "-0.04em" }}>{readiness.title}</div>
+                  <p style={{ marginTop: 7, marginBottom: 0, fontSize: 14, lineHeight: 1.4, color: "#475569", fontWeight: 650 }}>{readiness.body}</p>
                 </div>
               </div>
             </div>
@@ -452,8 +453,8 @@ export default async function TravelerPassPage() {
                 <div
                   style={{
                     display: "inline-block",
-                    padding: 14,
-                    borderRadius: 22,
+                    padding: 12,
+                    borderRadius: 20,
                     background: "#ffffff",
                     border: "1px solid #dbe8ef",
                     boxShadow: "0 14px 32px rgba(15,23,42,0.07)",
@@ -462,7 +463,7 @@ export default async function TravelerPassPage() {
                 >
                   <QRCodeSVG
                     value={trip.pass.qrCredential.qrToken}
-                    size={220}
+                    size={190}
                     includeMargin={true}
                     level="H"
                     bgColor="#FFFFFF"
@@ -506,7 +507,7 @@ export default async function TravelerPassPage() {
               style={{
                 border: "1px solid #b8e7ef",
                 borderRadius: 22,
-                padding: 20,
+                padding: 16,
                 background: "linear-gradient(135deg, #ecfeff 0%, #ffffff 100%)",
                 boxShadow: "0 14px 32px rgba(14,116,144,0.08)",
                 display: "grid",
@@ -517,10 +518,10 @@ export default async function TravelerPassPage() {
                 <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.08em", color: "#0e7490", textTransform: "uppercase" }}>
                   Second Screen
                 </div>
-                <h2 style={{ margin: "6px 0 0", fontSize: 28, lineHeight: 1.05 }}>
+                <h2 style={{ margin: "6px 0 0", fontSize: 24, lineHeight: 1.05 }}>
                   Continue to your Passport Map
                 </h2>
-                <p style={{ margin: "8px 0 0", color: "#475569", lineHeight: 1.5 }}>
+                <p style={{ margin: "8px 0 0", color: "#475569", lineHeight: 1.45, fontSize: 14 }}>
                   Your SPM trail progress uses governed OSP QR, stamp, pass, and trip records when available. Preview layout cards may appear only to preserve the approved map geometry.
                 </p>
               </div>
@@ -532,9 +533,9 @@ export default async function TravelerPassPage() {
                   alignItems: "center",
                   justifyContent: "center",
                   width: "fit-content",
-                  minHeight: 44,
+                  minHeight: 42,
                   borderRadius: 999,
-                  padding: "0 18px",
+                  padding: "0 16px",
                   background: "#0e7490",
                   color: "#ffffff",
                   textDecoration: "none",
@@ -556,7 +557,7 @@ export default async function TravelerPassPage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
                 gap: 12,
               }}
             >
