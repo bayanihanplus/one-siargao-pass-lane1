@@ -493,7 +493,7 @@ function SpmVerifiedStopsPreview() {
           padding: "0 2px",
         }}
       >
-        <div>
+        <div style={{ minWidth: 0 }}>
           <h2
             style={{
               margin: 0,
@@ -516,7 +516,7 @@ function SpmVerifiedStopsPreview() {
               fontWeight: 750,
             }}
           >
-            Visual preview only. Real verification requires governed QR/stamp records.
+            Places you have checked in and verified.
           </p>
         </div>
 
@@ -542,9 +542,24 @@ function SpmVerifiedStopsPreview() {
           gap: 9,
         }}
       >
-        <StopPreviewCard name="General Luna" meta="Town Start" icon="📍" />
-        <StopPreviewCard name="Cloud 9" meta="Surf Zone" icon="🌊" />
-        <StopPreviewCard name="Magpupungko" meta="Tide Pool" icon="🪨" />
+        <StopPreviewCard
+          name="General Luna"
+          subtitle="Surfer's Paradise"
+          imageLabel="GL"
+          variant="town"
+        />
+        <StopPreviewCard
+          name="Cloud 9"
+          subtitle="World Famous Wave"
+          imageLabel="C9"
+          variant="surf"
+        />
+        <StopPreviewCard
+          name="Magpungko"
+          subtitle="Tide Pools"
+          imageLabel="MP"
+          variant="pool"
+        />
       </div>
     </section>
   );
@@ -552,43 +567,100 @@ function SpmVerifiedStopsPreview() {
 
 function StopPreviewCard(props: {
   name: string;
-  meta: string;
-  icon: string;
+  subtitle: string;
+  imageLabel: string;
+  variant: "town" | "surf" | "pool";
 }) {
+  const imageBackground =
+    props.variant === "town"
+      ? "linear-gradient(135deg, #bcecf2 0%, #effaf8 38%, #f6dda9 100%)"
+      : props.variant === "surf"
+        ? "linear-gradient(135deg, #7fd2eb 0%, #dbf6ff 42%, #b9e6d1 100%)"
+        : "linear-gradient(135deg, #b2d8ee 0%, #e8f7f4 46%, #d2dfb0 100%)";
+
   return (
     <a
       href="/traveler/passport-map"
       aria-label={`${props.name} preview stop. Visual only.`}
       style={{
-        minHeight: 116,
+        minHeight: 126,
         borderRadius: 20,
         border: "1px solid rgba(203,213,225,0.72)",
-        background: "rgba(255,255,255,0.96)",
+        background: "rgba(255,255,255,0.97)",
         boxShadow: "0 10px 24px rgba(15,23,42,0.05)",
-        padding: "12px 10px",
         textDecoration: "none",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
+        overflow: "hidden",
+        display: "grid",
+        gridTemplateRows: "70px auto",
       }}
     >
       <div
         style={{
-          width: 38,
-          height: 38,
-          borderRadius: "50%",
-          background: "linear-gradient(135deg, #e8f9fb 0%, #ffffff 100%)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 21,
-          boxShadow: "inset 0 0 0 1px rgba(19,168,183,0.14)",
+          position: "relative",
+          minHeight: 70,
+          background: imageBackground,
+          borderBottom: "1px solid rgba(226,232,240,0.72)",
         }}
       >
-        {props.icon}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(20,38,75,0.10) 100%)",
+          }}
+        />
+
+        <div
+          style={{
+            position: "absolute",
+            left: 9,
+            bottom: 9,
+            width: 28,
+            height: 28,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.94)",
+            color: "#13a8b7",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 9,
+            fontWeight: 950,
+            boxShadow: "0 8px 16px rgba(15,23,42,0.10)",
+          }}
+        >
+          {props.imageLabel}
+        </div>
+
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: 8,
+            bottom: 8,
+            width: 22,
+            height: 22,
+            borderRadius: "50%",
+            background: "#1fa45b",
+            color: "#ffffff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 12,
+            fontWeight: 950,
+            boxShadow: "0 7px 14px rgba(31,164,91,0.20)",
+          }}
+        >
+          ✓
+        </div>
       </div>
 
-      <div>
+      <div
+        style={{
+          padding: "10px 10px 11px",
+          minWidth: 0,
+        }}
+      >
         <h3
           style={{
             margin: 0,
@@ -596,7 +668,7 @@ function StopPreviewCard(props: {
             fontSize: 12,
             lineHeight: 1.12,
             fontWeight: 950,
-            letterSpacing: "-0.015em",
+            letterSpacing: "-0.02em",
           }}
         >
           {props.name}
@@ -606,12 +678,12 @@ function StopPreviewCard(props: {
           style={{
             margin: "5px 0 0",
             color: "#6b7890",
-            fontSize: 10,
+            fontSize: 9.5,
             lineHeight: 1.2,
             fontWeight: 750,
           }}
         >
-          {props.meta}
+          {props.subtitle}
         </p>
 
         <div
@@ -623,28 +695,22 @@ function StopPreviewCard(props: {
             borderRadius: 999,
             background: "rgba(31,164,91,0.10)",
             color: "#1fa45b",
-            padding: "5px 7px",
-            fontSize: 9,
+            padding: "4px 6px",
+            fontSize: 8,
             lineHeight: 1,
             fontWeight: 950,
             textTransform: "uppercase",
             letterSpacing: "0.05em",
           }}
         >
-          <span
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: "50%",
-              background: "#1fa45b",
-            }}
-          />
-          Preview
+          Verified
         </div>
       </div>
     </a>
   );
 }
+
+
 
 function SpmTrailCardsPreview() {
   return (
