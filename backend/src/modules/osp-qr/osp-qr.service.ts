@@ -3004,6 +3004,210 @@ export class OspQrService {
     };
   }
 
+  private async recalculateSpmPackageProgressAfterStamp(input: {
+    travelerUserId: string;
+    tripId: string;
+    passId: string | null;
+    trailNodeId: string;
+    stampedAt: Date;
+  }) {
+    const packageLinks = await this.prisma.spmTrailPackageNode.findMany({
+      where: {
+        trailNodeId: input.trailNodeId,
+        isStampEligible: true,
+      },
+      select: {
+        trailPackageId: true,
+      },
+    });
+
+    const trailPackageIds = Array.from(
+      new Set(packageLinks.map((link) => link.trailPackageId).filter(Boolean)),
+    );
+
+    if (!trailPackageIds.length) {
+      return [];
+    }
+
+    const packages = await this.prisma.spmTrailPackage.findMany({
+      where: {
+        id: { in: trailPackageIds },
+        approvalStatus: 'APPROVED',
+        distributionEnabled: true,
+        stampEnabled: true,
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+      },
+    });
+
+    if (!packages.length) {
+      return [];
+    }
+
+    const activePackageIds = packages.map((item) => item.id);
+
+    const allPackageNodes = await this.prisma.spmTrailPackageNode.findMany({
+      where: {
+        trailPackageId: { in: activePackageIds },
+        isStampEligible: true,
+      },
+      select: {
+        trailPackageId: true,
+        trailNodeId: true,
+        isRequired: true,
+        isOptional: true,
+        isConditional: true,
+        isStampEligible: true,
+      },
+    });
+
+    const allRelevantNodeIds = Array.from(
+      new Set(allPackageNodes.map((link) => link.trailNodeId).filter(Boolean)),
+    );
+
+    const travelerStamps = allRelevantNodeIds.length
+      ? await this.prisma.spmTravelerStamp.findMany({
+          where: {
+            travelerUserId: input.travelerUserId,
+            tripId: input.tripId,
+            status: 'ACTIVE',
+            trailNodeId: { in: allRelevantNodeIds },
+          },
+          select: {
+            trailNodeId: true,
+            stampedAt: true,
+          },
+        })
+      : [];
+
+    const stampedNodeIds = new Set(travelerStamps.map((stamp) => stamp.trailNodeId));
+
+    const latestStampAt =
+      travelerStamps
+        .map((stamp) => stamp.stampedAt)
+        .filter(Boolean)
+        .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0] ?? input.stampedAt;
+
+    const nodesByPackage = new Map<string, typeof allPackageNodes>();
+
+    for (const link of allPackageNodes) {
+      const rows = nodesByPackage.get(link.trailPackageId) ?? [];
+      rows.push(link);
+      nodesByPackage.set(link.trailPackageId, rows);
+    }
+
+    const results = [];
+
+    for (const item of packages) {
+      const links = nodesByPackage.get(item.id) ?? [];
+
+      const requiredNodeIds = Array.from(
+        new Set(
+          links
+            .filter((link) => link.isRequired && link.isStampEligible)
+            .map((link) => link.trailNodeId),
+        ),
+      );
+
+      const optionalNodeIds = Array.from(
+        new Set(
+          links
+            .filter((link) => link.isOptional && link.isStampEligible)
+            .map((link) => link.trailNodeId),
+        ),
+      );
+
+      const conditionalNodeIds = Array.from(
+        new Set(
+          links
+            .filter((link) => link.isConditional && link.isStampEligible)
+            .map((link) => link.trailNodeId),
+        ),
+      );
+
+      const completedRequiredNodeCount = requiredNodeIds.filter((id) => stampedNodeIds.has(id)).length;
+      const completedOptionalNodeCount = optionalNodeIds.filter((id) => stampedNodeIds.has(id)).length;
+      const completedConditionalNodeCount = conditionalNodeIds.filter((id) => stampedNodeIds.has(id)).length;
+
+      const requiredNodeCount = requiredNodeIds.length;
+      const optionalNodeCount = optionalNodeIds.length;
+      const conditionalNodeCount = conditionalNodeIds.length;
+
+      const progressPercentage = requiredNodeCount
+        ? Math.min(100, Math.round((completedRequiredNodeCount / requiredNodeCount) * 100))
+        : 0;
+
+      const completionStatus =
+        requiredNodeCount > 0 && completedRequiredNodeCount === requiredNodeCount
+          ? 'COMPLETED'
+          : 'IN_PROGRESS';
+
+      const completedAt = completionStatus === 'COMPLETED' ? latestStampAt : null;
+
+      const row = await this.prisma.spmTravelerPackageProgress.upsert({
+        where: {
+          travelerUserId_trailPackageId_tripId: {
+            travelerUserId: input.travelerUserId,
+            trailPackageId: item.id,
+            tripId: input.tripId,
+          },
+        },
+        update: {
+          passId: input.passId,
+          completedRequiredNodeCount,
+          requiredNodeCount,
+          completedOptionalNodeCount,
+          optionalNodeCount,
+          completedConditionalNodeCount,
+          conditionalNodeCount,
+          progressPercentage,
+          completionStatus,
+          completedAt,
+          lastStampAt: latestStampAt,
+        },
+        create: {
+          travelerUserId: input.travelerUserId,
+          tripId: input.tripId,
+          passId: input.passId,
+          trailPackageId: item.id,
+          completedRequiredNodeCount,
+          requiredNodeCount,
+          completedOptionalNodeCount,
+          optionalNodeCount,
+          completedConditionalNodeCount,
+          conditionalNodeCount,
+          progressPercentage,
+          completionStatus,
+          completedAt,
+          lastStampAt: latestStampAt,
+        },
+      });
+
+      results.push({
+        packageProgressId: row.id,
+        packageCode: item.code,
+        packageName: item.name,
+        trailPackageId: item.id,
+        completedRequiredNodeCount: row.completedRequiredNodeCount,
+        requiredNodeCount: row.requiredNodeCount,
+        completedOptionalNodeCount: row.completedOptionalNodeCount,
+        optionalNodeCount: row.optionalNodeCount,
+        completedConditionalNodeCount: row.completedConditionalNodeCount,
+        conditionalNodeCount: row.conditionalNodeCount,
+        progressPercentage: row.progressPercentage,
+        completionStatus: row.completionStatus,
+        completedAt: row.completedAt,
+        lastStampAt: row.lastStampAt,
+      });
+    }
+
+    return results;
+  }
+
+
   async passportStampScan(
     actor: any,
     body: { qrToken: string; trailNodeId: string; channel?: string | null },
@@ -3127,6 +3331,14 @@ export class OspQrService {
       const safeRequired = Math.max(requiredNodeCount, 1);
       const progressPercentage = Math.min(100, Math.round((activeStampCount / safeRequired) * 100));
 
+      const packageProgress = await this.recalculateSpmPackageProgressAfterStamp({
+        travelerUserId: trip.travelerUserId,
+        tripId: trip.id,
+        passId: trip.pass?.id ?? null,
+        trailNodeId: node.id,
+        stampedAt: existingActiveStamp.stampedAt,
+      });
+
       return {
         ok: true,
         data: {
@@ -3140,6 +3352,7 @@ export class OspQrService {
           completedNodeCount: activeStampCount,
           requiredNodeCount: safeRequired,
           progressPercentage,
+          packageProgress,
         },
       };
     }
@@ -3230,6 +3443,8 @@ export class OspQrService {
     const safeRequired = Math.max(requiredNodeCount, 1);
     const progressPercentage = Math.min(100, Math.round((activeStampCount / safeRequired) * 100));
 
+    const familyProgressUpdatedAt = new Date();
+
     await this.prisma.spmTravelerTrailProgress.upsert({
       where: {
         travelerUserId_trailFamilyId_tripId: {
@@ -3243,8 +3458,8 @@ export class OspQrService {
         requiredNodeCount: safeRequired,
         progressPercentage,
         status: progressPercentage >= 100 ? 'COMPLETED' : 'IN_PROGRESS',
-        completedAt: progressPercentage >= 100 ? new Date() : null,
-        lastStampAt: new Date(),
+        completedAt: progressPercentage >= 100 ? familyProgressUpdatedAt : null,
+        lastStampAt: familyProgressUpdatedAt,
       },
       create: {
         travelerUserId: trip.travelerUserId,
@@ -3254,9 +3469,17 @@ export class OspQrService {
         requiredNodeCount: safeRequired,
         progressPercentage,
         status: progressPercentage >= 100 ? 'COMPLETED' : 'IN_PROGRESS',
-        completedAt: progressPercentage >= 100 ? new Date() : null,
-        lastStampAt: new Date(),
+        completedAt: progressPercentage >= 100 ? familyProgressUpdatedAt : null,
+        lastStampAt: familyProgressUpdatedAt,
       },
+    });
+
+    const packageProgress = await this.recalculateSpmPackageProgressAfterStamp({
+      travelerUserId: trip.travelerUserId,
+      tripId: trip.id,
+      passId: trip.pass?.id ?? null,
+      trailNodeId: node.id,
+      stampedAt: stamp.stampedAt,
     });
 
     return {
@@ -3270,6 +3493,7 @@ export class OspQrService {
         completedNodeCount: activeStampCount,
         requiredNodeCount: safeRequired,
         progressPercentage,
+        packageProgress,
       },
     };
   }
