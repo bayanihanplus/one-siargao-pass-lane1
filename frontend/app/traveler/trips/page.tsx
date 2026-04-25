@@ -1,11 +1,80 @@
 import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 import { getPreferredTravelerTrip } from "../../../src/lib/travelerTripSelection";
 
-async function getTrips() {
+type TravelerDictionary = Record<string, string>;
+
+const tripsDictionaryFallback: TravelerDictionary = {
+  "trips.backHome": "Back to Home",
+  "trips.header.eyebrow": "Traveler Records",
+  "trips.title": "My Trips",
+  "trips.header.body": "Review your registered trips, clearance state, and pass access.",
+  "trips.nav.home": "Home",
+  "trips.nav.pass": "Traveler Pass",
+  "trips.nav.logout": "Logout",
+  "trips.loadError.title": "Trip Load Error",
+  "trips.summary.title": "Trip Summary",
+  "trips.summary.visible": "Visible",
+  "trips.summary.active": "Active",
+  "trips.summary.passes": "Passes",
+  "trips.preferred.label": "Preferred Traveler Trip",
+  "trips.preferred.fallback": "Current selected trip",
+  "trips.list.title": "My Trips",
+  "trips.empty.body": "No trips found yet. Once you register or link a trip, it will appear here.",
+  "trips.card.fallbackTitle": "Traveler Trip",
+  "trips.card.current": "Current traveler trip",
+  "trips.card.tripStatus": "Trip Status",
+  "trips.card.clearance": "Clearance",
+  "trips.card.arrival": "Arrival",
+  "trips.card.departure": "Departure",
+  "trips.card.viewTrip": "View Trip",
+  "trips.card.openPass": "Open Pass",
+};
+
+async function getTravelerDictionary(languageCode?: string | null): Promise<TravelerDictionary> {
+  try {
+    const res = await fetch(`${getApiBaseUrl()}/language-packs/${encodeURIComponent(languageCode || "en")}/dictionary?scope=traveler`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) return tripsDictionaryFallback;
+
+    const payload = await res.json();
+    const dictionary = payload?.dictionary;
+
+    if (!dictionary || typeof dictionary !== "object") return tripsDictionaryFallback;
+
+    return {
+      ...tripsDictionaryFallback,
+      ...dictionary,
+    };
+  } catch {
+    return tripsDictionaryFallback;
+  }
+}
+
+function t(dictionary: TravelerDictionary, key: string, fallback: string) {
+  return dictionary?.[key] || fallback;
+}
+
+async function getTrips(): Promise<{ rows: any[]; error: string | null; user: any | null }> {
   const baseUrl = getApiBaseUrl();
 
   try {
     const token = await requireAccessToken();
+
+    let user: any = null;
+
+    const userRes = await fetch(`${baseUrl}/auth/me`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (userRes.ok) {
+      user = await userRes.json();
+    }
 
     const res = await fetch(`${baseUrl}/trips`, {
       cache: "no-store",
@@ -16,15 +85,16 @@ async function getTrips() {
     });
 
     if (!res.ok) {
-      return { rows: [], error: `Failed to load trips: HTTP ${res.status}` };
+      return { rows: [], error: `Failed to load trips: HTTP ${res.status}`, user };
     }
 
     const rows = await res.json();
-    return { rows: Array.isArray(rows) ? rows : [], error: null };
+    return { rows: Array.isArray(rows) ? rows : [], error: null, user };
   } catch (error: any) {
     return {
       rows: [],
       error: error?.message || "Unknown trip list load failure",
+      user: null,
     };
   }
 }
@@ -277,7 +347,21 @@ function SummaryIcon(props: { kind: "VISIBLE" | "ACTIVE" | "PASSES" }) {
 }
 
 export default async function TravelerTripsPage() {
-  const { rows, error } = await getTrips();
+  const { rows, error, user } = await getTrips();
+  const dictionary = await getTravelerDictionary(user?.preferredLanguage || "en");
+
+  const backHomeLabel = t(dictionary, "trips.backHome", "Back to Home");
+  const headerEyebrow = t(dictionary, "trips.header.eyebrow", "Traveler Records");
+  const headerTitle = t(dictionary, "trips.title", "My Trips");
+  const headerBody = t(dictionary, "trips.header.body", "Review your registered trips, clearance state, and pass access.");
+  const navHome = t(dictionary, "trips.nav.home", "Home");
+  const navPass = t(dictionary, "trips.nav.pass", "Traveler Pass");
+  const navLogout = t(dictionary, "trips.nav.logout", "Logout");
+  const preferredTripLabel = t(dictionary, "trips.preferred.label", "Preferred Traveler Trip");
+  const preferredTripFallback = t(dictionary, "trips.preferred.fallback", "Current selected trip");
+  const tripFallbackTitle = t(dictionary, "trips.card.fallbackTitle", "Traveler Trip");
+  const currentTripLabel = t(dictionary, "trips.card.current", "Current traveler trip");
+
   const preferredTrip = getPreferredTravelerTrip(rows);
   const activeTrips = rows.filter((trip: any) => String(trip.tripStatus || "").toUpperCase().includes("ACTIVE")).length;
   const passReadyTrips = rows.filter((trip: any) => Boolean(trip.pass)).length;
@@ -311,7 +395,7 @@ export default async function TravelerTripsPage() {
             fontWeight: 900,
           }}
         >
-          ← Back to Home
+          ← {backHomeLabel}
         </a>
       </div>
 
@@ -326,7 +410,7 @@ export default async function TravelerTripsPage() {
             marginBottom: 8,
           }}
         >
-          Traveler Records
+          {headerEyebrow}
         </div>
         <h1
           style={{
@@ -337,26 +421,26 @@ export default async function TravelerTripsPage() {
             color: "#19305a",
           }}
         >
-          My Trips
+            {headerTitle}
         </h1>
         <p style={{ marginTop: 9, marginBottom: 0, color: "#64748b", lineHeight: 1.4, fontSize: 14 }}>
-          Review your registered trips, clearance state, and pass access.
+          {headerBody}
         </p>
       </header>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
-        <PillLink href="/" label="Home" icon={<TripsNavIcon kind="HOME" />} />
-        <PillLink href="/traveler/pass" label="Traveler Pass" icon={<TripsNavIcon kind="PASS" />} />
-        <PillLink href="/logout" label="Logout" icon={<TripsNavIcon kind="LOGOUT" />} />
+        <PillLink href="/" label={navHome} icon={<TripsNavIcon kind="HOME" />} />
+        <PillLink href="/traveler/pass" label={navPass} icon={<TripsNavIcon kind="PASS" />} />
+        <PillLink href="/logout" label={navLogout} icon={<TripsNavIcon kind="LOGOUT" />} />
       </div>
 
       {error ? (
-        <Section title="Trip Load Error">
+        <Section title={t(dictionary, "trips.loadError.title", "Trip Load Error")}>
           <div style={{ color: "#dc2626", fontSize: 14, fontWeight: 800 }}>{error}</div>
         </Section>
       ) : null}
 
-      <Section title="Trip Summary">
+      <Section title={t(dictionary, "trips.summary.title", "Trip Summary")}>
         <div
           style={{
             display: "grid",
@@ -364,9 +448,9 @@ export default async function TravelerTripsPage() {
             gap: 7,
           }}
         >
-          <MetaItem label="Visible" value={rows.length} icon={<SummaryIcon kind="VISIBLE" />} tone={{ bg: "#eff6ff", border: "#cfe0f7", color: "#2563eb" }} />
-          <MetaItem label="Active" value={activeTrips} icon={<SummaryIcon kind="ACTIVE" />} tone={{ bg: "#ecfeff", border: "#bfeaf0", color: "#0ea5b7" }} />
-          <MetaItem label="Passes" value={passReadyTrips} icon={<SummaryIcon kind="PASSES" />} tone={{ bg: "#eefdf3", border: "#cdeed7", color: "#16a34a" }} />
+          <MetaItem label={t(dictionary, "trips.summary.visible", "Visible")} value={rows.length} icon={<SummaryIcon kind="VISIBLE" />} tone={{ bg: "#eff6ff", border: "#cfe0f7", color: "#2563eb" }} />
+          <MetaItem label={t(dictionary, "trips.summary.active", "Active")} value={activeTrips} icon={<SummaryIcon kind="ACTIVE" />} tone={{ bg: "#ecfeff", border: "#bfeaf0", color: "#0ea5b7" }} />
+          <MetaItem label={t(dictionary, "trips.summary.passes", "Passes")} value={passReadyTrips} icon={<SummaryIcon kind="PASSES" />} tone={{ bg: "#eefdf3", border: "#cdeed7", color: "#16a34a" }} />
         </div>
 
         <div
@@ -379,15 +463,15 @@ export default async function TravelerTripsPage() {
           }}
         >
           <div style={{ fontSize: 10, fontWeight: 950, letterSpacing: "0.08em", textTransform: "uppercase", color: "#0e7490" }}>
-            Preferred Traveler Trip
+            {preferredTripLabel}
           </div>
           <div style={{ marginTop: 5, fontSize: 15, fontWeight: 950, color: "#19305a", lineHeight: 1.2 }}>
-            {preferredTrip ? preferredTrip.tripTitle || "Current selected trip" : "—"}
+            {preferredTrip ? preferredTrip.tripTitle || preferredTripFallback : "—"}
           </div>
         </div>
       </Section>
 
-      <Section title="My Trips">
+      <Section title={t(dictionary, "trips.list.title", "My Trips")}>
         {rows.length === 0 ? (
           <div
             style={{
@@ -401,7 +485,7 @@ export default async function TravelerTripsPage() {
               fontWeight: 650,
             }}
           >
-            No trips found yet. Once you register or link a trip, it will appear here.
+            {t(dictionary, "trips.empty.body", "No trips found yet. Once you register or link a trip, it will appear here.")}
           </div>
         ) : (
           <div style={{ display: "grid", gap: 12 }}>
@@ -449,14 +533,14 @@ export default async function TravelerTripsPage() {
                           color: "#19305a",
                         }}
                       >
-                        {trip.tripTitle || "Traveler Trip"}
+                        {trip.tripTitle || tripFallbackTitle}
                       </h3>
                       <div style={{ marginTop: 6, color: "#64748b", fontSize: 12, fontWeight: 800 }}>
                         {formatDate(trip.arrivalDate)} – {formatDate(trip.departureDate)}
                       </div>
                       {isPreferredTrip ? (
                         <div style={{ marginTop: 7, fontSize: 11, fontWeight: 950, color: "#0e7490" }}>
-                          Current traveler trip
+                          {currentTripLabel}
                         </div>
                       ) : null}
                     </div>
@@ -470,15 +554,15 @@ export default async function TravelerTripsPage() {
                       marginBottom: 12,
                     }}
                   >
-                    <MetaItem label="Trip Status" value={normalizeStatus(trip.tripStatus)} tone={tripTheme} />
-                    <MetaItem label="Clearance" value={normalizeStatus(trip.clearanceStatus)} tone={clearanceTheme} />
-                    <MetaItem label="Arrival" value={formatDate(trip.arrivalDate)} />
-                    <MetaItem label="Departure" value={formatDate(trip.departureDate)} />
+                    <MetaItem label={t(dictionary, "trips.card.tripStatus", "Trip Status")} value={normalizeStatus(trip.tripStatus)} tone={tripTheme} />
+                    <MetaItem label={t(dictionary, "trips.card.clearance", "Clearance")} value={normalizeStatus(trip.clearanceStatus)} tone={clearanceTheme} />
+                    <MetaItem label={t(dictionary, "trips.card.arrival", "Arrival")} value={formatDate(trip.arrivalDate)} />
+                    <MetaItem label={t(dictionary, "trips.card.departure", "Departure")} value={formatDate(trip.departureDate)} />
                   </div>
 
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                    <PillLink href={`/traveler/trips/${trip.id}`} label="View Trip" primary icon={<TripsNavIcon kind="VIEW" />} />
-                    {trip.pass ? <PillLink href="/traveler/pass" label="Open Pass" icon={<PassIcon />} /> : null}
+                    <PillLink href={`/traveler/trips/${trip.id}`} label={t(dictionary, "trips.card.viewTrip", "View Trip")} primary icon={<TripsNavIcon kind="VIEW" />} />
+                    {trip.pass ? <PillLink href="/traveler/pass" label={t(dictionary, "trips.card.openPass", "Open Pass")} icon={<PassIcon />} /> : null}
                   </div>
                 </article>
               );
