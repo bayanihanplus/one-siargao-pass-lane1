@@ -317,7 +317,7 @@ export default async function TravelerPassportMapPage() {
 
               <SpmMapVisualPreview />
 
-              <SpmLegendAndStatus />
+              <SpmLegendAndStatus metrics={spmPreview?.metrics} emptyState={spmPreview?.emptyState} />
             </div>
           </section>
 
@@ -366,10 +366,10 @@ type SpmNextStopPreviewData = {
 
 function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | null }) {
   const nextStop = props.nextStop;
-  const title = nextStop?.recommendedStopName ?? "Daku Island";
-  const reason = nextStop?.recommendationReason ?? "Crystal clear waters and island vibes";
-  const eta = nextStop?.distanceOrEtaLabel ?? "About 15 min by boat from GL";
-  const ctaRoute = nextStop?.ctaRoute ?? "/traveler/trips";
+  const title = nextStop?.recommendedStopName ?? "No governed recommendation yet";
+  const reason = nextStop?.recommendationReason ?? "Scan OSP QR-enabled stops to unlock verified Passport Trails™ recommendations.";
+  const eta = nextStop?.distanceOrEtaLabel ?? "Awaiting verified trail activity";
+  const ctaRoute = nextStop?.ctaRoute ?? "/traveler/passport-map";
   return (
     <section
       aria-label="Continue journey recommendation card"
@@ -535,19 +535,18 @@ type SpmVerifiedStopPreviewData = {
   stopName?: string;
   subtitle?: string | null;
   verificationStatus?: string;
+  source?: string;
 };
 
 function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] | null }) {
-  const fallbackStops = [
-    { stopName: "Daku Island", subtitle: "Verified stop", verificationStatus: "verified" },
-    { stopName: "Guyam Island", subtitle: "Verified stop", verificationStatus: "verified" },
-    { stopName: "Cloud 9", subtitle: "World Famous Wave", verificationStatus: "verified" },
+  const realStops = props.stops?.length ? props.stops.slice(0, 3) : [];
+  const visualPaddingStops = [
+    { stopName: "Passport stamp pending", subtitle: "Scan a governed OSP QR stop", verificationStatus: "available", source: "visual_padding" },
+    { stopName: "Approved node available", subtitle: "Official discovery only", verificationStatus: "available", source: "visual_padding" },
+    { stopName: "Trail progress waiting", subtitle: "No verified stamp yet", verificationStatus: "available", source: "visual_padding" },
   ];
 
-  const realStops = props.stops?.length ? props.stops.slice(0, 3) : [];
-  const stops = [...realStops, ...fallbackStops]
-    .filter((stop, index, list) => list.findIndex((item) => item.stopName === stop.stopName) === index)
-    .slice(0, 3);
+  const stops = [...realStops, ...visualPaddingStops].slice(0, 3);
   return (
     <section
       aria-label="Verified stops cards"
@@ -587,7 +586,7 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
               fontWeight: 750,
             }}
           >
-            Places you have checked in and verified.
+            Governed QR-validated stops appear first. Empty slots stay as visual placeholders.
           </p>
         </div>
 
@@ -627,15 +626,19 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
           gap: 9,
         }}
       >
-        {stops.map((stop, index) => (
-          <StopPreviewCard
-            key={`${stop.stopName}-${index}`}
-            name={stop.stopName ?? "Verified Stop"}
-            subtitle={stop.subtitle ?? "Verified stop"}
-            imageLabel={(stop.stopName ?? "VS").slice(0, 2).toUpperCase()}
-            variant={index === 1 ? "surf" : index === 2 ? "pool" : "town"}
-          />
-        ))}
+        {stops.map((stop, index) => {
+          const isPadding = stop.source === "visual_padding";
+          return (
+            <StopPreviewCard
+              key={`${stop.stopName}-${index}`}
+              name={stop.stopName ?? "Verified Stop"}
+              subtitle={stop.subtitle ?? "Verified stop"}
+              imageLabel={isPadding ? "SP" : (stop.stopName ?? "VS").slice(0, 2).toUpperCase()}
+              variant={index === 1 ? "surf" : index === 2 ? "pool" : "town"}
+              verified={!isPadding}
+            />
+          );
+        })}
       </div>
     </section>
   );
@@ -646,6 +649,7 @@ function StopPreviewCard(props: {
   subtitle: string;
   imageLabel: string;
   variant: "town" | "surf" | "pool";
+  verified: boolean;
 }) {
   const imageBackground =
     props.variant === "town"
@@ -657,17 +661,18 @@ function StopPreviewCard(props: {
   return (
     <a
       href="/traveler/passport-map"
-      aria-label={`${props.name} preview stop. Visual only.`}
+      aria-label={`${props.name} preview stop. ${props.verified ? "Governed verified stop." : "Visual placeholder only."}`}
       style={{
         minHeight: 126,
         borderRadius: 20,
         border: "1px solid rgba(203,213,225,0.72)",
-        background: "rgba(255,255,255,0.97)",
+        background: props.verified ? "rgba(255,255,255,0.97)" : "rgba(248,250,252,0.92)",
         boxShadow: "0 10px 24px rgba(15,23,42,0.05)",
         textDecoration: "none",
         overflow: "hidden",
         display: "grid",
         gridTemplateRows: "70px auto",
+        opacity: props.verified ? 1 : 0.82,
       }}
     >
       <div
@@ -676,6 +681,7 @@ function StopPreviewCard(props: {
           minHeight: 70,
           background: imageBackground,
           borderBottom: "1px solid rgba(226,232,240,0.72)",
+          filter: props.verified ? "none" : "saturate(0.65)",
         }}
       >
         <div
@@ -696,7 +702,7 @@ function StopPreviewCard(props: {
             height: 28,
             borderRadius: "50%",
             background: "rgba(255,255,255,0.94)",
-            color: "#13a8b7",
+            color: props.verified ? "#13a8b7" : "#8b95a1",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -717,17 +723,17 @@ function StopPreviewCard(props: {
             width: 22,
             height: 22,
             borderRadius: "50%",
-            background: "#1fa45b",
+            background: props.verified ? "#1fa45b" : "#8b95a1",
             color: "#ffffff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             fontSize: 12,
             fontWeight: 950,
-            boxShadow: "0 7px 14px rgba(31,164,91,0.20)",
+            boxShadow: props.verified ? "0 7px 14px rgba(31,164,91,0.20)" : "0 7px 14px rgba(100,116,139,0.16)",
           }}
         >
-          ✓
+          {props.verified ? "✓" : "•"}
         </div>
       </div>
 
@@ -769,8 +775,8 @@ function StopPreviewCard(props: {
             alignItems: "center",
             gap: 4,
             borderRadius: 999,
-            background: "rgba(31,164,91,0.10)",
-            color: "#1fa45b",
+            background: props.verified ? "rgba(31,164,91,0.10)" : "rgba(148,163,184,0.14)",
+            color: props.verified ? "#1fa45b" : "#64748b",
             padding: "4px 6px",
             fontSize: 8,
             lineHeight: 1,
@@ -779,13 +785,12 @@ function StopPreviewCard(props: {
             letterSpacing: "0.05em",
           }}
         >
-          Verified
+          {props.verified ? "Verified" : "Pending"}
         </div>
       </div>
     </a>
   );
 }
-
 
 
 type SpmTrailPreviewData = {
@@ -796,19 +801,18 @@ type SpmTrailPreviewData = {
   progressPercentage?: number;
   unlockRule?: string | null;
   iconKey?: string | null;
+  source?: string;
 };
 
 function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) {
-  const fallbackTrails = [
-    { trailName: "Island Discovery Trail", trailStatus: "active", stopsTotal: 4, stopsCompleted: 1, progressPercentage: 25, iconKey: "ISLAND_HOPPING" },
-    { trailName: "North Siargao Trail", trailStatus: "locked", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: "Complete more trails to unlock", iconKey: "NORTH_SIARGAO" },
-    { trailName: "Adventure Trail", trailStatus: "locked", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: "Complete more trails to unlock", iconKey: "ADVENTURE" },
+  const visualPaddingTrails = [
+    { trailName: "Passport Trail pending", trailStatus: "pending", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: null, iconKey: "ISLAND_HOPPING", source: "visual_padding" },
+    { trailName: "Official trails available", trailStatus: "available", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: null, iconKey: "NORTH_SIARGAO", source: "visual_padding" },
+    { trailName: "Scan to unlock progress", trailStatus: "available", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: null, iconKey: "ADVENTURE", source: "visual_padding" },
   ];
 
   const realTrails = props.trails?.length ? props.trails.slice(0, 3) : [];
-  const trails = [...realTrails, ...fallbackTrails]
-    .filter((trail, index, list) => list.findIndex((item) => item.trailName === trail.trailName) === index)
-    .slice(0, 3);
+  const trails = [...realTrails, ...visualPaddingTrails].slice(0, 3);
   return (
     <section
       aria-label="Passport Trails cards"
@@ -848,7 +852,7 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
               fontWeight: 750,
             }}
           >
-            Your real trail progress appears first. Extra cards preserve map layout.
+            Governed Passport Trails™ progress appears first. Empty slots are visual placeholders only.
           </p>
         </div>
 
@@ -890,18 +894,26 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
         }}
       >
         {trails.map((trail, index) => {
+          const isPadding = trail.source === "visual_padding";
           const isLocked = trail.trailStatus === "locked";
           const completed = trail.stopsCompleted ?? 0;
           const total = trail.stopsTotal ?? 0;
+          const progressLabel = isPadding
+            ? "No governed progress yet"
+            : isLocked
+              ? trail.unlockRule ?? "Complete more trails to unlock"
+              : `${completed} / ${total} completed`;
 
           return (
             <TrailPreviewCard
               key={`${trail.trailName}-${index}`}
               title={trail.trailName ?? "Passport Trail"}
-              progressLabel={isLocked ? trail.unlockRule ?? "Complete more trails to unlock" : `${completed} / ${total} completed`}
-              variant={isLocked ? "locked" : index === 1 ? "lagoon" : "coast"}
-              accent={isLocked ? "#8b95a1" : "#13a8b7"}
-              icon={isLocked ? "🔒" : index === 1 ? "🏝" : "⛱"}
+              progressLabel={progressLabel}
+              progressPercent={isPadding ? 0 : trail.progressPercentage ?? 0}
+              variant={isLocked || isPadding ? "locked" : index === 1 ? "lagoon" : "coast"}
+              accent={isLocked || isPadding ? "#8b95a1" : "#13a8b7"}
+              icon={isLocked || isPadding ? "•" : index === 1 ? "🏝" : "⛱"}
+              governed={!isPadding}
             />
           );
         })}
@@ -913,9 +925,11 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
 function TrailPreviewCard(props: {
   title: string;
   progressLabel: string;
+  progressPercent: number;
   variant: "coast" | "lagoon" | "locked";
   accent: string;
   icon: string;
+  governed: boolean;
 }) {
   const isLocked = props.variant === "locked";
 
@@ -933,13 +947,14 @@ function TrailPreviewCard(props: {
   return (
     <a
       href="/traveler/passport-map"
-      aria-label={`${props.title} preview card. Visual only.`}
+      aria-label={`${props.title} preview card. ${props.governed ? "Governed progress." : "Visual placeholder only."}`}
       style={{
         minHeight: 160,
         borderRadius: 18,
         border: "1px solid rgba(203,213,225,0.84)",
         background: cardBackground,
         boxShadow: "0 10px 26px rgba(15,23,42,0.06)",
+        opacity: props.governed ? 1 : 0.82,
         textDecoration: "none",
         overflow: "hidden",
         display: "grid",
@@ -1105,7 +1120,7 @@ function TrailPreviewCard(props: {
             >
               <div
                 style={{
-                  width: props.progressLabel.startsWith("3 / 5") ? "60%" : "25%",
+                  width: `${Math.max(0, Math.min(100, props.progressPercent))}%`,
                   height: "100%",
                   borderRadius: 999,
                   background: props.accent,
@@ -1120,7 +1135,20 @@ function TrailPreviewCard(props: {
 }
 
 
-function SpmLegendAndStatus() {
+type SpmMetricsPreviewData = {
+  trailsUnlocked?: number;
+  placesVerified?: number;
+  journeyProgressPercent?: number;
+  passStatus?: string | null;
+};
+
+function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emptyState?: boolean | null }) {
+  const metrics = props.metrics;
+  const trailsUnlocked = metrics?.trailsUnlocked ?? 0;
+  const placesVerified = metrics?.placesVerified ?? 0;
+  const journeyProgress = metrics?.journeyProgressPercent ?? 0;
+  const passStatus = metrics?.passStatus ?? "Active";
+
   return (
     <div
       style={{
@@ -1149,10 +1177,10 @@ function SpmLegendAndStatus() {
             width: 7,
             height: 7,
             borderRadius: "50%",
-            background: "#f2b705",
+            background: props.emptyState ? "#8b95a1" : "#f2b705",
           }}
         />
-        Preview Mode
+        {props.emptyState ? "No Stamps Yet" : "Live Progress"}
       </div>
 
       <div
@@ -1166,12 +1194,12 @@ function SpmLegendAndStatus() {
       >
         <LegendItem color="#1fa45b" label="Completed" />
         <LegendItem color="#13a8b7" label="Available" />
-        <LegendItem color="#8b95a1" label="Locked" />
+        <LegendItem color="#8b95a1" label="Pending" />
         <LegendRouteItem label="Your Route" />
       </div>
 
       <div
-        aria-label="SPM preview journey metrics"
+        aria-label="SPM governed journey metrics"
         style={{
           marginTop: 78,
           display: "grid",
@@ -1185,10 +1213,10 @@ function SpmLegendAndStatus() {
           overflow: "hidden",
         }}
       >
-        <StatusCard icon="⚑" value="5" label="Trails\\nUnlocked" tone="#13a8b7" withDivider />
-        <StatusCard icon="♙" value="3" label="Places\\nVerified" tone="#59aa61" withDivider />
-        <StatusCard icon="▥" value="42%" label="Journey\\nProgress" tone="#168fe3" withDivider />
-        <StatusCard icon="▣" value="Pass\\nActive" label="Valid until\\nMay 24, 2025" tone="#f2b705" />
+        <StatusCard icon="⚑" value={String(trailsUnlocked)} label="Trails\\nUnlocked" tone="#13a8b7" withDivider />
+        <StatusCard icon="♙" value={String(placesVerified)} label="Places\\nVerified" tone="#59aa61" withDivider />
+        <StatusCard icon="▥" value={`${journeyProgress}%`} label="Journey\\nProgress" tone="#168fe3" withDivider />
+        <StatusCard icon="▣" value={`Pass\\n${passStatus}`} label="OSP QR\\nReady" tone="#f2b705" />
       </div>
 
       <p
@@ -1200,8 +1228,8 @@ function SpmLegendAndStatus() {
           fontWeight: 700,
         }}
       >
-        Preview values are visual-only until connected to governed OSP/SPM stamp,
-        QR, and traveler progress records.
+        Metrics use governed OSP/SPM QR, Passport Stamp, and traveler progress records only.
+        Visual placeholder cards do not count as verified progress.
       </p>
     </div>
   );
