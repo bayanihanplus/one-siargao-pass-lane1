@@ -1065,29 +1065,29 @@ function TravelerPassCard(props: {
     <section
       style={{
         marginTop: 16,
-        border: "1px solid #dbeaf2",
-        borderRadius: 24,
-        background: "#eef7fc",
-        padding: 16,
-        boxShadow: "0 12px 36px rgba(15,23,42,0.05)",
+        border: "1px solid #d3e8f2",
+        borderRadius: 26,
+        background: "linear-gradient(180deg, #f3fbff 0%, #e9f6fc 100%)",
+        padding: 18,
+        boxShadow: "0 16px 42px rgba(15,23,42,0.075)",
       }}
     >
       <div
         style={{
           display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "space-between",
-        gap: 10,
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: 14,
         }}
       >
         <div>
           <div
             style={{
-              fontSize: 12,
-              fontWeight: 700,
+              fontSize: 11,
+              fontWeight: 900,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "#7a93ad",
+              color: "#6f879f",
             }}
           >
             One Siargao Pass
@@ -1095,22 +1095,22 @@ function TravelerPassCard(props: {
 
           <h3
             style={{
-              marginTop: 12,
+              marginTop: 10,
               marginBottom: 0,
-              fontSize: 17,
-              fontWeight: 700,
-              lineHeight: 1.2,
+              fontSize: 18,
+              fontWeight: 900,
+              lineHeight: 1.12,
               color: "#1d2f5c",
             }}
           >
             {travelerName}
           </h3>
 
-          <div style={{ marginTop: 20 }}>
+          <div style={{ marginTop: 18 }}>
             <div
               style={{
-                fontSize: 12,
-                fontWeight: 700,
+                fontSize: 11,
+                fontWeight: 900,
                 letterSpacing: "0.16em",
                 textTransform: "uppercase",
                 color: "#7a93ad",
@@ -1120,22 +1120,23 @@ function TravelerPassCard(props: {
             </div>
             <div
               style={{
-                marginTop: 4,
-              fontSize: 14,
-              fontWeight: 500,
-              letterSpacing: "0.02em",
+                marginTop: 5,
+                fontSize: 15,
+                fontWeight: 850,
+                letterSpacing: "0.02em",
                 color: "#0f172a",
+                wordBreak: "break-word",
               }}
             >
               {passCode}
             </div>
           </div>
 
-          <div style={{ marginTop: 20 }}>
+          <div style={{ marginTop: 16 }}>
             <div
               style={{
-                fontSize: 12,
-                fontWeight: 700,
+                fontSize: 11,
+                fontWeight: 900,
                 letterSpacing: "0.16em",
                 textTransform: "uppercase",
                 color: "#7a93ad",
@@ -1145,10 +1146,10 @@ function TravelerPassCard(props: {
             </div>
             <div
               style={{
-                marginTop: 4,
-              fontSize: 14,
-              fontWeight: 500,
-              color: "#0f172a",
+                marginTop: 5,
+                fontSize: 14,
+                fontWeight: 750,
+                color: "#0f172a",
               }}
             >
               {validDates}
@@ -1157,11 +1158,12 @@ function TravelerPassCard(props: {
 
           <div
             style={{
-              marginTop: 12,
+              marginTop: 14,
               display: "flex",
               alignItems: "center",
               gap: 8,
-              fontSize: 14,
+              fontSize: 13,
+              fontWeight: 700,
               color: "#66819e",
             }}
           >
@@ -1176,7 +1178,7 @@ function TravelerPassCard(props: {
         <div
           style={{
             display: "flex",
-            minWidth: 144,
+            minWidth: 168,
             flexDirection: "column",
             alignItems: "flex-end",
           }}
@@ -1184,9 +1186,10 @@ function TravelerPassCard(props: {
           <span
             style={{
               borderRadius: 999,
-              padding: "6px 14px",
-              fontSize: 13,
-              fontWeight: 700,
+              padding: "7px 14px",
+              fontSize: 12,
+              fontWeight: 950,
+              letterSpacing: "0.05em",
               background: badgeColor,
               color: "#ffffff",
             }}
@@ -1194,19 +1197,19 @@ function TravelerPassCard(props: {
             PASS {passStatus.toUpperCase()}
           </span>
 
-          <div style={{ marginTop: 20 }}>
+          <div style={{ marginTop: 16 }}>
             <PassCardQrShell qrToken={props.latestTravelerTrip?.pass?.qrCredential?.qrToken} />
           </div>
 
           <div
             style={{
-              marginTop: 16,
+              marginTop: 13,
               display: "flex",
               alignItems: "center",
-              gap: 8,
-              fontSize: 15,
-              fontWeight: 700,
-              color: "#17b6c6",
+              gap: 7,
+              fontSize: 13,
+              fontWeight: 900,
+              color: "#1195a7",
             }}
           >
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
