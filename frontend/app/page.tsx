@@ -908,8 +908,8 @@ function HeaderControlButton(props: {
   );
 
   const style = {
-    minWidth: 38,
-    height: 34,
+    minWidth: 34,
+    height: 32,
     borderRadius: 999,
     border: "1px solid #dbe8ef",
     background: "#ffffff",
@@ -918,7 +918,7 @@ function HeaderControlButton(props: {
     alignItems: "center",
     justifyContent: "center",
     gap: 5,
-    padding: "0 8px",
+    padding: "0 7px",
     fontSize: 9.5,
     fontWeight: 950,
     textDecoration: "none",
@@ -963,8 +963,9 @@ function TravelerShellFrame(props: {
     <header
       style={{
         width: "100%",
-        maxWidth: 400,
-        margin: "0 auto 16px",
+        maxWidth: 390,
+        margin: "0 auto 14px",
+        overflow: "hidden",
         marginBottom: 16,
       }}
     >
@@ -973,7 +974,7 @@ function TravelerShellFrame(props: {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: 10,
+          gap: 8,
           marginBottom: 12,
         }}
       >
@@ -982,8 +983,8 @@ function TravelerShellFrame(props: {
             src="/osp/osp-official-logo.png"
             alt="One Siargao Pass official logo"
             style={{
-              width: 56,
-              height: 56,
+              width: 44,
+              height: 44,
               borderRadius: 16,
               objectFit: "cover",
               flex: "0 0 auto",
@@ -996,7 +997,7 @@ function TravelerShellFrame(props: {
             <h1
               style={{
                 margin: 0,
-                fontSize: 23,
+                fontSize: 18,
                 fontWeight: 850,
                 lineHeight: 0.98,
                 letterSpacing: "-0.035em",
@@ -1055,7 +1056,7 @@ function TravelerShellFrame(props: {
             style={{
               position: "relative",
               width: 34,
-              height: 34,
+              height: 32,
               borderRadius: "50%",
               display: "flex",
               alignItems: "center",
@@ -1103,9 +1104,9 @@ function TravelerShellFrame(props: {
         <div
           style={{
             position: "relative",
-            minHeight: 420,
+            minHeight: 390,
             overflow: "hidden",
-            padding: "22px 20px 20px",
+            padding: "20px 18px 18px",
             color: "#ffffff",
             backgroundImage:
               'linear-gradient(90deg, rgba(5,39,82,0.99) 0%, rgba(6,59,108,0.97) 33%, rgba(7,92,140,0.58) 53%, rgba(7,110,164,0.12) 69%), url("/osp/osp-hero-map.png")',
@@ -1123,7 +1124,7 @@ function TravelerShellFrame(props: {
             }}
           />
 
-          <div style={{ position: "relative", zIndex: 1, maxWidth: 250 }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: 235 }}>
             <div
               style={{
                 marginBottom: 12,
@@ -1174,8 +1175,8 @@ function TravelerShellFrame(props: {
               style={{
                 margin: 0,
                 whiteSpace: "normal",
-                fontSize: 29,
-                fontWeight: 760,
+                fontSize: 27,
+                fontWeight: 720,
                 lineHeight: 1.02,
                 letterSpacing: "-0.035em",
                 color: "#ffffff",
@@ -1205,8 +1206,8 @@ function TravelerShellFrame(props: {
                   alignItems: "center",
                   justifyContent: "space-between",
                   width: "100%",
-                  maxWidth: 188,
-                  height: 50,
+                  maxWidth: 176,
+                  height: 48,
                   borderRadius: 999,
                   background: "#16bfd3",
                   padding: "0 18px",
@@ -1816,11 +1817,12 @@ function TravelerShell(props: {
   return (
     <div
       style={{
-        width: "min(100%, 430px)",
-        maxWidth: 430,
+        width: "100%",
+        maxWidth: 390,
         margin: "0 auto",
-        padding: "2px 10px 18px",
+        padding: "2px 8px 18px",
         boxSizing: "border-box",
+        overflowX: "hidden",
       }}
     >
       <TravelerShellFrame
