@@ -1,4 +1,4 @@
-import { getCurrentUser, requireAccessToken } from "../src/lib/server-auth";
+import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../src/lib/server-auth";
 import { getPreferredTravelerTrip } from "../src/lib/travelerTripSelection";
 import { redirect } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
@@ -85,6 +85,45 @@ async function getTravelerLatestTrip() {
       error: error?.message || "Unknown traveler trip load failure",
     };
   }
+}
+
+async function getTravelerDictionary(languageCode: string): Promise<Record<string, string>> {
+  const fallback: Record<string, string> = {
+    "home.hero.title": "Trip Active. Pass Ready.",
+    "home.cta.showQr": "Show My QR",
+    "home.cta.passportMap": "Open Passport Map",
+  };
+
+  try {
+    const res = await fetch(`${getApiBaseUrl()}/language-packs/${encodeURIComponent(languageCode || "en")}/dictionary?scope=traveler`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) return fallback;
+
+    const payload = await res.json();
+    const dictionary = payload?.dictionary;
+
+    if (!dictionary || typeof dictionary !== "object") return fallback;
+
+    return {
+      ...fallback,
+      ...dictionary,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+function t(dictionary: Record<string, string> | undefined | null, key: string, fallback: string) {
+  return dictionary?.[key] || fallback;
+}
+
+function formatHeroTitleFromDictionary(value: string) {
+  return value.replace(/\.\s+/g, ".\n");
 }
 
 function getTripPass(trip: any) {
@@ -866,8 +905,15 @@ function HeaderControlButton(props: {
 
 function TravelerShellFrame(props: {
   latestTravelerTrip: any;
+  dictionary: Record<string, string>;
 }) {
   const hero = getHeroState(props.latestTravelerTrip);
+  const heroTitle =
+    hero.title === "Trip Active.\nPass Ready."
+      ? formatHeroTitleFromDictionary(t(props.dictionary, "home.hero.title", hero.title))
+      : hero.title;
+  const showQrLabel = t(props.dictionary, "home.cta.showQr", "Show My QR");
+  const passportMapLabel = t(props.dictionary, "home.cta.passportMap", "Open Passport Map");
 
   return (
     <header
@@ -1088,7 +1134,7 @@ function TravelerShellFrame(props: {
                 color: "#ffffff",
               }}
             >
-              {hero.title}
+              {heroTitle}
             </h2>
 
             <p
@@ -1174,7 +1220,7 @@ function TravelerShellFrame(props: {
                   <path d="M9 4.5v12.7M15 6.8v12.7" stroke="currentColor" strokeWidth="1.8" />
                   <circle cx="12" cy="11.2" r="1.7" fill="currentColor" />
                 </svg>
-                Open Passport Map
+                {passportMapLabel}
               </a>
             </div>
           </div>
@@ -1689,6 +1735,7 @@ function TravelerBottomNav() {
 function TravelerShell(props: {
   user: any;
   latestTravelerTrip: any;
+  dictionary: Record<string, string>;
 }) {
   return (
     <div
@@ -1699,7 +1746,7 @@ function TravelerShell(props: {
         paddingBottom: 18,
       }}
     >
-      <TravelerShellFrame latestTravelerTrip={props.latestTravelerTrip} />
+      <TravelerShellFrame latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
       <TravelerPassCard user={props.user} latestTravelerTrip={props.latestTravelerTrip} />
       <TravelerCompactStatusRow latestTravelerTrip={props.latestTravelerTrip} />
       <TravelerReassuranceAndJourney latestTravelerTrip={props.latestTravelerTrip} />
@@ -1710,6 +1757,7 @@ function TravelerShell(props: {
 
 export default async function HomePage() {
   const user = await getCurrentUser();
+  const dictionary = await getTravelerDictionary(user?.preferredLanguage || "en");
 
   const userRole = user?.primaryRole || user?.role || "";
 
@@ -1759,7 +1807,7 @@ export default async function HomePage() {
             </Section>
           ) : null}
 
-          <TravelerShell user={user} latestTravelerTrip={latestTravelerTrip} />
+          <TravelerShell user={user} latestTravelerTrip={latestTravelerTrip} dictionary={dictionary} />
         </>
       ) : (
         <>
