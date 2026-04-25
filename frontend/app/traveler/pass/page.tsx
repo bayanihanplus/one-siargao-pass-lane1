@@ -2,11 +2,89 @@ import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth"
 import { getPreferredTravelerTrip } from "../../../src/lib/travelerTripSelection";
 import { QRCodeSVG } from "qrcode.react";
 
+type TravelerDictionary = Record<string, string>;
+
+const passDictionaryFallback: TravelerDictionary = {
+  "pass.header.eyebrow": "Official Traveler Pass",
+  "pass.header.title": "OSP Pass",
+  "pass.header.body": "View your issued pass, QR credential, trip status, and Passport Map bridge.",
+  "pass.nav.home": "Home",
+  "pass.nav.myTrips": "My Trips",
+  "pass.nav.passportMap": "Passport Map",
+  "pass.nav.logout": "Logout",
+  "pass.accessNote.title": "Pass Access Note",
+  "pass.accessNote.body1": "This page uses the authenticated session to load the traveler pass view.",
+  "pass.accessNote.body2": "If an issued pass already exists, it is prioritized. Otherwise the latest traveler trip is checked for pass eligibility.",
+  "pass.loadError.title": "Load Error",
+  "pass.empty.title": "No Trips Available",
+  "pass.empty.body": "No traveler trip is available yet for pass viewing.",
+  "pass.readiness.sectionTitle": "Pass Readiness",
+  "pass.readiness.noTrip.title": "No Trip Available",
+  "pass.readiness.noTrip.body": "No traveler trip is available yet for pass viewing.",
+  "pass.readiness.ready.title": "Pass Ready",
+  "pass.readiness.ready.body": "Your pass is on file and ready for operational use.",
+  "pass.readiness.onRecord.title": "Pass On Record",
+  "pass.readiness.pending.title": "Pass Pending",
+  "pass.readiness.pending.body": "Your traveler pass is not yet available. Check the status summary below for the next requirement.",
+  "pass.qr.sectionTitle": "QR Credential",
+  "pass.qr.activeLabel": "Active Pass QR Credential",
+  "pass.qr.notReady": "QR is on record but not ready for operational use yet.",
+  "pass.qr.unavailable": "QR token is not available for this pass yet.",
+  "pass.actionRequired.title": "Action Required",
+  "pass.blocked.title": "Pass Blocked",
+  "pass.spm.sectionTitle": "Siargao Passport Map",
+  "pass.spm.eyebrow": "Second Screen",
+  "pass.spm.title": "Continue to your Passport Map",
+  "pass.spm.body": "Your SPM trail progress uses governed OSP QR, stamp, pass, and trip records when available. Preview layout cards may appear only to preserve the approved map geometry.",
+  "pass.spm.cta": "Open Siargao Passport Map",
+  "pass.status.sectionTitle": "Key Status Summary",
+};
+
+async function getTravelerDictionary(languageCode?: string | null): Promise<TravelerDictionary> {
+  try {
+    const res = await fetch(`${getApiBaseUrl()}/language-packs/${encodeURIComponent(languageCode || "en")}/dictionary?scope=traveler`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) return passDictionaryFallback;
+
+    const payload = await res.json();
+    const dictionary = payload?.dictionary;
+
+    if (!dictionary || typeof dictionary !== "object") return passDictionaryFallback;
+
+    return {
+      ...passDictionaryFallback,
+      ...dictionary,
+    };
+  } catch {
+    return passDictionaryFallback;
+  }
+}
+
+function t(dictionary: TravelerDictionary, key: string, fallback: string) {
+  return dictionary?.[key] || fallback;
+}
+
 async function getPassView() {
   const baseUrl = getApiBaseUrl();
 
   try {
     const token = await requireAccessToken();
+
+    let user: any = null;
+
+    const userRes = await fetch(`${baseUrl}/auth/me`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (userRes.ok) {
+      user = await userRes.json();
+    }
 
     const listRes = await fetch(`${baseUrl}/trips`, {
       cache: "no-store",
@@ -20,6 +98,7 @@ async function getPassView() {
       return {
         error: `Failed to load traveler trips: HTTP ${listRes.status}`,
         trip: null,
+        user,
       };
     }
 
@@ -30,6 +109,7 @@ async function getPassView() {
       return {
         error: null,
         trip: null,
+        user,
       };
     }
 
@@ -54,15 +134,17 @@ async function getPassView() {
       return {
         error: `Failed to load pass view: HTTP ${tripRes.status}`,
         trip: null,
+        user,
       };
     }
 
     const trip = await tripRes.json();
-    return { trip, error: null };
+    return { trip, error: null, user };
   } catch (error: any) {
     return {
       error: error?.message || "Unknown pass load failure",
       trip: null,
+      user: null,
     };
   }
 }
@@ -184,34 +266,34 @@ function buildPassUsageWarnings(trip: any) {
   return warnings;
 }
 
-function getPassReadinessSummary(trip: any, passUsageWarnings: string[]) {
+function getPassReadinessSummary(trip: any, passUsageWarnings: string[], dictionary: TravelerDictionary) {
   if (!trip) {
     return {
-      title: "No Trip Available",
-      body: "No traveler trip is available yet for pass viewing.",
+      title: t(dictionary, "pass.readiness.noTrip.title", "No Trip Available"),
+      body: t(dictionary, "pass.readiness.noTrip.body", "No traveler trip is available yet for pass viewing."),
       accent: "#64748b",
     };
   }
 
   if (trip?.pass && passUsageWarnings.length === 0) {
     return {
-      title: "Pass Ready",
-      body: "Your pass is on file and ready for operational use.",
+      title: t(dictionary, "pass.readiness.ready.title", "Pass Ready"),
+      body: t(dictionary, "pass.readiness.ready.body", "Your pass is on file and ready for operational use."),
       accent: "#16a34a",
     };
   }
 
   if (trip?.pass && passUsageWarnings.length > 0) {
     return {
-      title: "Pass On Record",
+      title: t(dictionary, "pass.readiness.onRecord.title", "Pass On Record"),
       body: passUsageWarnings[0],
       accent: "#b45309",
     };
   }
 
   return {
-    title: "Pass Pending",
-    body: "Your traveler pass is not yet available. Check the status summary below for the next requirement.",
+    title: t(dictionary, "pass.readiness.pending.title", "Pass Pending"),
+    body: t(dictionary, "pass.readiness.pending.body", "Your traveler pass is not yet available. Check the status summary below for the next requirement."),
     accent: "#b45309",
   };
 }
@@ -282,10 +364,19 @@ function PassNavIcon(props: { kind: "HOME" | "TRIPS" | "MAP" | "LOGOUT" }) {
 }
 
 export default async function TravelerPassPage() {
-  const { trip, error } = await getPassView();
+  const { trip, error, user } = await getPassView();
+  const dictionary = await getTravelerDictionary(user?.preferredLanguage || "en");
   const gateReasons = trip ? buildPassGateReasons(trip) : [];
   const passUsageWarnings = trip ? buildPassUsageWarnings(trip) : [];
-  const readiness = getPassReadinessSummary(trip, passUsageWarnings);
+  const readiness = getPassReadinessSummary(trip, passUsageWarnings, dictionary);
+
+  const headerEyebrow = t(dictionary, "pass.header.eyebrow", "Official Traveler Pass");
+  const headerTitle = t(dictionary, "pass.header.title", "OSP Pass");
+  const headerBody = t(dictionary, "pass.header.body", "View your issued pass, QR credential, trip status, and Passport Map bridge.");
+  const navHome = t(dictionary, "pass.nav.home", "Home");
+  const navMyTrips = t(dictionary, "pass.nav.myTrips", "My Trips");
+  const navPassportMap = t(dictionary, "pass.nav.passportMap", "Passport Map");
+  const navLogout = t(dictionary, "pass.nav.logout", "Logout");
 
   return (
     <main
@@ -318,7 +409,7 @@ export default async function TravelerPassPage() {
               marginBottom: 8,
             }}
           >
-            Official Traveler Pass
+            {headerEyebrow}
           </div>
           <h1
             style={{
@@ -329,10 +420,10 @@ export default async function TravelerPassPage() {
               color: "#19305a",
             }}
           >
-            OSP Pass
+            {headerTitle}
           </h1>
           <p style={{ marginTop: 9, marginBottom: 0, color: "#64748b", lineHeight: 1.4, fontSize: 14 }}>
-            View your issued pass, QR credential, trip status, and Passport Map bridge.
+            {headerBody}
           </p>
         </div>
       </div>
@@ -346,10 +437,10 @@ export default async function TravelerPassPage() {
         }}
       >
         {[
-          { href: "/", label: "Home", icon: <PassNavIcon kind="HOME" /> },
-          { href: "/traveler/trips", label: "My Trips", icon: <PassNavIcon kind="TRIPS" /> },
-          { href: "/traveler/passport-map", label: "Passport Map", icon: <PassNavIcon kind="MAP" /> },
-          { href: "/logout", label: "Logout", icon: <PassNavIcon kind="LOGOUT" /> },
+          { href: "/", label: navHome, icon: <PassNavIcon kind="HOME" /> },
+          { href: "/traveler/trips", label: navMyTrips, icon: <PassNavIcon kind="TRIPS" /> },
+          { href: "/traveler/passport-map", label: navPassportMap, icon: <PassNavIcon kind="MAP" /> },
+          { href: "/logout", label: navLogout, icon: <PassNavIcon kind="LOGOUT" /> },
         ].map((item) => (
           <a
             key={item.href}
@@ -377,30 +468,30 @@ export default async function TravelerPassPage() {
         ))}
       </div>
 
-      <Section title="Pass Access Note">
+      <Section title={t(dictionary, "pass.accessNote.title", "Pass Access Note")}>
         <p style={{ marginTop: 0 }}>
-          This page uses the authenticated session to load the traveler pass view.
+          {t(dictionary, "pass.accessNote.body1", "This page uses the authenticated session to load the traveler pass view.")}
         </p>
         <p style={{ marginBottom: 0 }}>
-          If an issued pass already exists, it is prioritized. Otherwise the latest traveler trip is checked for pass eligibility.
+          {t(dictionary, "pass.accessNote.body2", "If an issued pass already exists, it is prioritized. Otherwise the latest traveler trip is checked for pass eligibility.")}
         </p>
       </Section>
 
       {error ? (
-        <Section title="Load Error">
+        <Section title={t(dictionary, "pass.loadError.title", "Load Error")}>
           <p style={{ margin: 0 }}>{error}</p>
         </Section>
       ) : null}
 
       {!trip ? (
-        <Section title="No Trips Available">
+        <Section title={t(dictionary, "pass.empty.title", "No Trips Available")}>
           <p style={{ margin: 0 }}>
             No traveler trip is available yet for pass viewing.
           </p>
         </Section>
       ) : (
         <>
-          <Section title="Pass Readiness">
+          <Section title={t(dictionary, "pass.readiness.sectionTitle", "Pass Readiness")}>
             <div
               style={{
                 borderLeft: `6px solid ${readiness.accent}`,
@@ -438,7 +529,7 @@ export default async function TravelerPassPage() {
             </div>
           </Section>
 
-          <Section title="QR Credential">
+          <Section title={t(dictionary, "pass.qr.sectionTitle", "QR Credential")}>
             {trip.pass?.qrCredential?.qrToken ? (
               <div style={{ marginBottom: 16 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, color: "#0e7490", fontWeight: 900 }}>
@@ -448,7 +539,7 @@ export default async function TravelerPassPage() {
                     <rect x="4" y="14" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
                     <path d="M14 14h2.5v2.5H19V20h-5v-6Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
                   </svg>
-                  Active Pass QR Credential
+                  {t(dictionary, "pass.qr.activeLabel", "Active Pass QR Credential")}
                 </div>
                 <div
                   style={{
@@ -472,17 +563,17 @@ export default async function TravelerPassPage() {
                 </div>
                 {passUsageWarnings.length > 0 ? (
                   <p style={{ marginTop: 12, marginBottom: 0, color: "#b45309", fontWeight: 600 }}>
-                    QR is on record but not ready for operational use yet.
+                    {t(dictionary, "pass.qr.notReady", "QR is on record but not ready for operational use yet.")}
                   </p>
                 ) : null}
               </div>
             ) : (
-              <p style={{ marginTop: 0 }}>QR token is not available for this pass yet.</p>
+              <p style={{ marginTop: 0 }}>{t(dictionary, "pass.qr.unavailable", "QR token is not available for this pass yet.")}</p>
             )}
           </Section>
 
           {passUsageWarnings.length > 0 ? (
-            <Section title="Action Required">
+            <Section title={t(dictionary, "pass.actionRequired.title", "Action Required")}>
               <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8 }}>
                 {passUsageWarnings.map((warning) => (
                   <li key={warning}>{warning}</li>
@@ -492,7 +583,7 @@ export default async function TravelerPassPage() {
           ) : null}
 
           {!trip.pass && gateReasons.length > 0 ? (
-            <Section title="Pass Blocked">
+            <Section title={t(dictionary, "pass.blocked.title", "Pass Blocked")}>
               <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.8 }}>
                 {gateReasons.map((reason) => (
                   <li key={reason}>{reason}</li>
@@ -502,7 +593,7 @@ export default async function TravelerPassPage() {
           ) : null}
 
 
-          <Section title="Siargao Passport Map">
+          <Section title={t(dictionary, "pass.spm.sectionTitle", "Siargao Passport Map")}>
             <div
               style={{
                 border: "1px solid #b8e7ef",
@@ -516,13 +607,13 @@ export default async function TravelerPassPage() {
             >
               <div>
                 <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.08em", color: "#0e7490", textTransform: "uppercase" }}>
-                  Second Screen
+                  {t(dictionary, "pass.spm.eyebrow", "Second Screen")}
                 </div>
                 <h2 style={{ margin: "6px 0 0", fontSize: 24, lineHeight: 1.05 }}>
-                  Continue to your Passport Map
+                  {t(dictionary, "pass.spm.title", "Continue to your Passport Map")}
                 </h2>
                 <p style={{ margin: "8px 0 0", color: "#475569", lineHeight: 1.45, fontSize: 14 }}>
-                  Your SPM trail progress uses governed OSP QR, stamp, pass, and trip records when available. Preview layout cards may appear only to preserve the approved map geometry.
+                  {t(dictionary, "pass.spm.body", "Your SPM trail progress uses governed OSP QR, stamp, pass, and trip records when available. Preview layout cards may appear only to preserve the approved map geometry.")}
                 </p>
               </div>
 
@@ -548,12 +639,12 @@ export default async function TravelerPassPage() {
                   <path d="M9 4.5v12.7M15 6.8v12.7" stroke="currentColor" strokeWidth="1.8" />
                   <circle cx="12" cy="11.2" r="1.4" fill="currentColor" />
                 </svg>
-                Open Siargao Passport Map
+                {t(dictionary, "pass.spm.cta", "Open Siargao Passport Map")}
               </a>
             </div>
           </Section>
 
-          <Section title="Key Status Summary">
+          <Section title={t(dictionary, "pass.status.sectionTitle", "Key Status Summary")}>
             <div
               style={{
                 display: "grid",
