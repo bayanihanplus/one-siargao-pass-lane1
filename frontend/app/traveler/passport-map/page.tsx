@@ -342,139 +342,158 @@ function SpmContinueJourneyPreview() {
     <section
       aria-label="Preview-only continue journey card"
       style={{
-        marginTop: 18,
-        marginBottom: 8,
+        marginTop: 16,
+        marginBottom: 96,
       }}
     >
       <div
         style={{
-          borderRadius: 28,
-          background:
-            "linear-gradient(135deg, #14264b 0%, #17446f 52%, #13a8b7 100%)",
-          color: "#ffffff",
-          padding: 18,
-          boxShadow: "0 16px 34px rgba(20,38,75,0.18)",
+          minHeight: 112,
+          borderRadius: 22,
+          background: "rgba(255,255,255,0.97)",
+          border: "1px solid rgba(203,213,225,0.74)",
+          color: "#14264b",
+          boxShadow: "0 12px 28px rgba(15,23,42,0.07)",
           position: "relative",
           overflow: "hidden",
+          display: "grid",
+          gridTemplateColumns: "42% 1fr",
         }}
       >
         <div
           aria-hidden="true"
           style={{
-            position: "absolute",
-            right: -28,
-            top: -36,
-            width: 132,
-            height: 132,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.12)",
+            position: "relative",
+            minHeight: 112,
+            background:
+              "linear-gradient(135deg, #7fd2eb 0%, #dff7ff 35%, #bce8d6 68%, #f7dca4 100%)",
+            borderRight: "1px solid rgba(226,232,240,0.82)",
           }}
-        />
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            right: 22,
-            bottom: -34,
-            width: 110,
-            height: 110,
-            borderRadius: "50%",
-            background: "rgba(242,183,5,0.22)",
-          }}
-        />
-
-        <div style={{ position: "relative", zIndex: 2 }}>
+        >
           <div
             style={{
-              fontSize: 11,
-              fontWeight: 950,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.72)",
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(20,38,75,0.10) 100%)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: 13,
+              bottom: 12,
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              background: "#13a8b7",
+              color: "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 17,
+              boxShadow: "0 9px 18px rgba(19,168,183,0.22)",
             }}
           >
-            Continue Your Journey
+            ☆
+          </div>
+        </div>
+
+        <div
+          style={{
+            padding: "12px 12px 12px",
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              color: "#13a8b7",
+              fontSize: 9,
+              lineHeight: 1,
+              fontWeight: 950,
+              letterSpacing: "0.03em",
+            }}
+          >
+            Recommended Next Stop
           </div>
 
           <h2
             style={{
-              margin: "8px 0 0",
+              margin: "5px 0 0",
               fontFamily: 'Georgia, "Times New Roman", Times, serif',
-              fontSize: 25,
-              lineHeight: 1.05,
+              fontSize: 20,
+              lineHeight: 1.02,
               letterSpacing: "-0.04em",
+              color: "#14264b",
               fontWeight: 900,
             }}
           >
-            Next preview stop:
-            <br />
             Daku Island
           </h2>
 
           <p
             style={{
-              margin: "10px 0 0",
-              maxWidth: 250,
-              fontSize: 13,
-              lineHeight: 1.35,
-              fontWeight: 750,
-              color: "rgba(255,255,255,0.78)",
+              margin: "4px 0 0",
+              color: "#6b7890",
+              fontSize: 10.5,
+              lineHeight: 1.22,
+              fontWeight: 700,
             }}
           >
-            This card is visual-only until SPM is connected to governed trail,
-            QR, booking, and Passport Stamp records.
+            Crystal clear waters and island vibes
           </p>
 
           <div
             style={{
-              marginTop: 14,
+              marginTop: 7,
               display: "flex",
               alignItems: "center",
-              gap: 10,
-              flexWrap: "wrap",
+              justifyContent: "space-between",
+              gap: 8,
             }}
           >
+            <span
+              style={{
+                color: "#6b7890",
+                fontSize: 9,
+                fontWeight: 800,
+                whiteSpace: "nowrap",
+              }}
+            >
+              About 15 min by boat from GL
+            </span>
+
             <a
               href="/traveler/trips"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                minHeight: 42,
-                borderRadius: 999,
-                background: "#ffffff",
-                color: "#14264b",
-                padding: "0 16px",
-                fontSize: 13,
+                minHeight: 32,
+                borderRadius: 10,
+                background: "#13a8b7",
+                color: "#ffffff",
+                padding: "0 11px",
+                fontSize: 10,
                 fontWeight: 950,
                 textDecoration: "none",
-                boxShadow: "0 8px 18px rgba(15,23,42,0.14)",
+                whiteSpace: "nowrap",
+                boxShadow: "0 8px 16px rgba(19,168,183,0.20)",
               }}
             >
-              View Trips
+              Explore My Map ›
             </a>
-
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                minHeight: 42,
-                borderRadius: 999,
-                border: "1px solid rgba(255,255,255,0.36)",
-                color: "rgba(255,255,255,0.82)",
-                padding: "0 14px",
-                fontSize: 12,
-                fontWeight: 900,
-              }}
-            >
-              No stamp action yet
-            </span>
           </div>
         </div>
       </div>
     </section>
   );
 }
+
+
 
 function SpmVerifiedStopsPreview() {
   return (
