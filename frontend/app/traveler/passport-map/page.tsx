@@ -173,84 +173,125 @@ export default function TravelerPassportMapPage() {
             >
               <div
                 style={{
-                  maxWidth: 265,
                   position: "relative",
-                  zIndex: 2,
+                  zIndex: 3,
+                  maxWidth: 198,
+                  paddingTop: 4,
                 }}
               >
                 <div
                   style={{
-                    fontFamily:
-                      '"Bradley Hand", "Segoe Print", "Comic Sans MS", cursive',
-                    fontSize: 22,
-                    lineHeight: 1,
-                    color: "#14264b",
-                    letterSpacing: "-0.02em",
-                    transform: "rotate(-2deg)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 4,
+                    marginBottom: 5,
+                    transform: "rotate(-0.25deg)",
+                    transformOrigin: "left center",
                   }}
                 >
-                  Hello, Explorer! <span style={{ fontSize: 23 }}>🌴</span>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontFamily:
+                        '"Snell Roundhand", "Apple Chancery", "Bradley Hand", "Segoe Script", cursive',
+                      fontSize: 14,
+                      lineHeight: 1,
+                      fontWeight: 400,
+                      color: "#14264b",
+                      letterSpacing: "-0.004em",
+                    }}
+                  >
+                    Hello, Explorer!
+                  </p>
+
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      fontSize: 12,
+                      lineHeight: 1,
+                      transform: "rotate(7deg)",
+                      display: "inline-block",
+                      marginTop: -1,
+                    }}
+                  >
+                    🌴
+                  </span>
                 </div>
 
                 <h2
                   style={{
-                    margin: "18px 0 0",
+                    margin: 0,
                     fontFamily: 'Georgia, "Times New Roman", Times, serif',
-                    fontSize: 42,
-                    lineHeight: 1.03,
+                    fontSize: 27,
+                    lineHeight: 1.02,
                     letterSpacing: "-0.052em",
                     color: "#14264b",
                     fontWeight: 900,
                   }}
                 >
-                  Your Siargao
-                  <br />
-                  Journey,
-                  <br />
-                  <span
+                  Your Siargao Journey,
+                </h2>
+
+                <div
+                  style={{
+                    position: "relative",
+                    display: "inline-block",
+                    marginTop: -1,
+                    paddingBottom: 6,
+                  }}
+                >
+                  <div
                     style={{
-                      position: "relative",
-                      display: "inline-block",
                       fontFamily:
-                        '"Bradley Hand", "Segoe Print", "Comic Sans MS", cursive',
-                      fontSize: 53,
-                      lineHeight: 0.92,
+                        '"Snell Roundhand", "Apple Chancery", "Bradley Hand", "Segoe Script", cursive',
+                      fontSize: 32,
+                      lineHeight: 0.9,
                       fontWeight: 400,
-                      color: "#159aaa",
-                      letterSpacing: "-0.06em",
-                      transform: "rotate(-2deg)",
+                      color: "#0f9aa6",
+                      letterSpacing: "-0.014em",
+                      transform: "rotate(-0.6deg)",
+                      transformOrigin: "left center",
                     }}
                   >
                     Mapped
-                    <span
-                      aria-hidden="true"
-                      style={{
-                        position: "absolute",
-                        left: 2,
-                        right: -10,
-                        bottom: -8,
-                        height: 4,
-                        borderRadius: 999,
-                        background: "#f2b705",
-                        transform: "rotate(-8deg)",
-                      }}
+                  </div>
+
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 120 14"
+                    width="88"
+                    height="12"
+                    style={{
+                      position: "absolute",
+                      left: 2,
+                      bottom: 0,
+                      pointerEvents: "none",
+                    }}
+                  >
+                    <path
+                      d="M4 8 C28 12, 72 12, 116 5"
+                      fill="none"
+                      stroke="#f2bf38"
+                      strokeWidth="2.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
-                  </span>
-                </h2>
+                  </svg>
+                </div>
 
                 <p
                   style={{
-                    margin: "32px 0 0",
-                    color: "#53657f",
-                    fontSize: 16,
-                    lineHeight: 1.45,
-                    fontWeight: 750,
-                    maxWidth: 250,
+                    margin: "3px 0 0",
+                    maxWidth: 176,
+                    color: "#6c7890",
+                    fontFamily: "Arial, Helvetica, sans-serif",
+                    fontSize: 12,
+                    lineHeight: 1.3,
+                    fontWeight: 400,
+                    letterSpacing: "-0.003em",
                   }}
                 >
-                  Collect stamps. Unlock trails.
-                  <br />
-                  Create memories that last.
+                  Collect stamps. Unlock trails. Create memories that last.
                 </p>
               </div>
 
@@ -854,24 +895,31 @@ function SpmLegendAndStatus() {
       </div>
 
       <div
+        aria-label="SPM preview journey metrics"
         style={{
-          marginTop: 16,
+          marginTop: 78,
           display: "grid",
-          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-          gap: 10,
+          gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+          gap: 0,
+          width: "100%",
+          borderRadius: 17,
+          border: "1px solid rgba(203,213,225,0.72)",
+          background: "rgba(255,255,255,0.96)",
+          boxShadow: "0 10px 24px rgba(15,23,42,0.06)",
+          overflow: "hidden",
         }}
       >
-        <StatusCard value="5" label="Trails Unlocked" />
-        <StatusCard value="3" label="Places Verified" />
-        <StatusCard value="42%" label="Journey Progress" />
-        <StatusCard value="Active" label="Pass Status" />
+        <StatusCard icon="⚑" value="5" label="Trails\\nUnlocked" tone="#13a8b7" withDivider />
+        <StatusCard icon="♙" value="3" label="Places\\nVerified" tone="#59aa61" withDivider />
+        <StatusCard icon="▥" value="42%" label="Journey\\nProgress" tone="#168fe3" withDivider />
+        <StatusCard icon="▣" value="Pass\\nActive" label="Valid until\\nMay 24, 2025" tone="#f2b705" />
       </div>
 
       <p
         style={{
-          margin: "10px 2px 0",
-          fontSize: 10,
-          lineHeight: 1.35,
+          margin: "7px 2px 0",
+          fontSize: 9.5,
+          lineHeight: 1.28,
           color: "#718096",
           fontWeight: 700,
         }}
@@ -940,141 +988,136 @@ function LegendRouteItem(props: {
 }
 
 function StatusCard(props: {
+  icon: string;
   value: string;
   label: string;
+  tone: string;
+  withDivider?: boolean;
 }) {
+  const valueLines = props.value.split("\\n");
+  const labelLines = props.label.split("\\n");
+
   return (
     <div
       style={{
-        minHeight: 72,
-        borderRadius: 18,
-        background: "rgba(255,255,255,0.92)",
-        border: "1px solid rgba(203,213,225,0.64)",
-        boxShadow: "0 8px 22px rgba(15,23,42,0.05)",
-        padding: "12px 10px",
+        minWidth: 0,
+        minHeight: 48,
+        padding: "6px 4px",
+        borderRight: props.withDivider ? "1px solid rgba(203,213,225,0.78)" : "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 4,
+        textAlign: "left",
       }}
     >
       <div
+        aria-hidden="true"
         style={{
-          fontFamily: 'Georgia, "Times New Roman", Times, serif',
-          fontSize: 24,
-          lineHeight: 1,
-          fontWeight: 900,
-          color: "#14264b",
-          letterSpacing: "-0.04em",
-        }}
-      >
-        {props.value}
-      </div>
-      <div
-        style={{
-          marginTop: 7,
+          width: 22,
+          height: 22,
+          borderRadius: "50%",
+          background: props.tone,
+          color: "#ffffff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           fontSize: 10,
-          lineHeight: 1.2,
           fontWeight: 900,
-          letterSpacing: "0.04em",
-          textTransform: "uppercase",
-          color: "#68758c",
+          flex: "0 0 22px",
+          boxShadow: "0 5px 10px rgba(15,23,42,0.10)",
         }}
       >
-        {props.label}
+        {props.icon}
+      </div>
+
+      <div style={{ minWidth: 0 }}>
+        <div
+          style={{
+            color: "#14264b",
+            fontFamily: 'Georgia, "Times New Roman", Times, serif',
+            fontSize: valueLines.length > 1 ? 10.5 : 17,
+            lineHeight: valueLines.length > 1 ? 0.96 : 1,
+            fontWeight: 900,
+            letterSpacing: "-0.04em",
+            whiteSpace: "normal",
+          }}
+        >
+          {valueLines.map((line) => (
+            <span key={line} style={{ display: "block" }}>
+              {line}
+            </span>
+          ))}
+        </div>
+
+        <div
+          style={{
+            marginTop: 2,
+            color: props.value.includes("Pass") ? "#1fa45b" : "#66738b",
+            fontSize: props.value.includes("Pass") ? 6.3 : 6.8,
+            lineHeight: 1.08,
+            fontWeight: 850,
+            letterSpacing: "0.01em",
+          }}
+        >
+          {labelLines.map((line) => (
+            <span key={line} style={{ display: "block" }}>
+              {line}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
+
 
 function SpmMapVisualPreview() {
   return (
     <div
-      aria-label="Visual-only Siargao Passport Map preview. Not live map data."
+      aria-hidden="true"
       style={{
         position: "absolute",
-        right: -34,
-        top: 6,
-        width: 260,
-        height: 404,
+        left: 0,
+        right: 0,
+        top: 0,
+        height: 430,
         zIndex: 1,
+        borderRadius: "24px 24px 0 0",
+        overflow: "hidden",
         pointerEvents: "none",
       }}
     >
-      <svg viewBox="0 0 260 404" width="260" height="404" fill="none">
-        <defs>
-          <filter id="spmPinShadow" x="-40%" y="-40%" width="180%" height="180%">
-            <feDropShadow dx="0" dy="4" stdDeviation="4" floodColor="#0f172a" floodOpacity="0.22" />
-          </filter>
-          <linearGradient id="spmSea" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#d8f6fb" />
-            <stop offset="52%" stopColor="#85ddeb" />
-            <stop offset="100%" stopColor="#34b8cc" />
-          </linearGradient>
-          <linearGradient id="spmIsland" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#dff6b5" />
-            <stop offset="44%" stopColor="#8fc36b" />
-            <stop offset="100%" stopColor="#4f944c" />
-          </linearGradient>
-        </defs>
+      <img
+        src="/osp/spm-hero-banner-bg-approved.png"
+        alt=""
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          objectPosition: "center center",
+          transform: "scale(1)",
+          transformOrigin: "center center",
+          display: "block",
+        }}
+      />
 
-        <path
-          d="M40 42C78 2 165-7 211 44C256 94 247 185 223 249C199 313 142 392 83 376C24 360 7 267 15 195C23 123 2 82 40 42Z"
-          fill="url(#spmSea)"
-          opacity="0.68"
-        />
-        <path
-          d="M147 14C183 33 198 73 194 108C190 143 218 161 213 202C208 243 175 266 156 303C137 340 101 370 70 350C39 330 54 285 70 250C86 215 70 188 85 157C100 126 127 113 122 78C117 43 111-5 147 14Z"
-          fill="#f7f0b3"
-          opacity="0.95"
-        />
-        <path
-          d="M148 25C178 42 188 77 184 106C180 138 205 158 198 196C192 232 162 255 146 288C129 322 100 342 77 326C54 310 68 274 82 245C96 216 82 190 96 162C110 134 135 121 130 88C125 55 119 8 148 25Z"
-          fill="url(#spmIsland)"
-        />
-        <path
-          d="M138 36C157 54 159 83 148 104C137 125 162 145 160 170C158 195 130 206 124 232C118 258 99 280 83 271C67 262 81 238 91 219C101 200 83 183 96 162C109 141 127 129 125 100C123 71 119 18 138 36Z"
-          fill="#6bab55"
-          opacity="0.58"
-        />
-
-        <path d="M79 342C42 352 25 376 17 398" stroke="#f6ffff" strokeWidth="7" strokeLinecap="round" opacity="0.82" />
-        <path d="M35 328C18 330 10 341 3 354" stroke="#f6ffff" strokeWidth="5" strokeLinecap="round" opacity="0.75" />
-        <path d="M205 83C235 63 250 36 258 10" stroke="#f6ffff" strokeWidth="6" strokeLinecap="round" opacity="0.7" />
-
-        <path
-          d="M69 328C98 293 145 294 154 255C162 220 193 210 184 176C176 144 147 137 154 102C158 76 176 58 187 43"
-          stroke="#1976d2"
-          strokeWidth="5"
-          strokeLinecap="round"
-          strokeDasharray="7 8"
-          opacity="0.9"
-        />
-        <path
-          d="M69 328C98 293 145 294 154 255C162 220 193 210 184 176C176 144 147 137 154 102C158 76 176 58 187 43"
-          stroke="#ffffff"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeDasharray="7 8"
-          opacity="0.85"
-        />
-
-        <PreviewPin x={154} y={255} type="completed" />
-        <PreviewPin x={184} y={176} type="completed" />
-        <PreviewPin x={69} y={328} type="completed" />
-        <PreviewPin x={70} y={332} type="available" />
-        <PreviewPin x={154} y={102} type="locked" />
-        <PreviewPin x={187} y={43} type="locked" />
-
-        <path d="M218 317l13 31 13-31-13 8-13-8Z" fill="#12375d" opacity="0.72" />
-        <path d="M231 302v58M207 331h48" stroke="#12375d" strokeWidth="2" opacity="0.72" />
-      </svg>
-
-      <MapLabel text="Alegria Beach" top={42} right={48} />
-      <MapLabel text="Pacifico" top={125} right={25} />
-      <MapLabel text="Magpupungko" top={211} right={58} />
-      <MapLabel text="Cloud 9" top={260} right={26} />
-      <MapLabel text="General Luna" top={317} right={70} />
-      <MapLabel text="Daku Island" top={353} right={154} />
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: 92,
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(246,251,253,0.88) 72%, rgba(246,251,253,1) 100%)",
+        }}
+      />
     </div>
   );
 }
+
 
 function PreviewPin(props: {
   x: number;
