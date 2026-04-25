@@ -678,33 +678,61 @@ function TravelerJourneyCard(props: {
     <a
       href={props.href}
       style={{
-        border: "1px solid #e6e8ed",
-        borderRadius: 18,
+        border: "1px solid #dbe8ef",
+        borderRadius: 20,
         background: "#ffffff",
-        padding: 12,
-        minHeight: 124,
+        padding: "13px 11px",
+        minHeight: 134,
         textDecoration: "none",
-        boxShadow: "0 8px 26px rgba(15,23,42,0.04)",
+        boxShadow: "0 10px 28px rgba(15,23,42,0.055)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        color: "inherit",
       }}
     >
       <div
         style={{
-          width: 36,
-          height: 36,
-          borderRadius: 10,
-          background: "#f4f7fb",
-          color: "#60759a",
+          width: 44,
+          height: 44,
+          borderRadius: 14,
+          background: "linear-gradient(180deg, #f7fcff 0%, #edf8fc 100%)",
+          border: "1px solid #d8e7ef",
+          color: "#16bfd3",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.72)",
         }}
       >
         {props.icon}
       </div>
-      <div style={{ marginTop: 10, fontSize: 12, fontWeight: 700, lineHeight: 1.15, color: "#1d2f5c" }}>
-        {props.title}
+
+      <div>
+        <div
+          style={{
+            marginTop: 10,
+            fontSize: 12,
+            fontWeight: 950,
+            lineHeight: 1.1,
+            color: "#19305a",
+            letterSpacing: "-0.015em",
+          }}
+        >
+          {props.title}
+        </div>
+        <div
+          style={{
+            marginTop: 4,
+            fontSize: 9.5,
+            fontWeight: 700,
+            lineHeight: 1.25,
+            color: "#64748b",
+          }}
+        >
+          {props.subtitle}
+        </div>
       </div>
-      <div style={{ marginTop: 3, fontSize: 10, lineHeight: 1.2, color: "#64748b" }}>{props.subtitle}</div>
     </a>
   );
 }
@@ -1354,9 +1382,10 @@ function TravelerReassuranceAndJourney(props: {
         <h3
           style={{
             margin: 0,
-            fontSize: 16,
-            fontWeight: 700,
+            fontSize: 17,
+            fontWeight: 950,
             color: "#1d2f5c",
+            letterSpacing: "-0.025em",
           }}
         >
           Continue Your Journey
@@ -1367,13 +1396,13 @@ function TravelerReassuranceAndJourney(props: {
             marginTop: 12,
             display: "grid",
             gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-            gap: 8,
+            gap: 9,
           }}
         >
           <TravelerJourneyCard
             href="/traveler/trips"
             title="Trips"
-            subtitle="View Your Trips"
+            subtitle="Plans & records"
             icon={
               <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
                 <rect x="4" y="7" width="16" height="11" rx="2" stroke="currentColor" strokeWidth="1.8" />
@@ -1383,9 +1412,9 @@ function TravelerReassuranceAndJourney(props: {
           />
 
           <TravelerJourneyCard
-            href="/traveler/pass"
+            href="/traveler/trips"
             title="Payments"
-            subtitle="Receipts & History"
+            subtitle="Status & receipts"
             icon={
               <svg viewBox="0 0 24 24" width="28" height="28" fill="none" style={{ color: "#16bfd3" }}>
                 <rect x="3.5" y="6" width="17" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
@@ -1397,7 +1426,7 @@ function TravelerReassuranceAndJourney(props: {
           <TravelerJourneyCard
             href="/traveler/passport-map"
             title="Passport Map"
-            subtitle="Explore Siargao"
+            subtitle="Trails & stamps"
             icon={
               <svg viewBox="0 0 24 24" width="28" height="28" fill="none" style={{ color: "#16bfd3" }}>
                 <path
@@ -1412,9 +1441,9 @@ function TravelerReassuranceAndJourney(props: {
           />
 
           <TravelerJourneyCard
-            href="/traveler/trips"
+            href="/traveler/pass"
             title="Checkpoints"
-            subtitle="Entry Locations"
+            subtitle="QR & access state"
             icon={
               <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
                 <path
