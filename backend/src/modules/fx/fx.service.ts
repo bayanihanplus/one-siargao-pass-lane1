@@ -76,6 +76,30 @@ export class FxService {
   }
 
 
+
+  async getOrCreateBookingDisplaySnapshot(input: FxSnapshotInput) {
+    const displayCurrencyCode = this.normalizeCurrencyCode(input.displayCurrencyCode);
+
+    const existing = await this.prisma.fxDisplaySnapshot.findFirst({
+      where: {
+        bookingId: input.bookingId ?? undefined,
+        paymentIntentId: input.paymentIntentId ?? null,
+        displayCurrencyCode,
+        snapshotReason: input.snapshotReason,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (existing) {
+      return existing;
+    }
+
+    return this.createDisplaySnapshot({
+      ...input,
+      displayCurrencyCode,
+    });
+  }
+
   async getOrCreatePaymentIntentDisplaySnapshot(input: FxSnapshotInput) {
     const displayCurrencyCode = this.normalizeCurrencyCode(input.displayCurrencyCode);
 

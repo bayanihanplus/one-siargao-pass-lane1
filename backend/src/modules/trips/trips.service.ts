@@ -3,10 +3,31 @@ import { PrismaService } from '../../database/prisma.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { AddTripMemberDto } from './dto/add-trip-member.dto';
 import { ClearanceStatus, RegistrationStatus, TripStatus } from '@prisma/client';
+import { FxService } from '../fx/fx.service';
 
 @Injectable()
 export class TripsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly fxService: FxService) {}
+
+  private serializeFxDisplaySnapshot(snapshot: any) {
+    if (!snapshot) return null;
+
+    return {
+      id: snapshot.id,
+      sourceAmountPhp: snapshot.sourceAmountPhp,
+      sourceCurrencyCode: snapshot.sourceCurrencyCode,
+      displayCurrencyCode: snapshot.displayCurrencyCode,
+      fxRate: snapshot.fxRate,
+      convertedDisplayAmount: snapshot.convertedDisplayAmount,
+      fxSource: snapshot.fxSource,
+      fxAsOf: snapshot.fxAsOf,
+      snapshotReason: snapshot.snapshotReason,
+      bookingId: snapshot.bookingId,
+      paymentIntentId: snapshot.paymentIntentId,
+      rateExpiresAt: snapshot.rateExpiresAt,
+      createdAt: snapshot.createdAt,
+    };
+  }
 
   async create(userId: string, dto: CreateTripDto) {
     return this.prisma.trip.create({
@@ -156,6 +177,20 @@ export class TripsService {
     const manifestMembers = trip.manifestMembers ?? [];
     const latestManifestMember = manifestMembers[0] ?? null;
 
+    const currentBookingFxDisplaySnapshot = currentLinkedBooking?.bookingTotalPhp
+      ? await this.fxService.getOrCreateBookingDisplaySnapshot({
+          sourceAmountPhp: currentLinkedBooking.bookingTotalPhp,
+          displayCurrencyCode: 'USD',
+          snapshotReason: 'TRIP_DETAIL_CURRENT_BOOKING_READ',
+          bookingId: currentLinkedBooking.id,
+          paymentIntentId: null,
+          metadataJson: {
+            surface: 'traveler_trip_detail',
+            mode: 'deterministic_dev_rate',
+          },
+        })
+      : null;
+
     return {
       id: trip.id,
       travelerUserId: trip.travelerUserId,
@@ -195,6 +230,7 @@ export class TripsService {
             bookingStatus: currentLinkedBooking.bookingStatus,
             bookingTotalPhp: currentLinkedBooking.bookingTotalPhp,
             currencyCode: currentLinkedBooking.currencyCode,
+            fxDisplaySnapshot: this.serializeFxDisplaySnapshot(currentBookingFxDisplaySnapshot),
             createdAt: currentLinkedBooking.createdAt,
             updatedAt: currentLinkedBooking.updatedAt,
           }
