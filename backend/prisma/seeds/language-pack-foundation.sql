@@ -62,7 +62,10 @@ on conflict ("languagePackId","translationKeyId") do update set
 
 insert into "LanguageTranslationValue" ("id","languagePackId","translationKeyId","value","status","createdAt","updatedAt") values
 ('ltv_fil_ltk_settings_title','lang_fil','ltk_settings_title','Mga Kontrol ng Traveler','PUBLISHED',now(),now()),
-('ltv_fil_ltk_settings_language_title','lang_fil','ltk_settings_language_title','Piliin ang travel language mo','PUBLISHED',now(),now())
+('ltv_fil_ltk_settings_language_title','lang_fil','ltk_settings_language_title','Piliin ang travel language mo','PUBLISHED',now(),now()),
+('ltv_fil_ltk_home_title','lang_fil','ltk_home_title','Trip Aktibo. Pass Handa.','PUBLISHED',now(),now()),
+('ltv_fil_ltk_home_show_qr','lang_fil','ltk_home_show_qr','Ipakita ang QR','PUBLISHED',now(),now()),
+('ltv_fil_ltk_home_passport_map','lang_fil','ltk_home_passport_map','Buksan ang Passport Map','PUBLISHED',now(),now())
 on conflict ("languagePackId","translationKeyId") do update set
 "value"=excluded."value",
 "status"='PUBLISHED',
