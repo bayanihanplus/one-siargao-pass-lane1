@@ -1051,6 +1051,102 @@ model SpmTrailVariantNode {
   @@map("spm_trail_variant_nodes")
 }
 
+model SpmTravelerStamp {
+  id                 String    @id @default(cuid())
+  travelerUserId     String
+  tripId             String?
+  passId             String?
+  trailFamilyId      String
+  trailTrackId       String?
+  trailNodeId        String
+  qrEventId          String?
+  eventType          String    @default("PASSPORT_STAMP_SCAN")
+  verificationSource String
+  status             String    @default("ACTIVE")
+  stampedAt          DateTime  @default(now())
+  revokedAt          DateTime?
+  revokedByUserId    String?
+  revokeReason       String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@unique([travelerUserId, trailNodeId, tripId])
+  @@index([travelerUserId])
+  @@index([tripId])
+  @@index([passId])
+  @@index([trailFamilyId])
+  @@index([trailNodeId])
+  @@index([qrEventId])
+  @@index([status])
+  @@map("spm_traveler_stamps")
+}
+
+model SpmTravelerTrailProgress {
+  id                 String    @id @default(cuid())
+  travelerUserId     String
+  trailFamilyId      String
+  trailVariantId     String?
+  tripId             String?
+  completedNodeCount Int       @default(0)
+  requiredNodeCount  Int       @default(0)
+  progressPercentage Int       @default(0)
+  status             String    @default("IN_PROGRESS")
+  completedAt        DateTime?
+  lastStampAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@unique([travelerUserId, trailFamilyId, tripId])
+  @@index([travelerUserId])
+  @@index([trailFamilyId])
+  @@index([trailVariantId])
+  @@index([tripId])
+  @@index([status])
+  @@map("spm_traveler_trail_progress")
+}
+
+model SpmTravelerStopVerification {
+  id                 String   @id @default(cuid())
+  travelerUserId     String
+  trailNodeId        String
+  tripId             String?
+  stampId            String?
+  verificationStatus String   @default("VERIFIED")
+  verificationSource String
+  verifiedAt         DateTime @default(now())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([travelerUserId, trailNodeId, tripId])
+  @@index([travelerUserId])
+  @@index([trailNodeId])
+  @@index([tripId])
+  @@index([stampId])
+  @@index([verificationStatus])
+  @@map("spm_traveler_stop_verifications")
+}
+
+model SpmTravelerRecommendationSnapshot {
+  id                       String    @id @default(cuid())
+  travelerUserId           String
+  tripId                   String?
+  recommendedTrailNodeId   String?
+  recommendedTrailFamilyId String?
+  recommendationReason     String?
+  distanceOrEtaLabel       String?
+  ctaRoute                 String?
+  generatedAt              DateTime  @default(now())
+  expiresAt                DateTime?
+  createdAt                DateTime  @default(now())
+
+  @@index([travelerUserId])
+  @@index([tripId])
+  @@index([recommendedTrailNodeId])
+  @@index([recommendedTrailFamilyId])
+  @@index([generatedAt])
+  @@map("spm_traveler_recommendation_snapshots")
+}
+
 model OspComplianceFeeProgram {
   id             String    @id @default(cuid())
   code           String    @unique
@@ -1157,22 +1253,20 @@ model OspFeeProgramApprovalAudit {
   @@map("osp_fee_program_approval_audits")
 }
 
-
-
 model OfficialReportTypeRegistry {
-  id                    String   @id @default(cuid())
-  code                  String   @unique
-  name                  String
-  description           String?
-  isActive              Boolean  @default(true)
-  isOfficialEnabled     Boolean  @default(false)
-  requiresPeriod        Boolean  @default(true)
-  requiresJurisdiction  Boolean  @default(true)
-  requiresSignature     Boolean  @default(true)
-  requiresFileHash      Boolean  @default(true)
-  sortOrder             Int      @default(0)
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  id                   String   @id @default(cuid())
+  code                 String   @unique
+  name                 String
+  description          String?
+  isActive             Boolean  @default(true)
+  isOfficialEnabled    Boolean  @default(false)
+  requiresPeriod       Boolean  @default(true)
+  requiresJurisdiction Boolean  @default(true)
+  requiresSignature    Boolean  @default(true)
+  requiresFileHash     Boolean  @default(true)
+  sortOrder            Int      @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
   @@index([code])
   @@index([isActive])
