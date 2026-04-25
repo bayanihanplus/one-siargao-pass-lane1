@@ -7,38 +7,52 @@ type PanelKey = "language" | "currency" | "assistant" | "notifications";
 type LanguageOption = {
   code: string;
   label: string;
-  group: "International" | "European" | "Filipino";
+  group: string;
 };
 
-const LANGUAGE_OPTIONS: LanguageOption[] = [
+const LANGUAGE_GROUP_ORDER = ["International", "European", "Filipino"];
+
+const FALLBACK_LANGUAGE_OPTIONS: LanguageOption[] = [
   { code: "en", label: "English", group: "International" },
-  { code: "zh-Hant", label: "Chinese Traditional", group: "International" },
-  { code: "zh-Hans", label: "Chinese Simplified", group: "International" },
-  { code: "ko", label: "Korean", group: "International" },
-  { code: "ja", label: "Japanese", group: "International" },
-
-  { code: "es", label: "Spanish", group: "European" },
-  { code: "fr", label: "French", group: "European" },
-  { code: "de", label: "German", group: "European" },
-  { code: "it", label: "Italian", group: "European" },
-  { code: "pt", label: "Portuguese", group: "European" },
-  { code: "nl", label: "Dutch", group: "European" },
-  { code: "sv", label: "Swedish", group: "European" },
-  { code: "no", label: "Norwegian", group: "European" },
-  { code: "da", label: "Danish", group: "European" },
-  { code: "pl", label: "Polish", group: "European" },
-
-  { code: "fil", label: "Filipino", group: "Filipino" },
-  { code: "ceb", label: "Bisaya / Cebuano", group: "Filipino" },
-  { code: "sgd", label: "Surigaonon", group: "Filipino" },
 ];
+
+async function getLanguagePacks(): Promise<LanguageOption[]> {
+  try {
+    const res = await fetch(`${getApiBaseUrl()}/language-packs`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) return FALLBACK_LANGUAGE_OPTIONS;
+
+    const rows = await res.json();
+
+    if (!Array.isArray(rows) || rows.length === 0) {
+      return FALLBACK_LANGUAGE_OPTIONS;
+    }
+
+    return rows
+      .filter((row: any) => row?.languageCode && row?.label && row?.group)
+      .map((row: any) => ({
+        code: String(row.languageCode),
+        label: String(row.label),
+        group: String(row.group),
+      }));
+  } catch {
+    return FALLBACK_LANGUAGE_OPTIONS;
+  }
+}
 
 async function updatePreferredLanguage(formData: FormData) {
   "use server";
 
   const preferredLanguage = String(formData.get("preferredLanguage") || "").trim();
 
-  if (!LANGUAGE_OPTIONS.some((option) => option.code === preferredLanguage)) {
+  const languagePacks = await getLanguagePacks();
+
+  if (!languagePacks.some((option) => option.code === preferredLanguage)) {
     throw new Error("Unsupported preferred language");
   }
 
@@ -167,8 +181,17 @@ function LanguageSelector(props: {
   accent: string;
   border: string;
   saved: boolean;
+  languageOptions: LanguageOption[];
 }) {
-  const groups: LanguageOption["group"][] = ["International", "European", "Filipino"];
+  const groups = Array.from(new Set(props.languageOptions.map((option) => option.group))).sort((a, b) => {
+    const aIndex = LANGUAGE_GROUP_ORDER.indexOf(a);
+    const bIndex = LANGUAGE_GROUP_ORDER.indexOf(b);
+
+    if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
+    if (aIndex === -1) return 1;
+    if (bIndex === -1) return -1;
+    return aIndex - bIndex;
+  });
 
   return (
     <div style={{ marginTop: 16, display: "grid", gap: 14 }}>
@@ -189,7 +212,7 @@ function LanguageSelector(props: {
       ) : null}
 
       {groups.map((group) => {
-        const options = LANGUAGE_OPTIONS.filter((option) => option.group === group);
+        const options = props.languageOptions.filter((option) => option.group === group);
 
         return (
           <div key={group}>
@@ -251,6 +274,7 @@ export default async function TravelerSettingsPage({
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const user = await getCurrentUser();
+  const languageOptions = await getLanguagePacks();
   const activePanel = getPanel(searchParams);
   const saved = getSaved(searchParams);
   const currentLanguage = user?.preferredLanguage || "en";
@@ -415,7 +439,13 @@ export default async function TravelerSettingsPage({
         </p>
 
         {activePanel === "language" ? (
-          <LanguageSelector currentLanguage={currentLanguage} accent={copy.accent} border={copy.border} saved={saved} />
+          <LanguageSelector
+            currentLanguage={currentLanguage}
+            accent={copy.accent}
+            border={copy.border}
+            saved={saved}
+            languageOptions={languageOptions}
+          />
         ) : (
           <div
             style={{
