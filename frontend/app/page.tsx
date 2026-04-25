@@ -90,7 +90,7 @@ async function getTravelerLatestTrip() {
 async function getTravelerDictionary(languageCode: string): Promise<Record<string, string>> {
   const fallback: Record<string, string> = {
     "home.hero.title": "Trip Active. Pass Ready.",
-    "home.cta.showQr": "{showQrLabel}",
+    "home.cta.showQr": "Show My QR",
     "home.cta.passportMap": "Open Passport Map",
   };
 
