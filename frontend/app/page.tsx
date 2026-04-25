@@ -1206,7 +1206,7 @@ function TravelerShellFrame(props: {
                     <rect x="4" y="14" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
                     <path d="M14 14h2.5v2.5H19V20h-5v-6Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
                   </svg>
-                  Show My QR
+                  {showQrLabel}
                 </span>
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
                   <path
