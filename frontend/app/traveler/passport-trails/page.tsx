@@ -5,12 +5,12 @@ function getApiBaseUrl() {
   return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
 }
 
-async function getPassportTrails() {
+async function getPassportTrailPackages() {
   const token = cookies().get("osp_access_token")?.value;
   if (!token) return null;
 
   try {
-    const res = await fetch(`${getApiBaseUrl()}/spm/passport-trails`, {
+    const res = await fetch(`${getApiBaseUrl()}/spm/passport-trail-packages`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
     });
@@ -24,7 +24,7 @@ async function getPassportTrails() {
 }
 
 export default async function TravelerPassportTrailsPage() {
-  const trails = await getPassportTrails();
+  const packages = await getPassportTrailPackages();
 
   return (
     <main
@@ -155,7 +155,7 @@ export default async function TravelerPassportTrailsPage() {
               }}
             >
               <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#f2b705" }} />
-              Discovery Only
+              Package Catalog
             </div>
 
             <p
@@ -168,8 +168,8 @@ export default async function TravelerPassportTrailsPage() {
                 maxWidth: 320,
               }}
             >
-              Explore official governed trail families. Booking, pricing, guide,
-              operator, manifest, and payment logic remain intentionally excluded from this layer.
+              Explore governed Passport Trails™ packages with live progress, pricing visibility,
+              and stamp-ready nodes. Checkout remains disabled in this layer.
             </p>
 
             <div
@@ -191,10 +191,10 @@ export default async function TravelerPassportTrailsPage() {
           </section>
 
           <section aria-label="Passport Trails list" style={{ display: "grid", gap: 12 }}>
-            {(trails ?? []).map((trail: any, index: number) => (
+            {(packages ?? []).map((trail: any, index: number) => (
               <Link
-                key={trail.trailId}
-                href={`/traveler/passport-trails/${trail.trailSlug}`}
+                key={trail.packageId}
+                href={`/traveler/passport-trails/${trail.packageSlug}`}
                 style={{
                   borderRadius: 24,
                   border: "1px solid rgba(203,213,225,0.76)",
@@ -233,7 +233,7 @@ export default async function TravelerPassportTrailsPage() {
                         color: "#13a8b7",
                       }}
                     >
-                      Official Trail
+                      Passport Package
                     </p>
                     <h2
                       style={{
@@ -244,7 +244,7 @@ export default async function TravelerPassportTrailsPage() {
                         letterSpacing: "-0.04em",
                       }}
                     >
-                      {trail.trailName}
+                      {trail.packageName}
                     </h2>
                   </div>
 
@@ -264,18 +264,37 @@ export default async function TravelerPassportTrailsPage() {
                 </div>
 
                 <p style={{ margin: 0, fontSize: 12, lineHeight: 1.35, color: "#607089", fontWeight: 730 }}>
-                  {trail.description ?? "Official Passport Trails™ discovery route."}
+                  {trail.shortDescription ?? trail.description ?? "Official Passport Trails™ package route."}
                 </p>
 
+                <div
+                  aria-label="Package progress"
+                  style={{
+                    height: 8,
+                    borderRadius: 999,
+                    background: "rgba(20,38,75,0.08)",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${Math.max(0, Math.min(100, Number(trail.packageProgress?.progressPercentage ?? 0)))}%`,
+                      height: "100%",
+                      borderRadius: 999,
+                      background: "linear-gradient(90deg, #13a8b7 0%, #1fa45b 100%)",
+                    }}
+                  />
+                </div>
+
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 7 }}>
-                  <MiniStat value={String(trail.nodeCount ?? 0)} label="Nodes" />
-                  <MiniStat value={String(trail.stampEligibleCount ?? 0)} label="Stamp-ready" />
-                  <MiniStat value={String(trail.bookingRequiredCount ?? 0)} label="Booking nodes" />
+                  <MiniStat value={String(trail.linkedNodeCount ?? 0)} label="Nodes" />
+                  <MiniStat value={String(trail.stampEligibleNodeCount ?? 0)} label="Stamp-ready" />
+                  <MiniStat value={`${trail.packageProgress?.progressPercentage ?? 0}%`} label="Progress" />
                 </div>
               </Link>
             ))}
 
-            {!trails?.length ? (
+            {!packages?.length ? (
               <div
                 style={{
                   borderRadius: 24,
@@ -288,7 +307,7 @@ export default async function TravelerPassportTrailsPage() {
                   lineHeight: 1.4,
                 }}
               >
-                No Passport Trails™ discovery data available yet. Once official trail families are seeded, they will appear here.
+                No Passport Trails™ packages are available yet. Once approved packages are distributed, they will appear here.
               </div>
             ) : null}
           </section>

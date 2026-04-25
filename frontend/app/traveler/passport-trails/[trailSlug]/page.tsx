@@ -6,12 +6,12 @@ function getApiBaseUrl() {
   return process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
 }
 
-async function getPassportTrailDetail(trailSlug: string) {
+async function getPassportTrailPackageDetail(trailSlug: string) {
   const token = cookies().get("osp_access_token")?.value;
   if (!token) return null;
 
   try {
-    const res = await fetch(`${getApiBaseUrl()}/spm/passport-trails/${trailSlug}`, {
+    const res = await fetch(`${getApiBaseUrl()}/spm/passport-trail-packages/${trailSlug}`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
     });
@@ -30,7 +30,7 @@ export default async function TravelerPassportTrailDetailPage({
 }: {
   params: { trailSlug: string };
 }) {
-  const trail = await getPassportTrailDetail(params.trailSlug);
+  const trail = await getPassportTrailPackageDetail(params.trailSlug);
   if (!trail) notFound();
 
   return (
@@ -72,7 +72,7 @@ export default async function TravelerPassportTrailDetailPage({
                   color: "#14264b",
                 }}
               >
-                {trail.trailName}
+                {trail.packageName}
               </h1>
             </div>
 
@@ -143,11 +143,11 @@ export default async function TravelerPassportTrailDetailPage({
               }}
             >
               <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#f2b705" }} />
-              Official Discovery
+              Package Detail
             </div>
 
             <p style={{ margin: 0, fontSize: 12, lineHeight: 1.42, fontWeight: 760, color: "rgba(255,255,255,0.88)" }}>
-              {trail.description ?? "Official governed Passport Trails™ discovery detail."}
+              {trail.description ?? "Official governed Passport Trails™ package detail."}
             </p>
 
             <div
@@ -164,7 +164,7 @@ export default async function TravelerPassportTrailDetailPage({
                 fontWeight: 950,
               }}
             >
-              No checkout or booking in this layer
+              {trail.packageProgress?.progressPercentage ?? 0}% Complete
             </div>
           </section>
 
@@ -178,73 +178,91 @@ export default async function TravelerPassportTrailDetailPage({
                 letterSpacing: "-0.04em",
               }}
             >
-              Approved Trail Nodes
+              Package Stops
             </h2>
 
-            {(trail.nodes ?? []).map((node: any) => (
-              <article
-                key={node.stopId}
-                style={{
-                  borderRadius: 22,
-                  border: "1px solid rgba(203,213,225,0.76)",
-                  background: "rgba(255,255,255,0.97)",
-                  boxShadow: "0 10px 24px rgba(15,23,42,0.05)",
-                  padding: 14,
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  aria-hidden="true"
-                  style={{
-                    position: "absolute",
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
-                    width: 5,
-                    background: node.stampEligible ? "#1fa45b" : "#8b95a1",
-                  }}
-                />
+            {(trail.nodes ?? []).map((item: any) => {
+              const node = item.node ?? {};
+              const isStamped = item.stampState?.isStamped === true;
+              const verificationStatus = item.verificationState?.verificationStatus ?? "NOT_VERIFIED";
 
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start" }}>
-                  <div style={{ minWidth: 0 }}>
-                    <p
+              return (
+                <article
+                  key={node.nodeId ?? item.sortOrder}
+                  style={{
+                    borderRadius: 22,
+                    border: "1px solid rgba(203,213,225,0.76)",
+                    background: "rgba(255,255,255,0.97)",
+                    boxShadow: "0 10px 24px rgba(15,23,42,0.05)",
+                    padding: 14,
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      width: 5,
+                      background: isStamped ? "#1fa45b" : item.isStampEligible ? "#13a8b7" : "#8b95a1",
+                    }}
+                  />
+
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "flex-start" }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: 9,
+                          fontWeight: 950,
+                          letterSpacing: "0.09em",
+                          textTransform: "uppercase",
+                          color: isStamped ? "#1fa45b" : item.isStampEligible ? "#13a8b7" : "#8b95a1",
+                        }}
+                      >
+                        {isStamped ? "Stamped" : item.isStampEligible ? "Stamp Ready" : "Discovery Node"}
+                      </p>
+                      <h3 style={{ margin: "4px 0 0", fontSize: 16, lineHeight: 1.1, fontWeight: 950, color: "#14264b" }}>
+                        {node.nodeName}
+                      </h3>
+                    </div>
+
+                    <span
                       style={{
-                        margin: 0,
+                        borderRadius: 999,
+                        background: isStamped ? "rgba(31,164,91,0.12)" : "rgba(19,168,183,0.10)",
+                        color: isStamped ? "#1fa45b" : "#13a8b7",
                         fontSize: 9,
                         fontWeight: 950,
-                        letterSpacing: "0.09em",
-                        textTransform: "uppercase",
-                        color: node.stampEligible ? "#1fa45b" : "#8b95a1",
+                        padding: "6px 8px",
+                        whiteSpace: "nowrap",
                       }}
                     >
-                      {node.stampEligible ? "Stamp Eligible" : "Discovery Node"}
-                    </p>
-                    <h3 style={{ margin: "4px 0 0", fontSize: 16, lineHeight: 1.1, fontWeight: 950, color: "#14264b" }}>
-                      {node.stopName}
-                    </h3>
+                      {isStamped ? "Verified" : verificationStatus}
+                    </span>
                   </div>
 
-                  <span
+                  <p style={{ margin: "8px 0 0", fontSize: 12, lineHeight: 1.35, color: "#607089", fontWeight: 700 }}>
+                    {node.description ?? "Approved Passport Trails™ package stop."}
+                  </p>
+
+                  <div
                     style={{
-                      borderRadius: 999,
-                      background: node.safetyControlled ? "rgba(242,183,5,0.14)" : "rgba(19,168,183,0.10)",
-                      color: node.safetyControlled ? "#9a6b00" : "#13a8b7",
-                      fontSize: 9,
-                      fontWeight: 950,
-                      padding: "6px 8px",
-                      whiteSpace: "nowrap",
+                      marginTop: 10,
+                      display: "grid",
+                      gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                      gap: 8,
                     }}
                   >
-                    {node.safetyControlled ? "Controlled" : node.requirementType}
-                  </span>
-                </div>
-
-                <p style={{ margin: "8px 0 0", fontSize: 12, lineHeight: 1.35, color: "#607089", fontWeight: 700 }}>
-                  {node.description ?? node.locationLabel ?? node.barangay ?? node.municipality ?? "Approved Passport Trails™ node."}
-                </p>
-              </article>
-            ))}
+                    <MiniDetail label="Stamp" value={item.stampState?.stampStatus ?? "NOT_STAMPED"} />
+                    <MiniDetail label="Source" value={item.stampState?.verificationSource ?? "Pending"} />
+                  </div>
+                </article>
+              );
+            })}
 
             {!trail.nodes?.length ? (
               <div
@@ -259,7 +277,7 @@ export default async function TravelerPassportTrailDetailPage({
                   lineHeight: 1.4,
                 }}
               >
-                No approved nodes are available yet for this trail.
+                No package stops are available yet for this Passport Trails™ package.
               </div>
             ) : null}
           </section>
@@ -268,6 +286,18 @@ export default async function TravelerPassportTrailDetailPage({
         <TravelerBottomNav active="trails" />
       </div>
     </main>
+  );
+}
+
+
+function MiniDetail(props: { label: string; value: string }) {
+  return (
+    <div style={{ borderRadius: 14, background: "rgba(20,38,75,0.05)", padding: "8px 8px" }}>
+      <div style={{ fontSize: 8, fontWeight: 900, color: "#718096", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+        {props.label}
+      </div>
+      <div style={{ marginTop: 3, fontSize: 10, fontWeight: 950, color: "#14264b" }}>{props.value}</div>
+    </div>
   );
 }
 
