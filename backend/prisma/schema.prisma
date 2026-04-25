@@ -111,19 +111,20 @@ enum PaymentEventType {
 }
 
 model User {
-  id                String        @id @default(cuid())
-  email             String?       @unique
-  mobileNumber      String?       @unique
-  passwordHash      String?
-  fullName          String
-  displayName       String?
-  accountStatus     AccountStatus @default(ACTIVE)
-  primaryRole       UserRole
-  preferredLanguage String        @default("en")
-  isEmailVerified   Boolean       @default(false)
-  isMobileVerified  Boolean       @default(false)
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  id                           String        @id @default(cuid())
+  email                        String?       @unique
+  mobileNumber                 String?       @unique
+  passwordHash                 String?
+  fullName                     String
+  displayName                  String?
+  accountStatus                AccountStatus @default(ACTIVE)
+  primaryRole                  UserRole
+  preferredLanguage            String        @default("en")
+  preferredDisplayCurrencyCode String        @default("USD")
+  isEmailVerified              Boolean       @default(false)
+  isMobileVerified             Boolean       @default(false)
+  createdAt                    DateTime      @default(now())
+  updatedAt                    DateTime      @updatedAt
 
   travelerProfile   TravelerProfile?
   operatorProfile   OperatorProfile?

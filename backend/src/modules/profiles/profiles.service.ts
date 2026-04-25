@@ -28,6 +28,7 @@ export class ProfilesService {
       accountStatus: user.accountStatus,
       primaryRole: user.primaryRole,
       preferredLanguage: user.preferredLanguage,
+      preferredDisplayCurrencyCode: user.preferredDisplayCurrencyCode,
       isEmailVerified: user.isEmailVerified,
       isMobileVerified: user.isMobileVerified,
       createdAt: user.createdAt,
@@ -47,6 +48,7 @@ export class ProfilesService {
         ...(dto.fullName ? { fullName: dto.fullName } : {}),
         ...(dto.displayName ? { displayName: dto.displayName } : {}),
         ...(dto.preferredLanguage ? { preferredLanguage: dto.preferredLanguage } : {}),
+        ...(dto.preferredDisplayCurrencyCode ? { preferredDisplayCurrencyCode: dto.preferredDisplayCurrencyCode.toUpperCase() } : {}),
       },
       include: {
         operatorProfile: true,

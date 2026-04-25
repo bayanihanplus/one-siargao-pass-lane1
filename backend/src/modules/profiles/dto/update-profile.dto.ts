@@ -15,6 +15,10 @@ export class UpdateProfileDto {
 
   @IsOptional()
   @IsString()
+  preferredDisplayCurrencyCode?: string;
+
+  @IsOptional()
+  @IsString()
   businessName?: string;
 
   @IsOptional()
