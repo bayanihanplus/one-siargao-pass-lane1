@@ -45,6 +45,40 @@ async function getLanguagePacks(): Promise<LanguageOption[]> {
   }
 }
 
+async function getTravelerDictionary(languageCode: string): Promise<Record<string, string>> {
+  const fallback: Record<string, string> = {
+    "settings.title": "Traveler Controls",
+    "settings.language.title": "Choose your travel language",
+  };
+
+  try {
+    const res = await fetch(`${getApiBaseUrl()}/language-packs/${encodeURIComponent(languageCode)}/dictionary?scope=traveler`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) return fallback;
+
+    const payload = await res.json();
+    const dictionary = payload?.dictionary;
+
+    if (!dictionary || typeof dictionary !== "object") return fallback;
+
+    return {
+      ...fallback,
+      ...dictionary,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+function t(dictionary: Record<string, string>, key: string, fallback: string) {
+  return dictionary[key] || fallback;
+}
+
 async function updatePreferredLanguage(formData: FormData) {
   "use server";
 
@@ -129,11 +163,11 @@ function PanelIcon(props: { panel: PanelKey }) {
   );
 }
 
-function panelCopy(panel: PanelKey) {
+function panelCopy(panel: PanelKey, dictionary: Record<string, string>) {
   if (panel === "language") {
     return {
       eyebrow: "Language Access",
-      title: "Choose your travel language",
+      title: t(dictionary, "settings.language.title", "Choose your travel language"),
       body: "Your selected language is now saved to your OSP profile. Full translated content packs will be wired later through governed language dictionaries.",
       accent: "#0ea5b7",
       bg: "#ecfeff",
@@ -278,7 +312,8 @@ export default async function TravelerSettingsPage({
   const activePanel = getPanel(searchParams);
   const saved = getSaved(searchParams);
   const currentLanguage = user?.preferredLanguage || "en";
-  const copy = panelCopy(activePanel);
+  const dictionary = await getTravelerDictionary(currentLanguage);
+  const copy = panelCopy(activePanel, dictionary);
 
   const tabs: { key: PanelKey; label: string; href: string }[] = [
     { key: "language", label: "Language", href: "/traveler/settings?panel=language" },
@@ -342,7 +377,7 @@ export default async function TravelerSettingsPage({
             color: "#19305a",
           }}
         >
-          Traveler Controls
+          {t(dictionary, "settings.title", "Traveler Controls")}
         </h1>
         <p style={{ marginTop: 9, marginBottom: 0, color: "#64748b", lineHeight: 1.4, fontSize: 14 }}>
           Language, currency, assistant access, and alerts.
