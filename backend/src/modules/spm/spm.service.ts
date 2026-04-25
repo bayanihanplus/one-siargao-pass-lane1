@@ -1152,4 +1152,231 @@ export class SpmService {
     };
   }
 
+  async listAdminPricingReviewQueue() {
+    const rules = await this.prisma.spmPricingRule.findMany({
+      where: {
+        operatorUserId: { not: null },
+      },
+      orderBy: [
+        { approvalStatus: 'asc' },
+        { updatedAt: 'desc' },
+      ],
+      select: {
+        id: true,
+        trailPackageId: true,
+        operatorUserId: true,
+        partnerId: true,
+        pricingMode: true,
+        currencyCode: true,
+        basePrice: true,
+        priceRangeMin: true,
+        priceRangeMax: true,
+        packageFlatRate: true,
+        fillableRequired: true,
+        requestToConfirmRequired: true,
+        instantCheckoutAllowed: true,
+        approvalStatus: true,
+        updatedAt: true,
+      },
+    });
+
+    const packageIds = rules
+      .map((rule) => rule.trailPackageId)
+      .filter((id): id is string => Boolean(id));
+
+    const packages = await this.prisma.spmTrailPackage.findMany({
+      where: { id: { in: packageIds } },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        publicLabel: true,
+        productType: true,
+        curationSource: true,
+        fulfillmentPartnerType: true,
+        bookabilityStatus: true,
+        approvalStatus: true,
+        distributionEnabled: true,
+        instantCheckoutAllowed: true,
+        requiresPriceBeforePublish: true,
+      },
+    });
+
+    const packageById = new Map(packages.map((item) => [item.id, item]));
+
+    return {
+      ok: true,
+      data: rules.map((rule) => {
+        const item = rule.trailPackageId
+          ? packageById.get(rule.trailPackageId) ?? null
+          : null;
+
+        return {
+          pricingRuleId: rule.id,
+          operatorUserId: rule.operatorUserId,
+          partnerId: rule.partnerId,
+          pricingMode: rule.pricingMode,
+          currencyCode: rule.currencyCode,
+          basePrice: rule.basePrice,
+          priceRangeMin: rule.priceRangeMin,
+          priceRangeMax: rule.priceRangeMax,
+          packageFlatRate: rule.packageFlatRate,
+          fillableRequired: rule.fillableRequired,
+          requestToConfirmRequired: rule.requestToConfirmRequired,
+          instantCheckoutAllowed: rule.instantCheckoutAllowed,
+          approvalStatus: rule.approvalStatus,
+          updatedAt: rule.updatedAt,
+          package: item
+            ? {
+                packageId: item.id,
+                packageCode: item.code,
+                packageName: item.name,
+                publicLabel: item.publicLabel,
+                productType: item.productType,
+                curationSource: item.curationSource,
+                fulfillmentPartnerType: item.fulfillmentPartnerType,
+                bookabilityStatus: item.bookabilityStatus,
+                approvalStatus: item.approvalStatus,
+                distributionEnabled: item.distributionEnabled,
+                instantCheckoutAllowed: item.instantCheckoutAllowed,
+                requiresPriceBeforePublish: item.requiresPriceBeforePublish,
+              }
+            : null,
+        };
+      }),
+      dataIntegrity: {
+        adminReviewQueue: true,
+        operatorSubmittedOnly: true,
+        checkoutIncluded: false,
+        paymentExecutionIncluded: false,
+        packageActivationIncluded: false,
+      },
+    };
+  }
+
+  async updateAdminPricingReviewStatus(adminUserId: string, pricingRuleId: string, body: any) {
+    const allowedStatuses = new Set(['APPROVED', 'REJECTED', 'SUSPENDED']);
+    const approvalStatus = String(body?.approvalStatus ?? '').trim().toUpperCase();
+
+    if (!allowedStatuses.has(approvalStatus)) {
+      return {
+        ok: false,
+        error: 'INVALID_PRICING_APPROVAL_STATUS',
+        data: {
+          allowedStatuses: Array.from(allowedStatuses),
+        },
+      };
+    }
+
+    const existing = await this.prisma.spmPricingRule.findFirst({
+      where: {
+        id: pricingRuleId,
+        operatorUserId: { not: null },
+      },
+      select: {
+        id: true,
+        trailPackageId: true,
+        operatorUserId: true,
+        pricingMode: true,
+        currencyCode: true,
+        basePrice: true,
+        priceRangeMin: true,
+        priceRangeMax: true,
+        packageFlatRate: true,
+        approvalStatus: true,
+        instantCheckoutAllowed: true,
+      },
+    });
+
+    if (!existing) {
+      return {
+        ok: false,
+        error: 'OPERATOR_PRICING_RULE_NOT_FOUND',
+        data: null,
+      };
+    }
+
+    const hasUsableAmount =
+      existing.basePrice !== null ||
+      existing.packageFlatRate !== null ||
+      (existing.priceRangeMin !== null && existing.priceRangeMax !== null) ||
+      existing.pricingMode === 'REQUEST_TO_CONFIRM' ||
+      existing.pricingMode === 'FILLABLE_PRICE_REQUIRED';
+
+    if (approvalStatus === 'APPROVED' && !hasUsableAmount) {
+      return {
+        ok: false,
+        error: 'CANNOT_APPROVE_PRICING_WITHOUT_AMOUNT_OR_REQUEST_MODE',
+        data: null,
+      };
+    }
+
+    const rule = await this.prisma.spmPricingRule.update({
+      where: { id: existing.id },
+      data: {
+        approvalStatus: approvalStatus as any,
+        instantCheckoutAllowed: false,
+      },
+      select: {
+        id: true,
+        trailPackageId: true,
+        operatorUserId: true,
+        partnerId: true,
+        pricingMode: true,
+        currencyCode: true,
+        basePrice: true,
+        priceRangeMin: true,
+        priceRangeMax: true,
+        packageFlatRate: true,
+        fillableRequired: true,
+        requestToConfirmRequired: true,
+        instantCheckoutAllowed: true,
+        approvalStatus: true,
+        updatedAt: true,
+      },
+    });
+
+    const item = rule.trailPackageId
+      ? await this.prisma.spmTrailPackage.findFirst({
+          where: { id: rule.trailPackageId },
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            approvalStatus: true,
+            distributionEnabled: true,
+            instantCheckoutAllowed: true,
+          },
+        })
+      : null;
+
+    return {
+      ok: true,
+      data: {
+        pricingRule: rule,
+        package: item
+          ? {
+              packageId: item.id,
+              packageCode: item.code,
+              packageName: item.name,
+              approvalStatus: item.approvalStatus,
+              distributionEnabled: item.distributionEnabled,
+              instantCheckoutAllowed: item.instantCheckoutAllowed,
+            }
+          : null,
+      },
+      dataIntegrity: {
+        adminReviewedBy: adminUserId,
+        pricingApprovalUpdated: true,
+        approvalStatusAfterReview: approvalStatus,
+        packageActivated: false,
+        packageDistributionEnabled: item?.distributionEnabled ?? false,
+        packageInstantCheckoutAllowed: item?.instantCheckoutAllowed ?? false,
+        pricingInstantCheckoutAllowed: false,
+        checkoutIncluded: false,
+        paymentExecutionIncluded: false,
+      },
+    };
+  }
+
 }

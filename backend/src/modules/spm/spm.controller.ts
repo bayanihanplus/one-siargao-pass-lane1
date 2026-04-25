@@ -49,6 +49,22 @@ export class SpmController {
     return this.spmService.getPassportTrailPackageDetail(packageCode);
   }
 
+  @Roles('ADMIN')
+  @Get('admin/pricing/review')
+  listAdminPricingReviewQueue() {
+    return this.spmService.listAdminPricingReviewQueue();
+  }
+
+  @Roles('ADMIN')
+  @Patch('admin/pricing/review/:pricingRuleId')
+  updateAdminPricingReviewStatus(
+    @CurrentUserId() adminUserId: string,
+    @Param('pricingRuleId') pricingRuleId: string,
+    @Body() body: any,
+  ) {
+    return this.spmService.updateAdminPricingReviewStatus(adminUserId, pricingRuleId, body);
+  }
+
   @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
   @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Get('operator/pricing/packages')
