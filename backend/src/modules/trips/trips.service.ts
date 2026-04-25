@@ -118,6 +118,11 @@ export class TripsService {
     const trip = await this.prisma.trip.findFirst({
       where: { id: tripId, travelerUserId: userId },
       include: {
+        traveler: {
+          select: {
+            preferredDisplayCurrencyCode: true,
+          },
+        },
         members: true,
         registration: true,
         pass: { include: { qrCredential: true } },
@@ -177,10 +182,12 @@ export class TripsService {
     const manifestMembers = trip.manifestMembers ?? [];
     const latestManifestMember = manifestMembers[0] ?? null;
 
+    const displayCurrencyCode = trip.traveler?.preferredDisplayCurrencyCode || 'USD';
+
     const currentBookingFxDisplaySnapshot = currentLinkedBooking?.bookingTotalPhp
       ? await this.fxService.getOrCreateBookingDisplaySnapshot({
           sourceAmountPhp: currentLinkedBooking.bookingTotalPhp,
-          displayCurrencyCode: 'USD',
+          displayCurrencyCode,
           snapshotReason: 'TRIP_DETAIL_CURRENT_BOOKING_READ',
           bookingId: currentLinkedBooking.id,
           paymentIntentId: null,

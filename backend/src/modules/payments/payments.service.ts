@@ -265,9 +265,16 @@ export class PaymentsService {
       throw new NotFoundException('Payment intent not found');
     }
 
+    const travelerPreference = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { preferredDisplayCurrencyCode: true },
+    });
+
+    const displayCurrencyCode = travelerPreference?.preferredDisplayCurrencyCode || 'USD';
+
     const fxDisplaySnapshot = await this.fxService.getOrCreatePaymentIntentDisplaySnapshot({
       sourceAmountPhp: intent.amountPhp,
-      displayCurrencyCode: 'USD',
+      displayCurrencyCode,
       snapshotReason: 'PAYMENT_INTENT_DETAIL_READ',
       bookingId: intent.bookingId,
       paymentIntentId: intent.id,
