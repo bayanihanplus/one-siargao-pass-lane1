@@ -1,5 +1,71 @@
 import { getApiBaseUrl, requireAccessToken } from "../../../../src/lib/server-auth";
 
+type TravelerDictionary = Record<string, string>;
+
+const paymentDetailDictionaryFallback: TravelerDictionary = {
+  "paymentDetail.nav.backToTrips": "Back to Trips",
+  "paymentDetail.nav.home": "Home",
+  "paymentDetail.nav.myTrips": "My Trips",
+  "paymentDetail.nav.logout": "Logout",
+  "paymentDetail.header.eyebrow": "Payment Record",
+  "paymentDetail.title": "Payment Detail",
+  "paymentDetail.header.body": "Review payment state, booking linkage, and receipt information.",
+  "paymentDetail.status.verified": "Payment Verified",
+  "paymentDetail.status.pending": "Payment Pending",
+  "paymentDetail.status.attention": "Payment Attention Needed",
+  "paymentDetail.status.record": "Payment Record",
+  "paymentDetail.status.fallback": "Record",
+  "paymentDetail.intentFallback": "Payment intent record",
+  "paymentDetail.loadError.title": "Load Error",
+  "paymentDetail.receipt.title": "Receipt Summary",
+  "paymentDetail.receipt.amount": "Amount",
+  "paymentDetail.receipt.currency": "Currency",
+  "paymentDetail.receipt.status": "Status",
+  "paymentDetail.receipt.provider": "Provider",
+  "paymentDetail.state.title": "Payment State",
+  "paymentDetail.state.state": "State",
+  "paymentDetail.state.paid": "Paid",
+  "paymentDetail.state.unpaid": "Unpaid",
+  "paymentDetail.state.updated": "Updated",
+  "paymentDetail.booking.title": "Booking Linkage",
+  "paymentDetail.booking.bookingId": "Booking ID",
+  "paymentDetail.booking.intentReference": "Intent Reference",
+  "paymentDetail.booking.paymentIntentId": "Payment Intent ID",
+  "paymentDetail.booking.lastPaymentIntent": "Last Payment Intent",
+  "paymentDetail.timeline.title": "Timeline",
+  "paymentDetail.timeline.confirmedAt": "Confirmed At",
+  "paymentDetail.timeline.createdAt": "Created At",
+  "paymentDetail.timeline.updatedAt": "Updated At",
+  "paymentDetail.actions.title": "Next Actions",
+  "paymentDetail.actions.note": "Payments are linked to your OSP booking and pass status. Operational changes must come from verified backend records.",
+};
+
+async function getTravelerDictionary(languageCode?: string | null): Promise<TravelerDictionary> {
+  try {
+    const res = await fetch(`${getApiBaseUrl()}/language-packs/${encodeURIComponent(languageCode || "en")}/dictionary?scope=traveler`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) return paymentDetailDictionaryFallback;
+
+    const payload = await res.json();
+    const dictionary = payload?.dictionary;
+
+    if (!dictionary || typeof dictionary !== "object") return paymentDetailDictionaryFallback;
+
+    return {
+      ...paymentDetailDictionaryFallback,
+      ...dictionary,
+    };
+  } catch {
+    return paymentDetailDictionaryFallback;
+  }
+}
+
+function t(dictionary: TravelerDictionary, key: string, fallback: string) {
+  return dictionary?.[key] || fallback;
+}
+
 type PaymentPageProps = {
   params: Promise<{
     intentId: string;
@@ -68,7 +134,7 @@ function formatDateTime(value: any) {
   }
 }
 
-function statusTheme(value: any) {
+function statusTheme(value: any, dictionary: TravelerDictionary = paymentDetailDictionaryFallback) {
   const normalized = String(value || "").toUpperCase();
 
   if (
@@ -77,7 +143,7 @@ function statusTheme(value: any) {
     normalized.includes("SUCCESS") ||
     normalized.includes("COMPLETED")
   ) {
-    return { bg: "#eefdf3", border: "#cdeed7", color: "#16a34a", label: "Payment Verified" };
+    return { bg: "#eefdf3", border: "#cdeed7", color: "#16a34a", label: t(dictionary, "paymentDetail.status.verified", "Payment Verified") };
   }
 
   if (
@@ -86,7 +152,7 @@ function statusTheme(value: any) {
     normalized.includes("WAITING") ||
     normalized.includes("PROCESSING")
   ) {
-    return { bg: "#fff8eb", border: "#f6e1b5", color: "#d97706", label: "Payment Pending" };
+    return { bg: "#fff8eb", border: "#f6e1b5", color: "#d97706", label: t(dictionary, "paymentDetail.status.pending", "Payment Pending") };
   }
 
   if (
@@ -95,10 +161,10 @@ function statusTheme(value: any) {
     normalized.includes("BLOCKED") ||
     normalized.includes("DENIED")
   ) {
-    return { bg: "#fef2f2", border: "#fecaca", color: "#dc2626", label: "Payment Attention Needed" };
+    return { bg: "#fef2f2", border: "#fecaca", color: "#dc2626", label: t(dictionary, "paymentDetail.status.attention", "Payment Attention Needed") };
   }
 
-  return { bg: "#eff6ff", border: "#cfe0f7", color: "#2563eb", label: "Payment Record" };
+  return { bg: "#eff6ff", border: "#cfe0f7", color: "#2563eb", label: t(dictionary, "paymentDetail.status.record", "Payment Record") };
 }
 
 function Icon(props: {
@@ -361,9 +427,19 @@ function AppLink(props: { href: string; label: string; icon: any; primary?: bool
 export default async function TravelerPaymentIntentPage({ params }: PaymentPageProps) {
   const { intentId } = await params;
   const { intent, error } = await getPaymentIntent(intentId);
+  const dictionary = await getTravelerDictionary("en");
 
-  const status = intent?.status || intent?.paymentState?.state || "Record";
-  const theme = statusTheme(status);
+  const backToTripsLabel = t(dictionary, "paymentDetail.nav.backToTrips", "Back to Trips");
+  const navHomeLabel = t(dictionary, "paymentDetail.nav.home", "Home");
+  const navMyTripsLabel = t(dictionary, "paymentDetail.nav.myTrips", "My Trips");
+  const navLogoutLabel = t(dictionary, "paymentDetail.nav.logout", "Logout");
+  const headerEyebrow = t(dictionary, "paymentDetail.header.eyebrow", "Payment Record");
+  const headerTitle = t(dictionary, "paymentDetail.title", "Payment Detail");
+  const headerBody = t(dictionary, "paymentDetail.header.body", "Review payment state, booking linkage, and receipt information.");
+  const intentFallback = t(dictionary, "paymentDetail.intentFallback", "Payment intent record");
+
+  const status = intent?.status || intent?.paymentState?.state || t(dictionary, "paymentDetail.status.fallback", "Record");
+  const theme = statusTheme(status, dictionary);
   const currency = intent?.currencyCode || "PHP";
   const paidAmount = intent?.paymentState?.paidAmountPhp;
   const unpaidAmount = intent?.paymentState?.unpaidAmountPhp;
@@ -390,7 +466,7 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
       }}
     >
       <div style={{ marginBottom: 16 }}>
-        <AppLink href="/traveler/trips" label="Back to Trips" icon={<Icon kind="trips" />} />
+        <AppLink href="/traveler/trips" label={backToTripsLabel} icon={<Icon kind="trips" />} />
       </div>
 
       <header style={{ marginBottom: 16 }}>
@@ -404,7 +480,7 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
             marginBottom: 8,
           }}
         >
-          Payment Record
+          {headerEyebrow}
         </div>
         <h1
           style={{
@@ -415,21 +491,21 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
             color: "#19305a",
           }}
         >
-          Payment Detail
+          {headerTitle}
         </h1>
         <p style={{ marginTop: 9, marginBottom: 0, color: "#64748b", lineHeight: 1.4, fontSize: 14 }}>
-          Review payment state, booking linkage, and receipt information.
+          {headerBody}
         </p>
       </header>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
-        <AppLink href="/" label="Home" icon={<Icon kind="home" />} />
-        <AppLink href="/traveler/trips" label="My Trips" icon={<Icon kind="trips" />} />
-        <AppLink href="/logout" label="Logout" icon={<Icon kind="logout" />} />
+        <AppLink href="/" label={navHomeLabel} icon={<Icon kind="home" />} />
+        <AppLink href="/traveler/trips" label={navMyTripsLabel} icon={<Icon kind="trips" />} />
+        <AppLink href="/logout" label={navLogoutLabel} icon={<Icon kind="logout" />} />
       </div>
 
       {error ? (
-        <Section title="Load Error" icon={<Icon kind="alert" />} tone="red">
+        <Section title={t(dictionary, "paymentDetail.loadError.title", "Load Error")} icon={<Icon kind="alert" />} tone="red">
           <p style={{ margin: 0, color: "#dc2626", fontSize: 14, lineHeight: 1.45, fontWeight: 800 }}>{error}</p>
         </Section>
       ) : null}
@@ -480,55 +556,55 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
                   {normalizeStatus(status)}
                 </h2>
                 <p style={{ margin: "8px 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.35, fontWeight: 750 }}>
-                  {intent.intentReference || "Payment intent record"}
+                  {intent.intentReference || intentFallback}
                 </p>
               </div>
             </div>
           </section>
 
-          <Section title="Receipt Summary" icon={<Icon kind="receipt" />} tone="green">
+          <Section title={t(dictionary, "paymentDetail.receipt.title", "Receipt Summary")} icon={<Icon kind="receipt" />} tone="green">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-              <KeyValue label="Amount" value={formatMoney(intent.amountPhp, currency)} tone={theme} />
-              <KeyValue label="Currency" value={currency} tone={{ bg: "#eff6ff", border: "#cfe0f7", color: "#2563eb" }} />
-              <KeyValue label="Status" value={normalizeStatus(intent.status)} tone={theme} />
-              <KeyValue label="Provider" value={intent.provider} />
+              <KeyValue label={t(dictionary, "paymentDetail.receipt.amount", "Amount")} value={formatMoney(intent.amountPhp, currency)} tone={theme} />
+              <KeyValue label={t(dictionary, "paymentDetail.receipt.currency", "Currency")} value={currency} tone={{ bg: "#eff6ff", border: "#cfe0f7", color: "#2563eb" }} />
+              <KeyValue label={t(dictionary, "paymentDetail.receipt.status", "Status")} value={normalizeStatus(intent.status)} tone={theme} />
+              <KeyValue label={t(dictionary, "paymentDetail.receipt.provider", "Provider")} value={intent.provider} />
             </div>
           </Section>
 
-          <Section title="Payment State" icon={<Icon kind="payment" />} tone="amber">
+          <Section title={t(dictionary, "paymentDetail.state.title", "Payment State")} icon={<Icon kind="payment" />} tone="amber">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-              <KeyValue label="State" value={normalizeStatus(intent.paymentState?.state)} tone={statusTheme(intent.paymentState?.state)} />
-              <KeyValue label="Paid" value={formatMoney(paidAmount, currency)} tone={statusTheme("PAID")} />
-              <KeyValue label="Unpaid" value={formatMoney(unpaidAmount, currency)} tone={statusTheme("UNPAID")} />
-              <KeyValue label="Updated" value={formatDateTime(intent.paymentState?.stateUpdatedAt)} />
+              <KeyValue label={t(dictionary, "paymentDetail.state.state", "State")} value={normalizeStatus(intent.paymentState?.state)} tone={statusTheme(intent.paymentState?.state, dictionary)} />
+              <KeyValue label={t(dictionary, "paymentDetail.state.paid", "Paid")} value={formatMoney(paidAmount, currency)} tone={statusTheme("PAID", dictionary)} />
+              <KeyValue label={t(dictionary, "paymentDetail.state.unpaid", "Unpaid")} value={formatMoney(unpaidAmount, currency)} tone={statusTheme("UNPAID", dictionary)} />
+              <KeyValue label={t(dictionary, "paymentDetail.state.updated", "Updated")} value={formatDateTime(intent.paymentState?.stateUpdatedAt)} />
             </div>
           </Section>
 
-          <Section title="Booking Linkage" icon={<Icon kind="booking" />} tone="blue">
+          <Section title={t(dictionary, "paymentDetail.booking.title", "Booking Linkage")} icon={<Icon kind="booking" />} tone="blue">
             <div style={{ display: "grid", gap: 8 }}>
-              <KeyValue label="Booking ID" value={intent.bookingId} />
-              <KeyValue label="Intent Reference" value={intent.intentReference} />
-              <KeyValue label="Payment Intent ID" value={intent.id} />
-              <KeyValue label="Last Payment Intent" value={intent.paymentState?.lastPaymentIntentId} />
+              <KeyValue label={t(dictionary, "paymentDetail.booking.bookingId", "Booking ID")} value={intent.bookingId} />
+              <KeyValue label={t(dictionary, "paymentDetail.booking.intentReference", "Intent Reference")} value={intent.intentReference} />
+              <KeyValue label={t(dictionary, "paymentDetail.booking.paymentIntentId", "Payment Intent ID")} value={intent.id} />
+              <KeyValue label={t(dictionary, "paymentDetail.booking.lastPaymentIntent", "Last Payment Intent")} value={intent.paymentState?.lastPaymentIntentId} />
             </div>
           </Section>
 
-          <Section title="Timeline" icon={<Icon kind="calendar" />} tone="default">
+          <Section title={t(dictionary, "paymentDetail.timeline.title", "Timeline")} icon={<Icon kind="calendar" />} tone="default">
             <div style={{ display: "grid", gap: 8 }}>
-              <KeyValue label="Confirmed At" value={formatDateTime(intent.confirmedAt)} />
-              <KeyValue label="Created At" value={formatDateTime(intent.createdAt)} />
-              <KeyValue label="Updated At" value={formatDateTime(intent.updatedAt)} />
+              <KeyValue label={t(dictionary, "paymentDetail.timeline.confirmedAt", "Confirmed At")} value={formatDateTime(intent.confirmedAt)} />
+              <KeyValue label={t(dictionary, "paymentDetail.timeline.createdAt", "Created At")} value={formatDateTime(intent.createdAt)} />
+              <KeyValue label={t(dictionary, "paymentDetail.timeline.updatedAt", "Updated At")} value={formatDateTime(intent.updatedAt)} />
             </div>
           </Section>
 
-          <Section title="Next Actions" icon={<Icon kind="shield" />} tone="default">
+          <Section title={t(dictionary, "paymentDetail.actions.title", "Next Actions")} icon={<Icon kind="shield" />} tone="default">
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <AppLink href="/traveler/trips" label="My Trips" icon={<Icon kind="trips" />} primary tone="teal" />
               <AppLink href="/" label="Home" icon={<Icon kind="home" />} />
             </div>
 
             <p style={{ margin: "12px 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45, fontWeight: 650 }}>
-              Payments are linked to your OSP booking and pass status. Operational changes must come from verified backend records.
+              {t(dictionary, "paymentDetail.actions.note", "Payments are linked to your OSP booking and pass status. Operational changes must come from verified backend records.")}
             </p>
           </Section>
         </>
