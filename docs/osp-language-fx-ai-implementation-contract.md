@@ -58,6 +58,26 @@ Supported doctrine list:
 - Spanish
 - French
 - German
+- Italian
+- Portuguese
+- Dutch
+- Swedish
+- Norwegian
+- Danish
+- Polish
+
+European Language Pack:
+
+- Spanish
+- French
+- German
+- Italian
+- Portuguese
+- Dutch
+- Swedish
+- Norwegian
+- Danish
+- Polish
 
 Launch priority:
 
@@ -66,7 +86,10 @@ Launch priority:
 3. Chinese Simplified
 4. Korean
 5. Japanese
-6. Spanish / French / German later
+6. Spanish
+7. French
+8. German
+9. Italian / Portuguese / Dutch / Nordic languages / Polish later
 
 Required future data contract:
 

@@ -1,4 +1,67 @@
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../src/lib/server-auth";
+
 type PanelKey = "language" | "currency" | "assistant" | "notifications";
+
+type LanguageOption = {
+  code: string;
+  label: string;
+  group: "International" | "European" | "Filipino";
+};
+
+const LANGUAGE_OPTIONS: LanguageOption[] = [
+  { code: "en", label: "English", group: "International" },
+  { code: "zh-Hant", label: "Chinese Traditional", group: "International" },
+  { code: "zh-Hans", label: "Chinese Simplified", group: "International" },
+  { code: "ko", label: "Korean", group: "International" },
+  { code: "ja", label: "Japanese", group: "International" },
+
+  { code: "es", label: "Spanish", group: "European" },
+  { code: "fr", label: "French", group: "European" },
+  { code: "de", label: "German", group: "European" },
+  { code: "it", label: "Italian", group: "European" },
+  { code: "pt", label: "Portuguese", group: "European" },
+  { code: "nl", label: "Dutch", group: "European" },
+  { code: "sv", label: "Swedish", group: "European" },
+  { code: "no", label: "Norwegian", group: "European" },
+  { code: "da", label: "Danish", group: "European" },
+  { code: "pl", label: "Polish", group: "European" },
+
+  { code: "fil", label: "Filipino", group: "Filipino" },
+  { code: "ceb", label: "Bisaya / Cebuano", group: "Filipino" },
+  { code: "sgd", label: "Surigaonon", group: "Filipino" },
+];
+
+async function updatePreferredLanguage(formData: FormData) {
+  "use server";
+
+  const preferredLanguage = String(formData.get("preferredLanguage") || "").trim();
+
+  if (!LANGUAGE_OPTIONS.some((option) => option.code === preferredLanguage)) {
+    throw new Error("Unsupported preferred language");
+  }
+
+  const token = await requireAccessToken();
+
+  const res = await fetch(`${getApiBaseUrl()}/profile`, {
+    method: "PATCH",
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ preferredLanguage }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Preferred language update failed: HTTP ${res.status}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/traveler/settings");
+  redirect("/traveler/settings?panel=language&saved=1");
+}
 
 function getPanel(searchParams?: { [key: string]: string | string[] | undefined }): PanelKey {
   const raw = searchParams?.panel;
@@ -8,6 +71,12 @@ function getPanel(searchParams?: { [key: string]: string | string[] | undefined 
   if (value === "assistant") return "assistant";
   if (value === "notifications") return "notifications";
   return "language";
+}
+
+function getSaved(searchParams?: { [key: string]: string | string[] | undefined }) {
+  const raw = searchParams?.saved;
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return value === "1";
 }
 
 function PanelIcon(props: { panel: PanelKey }) {
@@ -51,8 +120,7 @@ function panelCopy(panel: PanelKey) {
     return {
       eyebrow: "Language Access",
       title: "Choose your travel language",
-      body: "International and Filipino language packs are planned as controlled content layers. This screen is the access point until full localization is wired.",
-      chips: ["English", "Filipino", "Bisaya", "Surigaonon", "Chinese", "Korean", "Japanese"],
+      body: "Your selected language is now saved to your OSP profile. Full translated content packs will be wired later through governed language dictionaries.",
       accent: "#0ea5b7",
       bg: "#ecfeff",
       border: "#bfeaf0",
@@ -94,12 +162,98 @@ function panelCopy(panel: PanelKey) {
   };
 }
 
-export default function TravelerSettingsPage({
+function LanguageSelector(props: {
+  currentLanguage: string;
+  accent: string;
+  border: string;
+  saved: boolean;
+}) {
+  const groups: LanguageOption["group"][] = ["International", "European", "Filipino"];
+
+  return (
+    <div style={{ marginTop: 16, display: "grid", gap: 14 }}>
+      {props.saved ? (
+        <div
+          style={{
+            borderRadius: 16,
+            border: "1px solid #cdeed7",
+            background: "#eefdf3",
+            color: "#16a34a",
+            padding: "10px 12px",
+            fontSize: 12,
+            fontWeight: 900,
+          }}
+        >
+          Language preference saved to your OSP profile.
+        </div>
+      ) : null}
+
+      {groups.map((group) => {
+        const options = LANGUAGE_OPTIONS.filter((option) => option.group === group);
+
+        return (
+          <div key={group}>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 950,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: props.accent,
+                marginBottom: 8,
+              }}
+            >
+              {group} Pack
+            </div>
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {options.map((option) => {
+                const active = option.code === props.currentLanguage;
+
+                return (
+                  <form key={option.code} action={updatePreferredLanguage}>
+                    <input type="hidden" name="preferredLanguage" value={option.code} />
+                    <button
+                      type="submit"
+                      aria-label={`Set language to ${option.label}`}
+                      style={{
+                        minHeight: 34,
+                        borderRadius: 999,
+                        border: active ? `1px solid ${props.accent}` : `1px solid ${props.border}`,
+                        background: active ? props.accent : "#ffffff",
+                        color: active ? "#ffffff" : "#19305a",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        padding: "0 12px",
+                        fontSize: 12,
+                        fontWeight: 950,
+                        boxShadow: active ? "0 10px 20px rgba(14,165,183,0.18)" : "none",
+                      }}
+                    >
+                      {active ? "✓ " : ""}
+                      {option.label}
+                    </button>
+                  </form>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default async function TravelerSettingsPage({
   searchParams,
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
+  const user = await getCurrentUser();
   const activePanel = getPanel(searchParams);
+  const saved = getSaved(searchParams);
+  const currentLanguage = user?.preferredLanguage || "en";
   const copy = panelCopy(activePanel);
 
   const tabs: { key: PanelKey; label: string; href: string }[] = [
@@ -260,34 +414,38 @@ export default function TravelerSettingsPage({
           {copy.body}
         </p>
 
-        <div
-          style={{
-            marginTop: 16,
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 8,
-          }}
-        >
-          {copy.chips.map((chip) => (
-            <span
-              key={chip}
-              style={{
-                minHeight: 32,
-                borderRadius: 999,
-                border: `1px solid ${copy.border}`,
-                background: "#ffffff",
-                color: "#19305a",
-                display: "inline-flex",
-                alignItems: "center",
-                padding: "0 11px",
-                fontSize: 12,
-                fontWeight: 900,
-              }}
-            >
-              {chip}
-            </span>
-          ))}
-        </div>
+        {activePanel === "language" ? (
+          <LanguageSelector currentLanguage={currentLanguage} accent={copy.accent} border={copy.border} saved={saved} />
+        ) : (
+          <div
+            style={{
+              marginTop: 16,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 8,
+            }}
+          >
+            {(copy.chips || []).map((chip) => (
+              <span
+                key={chip}
+                style={{
+                  minHeight: 32,
+                  borderRadius: 999,
+                  border: `1px solid ${copy.border}`,
+                  background: "#ffffff",
+                  color: "#19305a",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  padding: "0 11px",
+                  fontSize: 12,
+                  fontWeight: 900,
+                }}
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
+        )}
       </section>
 
       <section
@@ -304,7 +462,7 @@ export default function TravelerSettingsPage({
           Controlled access only
         </div>
         <p style={{ margin: 0, color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
-          This page exposes the traveler controls without claiming full translation, live FX conversion, or AI runtime until those systems are built.
+          Language preference can now be saved to your OSP profile. Full translated content packs, live FX conversion, and AI runtime remain controlled future layers.
         </p>
       </section>
     </main>
