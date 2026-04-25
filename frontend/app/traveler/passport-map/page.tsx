@@ -119,8 +119,8 @@ export default async function TravelerPassportMapPage() {
             </div>
 
             <a
-              href="/traveler/pass"
-              aria-label="Open One Siargao Pass"
+              href="/traveler/settings?panel=notifications"
+              aria-label="Open traveler notifications"
               style={{
                 width: 34,
                 height: 34,
@@ -505,10 +505,10 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
                 alignItems: "center",
                 justifyContent: "center",
                 minHeight: 32,
-                borderRadius: 10,
+                borderRadius: 999,
                 background: "#13a8b7",
                 color: "#ffffff",
-                padding: "0 11px",
+                padding: "0 12px",
                 fontSize: 10,
                 fontWeight: 950,
                 textDecoration: "none",
@@ -516,7 +516,11 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
                 boxShadow: "0 8px 16px rgba(19,168,183,0.20)",
               }}
             >
-              Explore My Map ›
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" aria-hidden="true" style={{ marginRight: 5 }}>
+                <path d="M3 6.8l6-2.3 6 2.3 6-2.3v12.7l-6 2.3-6-2.3-6 2.3V6.8z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+                <path d="M9 4.5v12.7M15 6.8v12.7" stroke="currentColor" strokeWidth="1.9" />
+              </svg>
+              Explore
             </a>
           </div>
         </div>
@@ -589,14 +593,28 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
 
         <a
           href="/traveler/passport-map"
+          aria-label="See all verified stops"
           style={{
+            minHeight: 30,
+            borderRadius: 999,
+            border: "1px solid rgba(19,168,183,0.20)",
+            background: "rgba(236,254,255,0.86)",
             color: "#13a8b7",
-            fontSize: 12,
-            fontWeight: 900,
+            fontSize: 11,
+            fontWeight: 950,
             textDecoration: "none",
             whiteSpace: "nowrap",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 5,
+            padding: "0 10px",
           }}
         >
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" aria-hidden="true">
+            <path d="M12 3.5 18.5 6v5.2c0 4.2-2.7 7.5-6.5 9.3-3.8-1.8-6.5-5.1-6.5-9.3V6L12 3.5Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+            <path d="M8.8 12.1 11 14.2l4.4-4.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
           See all
         </a>
       </div>
@@ -836,14 +854,29 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
 
         <a
           href="/traveler/passport-map"
+          aria-label="View all passport trails"
           style={{
+            minHeight: 30,
+            borderRadius: 999,
+            border: "1px solid rgba(19,168,183,0.20)",
+            background: "rgba(236,254,255,0.86)",
             color: "#13a8b7",
-            fontSize: 12,
-            fontWeight: 900,
+            fontSize: 11,
+            fontWeight: 950,
             textDecoration: "none",
             whiteSpace: "nowrap",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 5,
+            padding: "0 10px",
           }}
         >
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" aria-hidden="true">
+            <path d="M6 5.5h8.5a3.5 3.5 0 0 1 0 7H9.5a3.5 3.5 0 0 0 0 7H18" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+            <circle cx="6" cy="5.5" r="2" stroke="currentColor" strokeWidth="1.9" />
+            <circle cx="18" cy="19.5" r="2" stroke="currentColor" strokeWidth="1.9" />
+          </svg>
           View all
         </a>
       </div>
