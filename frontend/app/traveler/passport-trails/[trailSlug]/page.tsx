@@ -40,7 +40,7 @@ export default async function TravelerPassportTrailDetailPage({
         background:
           "radial-gradient(circle at 18% 8%, rgba(19,168,183,0.16) 0, transparent 28%), linear-gradient(180deg, #f7fbff 0%, #eef8f7 45%, #fff8e8 100%)",
         color: "#14264b",
-        fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
         padding: "14px 12px 104px",
       }}
     >
@@ -60,13 +60,13 @@ export default async function TravelerPassportTrailDetailPage({
         <div style={{ padding: "16px 14px 18px" }}>
           <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 14 }}>
             <div>
-              <p style={{ margin: 0, fontSize: 10, fontWeight: 880, letterSpacing: "0.13em", textTransform: "uppercase", color: "#13a8b7" }}>
+              <p style={{ margin: 0, fontSize: 10, fontWeight: 720, letterSpacing: "0.13em", textTransform: "uppercase", color: "#13a8b7" }}>
                 Passport Trails™
               </p>
               <h1
                 style={{
                   margin: "4px 0 0",
-                  fontFamily: 'Georgia, "Times New Roman", Times, serif',
+                  fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
                   fontSize: 30,
                   lineHeight: 0.95,
                   letterSpacing: "-0.05em",
@@ -91,7 +91,7 @@ export default async function TravelerPassportTrailDetailPage({
                 justifyContent: "center",
                 padding: "0 13px",
                 fontSize: 11,
-                fontWeight: 880,
+                fontWeight: 720,
                 textDecoration: "none",
                 boxShadow: "0 8px 18px rgba(15,23,42,0.06)",
               }}
@@ -137,7 +137,7 @@ export default async function TravelerPassportTrailDetailPage({
                 background: "rgba(255,255,255,0.14)",
                 padding: "6px 9px",
                 fontSize: 9,
-                fontWeight: 880,
+                fontWeight: 720,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 marginBottom: 10,
@@ -162,7 +162,7 @@ export default async function TravelerPassportTrailDetailPage({
                 color: "#143d66",
                 padding: "7px 10px",
                 fontSize: 10,
-                fontWeight: 880,
+                fontWeight: 720,
               }}
             >
               {trail.packageProgress?.progressPercentage ?? 0}% Complete
@@ -173,7 +173,7 @@ export default async function TravelerPassportTrailDetailPage({
             <h2
               style={{
                 margin: "0 2px",
-                fontFamily: 'Georgia, "Times New Roman", Times, serif',
+                fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
                 fontSize: 24,
                 lineHeight: 1,
                 letterSpacing: "-0.04em",
@@ -218,7 +218,7 @@ export default async function TravelerPassportTrailDetailPage({
                         style={{
                           margin: 0,
                           fontSize: 9,
-                          fontWeight: 880,
+                          fontWeight: 720,
                           letterSpacing: "0.09em",
                           textTransform: "uppercase",
                           color: isStamped ? "#1fa45b" : item.isStampEligible ? "#13a8b7" : "#8b95a1",
@@ -226,7 +226,7 @@ export default async function TravelerPassportTrailDetailPage({
                       >
                         {isStamped ? "Stamped" : item.isStampEligible ? "Stamp Ready" : "Discovery Node"}
                       </p>
-                      <h3 style={{ margin: "4px 0 0", fontSize: 16, lineHeight: 1.1, fontWeight: 880, color: "#14264b" }}>
+                      <h3 style={{ margin: "4px 0 0", fontSize: 16, lineHeight: 1.1, fontWeight: 720, color: "#14264b" }}>
                         {node.nodeName}
                       </h3>
                     </div>
@@ -237,7 +237,7 @@ export default async function TravelerPassportTrailDetailPage({
                         background: isStamped ? "rgba(31,164,91,0.12)" : "rgba(19,168,183,0.10)",
                         color: isStamped ? "#1fa45b" : "#13a8b7",
                         fontSize: 9,
-                        fontWeight: 880,
+                        fontWeight: 720,
                         padding: "6px 8px",
                         whiteSpace: "nowrap",
                       }}
@@ -294,10 +294,10 @@ export default async function TravelerPassportTrailDetailPage({
 function MiniDetail(props: { label: string; value: string }) {
   return (
     <div style={{ borderRadius: 14, background: "rgba(20,38,75,0.05)", padding: "8px 8px" }}>
-      <div style={{ fontSize: 8, fontWeight: 820, color: "#718096", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+      <div style={{ fontSize: 8, fontWeight: 660, color: "#718096", textTransform: "uppercase", letterSpacing: "0.08em" }}>
         {props.label}
       </div>
-      <div style={{ marginTop: 3, fontSize: 10, fontWeight: 880, color: "#14264b" }}>{props.value}</div>
+      <div style={{ marginTop: 3, fontSize: 10, fontWeight: 720, color: "#14264b" }}>{props.value}</div>
     </div>
   );
 }
@@ -345,7 +345,7 @@ function BottomNavItem(props: { href: string; label: string; icon: string; activ
         justifyContent: "center",
         gap: 3,
         fontSize: 10,
-        fontWeight: 820,
+        fontWeight: 660,
         textDecoration: "none",
       }}
     >
