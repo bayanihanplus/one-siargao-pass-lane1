@@ -743,19 +743,28 @@ function TravelerBottomNavLink(props: {
   active?: boolean;
   icon: any;
 }) {
-  const color = props.active ? "#12a9ba" : "#6b7f9f";
+  const color = props.active ? "#0f9fb1" : "#6b7f9f";
+  const background = props.active ? "rgba(18,176,196,0.10)" : "transparent";
 
   return (
     <a
       href={props.href}
+      aria-current={props.active ? "page" : undefined}
       style={{
+        minWidth: 54,
+        minHeight: 54,
+        borderRadius: 16,
+        padding: "6px 5px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: 6,
-        fontSize: 11,
-        fontWeight: 500,
+        justifyContent: "center",
+        gap: 5,
+        fontSize: 10,
+        fontWeight: 900,
+        letterSpacing: "-0.01em",
         color,
+        background,
         textDecoration: "none",
       }}
     >
@@ -1467,11 +1476,11 @@ function TravelerBottomNav() {
     <nav
       style={{
         marginTop: 22,
-        border: "1px solid #e5e7eb",
-        borderRadius: 24,
-        background: "#ffffff",
-        padding: "10px 16px 12px",
-        boxShadow: "0 8px 30px rgba(15,23,42,0.06)",
+        border: "1px solid #dbe8ef",
+        borderRadius: 26,
+        background: "rgba(255,255,255,0.98)",
+        padding: "10px 12px 12px",
+        boxShadow: "0 14px 36px rgba(15,23,42,0.08)",
       }}
     >
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
@@ -1500,19 +1509,20 @@ function TravelerBottomNav() {
         <a
           href="/traveler/pass"
           style={{
-            marginTop: -22,
-            width: 64,
-            height: 64,
+            marginTop: -24,
+            width: 66,
+            height: 66,
             borderRadius: "50%",
-            background: "#12b0c4",
+            background: "linear-gradient(180deg, #19c7d8 0%, #0c9bad 100%)",
             color: "#ffffff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 14px 30px rgba(18,176,196,0.35)",
+            boxShadow: "0 16px 34px rgba(18,176,196,0.40)",
             textDecoration: "none",
+            border: "4px solid #ffffff",
           }}
-          aria-label="Center action"
+          aria-label="Open active pass QR"
         >
           <svg viewBox="0 0 24 24" width="32" height="32" fill="none">
             <circle cx="12" cy="12" r="2.2" stroke="currentColor" strokeWidth="1.8" />
@@ -1526,7 +1536,7 @@ function TravelerBottomNav() {
         </a>
 
         <TravelerBottomNavLink
-          href="/traveler/pass"
+          href="/traveler/trips"
           label="Payments"
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
@@ -1537,7 +1547,7 @@ function TravelerBottomNav() {
         />
 
         <TravelerBottomNavLink
-          href="/traveler/trips"
+          href="/traveler/pass"
           label="Profile"
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
