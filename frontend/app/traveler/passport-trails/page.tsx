@@ -33,7 +33,7 @@ export default async function TravelerPassportTrailsPage() {
         background:
           "radial-gradient(circle at 18% 8%, rgba(19,168,183,0.16) 0, transparent 28%), linear-gradient(180deg, #f7fbff 0%, #eef8f7 45%, #fff8e8 100%)",
         color: "#14264b",
-        fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
         padding: "14px 12px 104px",
       }}
     >
@@ -65,7 +65,7 @@ export default async function TravelerPassportTrailsPage() {
                 style={{
                   margin: 0,
                   fontSize: 10,
-                  fontWeight: 720,
+                  fontWeight: 640,
                   letterSpacing: "0.13em",
                   textTransform: "uppercase",
                   color: "#13a8b7",
@@ -76,7 +76,7 @@ export default async function TravelerPassportTrailsPage() {
               <h1
                 style={{
                   margin: "4px 0 0",
-                  fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   fontSize: 34,
                   lineHeight: 0.92,
                   letterSpacing: "-0.055em",
@@ -103,7 +103,7 @@ export default async function TravelerPassportTrailsPage() {
                 justifyContent: "center",
                 padding: "0 13px",
                 fontSize: 11,
-                fontWeight: 720,
+                fontWeight: 640,
                 textDecoration: "none",
                 boxShadow: "0 8px 18px rgba(15,23,42,0.06)",
               }}
@@ -149,7 +149,7 @@ export default async function TravelerPassportTrailsPage() {
                 background: "rgba(255,255,255,0.14)",
                 padding: "6px 9px",
                 fontSize: 9,
-                fontWeight: 720,
+                fontWeight: 640,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 marginBottom: 10,
@@ -164,7 +164,7 @@ export default async function TravelerPassportTrailsPage() {
                 margin: 0,
                 fontSize: 12,
                 lineHeight: 1.42,
-                fontWeight: 680,
+                fontWeight: 600,
                 color: "rgba(255,255,255,0.88)",
                 maxWidth: 320,
               }}
@@ -184,7 +184,7 @@ export default async function TravelerPassportTrailsPage() {
                 color: "#143d66",
                 padding: "7px 10px",
                 fontSize: 10,
-                fontWeight: 720,
+                fontWeight: 640,
               }}
             >
               Powered by Passport Trails™
@@ -228,7 +228,7 @@ export default async function TravelerPassportTrailsPage() {
                       style={{
                         margin: 0,
                         fontSize: 9,
-                        fontWeight: 720,
+                        fontWeight: 640,
                         letterSpacing: "0.1em",
                         textTransform: "uppercase",
                         color: "#13a8b7",
@@ -239,7 +239,7 @@ export default async function TravelerPassportTrailsPage() {
                     <h2
                       style={{
                         margin: "5px 0 0",
-                        fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                         fontSize: 23,
                         lineHeight: 0.98,
                         letterSpacing: "-0.04em",
@@ -255,7 +255,7 @@ export default async function TravelerPassportTrailsPage() {
                       background: "rgba(19,168,183,0.10)",
                       color: "#13a8b7",
                       fontSize: 10,
-                      fontWeight: 720,
+                      fontWeight: 640,
                       padding: "7px 9px",
                       whiteSpace: "nowrap",
                     }}
@@ -264,7 +264,7 @@ export default async function TravelerPassportTrailsPage() {
                   </span>
                 </div>
 
-                <p style={{ margin: 0, fontSize: 12, lineHeight: 1.35, color: "#607089", fontWeight: 680 }}>
+                <p style={{ margin: 0, fontSize: 12, lineHeight: 1.35, color: "#607089", fontWeight: 600 }}>
                   {trail.shortDescription ?? trail.description ?? "Official Passport Trails™ package route."}
                 </p>
 
@@ -323,8 +323,8 @@ export default async function TravelerPassportTrailsPage() {
 function MiniStat(props: { value: string; label: string }) {
   return (
     <div style={{ borderRadius: 16, background: "rgba(20,38,75,0.05)", padding: "9px 8px" }}>
-      <div style={{ fontSize: 15, fontWeight: 720, color: "#14264b" }}>{props.value}</div>
-      <div style={{ marginTop: 2, fontSize: 9, fontWeight: 650, color: "#718096" }}>{props.label}</div>
+      <div style={{ fontSize: 15, fontWeight: 640, color: "#14264b" }}>{props.value}</div>
+      <div style={{ marginTop: 2, fontSize: 9, fontWeight: 580, color: "#718096" }}>{props.label}</div>
     </div>
   );
 }
@@ -372,7 +372,7 @@ function BottomNavItem(props: { href: string; label: string; icon: string; activ
         justifyContent: "center",
         gap: 3,
         fontSize: 10,
-        fontWeight: 660,
+        fontWeight: 590,
         textDecoration: "none",
       }}
     >

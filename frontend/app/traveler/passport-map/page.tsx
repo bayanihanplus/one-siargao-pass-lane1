@@ -25,7 +25,7 @@ export default async function TravelerPassportMapPage() {
         minHeight: "100vh",
         background: "#f5f9fc",
         color: "#14264b",
-        fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
       }}
     >
       <div
@@ -91,12 +91,12 @@ export default async function TravelerPassportMapPage() {
               <h1
                 style={{
                   margin: 0,
-                  fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   fontSize: 25,
                   lineHeight: 1,
                   letterSpacing: "-0.056em",
                   color: "#14264b",
-                  fontWeight: 660,
+                  fontWeight: 590,
                   whiteSpace: "nowrap",
                   overflow: "visible",
                 }}
@@ -110,7 +110,7 @@ export default async function TravelerPassportMapPage() {
                   color: "#5f6f87",
                   fontSize: 13,
                   lineHeight: 1.1,
-                  fontWeight: 660,
+                  fontWeight: 590,
                   whiteSpace: "nowrap",
                   overflow: "visible",
                 }}
@@ -242,12 +242,12 @@ export default async function TravelerPassportMapPage() {
                 <h2
                   style={{
                     margin: 0,
-                    fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                     fontSize: 29,
                     lineHeight: 0.98,
                     letterSpacing: "-0.052em",
                     color: "#14264b",
-                    fontWeight: 660,
+                    fontWeight: 590,
                   }}
                 >
                   Your Siargao Journey,
@@ -443,7 +443,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
               color: "#13a8b7",
               fontSize: 9,
               lineHeight: 1,
-              fontWeight: 720,
+              fontWeight: 640,
               letterSpacing: "0.03em",
             }}
           >
@@ -453,12 +453,12 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
           <h2
             style={{
               margin: "5px 0 0",
-              fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
               fontSize: 20,
               lineHeight: 1.02,
               letterSpacing: "-0.04em",
               color: "#14264b",
-              fontWeight: 660,
+              fontWeight: 590,
             }}
           >
             {title}
@@ -470,7 +470,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
               color: "#6b7890",
               fontSize: 10.5,
               lineHeight: 1.22,
-              fontWeight: 660,
+              fontWeight: 590,
             }}
           >
             {reason}
@@ -489,7 +489,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
               style={{
                 color: "#6b7890",
                 fontSize: 9,
-                fontWeight: 650,
+                fontWeight: 580,
                 whiteSpace: "nowrap",
               }}
             >
@@ -508,7 +508,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
                 color: "#ffffff",
                 padding: "0 12px",
                 fontSize: 10,
-                fontWeight: 720,
+                fontWeight: 640,
                 textDecoration: "none",
                 whiteSpace: "nowrap",
                 boxShadow: "0 8px 16px rgba(19,168,183,0.20)",
@@ -565,12 +565,12 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
           <h2
             style={{
               margin: 0,
-              fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
               fontSize: 24,
               lineHeight: 1,
               letterSpacing: "-0.04em",
               color: "#14264b",
-              fontWeight: 660,
+              fontWeight: 590,
             }}
           >
             Verified Stops
@@ -598,7 +598,7 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
             background: "rgba(236,254,255,0.86)",
             color: "#13a8b7",
             fontSize: 11,
-            fontWeight: 720,
+            fontWeight: 640,
             textDecoration: "none",
             whiteSpace: "nowrap",
             display: "inline-flex",
@@ -705,7 +705,7 @@ function StopPreviewCard(props: {
             alignItems: "center",
             justifyContent: "center",
             fontSize: 9,
-            fontWeight: 720,
+            fontWeight: 640,
             boxShadow: "0 8px 16px rgba(15,23,42,0.10)",
           }}
         >
@@ -727,7 +727,7 @@ function StopPreviewCard(props: {
             alignItems: "center",
             justifyContent: "center",
             fontSize: 12,
-            fontWeight: 720,
+            fontWeight: 640,
             boxShadow: props.verified ? "0 7px 14px rgba(31,164,91,0.20)" : "0 7px 14px rgba(100,116,139,0.16)",
           }}
         >
@@ -747,7 +747,7 @@ function StopPreviewCard(props: {
             color: "#14264b",
             fontSize: 12,
             lineHeight: 1.12,
-            fontWeight: 720,
+            fontWeight: 640,
             letterSpacing: "-0.02em",
           }}
         >
@@ -778,7 +778,7 @@ function StopPreviewCard(props: {
             padding: "4px 6px",
             fontSize: 8,
             lineHeight: 1,
-            fontWeight: 720,
+            fontWeight: 640,
             textTransform: "uppercase",
             letterSpacing: "0.05em",
           }}
@@ -833,12 +833,12 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
           <h2
             style={{
               margin: 0,
-              fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
               fontSize: 24,
               lineHeight: 1,
               letterSpacing: "-0.04em",
               color: "#14264b",
-              fontWeight: 660,
+              fontWeight: 590,
             }}
           >
             Your Trails
@@ -866,7 +866,7 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
             background: "rgba(236,254,255,0.86)",
             color: "#13a8b7",
             fontSize: 11,
-            fontWeight: 720,
+            fontWeight: 640,
             textDecoration: "none",
             whiteSpace: "nowrap",
             display: "inline-flex",
@@ -1071,7 +1071,7 @@ function TrailPreviewCard(props: {
             color: "#14264b",
             fontSize: 11.5,
             lineHeight: 1.1,
-            fontWeight: 720,
+            fontWeight: 640,
             letterSpacing: "-0.03em",
           }}
         >
@@ -1091,7 +1091,7 @@ function TrailPreviewCard(props: {
               color: "#7b8798",
               fontSize: 10,
               lineHeight: 1.22,
-              fontWeight: 650,
+              fontWeight: 580,
             }}
           >
             {props.progressLabel}
@@ -1103,7 +1103,7 @@ function TrailPreviewCard(props: {
                 color: "#13a8b7",
                 fontSize: 11,
                 lineHeight: 1.15,
-                fontWeight: 660,
+                fontWeight: 590,
               }}
             >
               {props.progressLabel}
@@ -1169,7 +1169,7 @@ function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emp
           color: "#14264b",
           padding: "6px 10px",
           fontSize: 10,
-          fontWeight: 660,
+          fontWeight: 590,
           letterSpacing: "0.1em",
           textTransform: "uppercase",
         }}
@@ -1227,7 +1227,7 @@ function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emp
           fontSize: 9.5,
           lineHeight: 1.28,
           color: "#718096",
-          fontWeight: 660,
+          fontWeight: 590,
         }}
       >
         Metrics use governed OSP/SPM QR, Passport Stamp, and traveler progress records only.
@@ -1249,7 +1249,7 @@ function LegendItem(props: {
         gap: 7,
         color: "#42526b",
         fontSize: 11,
-        fontWeight: 650,
+        fontWeight: 580,
       }}
     >
       <span
@@ -1277,7 +1277,7 @@ function LegendRouteItem(props: {
         gap: 7,
         color: "#42526b",
         fontSize: 11,
-        fontWeight: 650,
+        fontWeight: 580,
       }}
     >
       <span
@@ -1329,7 +1329,7 @@ function StatusCard(props: {
           alignItems: "center",
           justifyContent: "center",
           fontSize: 10,
-          fontWeight: 660,
+          fontWeight: 590,
           flex: "0 0 22px",
           boxShadow: "0 5px 10px rgba(15,23,42,0.10)",
         }}
@@ -1341,10 +1341,10 @@ function StatusCard(props: {
         <div
           style={{
             color: "#14264b",
-            fontFamily: '"Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
             fontSize: valueLines.length > 1 ? 10.5 : 17,
             lineHeight: valueLines.length > 1 ? 0.96 : 1,
-            fontWeight: 660,
+            fontWeight: 590,
             letterSpacing: "-0.04em",
             whiteSpace: "normal",
           }}
@@ -1362,7 +1362,7 @@ function StatusCard(props: {
             color: props.value.includes("Pass") ? "#1fa45b" : "#66738b",
             fontSize: props.value.includes("Pass") ? 6.3 : 6.8,
             lineHeight: 1.08,
-            fontWeight: 650,
+            fontWeight: 580,
             letterSpacing: "0.01em",
           }}
         >
@@ -1470,7 +1470,7 @@ function MapLabel(props: {
         color: "#25344d",
         fontSize: 10,
         lineHeight: 1,
-        fontWeight: 660,
+        fontWeight: 590,
         textShadow: "0 1px 2px rgba(255,255,255,0.95)",
         whiteSpace: "nowrap",
       }}
