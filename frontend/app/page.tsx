@@ -963,7 +963,7 @@ function TravelerShellFrame(props: {
     <header
       style={{
         width: "100%",
-        maxWidth: 390,
+        maxWidth: 430,
         margin: "0 auto 14px",
         overflow: "hidden",
         marginBottom: 16,
@@ -1124,7 +1124,7 @@ function TravelerShellFrame(props: {
             }}
           />
 
-          <div style={{ position: "relative", zIndex: 1, maxWidth: 235 }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: 252 }}>
             <div
               style={{
                 marginBottom: 12,
@@ -1175,7 +1175,7 @@ function TravelerShellFrame(props: {
               style={{
                 margin: 0,
                 whiteSpace: "normal",
-                fontSize: 27,
+                fontSize: 28,
                 fontWeight: 720,
                 lineHeight: 1.02,
                 letterSpacing: "-0.035em",
@@ -1206,7 +1206,7 @@ function TravelerShellFrame(props: {
                   alignItems: "center",
                   justifyContent: "space-between",
                   width: "100%",
-                  maxWidth: 176,
+                  maxWidth: 188,
                   height: 48,
                   borderRadius: 999,
                   background: "#16bfd3",
@@ -1818,9 +1818,9 @@ function TravelerShell(props: {
     <div
       style={{
         width: "100%",
-        maxWidth: 390,
+        maxWidth: 430,
         margin: "0 auto",
-        padding: "2px 8px 18px",
+        padding: "2px 10px 18px",
         boxSizing: "border-box",
         overflowX: "hidden",
       }}
