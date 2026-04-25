@@ -8,10 +8,31 @@ import { PrismaService } from '../../database/prisma.service';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { ConfirmPaymentIntentDto } from './dto/confirm-payment-intent.dto';
 import { Prisma } from '@prisma/client';
+import { FxService } from '../fx/fx.service';
 
 @Injectable()
 export class PaymentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly fxService: FxService) {}
+
+  private serializeFxDisplaySnapshot(snapshot: any) {
+    if (!snapshot) return null;
+
+    return {
+      id: snapshot.id,
+      sourceAmountPhp: snapshot.sourceAmountPhp,
+      sourceCurrencyCode: snapshot.sourceCurrencyCode,
+      displayCurrencyCode: snapshot.displayCurrencyCode,
+      fxRate: snapshot.fxRate,
+      convertedDisplayAmount: snapshot.convertedDisplayAmount,
+      fxSource: snapshot.fxSource,
+      fxAsOf: snapshot.fxAsOf,
+      snapshotReason: snapshot.snapshotReason,
+      bookingId: snapshot.bookingId,
+      paymentIntentId: snapshot.paymentIntentId,
+      rateExpiresAt: snapshot.rateExpiresAt,
+      createdAt: snapshot.createdAt,
+    };
+  }
 
   async createIntent(userId: string | undefined, dto: CreatePaymentIntentDto) {
     const booking = await this.prisma.booking.findUnique({
@@ -244,12 +265,25 @@ export class PaymentsService {
       throw new NotFoundException('Payment intent not found');
     }
 
+    const fxDisplaySnapshot = await this.fxService.getOrCreatePaymentIntentDisplaySnapshot({
+      sourceAmountPhp: intent.amountPhp,
+      displayCurrencyCode: 'USD',
+      snapshotReason: 'PAYMENT_INTENT_DETAIL_READ',
+      bookingId: intent.bookingId,
+      paymentIntentId: intent.id,
+      metadataJson: {
+        surface: 'traveler_payment_detail',
+        mode: 'deterministic_dev_rate',
+      },
+    });
+
     return {
       id: intent.id,
       bookingId: intent.bookingId,
       intentReference: intent.intentReference,
       amountPhp: intent.amountPhp,
       currencyCode: intent.currencyCode,
+      fxDisplaySnapshot: this.serializeFxDisplaySnapshot(fxDisplaySnapshot),
       status: intent.status,
       provider: intent.provider,
       confirmedAt: intent.confirmedAt,

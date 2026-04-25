@@ -75,6 +75,29 @@ export class FxService {
     });
   }
 
+
+  async getOrCreatePaymentIntentDisplaySnapshot(input: FxSnapshotInput) {
+    const displayCurrencyCode = this.normalizeCurrencyCode(input.displayCurrencyCode);
+
+    const existing = await this.prisma.fxDisplaySnapshot.findFirst({
+      where: {
+        paymentIntentId: input.paymentIntentId ?? undefined,
+        displayCurrencyCode,
+        snapshotReason: input.snapshotReason,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (existing) {
+      return existing;
+    }
+
+    return this.createDisplaySnapshot({
+      ...input,
+      displayCurrencyCode,
+    });
+  }
+
   normalizeCurrencyCode(value: string) {
     const normalized = String(value || '').trim().toUpperCase();
 
