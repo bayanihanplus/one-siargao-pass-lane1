@@ -143,7 +143,7 @@ insert into "LanguageTranslationValue" ("id","languagePackId","translationKeyId"
 ('ltv_fil_ltk_home_bottom_nav_trips','lang_fil','ltk_home_bottom_nav_trips','Trips','PUBLISHED',now(),now()),
 ('ltv_fil_ltk_home_bottom_nav_payments','lang_fil','ltk_home_bottom_nav_payments','Payments','PUBLISHED',now(),now()),
 ('ltv_fil_ltk_home_bottom_nav_profile','lang_fil','ltk_home_bottom_nav_profile','Profile','PUBLISHED',now(),now()),
-('ltv_fil_ltk_home_pass_open_qr_aria','lang_fil','ltk_home_pass_open_qr_aria','Buksan ang active pass QR','PUBLISHED',now(),now()),
+('ltv_fil_ltk_home_pass_open_qr_aria','lang_fil','ltk_home_pass_open_qr_aria','Buksan ang active pass QR','PUBLISHED',now(),now())
 on conflict ("languagePackId","translationKeyId") do update set
 "value"=excluded."value",
 "status"='PUBLISHED',
