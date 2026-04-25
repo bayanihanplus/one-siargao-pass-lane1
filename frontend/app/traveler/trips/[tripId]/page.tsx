@@ -54,6 +54,11 @@ const tripDetailDictionaryFallback: TravelerDictionary = {
   "tripDetail.currentBooking.status": "Booking Status",
   "tripDetail.currentBooking.total": "Booking Total",
   "tripDetail.currentBooking.currency": "Currency",
+  "tripDetail.fx.displayEstimate": "Display Estimate",
+  "tripDetail.fx.rate": "FX Rate",
+  "tripDetail.fx.source": "FX Source",
+  "tripDetail.fx.asOf": "Rate As Of",
+  "tripDetail.fx.note": "FX is shown as a traveler display estimate only. PHP remains the booking and settlement source of truth.",
   "tripDetail.paymentStatus.title": "Payment Status",
   "tripDetail.paymentStatus.state": "State",
   "tripDetail.paymentStatus.paid": "Paid",
@@ -273,6 +278,16 @@ function formatMoney(value: any, currency = "PHP") {
   const amount = Number(value);
   if (Number.isNaN(amount)) return String(value);
   return `${currency} ${amount.toLocaleString("en-PH")}`;
+}
+
+function formatFxDisplayAmount(snapshot: any) {
+  if (!snapshot?.convertedDisplayAmount || !snapshot?.displayCurrencyCode) return "—";
+  return formatMoney(snapshot.convertedDisplayAmount, snapshot.displayCurrencyCode);
+}
+
+function formatFxRate(snapshot: any) {
+  if (!snapshot?.fxRate || !snapshot?.sourceCurrencyCode || !snapshot?.displayCurrencyCode) return "—";
+  return `1 ${snapshot.sourceCurrencyCode} = ${snapshot.fxRate} ${snapshot.displayCurrencyCode}`;
 }
 
 function normalizeStatus(value: any) {
@@ -672,6 +687,7 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
   const passTheme = statusTheme(trip?.pass?.passStatus);
   const manifestTheme = statusTheme(trip?.manifestReadiness?.isManifestListed ? "LISTED" : "NOT LISTED");
   const bookingCurrency = trip?.currentBooking?.currencyCode || "PHP";
+  const currentBookingFxDisplaySnapshot = trip?.currentBooking?.fxDisplaySnapshot ?? null;
 
   return (
     <main
@@ -924,6 +940,45 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
               <KeyValue label={t(dictionary, "tripDetail.currentBooking.total", "Booking Total")} value={formatMoney(trip.currentBooking?.bookingTotalPhp, bookingCurrency)} />
               <KeyValue label={t(dictionary, "tripDetail.currentBooking.currency", "Currency")} value={bookingCurrency} />
             </div>
+
+            {currentBookingFxDisplaySnapshot ? (
+              <div
+                style={{
+                  marginTop: 10,
+                  borderRadius: 18,
+                  border: "1px solid rgba(37,99,235,0.16)",
+                  background: "linear-gradient(180deg, rgba(239,246,255,0.92) 0%, rgba(255,255,255,0.98) 100%)",
+                  padding: 11,
+                }}
+              >
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
+                  <KeyValue
+                    label={t(dictionary, "tripDetail.fx.displayEstimate", "Display Estimate")}
+                    value={formatFxDisplayAmount(currentBookingFxDisplaySnapshot)}
+                    tone={{ bg: "#eff6ff", border: "#cfe0f7", color: "#2563eb" }}
+                  />
+                  <KeyValue
+                    label={t(dictionary, "tripDetail.fx.rate", "FX Rate")}
+                    value={formatFxRate(currentBookingFxDisplaySnapshot)}
+                    tone={{ bg: "#f8fafc", border: "#e2e8f0", color: "#475569" }}
+                  />
+                  <KeyValue
+                    label={t(dictionary, "tripDetail.fx.source", "FX Source")}
+                    value={currentBookingFxDisplaySnapshot.fxSource}
+                    tone={{ bg: "#f8fafc", border: "#e2e8f0", color: "#475569" }}
+                  />
+                  <KeyValue
+                    label={t(dictionary, "tripDetail.fx.asOf", "Rate As Of")}
+                    value={formatDate(currentBookingFxDisplaySnapshot.fxAsOf)}
+                    tone={{ bg: "#f8fafc", border: "#e2e8f0", color: "#475569" }}
+                  />
+                </div>
+
+                <p style={{ margin: "9px 0 0", color: "#64748b", fontSize: 11.5, lineHeight: 1.35, fontWeight: 750 }}>
+                  {t(dictionary, "tripDetail.fx.note", "FX is shown as a traveler display estimate only. PHP remains the booking and settlement source of truth.")}
+                </p>
+              </div>
+            ) : null}
           </Section>
 
           <Section title={t(dictionary, "tripDetail.paymentStatus.title", "Payment Status")} icon={<Icon kind="payment" />} tone="amber">
