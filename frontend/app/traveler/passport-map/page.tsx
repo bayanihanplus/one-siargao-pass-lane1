@@ -348,7 +348,7 @@ export default async function TravelerPassportMapPage() {
           }}
         >
           <BottomNavItem href="/traveler/passport-map" label="Map" active icon="map" />
-          <BottomNavItem href="/traveler/trips" label="Trails" icon="trail" />
+          <BottomNavItem href="/traveler/passport-trails" label="Trails" icon="trail" />
           <BottomNavItem href="/traveler/pass" label="Pass" icon="pass" />
           <BottomNavItem href="/" label="Profile" icon="profile" />
         </nav>
@@ -857,7 +857,7 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
         </div>
 
         <a
-          href="/traveler/passport-map"
+          href="/traveler/passport-trails"
           aria-label="View all passport trails"
           style={{
             minHeight: 30,
@@ -946,7 +946,7 @@ function TrailPreviewCard(props: {
 
   return (
     <a
-      href="/traveler/passport-map"
+      href="/traveler/passport-trails"
       aria-label={`${props.title} preview card. ${props.governed ? "Governed progress." : "Visual placeholder only."}`}
       style={{
         minHeight: 160,

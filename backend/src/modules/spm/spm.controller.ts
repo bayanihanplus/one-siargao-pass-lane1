@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { SpmService } from './spm.service';
 import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -20,6 +20,18 @@ export class SpmController {
   @Get('trail-nodes')
   listTrailNodes() {
     return this.spmService.listTrailNodes();
+  }
+
+  @Roles('TRAVELER')
+  @Get('passport-trails')
+  listPassportTrailsForTraveler() {
+    return this.spmService.listPassportTrailsForTraveler();
+  }
+
+  @Roles('TRAVELER')
+  @Get('passport-trails/:trailSlug')
+  getPassportTrailDetail(@Param('trailSlug') trailSlug: string) {
+    return this.spmService.getPassportTrailDetail(trailSlug);
   }
 
   @Roles('TRAVELER')

@@ -65,6 +65,235 @@ export class SpmService {
 
     return { ok: true, data };
   }
+  async listPassportTrailsForTraveler() {
+    const families = await this.prisma.spmTrailFamily.findMany({
+      where: {
+        isActive: true,
+        isOfficial: true,
+      },
+      orderBy: {
+        officialSortOrder: 'asc',
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        description: true,
+        publicLabel: true,
+        officialSortOrder: true,
+      },
+    });
+
+    const nodes = await this.prisma.spmTrailNode.findMany({
+      where: {
+        approvalStatus: 'APPROVED',
+      },
+      orderBy: [
+        { trailFamilyId: 'asc' },
+        { code: 'asc' },
+      ],
+      select: {
+        id: true,
+        trailFamilyId: true,
+        code: true,
+        name: true,
+        nodeType: true,
+        requirementType: true,
+        stampEligible: true,
+        bookingRequired: true,
+        operatorRequired: true,
+        guideRequirement: true,
+        safetyControlled: true,
+        isOfficialNode: true,
+        isCandidateNode: true,
+        isConditionalNode: true,
+      },
+    });
+
+    const nodesByFamily = new Map<string, typeof nodes>();
+    for (const node of nodes) {
+      const current = nodesByFamily.get(node.trailFamilyId) ?? [];
+      current.push(node);
+      nodesByFamily.set(node.trailFamilyId, current);
+    }
+
+    const data = families.map((family) => {
+      const familyNodes = nodesByFamily.get(family.id) ?? [];
+      const stampEligibleCount = familyNodes.filter((node) => node.stampEligible).length;
+      const bookingRequiredCount = familyNodes.filter((node) => node.bookingRequired).length;
+      const safetyControlledCount = familyNodes.filter((node) => node.safetyControlled).length;
+
+      return {
+        trailId: family.id,
+        trailCode: family.code,
+        trailSlug: String(family.code).toLowerCase().replaceAll('_', '-'),
+        trailName: family.publicLabel ?? family.name,
+        description: family.description,
+        displayOrder: family.officialSortOrder,
+        nodeCount: familyNodes.length,
+        stampEligibleCount,
+        bookingRequiredCount,
+        safetyControlledCount,
+        status: 'available',
+        source: 'official_discovery',
+      };
+    });
+
+    return {
+      ok: true,
+      data,
+      dataIntegrity: {
+        governedDiscoveryOnly: true,
+        commercialBookingIncluded: false,
+        pricingIncluded: false,
+        visualFallbackUsed: false,
+      },
+    };
+  }
+
+  async getPassportTrailDetail(trailSlug: string) {
+    const normalizedCode = trailSlug.toUpperCase().replaceAll('-', '_');
+
+    const family = await this.prisma.spmTrailFamily.findFirst({
+      where: {
+        code: normalizedCode as any,
+        isActive: true,
+        isOfficial: true,
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        description: true,
+        publicLabel: true,
+        officialSortOrder: true,
+      },
+    });
+
+    if (!family) {
+      return {
+        ok: false,
+        error: 'PASSPORT_TRAIL_NOT_FOUND',
+        data: null,
+      };
+    }
+
+    const [tracks, nodes, variants] = await Promise.all([
+      this.prisma.spmTrailTrack.findMany({
+        where: {
+          trailFamilyId: family.id,
+          isActive: true,
+        },
+        orderBy: {
+          sortOrder: 'asc',
+        },
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          description: true,
+          isPublic: true,
+          sortOrder: true,
+        },
+      }),
+      this.prisma.spmTrailNode.findMany({
+        where: {
+          trailFamilyId: family.id,
+          approvalStatus: 'APPROVED',
+        },
+        orderBy: [
+          { isOfficialNode: 'desc' },
+          { code: 'asc' },
+        ],
+        select: {
+          id: true,
+          trailFamilyId: true,
+          trailTrackId: true,
+          code: true,
+          name: true,
+          description: true,
+          nodeType: true,
+          requirementType: true,
+          isOfficialNode: true,
+          isCandidateNode: true,
+          isConditionalNode: true,
+          conditionNote: true,
+          locationLabel: true,
+          municipality: true,
+          barangay: true,
+          publicAccessLevel: true,
+          stampEligible: true,
+          bookingRequired: true,
+          operatorRequired: true,
+          guideRequirement: true,
+          safetyControlled: true,
+        },
+      }),
+      this.prisma.spmTrailVariant.findMany({
+        where: {
+          trailFamilyId: family.id,
+          isActive: true,
+        },
+        orderBy: {
+          code: 'asc',
+        },
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          description: true,
+          variantType: true,
+          isPublic: true,
+          minimumRequiredNodes: true,
+          completionRuleJson: true,
+        },
+      }),
+    ]);
+
+    return {
+      ok: true,
+      data: {
+        trailId: family.id,
+        trailCode: family.code,
+        trailSlug: String(family.code).toLowerCase().replaceAll('_', '-'),
+        trailName: family.publicLabel ?? family.name,
+        description: family.description,
+        displayOrder: family.officialSortOrder,
+        tracks,
+        nodes: nodes.map((node) => ({
+          stopId: node.id,
+          stopCode: node.code,
+          stopName: node.name,
+          description: node.description,
+          nodeType: node.nodeType,
+          requirementType: node.requirementType,
+          trailTrackId: node.trailTrackId,
+          isOfficialNode: node.isOfficialNode,
+          isCandidateNode: node.isCandidateNode,
+          isConditionalNode: node.isConditionalNode,
+          conditionNote: node.conditionNote,
+          locationLabel: node.locationLabel,
+          municipality: node.municipality,
+          barangay: node.barangay,
+          publicAccessLevel: node.publicAccessLevel,
+          stampEligible: node.stampEligible,
+          bookingRequired: node.bookingRequired,
+          operatorRequired: node.operatorRequired,
+          guideRequirement: node.guideRequirement,
+          safetyControlled: node.safetyControlled,
+          source: 'official_discovery',
+        })),
+        variants,
+      },
+      dataIntegrity: {
+        governedDiscoveryOnly: true,
+        commercialBookingIncluded: false,
+        pricingIncluded: false,
+        visualFallbackUsed: false,
+      },
+    };
+  }
+
   async getTravelerPreview(userId: string) {
     const [families, nodes, progressRows, verifiedRows, recommendation] = await Promise.all([
       this.prisma.spmTrailFamily.findMany({
