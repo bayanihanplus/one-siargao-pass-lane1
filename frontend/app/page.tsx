@@ -122,6 +122,16 @@ function t(dictionary: Record<string, string> | undefined | null, key: string, f
   return dictionary?.[key] || fallback;
 }
 
+function getHomeHeroDictionaryBase(title: string) {
+  if (title === "Trip Active.\nPass Ready.") return "home.hero.active";
+  if (title === "Trip On File.\nRegistration Required.") return "home.hero.registrationRequired";
+  if (title === "Trip On File.\nManifest Listing Required.") return "home.hero.manifestRequired";
+  if (title === "Trip Found.\nPass Pending.") return "home.hero.passPending";
+  if (title === "Trip On File.\nClearance Pending.") return "home.hero.clearancePending";
+  if (title === "Trip On File.\nPayment Pending.") return "home.hero.paymentPending";
+  return "home.hero.empty";
+}
+
 function formatHeroTitleFromDictionary(value: string) {
   return value.replace(/\.\s+/g, ".\n");
 }
@@ -936,12 +946,17 @@ function TravelerShellFrame(props: {
   preferredLanguage?: string | null;
 }) {
   const hero = getHeroState(props.latestTravelerTrip);
-  const heroTitle =
-    hero.title === "Trip Active.\nPass Ready."
-      ? formatHeroTitleFromDictionary(t(props.dictionary, "home.hero.title", hero.title))
-      : hero.title;
+  const heroBaseKey = getHomeHeroDictionaryBase(hero.title);
+  const heroTitle = formatHeroTitleFromDictionary(t(props.dictionary, `${heroBaseKey}.title`, hero.title));
+  const heroBody = t(props.dictionary, `${heroBaseKey}.body`, hero.body);
+  const heroTravelerLabel = t(props.dictionary, `${heroBaseKey}.travelerLabel`, hero.travelerLabel);
   const showQrLabel = t(props.dictionary, "home.cta.showQr", "Show My QR");
   const passportMapLabel = t(props.dictionary, "home.cta.passportMap", "Open Passport Map");
+  const officialTravelerPassLabel = t(props.dictionary, "home.header.officialTravelerPass", "Official Traveler Pass");
+  const languageAriaLabel = t(props.dictionary, "home.header.language.ariaLabel", "Open language selector");
+  const currencyAriaLabel = t(props.dictionary, "home.header.currency.ariaLabel", "Open currency selector");
+  const assistantAriaLabel = t(props.dictionary, "home.header.assistant.ariaLabel", "Open OSP Travel Assistant");
+  const notificationsAriaLabel = t(props.dictionary, "home.header.notifications.ariaLabel", "Notifications");
   const languageLabel = getLanguageHeaderLabel(props.preferredLanguage);
 
   return (
@@ -998,7 +1013,7 @@ function TravelerShellFrame(props: {
                 color: "#64748b",
               }}
             >
-              <span>Official Traveler Pass</span>
+              <span>{officialTravelerPassLabel}</span>
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" style={{ color: "#17b6c6" }}>
                 <path
                   d="M12 3l7 3v5c0 4.5-3 8.1-7 10-4-1.9-7-5.5-7-10V6l7-3z"
@@ -1027,13 +1042,13 @@ function TravelerShellFrame(props: {
             flex: "0 0 auto",
           }}
         >
-          <HeaderControlButton label={languageLabel} ariaLabel="Open language selector" href="/traveler/settings?panel=language" icon="language" />
-          <HeaderControlButton label="PHP" ariaLabel="Open currency selector" href="/traveler/settings?panel=currency" icon="currency" />
-          <HeaderControlButton label="AI" ariaLabel="Open OSP Travel Assistant" href="/traveler/settings?panel=assistant" icon="assistant" />
+          <HeaderControlButton label={languageLabel} ariaLabel={languageAriaLabel} href="/traveler/settings?panel=language" icon="language" />
+          <HeaderControlButton label="PHP" ariaLabel={currencyAriaLabel} href="/traveler/settings?panel=currency" icon="currency" />
+          <HeaderControlButton label="AI" ariaLabel={assistantAriaLabel} href="/traveler/settings?panel=assistant" icon="assistant" />
 
           <a
             href="/traveler/settings?panel=notifications"
-            aria-label="Notifications"
+            aria-label={notificationsAriaLabel}
             style={{
               position: "relative",
               width: 38,
@@ -1148,7 +1163,7 @@ function TravelerShellFrame(props: {
                     strokeLinejoin="round"
                   />
                 </svg>
-                {hero.travelerLabel}
+                {heroTravelerLabel}
               </span>
             </div>
 
@@ -1176,7 +1191,7 @@ function TravelerShellFrame(props: {
                 color: "rgba(255,255,255,0.9)",
               }}
             >
-              {hero.body}
+              {heroBody}
             </p>
 
             <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
@@ -1262,6 +1277,7 @@ function TravelerShellFrame(props: {
 function TravelerPassCard(props: {
   user: any;
   latestTravelerTrip: any;
+  dictionary: Record<string, string>;
 }) {
   const travelerName = getTravelerNameForPassCard(props.user);
   const passCode = getPassCardPassCode(props.latestTravelerTrip);
@@ -1270,6 +1286,9 @@ function TravelerPassCard(props: {
   const tripMeta = getPassCardTripMeta(props.latestTravelerTrip);
   const verificationLabel = getPassCardVerificationLabel(props.latestTravelerTrip);
   const badgeColor = getPassCardBadgeColor(props.latestTravelerTrip);
+  const passCodeLabel = t(props.dictionary, "home.passCard.passCode", "Pass Code");
+  const validDatesLabel = t(props.dictionary, "home.passCard.validDates", "Valid Dates");
+  const passBadgePrefix = t(props.dictionary, "home.passCard.badgePrefix", "PASS");
 
   return (
     <section
@@ -1326,7 +1345,7 @@ function TravelerPassCard(props: {
                 color: "#7a93ad",
               }}
             >
-              Pass Code
+              {passCodeLabel}
             </div>
             <div
               style={{
@@ -1352,7 +1371,7 @@ function TravelerPassCard(props: {
                 color: "#7a93ad",
               }}
             >
-              Valid Dates
+              {validDatesLabel}
             </div>
             <div
               style={{
@@ -1404,7 +1423,7 @@ function TravelerPassCard(props: {
               color: "#ffffff",
             }}
           >
-            PASS {passStatus.toUpperCase()}
+            {passBadgePrefix} {passStatus.toUpperCase()}
           </span>
 
           <div style={{ marginTop: 16 }}>
@@ -1447,11 +1466,16 @@ function TravelerPassCard(props: {
 
 function TravelerCompactStatusRow(props: {
   latestTravelerTrip: any;
+  dictionary: Record<string, string>;
 }) {
   const clearanceStatus = getStatusRowClearanceStatus(props.latestTravelerTrip);
   const paymentStatus = getStatusRowPaymentStatus(props.latestTravelerTrip);
   const passStatus = getStatusRowPassStatus(props.latestTravelerTrip);
   const tripDates = getStatusRowTripDates(props.latestTravelerTrip);
+  const clearanceStatusTitle = t(props.dictionary, "home.status.clearance", "Clearance Status");
+  const paymentStatusTitle = t(props.dictionary, "home.status.payment", "Payment Status");
+  const passStatusTitle = t(props.dictionary, "home.status.pass", "Pass Status");
+  const tripDatesTitle = t(props.dictionary, "home.status.tripDates", "Trip Dates");
 
   return (
     <section
@@ -1463,7 +1487,7 @@ function TravelerCompactStatusRow(props: {
       }}
     >
       <TravelerStatusRowCard
-        title="Clearance Status"
+        title={clearanceStatusTitle}
         value={clearanceStatus}
         shellBg="#eefdf3"
         borderColor="#cdeed7"
@@ -1478,7 +1502,7 @@ function TravelerCompactStatusRow(props: {
       />
 
       <TravelerStatusRowCard
-        title="Payment Status"
+        title={paymentStatusTitle}
         value={paymentStatus}
         shellBg="#fff8eb"
         borderColor="#f6e1b5"
@@ -1493,7 +1517,7 @@ function TravelerCompactStatusRow(props: {
       />
 
       <TravelerStatusRowCard
-        title="Pass Status"
+        title={passStatusTitle}
         value={passStatus}
         shellBg="#ecfeff"
         borderColor="#bfeaf0"
@@ -1519,7 +1543,7 @@ function TravelerCompactStatusRow(props: {
       />
 
       <TravelerStatusRowCard
-        title="Trip Dates"
+        title={tripDatesTitle}
         value={tripDates}
         shellBg="#eff6ff"
         borderColor="#cfe0f7"
@@ -1538,8 +1562,19 @@ function TravelerCompactStatusRow(props: {
 
 function TravelerReassuranceAndJourney(props: {
   latestTravelerTrip: any;
+  dictionary: Record<string, string>;
 }) {
   const reassurance = getTravelerReassuranceMessage(props.latestTravelerTrip);
+  const reassuranceMessage = t(props.dictionary, "home.reassurance.message", reassurance.message);
+  const continueJourneyTitle = t(props.dictionary, "home.journey.title", "Continue Your Journey");
+  const tripsTitle = t(props.dictionary, "home.journey.trips.title", "Trips");
+  const tripsSubtitle = t(props.dictionary, "home.journey.trips.subtitle", "Plans & records");
+  const paymentsTitle = t(props.dictionary, "home.journey.payments.title", "Payments");
+  const paymentsSubtitle = t(props.dictionary, "home.journey.payments.subtitle", "Status & receipts");
+  const passportMapTitle = t(props.dictionary, "home.journey.passportMap.title", "Passport Map");
+  const passportMapSubtitle = t(props.dictionary, "home.journey.passportMap.subtitle", "Trails & stamps");
+  const checkpointsTitle = t(props.dictionary, "home.journey.checkpoints.title", "Checkpoints");
+  const checkpointsSubtitle = t(props.dictionary, "home.journey.checkpoints.subtitle", "QR & access state");
 
   return (
     <>
@@ -1571,7 +1606,7 @@ function TravelerReassuranceAndJourney(props: {
             </svg>
           </div>
           <p style={{ margin: 0, fontSize: 14, lineHeight: 1.35, fontWeight: 500, color: reassurance.color }}>
-            {reassurance.message}
+            {reassuranceMessage}
           </p>
         </div>
       </section>
@@ -1586,7 +1621,7 @@ function TravelerReassuranceAndJourney(props: {
             letterSpacing: "-0.025em",
           }}
         >
-          Continue Your Journey
+          {continueJourneyTitle}
         </h3>
 
         <div
@@ -1599,8 +1634,8 @@ function TravelerReassuranceAndJourney(props: {
         >
           <TravelerJourneyCard
             href="/traveler/trips"
-            title="Trips"
-            subtitle="Plans & records"
+            title={tripsTitle}
+            subtitle={tripsSubtitle}
             shellBg="#eff6ff"
             borderColor="#cfe0f7"
             chipBg="#dceeff"
@@ -1616,8 +1651,8 @@ function TravelerReassuranceAndJourney(props: {
 
           <TravelerJourneyCard
             href="/traveler/trips"
-            title="Payments"
-            subtitle="Status & receipts"
+            title={paymentsTitle}
+            subtitle={paymentsSubtitle}
             shellBg="#fff8eb"
             borderColor="#f6e1b5"
             chipBg="#fef0c7"
@@ -1632,8 +1667,8 @@ function TravelerReassuranceAndJourney(props: {
 
           <TravelerJourneyCard
             href="/traveler/passport-map"
-            title="Passport Map"
-            subtitle="Trails & stamps"
+            title={passportMapTitle}
+            subtitle={passportMapSubtitle}
             shellBg="#ecfeff"
             borderColor="#bfeaf0"
             chipBg="#d6f6f8"
@@ -1655,8 +1690,8 @@ function TravelerReassuranceAndJourney(props: {
 
           <TravelerJourneyCard
             href="/traveler/pass"
-            title="Checkpoints"
-            subtitle="QR & access state"
+            title={checkpointsTitle}
+            subtitle={checkpointsSubtitle}
             shellBg="#eefdf3"
             borderColor="#cdeed7"
             chipBg="#dcfce7"
@@ -1674,7 +1709,15 @@ function TravelerReassuranceAndJourney(props: {
   );
 }
 
-function TravelerBottomNav() {
+function TravelerBottomNav(props: {
+  dictionary: Record<string, string>;
+}) {
+  const homeLabel = t(props.dictionary, "home.bottomNav.home", "Home");
+  const tripsLabel = t(props.dictionary, "home.bottomNav.trips", "Trips");
+  const paymentsLabel = t(props.dictionary, "home.bottomNav.payments", "Payments");
+  const profileLabel = t(props.dictionary, "home.bottomNav.profile", "Profile");
+  const openQrAriaLabel = t(props.dictionary, "home.pass.openQr.ariaLabel", "Open active pass QR");
+
   return (
     <nav
       style={{
@@ -1689,7 +1732,7 @@ function TravelerBottomNav() {
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
         <TravelerBottomNavLink
           href="/"
-          label="Home"
+          label={homeLabel}
           active
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
@@ -1700,7 +1743,7 @@ function TravelerBottomNav() {
 
         <TravelerBottomNavLink
           href="/traveler/trips"
-          label="Trips"
+          label={tripsLabel}
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
               <rect x="4" y="7" width="16" height="11" rx="2" stroke="currentColor" strokeWidth="1.8" />
@@ -1725,7 +1768,7 @@ function TravelerBottomNav() {
             textDecoration: "none",
             border: "4px solid #ffffff",
           }}
-          aria-label="Open active pass QR"
+          aria-label={openQrAriaLabel}
         >
           <svg viewBox="0 0 24 24" width="32" height="32" fill="none">
             <rect x="4.5" y="4.5" width="5.5" height="5.5" rx="1.3" stroke="currentColor" strokeWidth="1.9" />
@@ -1737,7 +1780,7 @@ function TravelerBottomNav() {
 
         <TravelerBottomNavLink
           href="/traveler/trips"
-          label="Payments"
+          label={paymentsLabel}
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
               <rect x="3.5" y="6" width="17" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
@@ -1748,7 +1791,7 @@ function TravelerBottomNav() {
 
         <TravelerBottomNavLink
           href="/traveler/pass"
-          label="Profile"
+          label={profileLabel}
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
               <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.8" />
@@ -1780,10 +1823,10 @@ function TravelerShell(props: {
         dictionary={props.dictionary}
         preferredLanguage={props.user?.preferredLanguage}
       />
-      <TravelerPassCard user={props.user} latestTravelerTrip={props.latestTravelerTrip} />
-      <TravelerCompactStatusRow latestTravelerTrip={props.latestTravelerTrip} />
-      <TravelerReassuranceAndJourney latestTravelerTrip={props.latestTravelerTrip} />
-      <TravelerBottomNav />
+      <TravelerPassCard user={props.user} latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
+      <TravelerCompactStatusRow latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
+      <TravelerReassuranceAndJourney latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
+      <TravelerBottomNav dictionary={props.dictionary} />
     </div>
   );
 }
