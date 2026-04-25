@@ -27,59 +27,57 @@ export default function TravelerPassportMapPage() {
           <header
             style={{
               display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: 12,
+              alignItems: "center",
+              gap: 10,
+              minHeight: 68,
+              position: "relative",
+              zIndex: 5,
+              paddingRight: 42,
             }}
           >
             <a
               href="/"
               aria-label="Back to One Siargao Pass home"
               style={{
-                width: 76,
-                height: 76,
-                borderRadius: "50%",
-                border: "2px solid #13a8b7",
-                color: "#13a8b7",
-                background: "rgba(255,255,255,0.92)",
+                width: 58,
+                height: 58,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                textAlign: "center",
                 textDecoration: "none",
-                lineHeight: 0.9,
-                fontWeight: 950,
-                letterSpacing: "-0.04em",
-                boxShadow: "0 8px 18px rgba(18,169,186,0.10)",
-                flex: "0 0 auto",
+                flex: "0 0 58px",
               }}
             >
-              <span>
-                <span style={{ fontSize: 9, letterSpacing: "0.04em" }}>ONE</span>
-                <br />
-                <span style={{ fontSize: 18 }}>SIARGAO</span>
-                <br />
-                <span style={{ fontSize: 11, letterSpacing: "0.03em" }}>PASS</span>
-              </span>
+              <img
+                src="/osp/spm-header-mark.png"
+                alt="Siargao Passport Map"
+                style={{
+                  width: 58,
+                  height: 58,
+                  objectFit: "contain",
+                  display: "block",
+                }}
+              />
             </a>
 
             <div
               style={{
-                flex: 1,
+                flex: "1 1 auto",
                 minWidth: 0,
-                paddingTop: 7,
+                paddingTop: 1,
               }}
             >
               <h1
                 style={{
                   margin: 0,
                   fontFamily: 'Georgia, "Times New Roman", Times, serif',
-                  fontSize: 30,
+                  fontSize: 25,
                   lineHeight: 1.02,
-                  letterSpacing: "-0.045em",
+                  letterSpacing: "-0.052em",
                   color: "#14264b",
                   fontWeight: 900,
                   whiteSpace: "nowrap",
+                  overflow: "visible",
                 }}
               >
                 Siargao Passport Map
@@ -87,12 +85,13 @@ export default function TravelerPassportMapPage() {
 
               <p
                 style={{
-                  margin: "6px 0 0",
+                  margin: "5px 0 0",
                   color: "#6c7890",
-                  fontSize: 16,
-                  lineHeight: 1.15,
+                  fontSize: 14,
+                  lineHeight: 1.12,
                   fontWeight: 700,
                   whiteSpace: "nowrap",
+                  overflow: "visible",
                 }}
               >
                 Follow the Trails. Build the Journey.
@@ -103,34 +102,35 @@ export default function TravelerPassportMapPage() {
               href="/traveler/pass"
               aria-label="Open One Siargao Pass"
               style={{
-                width: 42,
-                height: 42,
+                width: 34,
+                height: 34,
                 borderRadius: "50%",
                 color: "#14264b",
-                background: "rgba(255,255,255,0.86)",
+                background: "rgba(255,255,255,0.9)",
                 border: "1px solid rgba(20,38,75,0.08)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 textDecoration: "none",
-                position: "relative",
-                marginTop: 8,
-                flex: "0 0 auto",
+                position: "absolute",
+                top: 15,
+                right: 0,
+                boxShadow: "0 6px 14px rgba(15,23,42,0.05)",
               }}
             >
               <span
                 aria-hidden="true"
                 style={{
                   position: "absolute",
-                  top: 8,
-                  right: 8,
+                  top: 6,
+                  right: 6,
                   width: 7,
                   height: 7,
                   borderRadius: "50%",
                   background: "#ff5638",
                 }}
               />
-              <svg viewBox="0 0 24 24" width="26" height="26" fill="none">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
                 <path
                   d="M18 8.5a6 6 0 1 0-12 0c0 7-2.5 7.7-2.5 9h17c0-1.3-2.5-2-2.5-9Z"
                   stroke="currentColor"
