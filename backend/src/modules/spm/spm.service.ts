@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import { OperatorContext } from '../auth/types/operator-context.type';
 
 @Injectable()
 export class SpmService {
@@ -818,6 +819,335 @@ export class SpmService {
         paymentExecutionIncluded: false,
         operatorDashboardMutationIncluded: false,
         visualFallbackUsed: false,
+      },
+    };
+  }
+
+  async listOperatorPricingPackages(operatorContext: OperatorContext) {
+    const packages = await this.prisma.spmTrailPackage.findMany({
+      orderBy: [
+        { productType: 'asc' },
+        { code: 'asc' },
+      ],
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        publicLabel: true,
+        productType: true,
+        curationSource: true,
+        fulfillmentPartnerType: true,
+        bookabilityStatus: true,
+        approvalStatus: true,
+        distributionEnabled: true,
+        instantCheckoutAllowed: true,
+        requiresPriceBeforePublish: true,
+        trailFamilyId: true,
+      },
+    });
+
+    const packageIds = packages.map((item) => item.id);
+
+    const [operatorRules, platformRules, families] = await Promise.all([
+      this.prisma.spmPricingRule.findMany({
+        where: {
+          trailPackageId: { in: packageIds },
+          operatorUserId: operatorContext.operatorUserId,
+        },
+        select: {
+          trailPackageId: true,
+          pricingMode: true,
+          currencyCode: true,
+          basePrice: true,
+          priceRangeMin: true,
+          priceRangeMax: true,
+          packageFlatRate: true,
+          fillableRequired: true,
+          requestToConfirmRequired: true,
+          instantCheckoutAllowed: true,
+          approvalStatus: true,
+          updatedAt: true,
+        },
+      }),
+      this.prisma.spmPricingRule.findMany({
+        where: {
+          trailPackageId: { in: packageIds },
+          operatorUserId: null,
+          partnerId: null,
+        },
+        select: {
+          trailPackageId: true,
+          pricingMode: true,
+          currencyCode: true,
+          basePrice: true,
+          priceRangeMin: true,
+          priceRangeMax: true,
+          packageFlatRate: true,
+          fillableRequired: true,
+          requestToConfirmRequired: true,
+          instantCheckoutAllowed: true,
+          approvalStatus: true,
+        },
+      }),
+      this.prisma.spmTrailFamily.findMany({
+        where: { id: { in: packages.map((item) => item.trailFamilyId) } },
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          publicLabel: true,
+        },
+      }),
+    ]);
+
+    const operatorRuleByPackage = new Map(operatorRules.map((rule) => [rule.trailPackageId, rule]));
+    const platformRuleByPackage = new Map(platformRules.map((rule) => [rule.trailPackageId, rule]));
+    const familyById = new Map(families.map((family) => [family.id, family]));
+
+    return {
+      ok: true,
+      data: packages.map((item) => {
+        const family = familyById.get(item.trailFamilyId) ?? null;
+        const operatorPricing = operatorRuleByPackage.get(item.id) ?? null;
+        const platformDefaultPricing = platformRuleByPackage.get(item.id) ?? null;
+
+        return {
+          packageId: item.id,
+          packageCode: item.code,
+          packageName: item.name,
+          publicLabel: item.publicLabel,
+          productType: item.productType,
+          curationSource: item.curationSource,
+          fulfillmentPartnerType: item.fulfillmentPartnerType,
+          bookabilityStatus: item.bookabilityStatus,
+          approvalStatus: item.approvalStatus,
+          distributionEnabled: item.distributionEnabled,
+          instantCheckoutAllowed: item.instantCheckoutAllowed,
+          requiresPriceBeforePublish: item.requiresPriceBeforePublish,
+          trailFamily: family
+            ? {
+                trailId: family.id,
+                trailCode: family.code,
+                trailName: family.publicLabel ?? family.name,
+              }
+            : null,
+          platformDefaultPricing,
+          operatorPricing,
+          operatorPricingRequired: !operatorPricing,
+        };
+      }),
+      dataIntegrity: {
+        operatorScoped: true,
+        operatorUserId: operatorContext.operatorUserId,
+        operatorMutationIncluded: false,
+        checkoutIncluded: false,
+        paymentExecutionIncluded: false,
+      },
+    };
+  }
+
+  async updateOperatorPackagePricing(
+    operatorContext: OperatorContext,
+    packageCode: string,
+    body: any,
+  ) {
+    const normalizedCode = packageCode.toUpperCase().replaceAll('-', '_');
+
+    const item = await this.prisma.spmTrailPackage.findFirst({
+      where: { code: normalizedCode },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        approvalStatus: true,
+        distributionEnabled: true,
+        instantCheckoutAllowed: true,
+      },
+    });
+
+    if (!item) {
+      return {
+        ok: false,
+        error: 'PASSPORT_TRAIL_PACKAGE_NOT_FOUND',
+        data: null,
+      };
+    }
+
+    const allowedPricingModes = new Set([
+      'FIXED_PER_HEAD',
+      'PAX_TIERED_PER_HEAD',
+      'PACKAGE_FLAT_RATE',
+      'FILLABLE_PRICE_REQUIRED',
+      'REQUEST_TO_CONFIRM',
+      'PRICE_RANGE',
+    ]);
+
+    const pricingMode = String(body?.pricingMode ?? '').trim();
+
+    if (!allowedPricingModes.has(pricingMode)) {
+      return {
+        ok: false,
+        error: 'INVALID_PRICING_MODE',
+        data: {
+          allowedPricingModes: Array.from(allowedPricingModes),
+        },
+      };
+    }
+
+    const currencyCode = String(body?.currencyCode ?? 'PHP').trim().toUpperCase();
+
+    const parseMoney = (value: unknown) => {
+      if (value === null || value === undefined || value === '') return null;
+      const numberValue = Number(value);
+      if (!Number.isFinite(numberValue) || numberValue < 0) {
+        throw new Error('INVALID_MONEY_VALUE');
+      }
+      return numberValue;
+    };
+
+    let basePrice: number | null = null;
+    let priceRangeMin: number | null = null;
+    let priceRangeMax: number | null = null;
+    let packageFlatRate: number | null = null;
+
+    try {
+      basePrice = parseMoney(body?.basePrice);
+      priceRangeMin = parseMoney(body?.priceRangeMin);
+      priceRangeMax = parseMoney(body?.priceRangeMax);
+      packageFlatRate = parseMoney(body?.packageFlatRate);
+    } catch {
+      return {
+        ok: false,
+        error: 'INVALID_MONEY_VALUE',
+        data: null,
+      };
+    }
+
+    if (pricingMode === 'FIXED_PER_HEAD' && basePrice === null) {
+      return {
+        ok: false,
+        error: 'BASE_PRICE_REQUIRED_FOR_FIXED_PER_HEAD',
+        data: null,
+      };
+    }
+
+    if (pricingMode === 'PACKAGE_FLAT_RATE' && packageFlatRate === null) {
+      return {
+        ok: false,
+        error: 'PACKAGE_FLAT_RATE_REQUIRED',
+        data: null,
+      };
+    }
+
+    if (pricingMode === 'PRICE_RANGE') {
+      if (priceRangeMin === null || priceRangeMax === null) {
+        return {
+          ok: false,
+          error: 'PRICE_RANGE_MIN_MAX_REQUIRED',
+          data: null,
+        };
+      }
+
+      if (priceRangeMin > priceRangeMax) {
+        return {
+          ok: false,
+          error: 'PRICE_RANGE_MIN_EXCEEDS_MAX',
+          data: null,
+        };
+      }
+    }
+
+    const existing = await this.prisma.spmPricingRule.findFirst({
+      where: {
+        trailPackageId: item.id,
+        operatorUserId: operatorContext.operatorUserId,
+        partnerId: null,
+      },
+      select: { id: true },
+    });
+
+    const requiresConfirm =
+      pricingMode === 'FILLABLE_PRICE_REQUIRED' ||
+      pricingMode === 'REQUEST_TO_CONFIRM' ||
+      pricingMode === 'PRICE_RANGE';
+
+    const data = {
+      trailPackageId: item.id,
+      trailNodeId: null,
+      operatorUserId: operatorContext.operatorUserId,
+      partnerId: null,
+      pricingMode: pricingMode as any,
+      currencyCode,
+      basePrice,
+      priceRangeMin,
+      priceRangeMax,
+      packageFlatRate,
+      fillableRequired: pricingMode === 'FILLABLE_PRICE_REQUIRED',
+      requestToConfirmRequired: requiresConfirm,
+      instantCheckoutAllowed: false,
+      approvalStatus: 'PENDING_REVIEW' as any,
+      effectiveFrom: null,
+      effectiveTo: null,
+    };
+
+    const rule = existing
+      ? await this.prisma.spmPricingRule.update({
+          where: { id: existing.id },
+          data,
+          select: {
+            id: true,
+            trailPackageId: true,
+            operatorUserId: true,
+            pricingMode: true,
+            currencyCode: true,
+            basePrice: true,
+            priceRangeMin: true,
+            priceRangeMax: true,
+            packageFlatRate: true,
+            fillableRequired: true,
+            requestToConfirmRequired: true,
+            instantCheckoutAllowed: true,
+            approvalStatus: true,
+            updatedAt: true,
+          },
+        })
+      : await this.prisma.spmPricingRule.create({
+          data,
+          select: {
+            id: true,
+            trailPackageId: true,
+            operatorUserId: true,
+            pricingMode: true,
+            currencyCode: true,
+            basePrice: true,
+            priceRangeMin: true,
+            priceRangeMax: true,
+            packageFlatRate: true,
+            fillableRequired: true,
+            requestToConfirmRequired: true,
+            instantCheckoutAllowed: true,
+            approvalStatus: true,
+            updatedAt: true,
+          },
+        });
+
+    return {
+      ok: true,
+      data: {
+        packageId: item.id,
+        packageCode: item.code,
+        packageName: item.name,
+        pricingRule: rule,
+      },
+      dataIntegrity: {
+        operatorScoped: true,
+        operatorUserId: operatorContext.operatorUserId,
+        approvalRequired: true,
+        approvalStatusAfterSubmit: 'PENDING_REVIEW',
+        packageActivated: false,
+        checkoutIncluded: false,
+        paymentExecutionIncluded: false,
+        instantCheckoutAllowed: false,
       },
     };
   }
