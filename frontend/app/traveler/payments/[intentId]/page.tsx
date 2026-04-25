@@ -22,6 +22,11 @@ const paymentDetailDictionaryFallback: TravelerDictionary = {
   "paymentDetail.receipt.currency": "Currency",
   "paymentDetail.receipt.status": "Status",
   "paymentDetail.receipt.provider": "Provider",
+  "paymentDetail.fx.displayEstimate": "Display Estimate",
+  "paymentDetail.fx.rate": "FX Rate",
+  "paymentDetail.fx.source": "FX Source",
+  "paymentDetail.fx.asOf": "Rate As Of",
+  "paymentDetail.fx.note": "FX is shown as a traveler display estimate only. PHP remains the payment and settlement source of truth.",
   "paymentDetail.state.title": "Payment State",
   "paymentDetail.state.state": "State",
   "paymentDetail.state.paid": "Paid",
@@ -116,6 +121,16 @@ function formatMoney(value: any, currency = "PHP") {
   const amount = Number(value);
   if (Number.isNaN(amount)) return String(value);
   return `${currency} ${amount.toLocaleString("en-PH")}`;
+}
+
+function formatFxDisplayAmount(snapshot: any) {
+  if (!snapshot?.convertedDisplayAmount || !snapshot?.displayCurrencyCode) return "—";
+  return formatMoney(snapshot.convertedDisplayAmount, snapshot.displayCurrencyCode);
+}
+
+function formatFxRate(snapshot: any) {
+  if (!snapshot?.fxRate || !snapshot?.sourceCurrencyCode || !snapshot?.displayCurrencyCode) return "—";
+  return `1 ${snapshot.sourceCurrencyCode} = ${snapshot.fxRate} ${snapshot.displayCurrencyCode}`;
 }
 
 function formatDateTime(value: any) {
@@ -443,6 +458,7 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
   const currency = intent?.currencyCode || "PHP";
   const paidAmount = intent?.paymentState?.paidAmountPhp;
   const unpaidAmount = intent?.paymentState?.unpaidAmountPhp;
+  const fxDisplaySnapshot = intent?.fxDisplaySnapshot ?? null;
 
   const statusIcon =
     String(status).toUpperCase().includes("PAID") || String(status).toUpperCase().includes("CONFIRMED") ? (
@@ -569,6 +585,45 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
               <KeyValue label={t(dictionary, "paymentDetail.receipt.status", "Status")} value={normalizeStatus(intent.status)} tone={theme} />
               <KeyValue label={t(dictionary, "paymentDetail.receipt.provider", "Provider")} value={intent.provider} />
             </div>
+
+            {fxDisplaySnapshot ? (
+              <div
+                style={{
+                  marginTop: 10,
+                  borderRadius: 18,
+                  border: "1px solid rgba(37,99,235,0.16)",
+                  background: "linear-gradient(180deg, rgba(239,246,255,0.92) 0%, rgba(255,255,255,0.98) 100%)",
+                  padding: 11,
+                }}
+              >
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
+                  <KeyValue
+                    label={t(dictionary, "paymentDetail.fx.displayEstimate", "Display Estimate")}
+                    value={formatFxDisplayAmount(fxDisplaySnapshot)}
+                    tone={{ bg: "#eff6ff", border: "#cfe0f7", color: "#2563eb" }}
+                  />
+                  <KeyValue
+                    label={t(dictionary, "paymentDetail.fx.rate", "FX Rate")}
+                    value={formatFxRate(fxDisplaySnapshot)}
+                    tone={{ bg: "#f8fafc", border: "#e2e8f0", color: "#475569" }}
+                  />
+                  <KeyValue
+                    label={t(dictionary, "paymentDetail.fx.source", "FX Source")}
+                    value={fxDisplaySnapshot.fxSource}
+                    tone={{ bg: "#f8fafc", border: "#e2e8f0", color: "#475569" }}
+                  />
+                  <KeyValue
+                    label={t(dictionary, "paymentDetail.fx.asOf", "Rate As Of")}
+                    value={formatDateTime(fxDisplaySnapshot.fxAsOf)}
+                    tone={{ bg: "#f8fafc", border: "#e2e8f0", color: "#475569" }}
+                  />
+                </div>
+
+                <p style={{ margin: "9px 0 0", color: "#64748b", fontSize: 11.5, lineHeight: 1.35, fontWeight: 750 }}>
+                  {t(dictionary, "paymentDetail.fx.note", "FX is shown as a traveler display estimate only. PHP remains the payment and settlement source of truth.")}
+                </p>
+              </div>
+            ) : null}
           </Section>
 
           <Section title={t(dictionary, "paymentDetail.state.title", "Payment State")} icon={<Icon kind="payment" />} tone="amber">

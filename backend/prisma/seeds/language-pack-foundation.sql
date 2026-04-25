@@ -205,6 +205,11 @@ insert into "LanguageTranslationKey" ("id","key","scope","defaultText","descript
 ('ltk_payment_detail_receipt_currency','paymentDetail.receipt.currency','traveler','Currency','Payment detail currency label',true,now(),now()),
 ('ltk_payment_detail_receipt_status','paymentDetail.receipt.status','traveler','Status','Payment detail status label',true,now(),now()),
 ('ltk_payment_detail_receipt_provider','paymentDetail.receipt.provider','traveler','Provider','Payment detail provider label',true,now(),now()),
+('ltk_payment_detail_fx_display_estimate','paymentDetail.fx.displayEstimate','traveler','Display Estimate','Payment detail FX display estimate label',true,now(),now()),
+('ltk_payment_detail_fx_rate','paymentDetail.fx.rate','traveler','FX Rate','Payment detail FX rate label',true,now(),now()),
+('ltk_payment_detail_fx_source','paymentDetail.fx.source','traveler','FX Source','Payment detail FX source label',true,now(),now()),
+('ltk_payment_detail_fx_as_of','paymentDetail.fx.asOf','traveler','Rate As Of','Payment detail FX rate timestamp label',true,now(),now()),
+('ltk_payment_detail_fx_note','paymentDetail.fx.note','traveler','FX is shown as a traveler display estimate only. PHP remains the payment and settlement source of truth.','Payment detail FX display-only note',true,now(),now()),
 ('ltk_payment_detail_state_title','paymentDetail.state.title','traveler','Payment State','Payment detail payment state title',true,now(),now()),
 ('ltk_payment_detail_state_state','paymentDetail.state.state','traveler','State','Payment detail state label',true,now(),now()),
 ('ltk_payment_detail_state_paid','paymentDetail.state.paid','traveler','Paid','Payment detail paid label',true,now(),now()),
@@ -387,7 +392,12 @@ insert into "LanguageTranslationValue" ("id","languagePackId","translationKeyId"
 ('ltv_fil_ltk_payment_detail_state_title','lang_fil','ltk_payment_detail_state_title','Payment State','PUBLISHED',now(),now()),
 ('ltv_fil_ltk_payment_detail_booking_title','lang_fil','ltk_payment_detail_booking_title','Booking Linkage','PUBLISHED',now(),now()),
 ('ltv_fil_ltk_payment_detail_actions_title','lang_fil','ltk_payment_detail_actions_title','Next Actions','PUBLISHED',now(),now()),
-('ltv_fil_ltk_payment_detail_actions_note','lang_fil','ltk_payment_detail_actions_note','Nakakonekta ang payments sa OSP booking at pass status mo. Ang operational changes ay dapat manggaling sa verified backend records.','PUBLISHED',now(),now())
+('ltv_fil_ltk_payment_detail_actions_note','lang_fil','ltk_payment_detail_actions_note','Nakakonekta ang payments sa OSP booking at pass status mo. Ang operational changes ay dapat manggaling sa verified backend records.','PUBLISHED',now(),now()),
+('ltv_fil_ltk_payment_detail_fx_display_estimate','lang_fil','ltk_payment_detail_fx_display_estimate','Display Estimate','PUBLISHED',now(),now()),
+('ltv_fil_ltk_payment_detail_fx_rate','lang_fil','ltk_payment_detail_fx_rate','FX Rate','PUBLISHED',now(),now()),
+('ltv_fil_ltk_payment_detail_fx_source','lang_fil','ltk_payment_detail_fx_source','FX Source','PUBLISHED',now(),now()),
+('ltv_fil_ltk_payment_detail_fx_as_of','lang_fil','ltk_payment_detail_fx_as_of','Rate As Of','PUBLISHED',now(),now()),
+('ltv_fil_ltk_payment_detail_fx_note','lang_fil','ltk_payment_detail_fx_note','Ang FX ay traveler display estimate lamang. PHP pa rin ang payment at settlement source of truth.','PUBLISHED',now(),now())
 on conflict ("languagePackId","translationKeyId") do update set
 "value"=excluded."value",
 "status"='PUBLISHED',
