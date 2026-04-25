@@ -244,6 +244,43 @@ function StatusChip(props: { label: string; value: any }) {
   );
 }
 
+function PassNavIcon(props: { kind: "HOME" | "TRIPS" | "MAP" | "LOGOUT" }) {
+  if (props.kind === "HOME") {
+    return (
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
+        <path d="M4 11.2 12 4l8 7.2V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-8.8Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "TRIPS") {
+    return (
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
+        <path d="M6 5.5h8.5a3.5 3.5 0 0 1 0 7H9.5a3.5 3.5 0 0 0 0 7H18" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+        <circle cx="6" cy="5.5" r="2" stroke="currentColor" strokeWidth="1.9" />
+        <circle cx="18" cy="19.5" r="2" stroke="currentColor" strokeWidth="1.9" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "MAP") {
+    return (
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
+        <path d="M3 6.8l6-2.3 6 2.3 6-2.3v12.7l-6 2.3-6-2.3-6 2.3V6.8z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M9 4.5v12.7M15 6.8v12.7" stroke="currentColor" strokeWidth="1.8" />
+        <circle cx="12" cy="11.2" r="1.4" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
+      <path d="M10 7V5.5A2.5 2.5 0 0 1 12.5 3H18v18h-5.5A2.5 2.5 0 0 1 10 18.5V17" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4 12h10M11 9l3 3-3 3" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export default async function TravelerPassPage() {
   const { trip, error } = await getPassView();
   const gateReasons = trip ? buildPassGateReasons(trip) : [];
@@ -308,10 +345,10 @@ export default async function TravelerPassPage() {
         }}
       >
         {[
-          { href: "/", label: "Home" },
-          { href: "/traveler/trips", label: "My Trips" },
-          { href: "/traveler/passport-map", label: "Passport Map" },
-          { href: "/logout", label: "Logout" },
+          { href: "/", label: "Home", icon: <PassNavIcon kind="HOME" /> },
+          { href: "/traveler/trips", label: "My Trips", icon: <PassNavIcon kind="TRIPS" /> },
+          { href: "/traveler/passport-map", label: "Passport Map", icon: <PassNavIcon kind="MAP" /> },
+          { href: "/logout", label: "Logout", icon: <PassNavIcon kind="LOGOUT" /> },
         ].map((item) => (
           <a
             key={item.href}
@@ -321,6 +358,7 @@ export default async function TravelerPassPage() {
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
+              gap: 7,
               borderRadius: 999,
               padding: "0 14px",
               border: "1px solid #dbe8ef",
@@ -332,6 +370,7 @@ export default async function TravelerPassPage() {
               boxShadow: "0 8px 18px rgba(15,23,42,0.035)",
             }}
           >
+            {item.icon}
             {item.label}
           </a>
         ))}
@@ -370,14 +409,46 @@ export default async function TravelerPassPage() {
                 boxShadow: "inset 0 1px 0 rgba(255,255,255,0.72)",
               }}
             >
-              <div style={{ fontSize: 30, fontWeight: 950, lineHeight: 1.02, color: "#19305a", letterSpacing: "-0.04em" }}>{readiness.title}</div>
-              <p style={{ marginTop: 8, marginBottom: 0, fontSize: 15, lineHeight: 1.45, color: "#475569", fontWeight: 650 }}>{readiness.body}</p>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                <div
+                  style={{
+                    width: 42,
+                    height: 42,
+                    borderRadius: 14,
+                    background: "#ffffff",
+                    border: "1px solid #dbe8ef",
+                    color: readiness.accent,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flex: "0 0 auto",
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+                    <path d="M12 3.5 18.5 6v5.2c0 4.2-2.7 7.5-6.5 9.3-3.8-1.8-6.5-5.1-6.5-9.3V6L12 3.5Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+                    <path d="M8.8 12.1 11 14.2l4.4-4.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <div>
+                  <div style={{ fontSize: 30, fontWeight: 950, lineHeight: 1.02, color: "#19305a", letterSpacing: "-0.04em" }}>{readiness.title}</div>
+                  <p style={{ marginTop: 8, marginBottom: 0, fontSize: 15, lineHeight: 1.45, color: "#475569", fontWeight: 650 }}>{readiness.body}</p>
+                </div>
+              </div>
             </div>
           </Section>
 
           <Section title="QR Credential">
             {trip.pass?.qrCredential?.qrToken ? (
               <div style={{ marginBottom: 16 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, color: "#0e7490", fontWeight: 900 }}>
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+                    <rect x="4" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
+                    <rect x="14" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
+                    <rect x="4" y="14" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
+                    <path d="M14 14h2.5v2.5H19V20h-5v-6Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+                  </svg>
+                  Active Pass QR Credential
+                </div>
                 <div
                   style={{
                     display: "inline-block",
@@ -471,6 +542,11 @@ export default async function TravelerPassPage() {
                   boxShadow: "0 10px 20px rgba(14,116,144,0.18)",
                 }}
               >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true" style={{ marginRight: 8 }}>
+                  <path d="M3 6.8l6-2.3 6 2.3 6-2.3v12.7l-6 2.3-6-2.3-6 2.3V6.8z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+                  <path d="M9 4.5v12.7M15 6.8v12.7" stroke="currentColor" strokeWidth="1.8" />
+                  <circle cx="12" cy="11.2" r="1.4" fill="currentColor" />
+                </svg>
                 Open Siargao Passport Map
               </a>
             </div>
