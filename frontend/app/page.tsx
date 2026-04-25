@@ -123,17 +123,17 @@ function t(dictionary: Record<string, string> | undefined | null, key: string, f
 }
 
 function getHomeHeroDictionaryBase(title: string) {
-  if (title === "Trip Active.\nPass Ready.") return "home.hero.active";
-  if (title === "Trip On File.\nRegistration Required.") return "home.hero.registrationRequired";
-  if (title === "Trip On File.\nManifest Listing Required.") return "home.hero.manifestRequired";
-  if (title === "Trip Found.\nPass Pending.") return "home.hero.passPending";
-  if (title === "Trip On File.\nClearance Pending.") return "home.hero.clearancePending";
-  if (title === "Trip On File.\nPayment Pending.") return "home.hero.paymentPending";
+  if (title === "Trip Active. Pass Ready.") return "home.hero.active";
+  if (title === "Trip On File. Registration Required.") return "home.hero.registrationRequired";
+  if (title === "Trip On File. Manifest Listing Required.") return "home.hero.manifestRequired";
+  if (title === "Trip Found. Pass Pending.") return "home.hero.passPending";
+  if (title === "Trip On File. Clearance Pending.") return "home.hero.clearancePending";
+  if (title === "Trip On File. Payment Pending.") return "home.hero.paymentPending";
   return "home.hero.empty";
 }
 
 function formatHeroTitleFromDictionary(value: string) {
-  return value.replace(/\.\s+/g, ".\n");
+  return value;
 }
 
 function getLanguageHeaderLabel(languageCode: string | null | undefined) {
@@ -236,8 +236,8 @@ function getHeroState(trip: any) {
     return {
       pill: "ACTIVE",
       travelerLabel: "Verified Traveler",
-      title: "Trip Active.\nPass Ready.",
-      body: "Access your trip status,\npass, clearance, and\npayment in one place.",
+      title: "Trip Active. Pass Ready.",
+      body: "Access your trip status, pass, clearance, and payment in one place.",
       pillBg: "#14a44d",
     };
   }
@@ -250,7 +250,7 @@ function getHeroState(trip: any) {
       return {
         pill: "PENDING",
         travelerLabel: "Traveler On File",
-        title: "Trip On File.\nRegistration Required.",
+        title: "Trip On File. Registration Required.",
         body: "Complete your traveler trip registration first so your pass can move forward.",
         pillBg: "#d89a20",
       };
@@ -260,7 +260,7 @@ function getHeroState(trip: any) {
       return {
         pill: "PENDING",
         travelerLabel: "Traveler On File",
-        title: "Trip On File.\nManifest Listing Required.",
+        title: "Trip On File. Manifest Listing Required.",
         body: "Your registration is on file, but you are not yet listed in the manifest for this trip.",
         pillBg: "#d89a20",
       };
@@ -269,7 +269,7 @@ function getHeroState(trip: any) {
     return {
       pill: "PENDING",
       travelerLabel: "Traveler On File",
-      title: "Trip Found.\nPass Pending.",
+      title: "Trip Found. Pass Pending.",
       body: "Your registration is on file. Keep checking your latest trip status as your pass moves forward.",
       pillBg: "#d89a20",
     };
@@ -279,7 +279,7 @@ function getHeroState(trip: any) {
     return {
       pill: "PENDING",
       travelerLabel: "Traveler On File",
-      title: "Trip On File.\nClearance Pending.",
+      title: "Trip On File. Clearance Pending.",
       body: "Your pass may be issued, but clearance is still under review before trip readiness is confirmed.",
       pillBg: "#6f62d8",
     };
@@ -289,8 +289,8 @@ function getHeroState(trip: any) {
     return {
       pill: "PAYMENT",
       travelerLabel: "Payment Pending",
-      title: "Trip On File.\nPayment Pending.",
-      body: "Access your trip status,\npass, clearance, and\npayment in one place.",
+      title: "Trip On File. Payment Pending.",
+      body: "Access your trip status, pass, clearance, and payment in one place.",
       pillBg: "#0fa8c8",
     };
   }
@@ -298,8 +298,8 @@ function getHeroState(trip: any) {
   return {
     pill: "START",
     travelerLabel: "Traveler Access",
-    title: "Start Your\nOne Siargao Pass.",
-    body: "Access your trip status,\npass, clearance, and\npayment in one place.",
+    title: "Start Your One Siargao Pass.",
+    body: "Access your trip status, pass, clearance, and payment in one place.",
     pillBg: "#64748b",
   };
 }
@@ -862,7 +862,7 @@ function TravelerBottomNavLink(props: {
         alignItems: "center",
         justifyContent: "center",
         gap: 5,
-        fontSize: 10,
+        fontSize: 9.5,
         fontWeight: 900,
         letterSpacing: "-0.01em",
         color,
@@ -908,7 +908,7 @@ function HeaderControlButton(props: {
   );
 
   const style = {
-    minWidth: 42,
+    minWidth: 38,
     height: 34,
     borderRadius: 999,
     border: "1px solid #dbe8ef",
@@ -918,8 +918,8 @@ function HeaderControlButton(props: {
     alignItems: "center",
     justifyContent: "center",
     gap: 5,
-    padding: "0 9px",
-    fontSize: 10,
+    padding: "0 8px",
+    fontSize: 9.5,
     fontWeight: 950,
     textDecoration: "none",
     boxShadow: "0 8px 18px rgba(15,23,42,0.045)",
@@ -977,7 +977,7 @@ function TravelerShellFrame(props: {
           marginBottom: 12,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10, whiteSpace: "nowrap" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6, width: "100%", whiteSpace: "nowrap" }}>
           <img
             src="/osp/osp-official-logo.png"
             alt="One Siargao Pass official logo"
