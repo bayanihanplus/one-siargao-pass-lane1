@@ -534,13 +534,16 @@ type SpmVerifiedStopPreviewData = {
 };
 
 function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] | null }) {
-  const stops = props.stops?.length
-    ? props.stops.slice(0, 3)
-    : [
-        { stopName: "General Luna", subtitle: "Surfer's Paradise", verificationStatus: "verified" },
-        { stopName: "Cloud 9", subtitle: "World Famous Wave", verificationStatus: "verified" },
-        { stopName: "Magpungko", subtitle: "Tide Pools", verificationStatus: "verified" },
-      ];
+  const fallbackStops = [
+    { stopName: "Daku Island", subtitle: "Verified stop", verificationStatus: "verified" },
+    { stopName: "Guyam Island", subtitle: "Verified stop", verificationStatus: "verified" },
+    { stopName: "Cloud 9", subtitle: "World Famous Wave", verificationStatus: "verified" },
+  ];
+
+  const realStops = props.stops?.length ? props.stops.slice(0, 3) : [];
+  const stops = [...realStops, ...fallbackStops]
+    .filter((stop, index, list) => list.findIndex((item) => item.stopName === stop.stopName) === index)
+    .slice(0, 3);
   return (
     <section
       aria-label="Preview-only verified stops cards"
@@ -778,13 +781,16 @@ type SpmTrailPreviewData = {
 };
 
 function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) {
-  const trails = props.trails?.length
-    ? props.trails.slice(0, 3)
-    : [
-        { trailName: "General Luna Explorer", trailStatus: "active", stopsTotal: 5, stopsCompleted: 3, progressPercentage: 60, iconKey: "COAST" },
-        { trailName: "Island Discovery Trail", trailStatus: "active", stopsTotal: 4, stopsCompleted: 1, progressPercentage: 25, iconKey: "ISLAND_HOPPING" },
-        { trailName: "North Coast Adventure", trailStatus: "locked", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: "Complete more trails to unlock", iconKey: "NORTH_SIARGAO" },
-      ];
+  const fallbackTrails = [
+    { trailName: "Island Discovery Trail", trailStatus: "active", stopsTotal: 4, stopsCompleted: 1, progressPercentage: 25, iconKey: "ISLAND_HOPPING" },
+    { trailName: "North Siargao Trail", trailStatus: "locked", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: "Complete more trails to unlock", iconKey: "NORTH_SIARGAO" },
+    { trailName: "Adventure Trail", trailStatus: "locked", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: "Complete more trails to unlock", iconKey: "ADVENTURE" },
+  ];
+
+  const realTrails = props.trails?.length ? props.trails.slice(0, 3) : [];
+  const trails = [...realTrails, ...fallbackTrails]
+    .filter((trail, index, list) => list.findIndex((item) => item.trailName === trail.trailName) === index)
+    .slice(0, 3);
   return (
     <section
       aria-label="Preview-only Passport Trails cards"
@@ -824,7 +830,7 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
               fontWeight: 750,
             }}
           >
-            Preview-only trail cards. Real trail state comes later.
+            Your real trail progress appears first. Extra cards preserve map layout.
           </p>
         </div>
 
