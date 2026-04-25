@@ -126,6 +126,33 @@ function formatHeroTitleFromDictionary(value: string) {
   return value.replace(/\.\s+/g, ".\n");
 }
 
+function getLanguageHeaderLabel(languageCode: string | null | undefined) {
+  const normalized = String(languageCode || "en").trim();
+
+  const labels: Record<string, string> = {
+    en: "EN",
+    "zh-Hant": "繁",
+    "zh-Hans": "简",
+    ko: "KO",
+    ja: "JP",
+    es: "ES",
+    fr: "FR",
+    de: "DE",
+    it: "IT",
+    pt: "PT",
+    nl: "NL",
+    sv: "SV",
+    no: "NO",
+    da: "DA",
+    pl: "PL",
+    fil: "FIL",
+    ceb: "CEB",
+    sgd: "SGD",
+  };
+
+  return labels[normalized] || normalized.slice(0, 3).toUpperCase();
+}
+
 function getTripPass(trip: any) {
   return trip?.pass ?? null;
 }
@@ -906,6 +933,7 @@ function HeaderControlButton(props: {
 function TravelerShellFrame(props: {
   latestTravelerTrip: any;
   dictionary: Record<string, string>;
+  preferredLanguage?: string | null;
 }) {
   const hero = getHeroState(props.latestTravelerTrip);
   const heroTitle =
@@ -914,6 +942,7 @@ function TravelerShellFrame(props: {
       : hero.title;
   const showQrLabel = t(props.dictionary, "home.cta.showQr", "Show My QR");
   const passportMapLabel = t(props.dictionary, "home.cta.passportMap", "Open Passport Map");
+  const languageLabel = getLanguageHeaderLabel(props.preferredLanguage);
 
   return (
     <header
@@ -998,7 +1027,7 @@ function TravelerShellFrame(props: {
             flex: "0 0 auto",
           }}
         >
-          <HeaderControlButton label="EN" ariaLabel="Open language selector" href="/traveler/settings?panel=language" icon="language" />
+          <HeaderControlButton label={languageLabel} ariaLabel="Open language selector" href="/traveler/settings?panel=language" icon="language" />
           <HeaderControlButton label="PHP" ariaLabel="Open currency selector" href="/traveler/settings?panel=currency" icon="currency" />
           <HeaderControlButton label="AI" ariaLabel="Open OSP Travel Assistant" href="/traveler/settings?panel=assistant" icon="assistant" />
 
@@ -1746,7 +1775,11 @@ function TravelerShell(props: {
         paddingBottom: 18,
       }}
     >
-      <TravelerShellFrame latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
+      <TravelerShellFrame
+        latestTravelerTrip={props.latestTravelerTrip}
+        dictionary={props.dictionary}
+        preferredLanguage={props.user?.preferredLanguage}
+      />
       <TravelerPassCard user={props.user} latestTravelerTrip={props.latestTravelerTrip} />
       <TravelerCompactStatusRow latestTravelerTrip={props.latestTravelerTrip} />
       <TravelerReassuranceAndJourney latestTravelerTrip={props.latestTravelerTrip} />
