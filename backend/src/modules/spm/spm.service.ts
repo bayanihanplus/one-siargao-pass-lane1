@@ -485,7 +485,7 @@ export class SpmService {
     };
   }
 
-  async listPassportTrailPackagesForTraveler() {
+  async listPassportTrailPackagesForTraveler(travelerUserId: string) {
     const packages = await this.prisma.spmTrailPackage.findMany({
       where: {
         approvalStatus: 'APPROVED',
@@ -518,7 +518,13 @@ export class SpmService {
 
     const packageIds = packages.map((item) => item.id);
 
-    const [packageNodes, pricingRules, families] = await Promise.all([
+    const latestTrip = await this.prisma.trip.findFirst({
+      where: { travelerUserId },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true },
+    });
+
+    const [packageNodes, pricingRules, families, packageProgressRows] = await Promise.all([
       this.prisma.spmTrailPackageNode.findMany({
         where: { trailPackageId: { in: packageIds } },
         select: {
@@ -561,6 +567,28 @@ export class SpmService {
           publicLabel: true,
         },
       }),
+      this.prisma.spmTravelerPackageProgress.findMany({
+        where: {
+          travelerUserId,
+          trailPackageId: { in: packageIds },
+          ...(latestTrip?.id ? { tripId: latestTrip.id } : {}),
+        },
+        select: {
+          trailPackageId: true,
+          tripId: true,
+          passId: true,
+          completedRequiredNodeCount: true,
+          requiredNodeCount: true,
+          completedOptionalNodeCount: true,
+          optionalNodeCount: true,
+          completedConditionalNodeCount: true,
+          conditionalNodeCount: true,
+          progressPercentage: true,
+          completionStatus: true,
+          completedAt: true,
+          lastStampAt: true,
+        },
+      }),
     ]);
 
     const nodeCountByPackage = new Map<string, number>();
@@ -592,10 +620,14 @@ export class SpmService {
     }
 
     const familyById = new Map(families.map((family) => [family.id, family]));
+    const packageProgressByPackage = new Map(
+      packageProgressRows.map((row) => [row.trailPackageId, row]),
+    );
 
     const data = packages.map((item) => {
       const pricing = pricingByPackage.get(item.id) ?? null;
       const family = familyById.get(item.trailFamilyId) ?? null;
+      const packageProgress = packageProgressByPackage.get(item.id) ?? null;
 
       return {
         packageId: item.id,
@@ -638,6 +670,35 @@ export class SpmService {
               approvalStatus: pricing.approvalStatus,
             }
           : null,
+        packageProgress: packageProgress
+          ? {
+              tripId: packageProgress.tripId,
+              passId: packageProgress.passId,
+              completedRequiredNodeCount: packageProgress.completedRequiredNodeCount,
+              requiredNodeCount: packageProgress.requiredNodeCount,
+              completedOptionalNodeCount: packageProgress.completedOptionalNodeCount,
+              optionalNodeCount: packageProgress.optionalNodeCount,
+              completedConditionalNodeCount: packageProgress.completedConditionalNodeCount,
+              conditionalNodeCount: packageProgress.conditionalNodeCount,
+              progressPercentage: packageProgress.progressPercentage,
+              completionStatus: packageProgress.completionStatus,
+              completedAt: packageProgress.completedAt,
+              lastStampAt: packageProgress.lastStampAt,
+            }
+          : {
+              tripId: latestTrip?.id ?? null,
+              passId: null,
+              completedRequiredNodeCount: 0,
+              requiredNodeCount: stampCountByPackage.get(item.id) ?? 0,
+              completedOptionalNodeCount: 0,
+              optionalNodeCount: 0,
+              completedConditionalNodeCount: 0,
+              conditionalNodeCount: 0,
+              progressPercentage: 0,
+              completionStatus: 'NOT_STARTED',
+              completedAt: null,
+              lastStampAt: null,
+            },
       };
     });
 
@@ -656,7 +717,7 @@ export class SpmService {
     };
   }
 
-  async getPassportTrailPackageDetail(packageCode: string) {
+  async getPassportTrailPackageDetail(packageCode: string, travelerUserId: string) {
     const normalizedCode = packageCode.toUpperCase().replaceAll('-', '_');
 
     const item = await this.prisma.spmTrailPackage.findFirst({
@@ -703,7 +764,13 @@ export class SpmService {
       };
     }
 
-    const [family, packageNodes, pricingRules] = await Promise.all([
+    const latestTrip = await this.prisma.trip.findFirst({
+      where: { travelerUserId },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true },
+    });
+
+    const [family, packageNodes, pricingRules, packageProgress] = await Promise.all([
       this.prisma.spmTrailFamily.findFirst({
         where: { id: item.trailFamilyId },
         select: {
@@ -745,6 +812,28 @@ export class SpmService {
           requestToConfirmRequired: true,
           instantCheckoutAllowed: true,
           approvalStatus: true,
+        },
+      }),
+      this.prisma.spmTravelerPackageProgress.findFirst({
+        where: {
+          travelerUserId,
+          trailPackageId: item.id,
+          ...(latestTrip?.id ? { tripId: latestTrip.id } : {}),
+        },
+        orderBy: { updatedAt: 'desc' },
+        select: {
+          tripId: true,
+          passId: true,
+          completedRequiredNodeCount: true,
+          requiredNodeCount: true,
+          completedOptionalNodeCount: true,
+          optionalNodeCount: true,
+          completedConditionalNodeCount: true,
+          conditionalNodeCount: true,
+          progressPercentage: true,
+          completionStatus: true,
+          completedAt: true,
+          lastStampAt: true,
         },
       }),
     ]);
@@ -820,6 +909,35 @@ export class SpmService {
               approvalStatus: pricing.approvalStatus,
             }
           : null,
+        packageProgress: packageProgress
+          ? {
+              tripId: packageProgress.tripId,
+              passId: packageProgress.passId,
+              completedRequiredNodeCount: packageProgress.completedRequiredNodeCount,
+              requiredNodeCount: packageProgress.requiredNodeCount,
+              completedOptionalNodeCount: packageProgress.completedOptionalNodeCount,
+              optionalNodeCount: packageProgress.optionalNodeCount,
+              completedConditionalNodeCount: packageProgress.completedConditionalNodeCount,
+              conditionalNodeCount: packageProgress.conditionalNodeCount,
+              progressPercentage: packageProgress.progressPercentage,
+              completionStatus: packageProgress.completionStatus,
+              completedAt: packageProgress.completedAt,
+              lastStampAt: packageProgress.lastStampAt,
+            }
+          : {
+              tripId: latestTrip?.id ?? null,
+              passId: null,
+              completedRequiredNodeCount: 0,
+              requiredNodeCount: packageNodes.filter((link) => link.isRequired && link.isStampEligible).length,
+              completedOptionalNodeCount: 0,
+              optionalNodeCount: packageNodes.filter((link) => link.isOptional && link.isStampEligible).length,
+              completedConditionalNodeCount: 0,
+              conditionalNodeCount: packageNodes.filter((link) => link.isConditional && link.isStampEligible).length,
+              progressPercentage: 0,
+              completionStatus: 'NOT_STARTED',
+              completedAt: null,
+              lastStampAt: null,
+            },
         nodes: packageNodes.map((link) => {
           const node = nodeById.get(link.trailNodeId);
 
