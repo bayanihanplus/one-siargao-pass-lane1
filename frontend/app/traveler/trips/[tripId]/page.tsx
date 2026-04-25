@@ -14,7 +14,6 @@ type TripPageProps = {
 
 type TripResponse = any;
 
-
 async function getTrip(tripId: string): Promise<{
   error: string | null;
   trip: TripResponse | null;
@@ -58,12 +57,9 @@ async function addCompanion(formData: FormData) {
   const ageRaw = String(formData.get("age") || "").trim();
   const passportOrIdHint = String(formData.get("passportOrIdHint") || "").trim();
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
 
-  if (!tripId || !fullName) {
-    return;
-  }
+  if (!tripId || !fullName) return;
 
   const token = await requireAccessToken();
 
@@ -95,19 +91,15 @@ async function addCompanion(formData: FormData) {
   redirect(`/traveler/trips/${tripId}`);
 }
 
-
 async function createPaymentIntentAction(formData: FormData) {
   "use server";
 
   const tripId = String(formData.get("tripId") || "");
   const bookingId = String(formData.get("bookingId") || "");
 
-  if (!tripId || !bookingId) {
-    return;
-  }
+  if (!tripId || !bookingId) return;
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
   const token = await requireAccessToken();
 
   const res = await fetch(`${baseUrl}/payments/intents`, {
@@ -134,12 +126,9 @@ async function confirmPaymentIntentAction(formData: FormData) {
   const tripId = String(formData.get("tripId") || "");
   const intentId = String(formData.get("intentId") || "");
 
-  if (!tripId || !intentId) {
-    return;
-  }
+  if (!tripId || !intentId) return;
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
   const token = await requireAccessToken();
 
   const res = await fetch(`${baseUrl}/payments/intents/${intentId}/confirm`, {
@@ -160,37 +149,392 @@ async function confirmPaymentIntentAction(formData: FormData) {
   redirect(`/traveler/trips/${tripId}`);
 }
 
-function Section(props: { title: string; children: any }) {
-  const { title, children } = props;
+function formatDate(value: any) {
+  if (!value) return "—";
+  try {
+    return new Intl.DateTimeFormat("en-PH", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(new Date(value));
+  } catch {
+    return String(value);
+  }
+}
+
+function formatMoney(value: any, currency = "PHP") {
+  if (value === null || value === undefined || value === "") return "—";
+  const amount = Number(value);
+  if (Number.isNaN(amount)) return String(value);
+  return `${currency} ${amount.toLocaleString("en-PH")}`;
+}
+
+function normalizeStatus(value: any) {
+  if (!value) return "—";
+  return String(value)
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function statusTheme(value: any) {
+  const normalized = String(value || "").toUpperCase();
+
+  if (
+    normalized.includes("APPROVED") ||
+    normalized.includes("ACTIVE") ||
+    normalized.includes("PAID") ||
+    normalized.includes("CONFIRMED") ||
+    normalized.includes("LISTED")
+  ) {
+    return { bg: "#eefdf3", border: "#cdeed7", color: "#16a34a" };
+  }
+
+  if (
+    normalized.includes("PENDING") ||
+    normalized.includes("UNPAID") ||
+    normalized.includes("WAITING") ||
+    normalized.includes("REGISTERED")
+  ) {
+    return { bg: "#fff8eb", border: "#f6e1b5", color: "#d97706" };
+  }
+
+  if (
+    normalized.includes("DENIED") ||
+    normalized.includes("FAILED") ||
+    normalized.includes("CANCELLED") ||
+    normalized.includes("BLOCKED")
+  ) {
+    return { bg: "#fef2f2", border: "#fecaca", color: "#dc2626" };
+  }
+
+  return { bg: "#eff6ff", border: "#cfe0f7", color: "#2563eb" };
+}
+
+function Icon(props: {
+  kind:
+    | "home"
+    | "trips"
+    | "pass"
+    | "logout"
+    | "view"
+    | "payment"
+    | "receipt"
+    | "plus"
+    | "check"
+    | "calendar"
+    | "manifest"
+    | "booking"
+    | "person"
+    | "map"
+    | "shield";
+  size?: number;
+}) {
+  const size = props.size || 18;
+
+  if (props.kind === "home") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <path d="M4 11.2 12 4l8 7.2V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-8.8Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "trips") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <path d="M6 5.5h8.5a3.5 3.5 0 0 1 0 7H9.5a3.5 3.5 0 0 0 0 7H18" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+        <circle cx="6" cy="5.5" r="2" stroke="currentColor" strokeWidth="1.9" />
+        <circle cx="18" cy="19.5" r="2" stroke="currentColor" strokeWidth="1.9" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "pass" || props.kind === "shield") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <path d="M12 3.5 18.5 6v5.2c0 4.2-2.7 7.5-6.5 9.3-3.8-1.8-6.5-5.1-6.5-9.3V6L12 3.5Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+        <path d="M8.8 12.1 11 14.2l4.4-4.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "logout") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <path d="M10 7V5.5A2.5 2.5 0 0 1 12.5 3H18v18h-5.5A2.5 2.5 0 0 1 10 18.5V17" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M4 12h10M11 9l3 3-3 3" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "view") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <path d="M5 12s2.4-5 7-5 7 5 7 5-2.4 5-7 5-7-5-7-5Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+        <circle cx="12" cy="12" r="2.2" stroke="currentColor" strokeWidth="1.9" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "payment") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <rect x="3.5" y="6" width="17" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M3.5 10.2h17" stroke="currentColor" strokeWidth="1.8" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "receipt") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <path d="M6 3.8h12v16.4l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2-2 1.2V3.8Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+        <path d="M9 8h6M9 11.5h6M9 15h3.4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "plus") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "check") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <path d="M5 12.5l4.2 4.2L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "calendar") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <rect x="4" y="6.5" width="16" height="13" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M8 4v4M16 4v4M4 10.5h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "manifest") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <rect x="5" y="4" width="14" height="16" rx="3" stroke="currentColor" strokeWidth="1.9" />
+        <path d="M8.5 8h7M8.5 12h7M8.5 16h4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "booking") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <path d="M6 4.5h12v15H6z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+        <path d="M9 8h6M9 12h6M9 16h3" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (props.kind === "person") {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+        <circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.9" />
+        <path d="M5.5 19.2c1.9-2.8 4-4 6.5-4s4.6 1.2 6.5 4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" aria-hidden="true">
+      <path d="M3 6.8l6-2.3 6 2.3 6-2.3v12.7l-6 2.3-6-2.3-6 2.3V6.8z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M9 4.5v12.7M15 6.8v12.7" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="12" cy="11.2" r="1.4" fill="currentColor" />
+    </svg>
+  );
+}
+
+function Section(props: { title: string; children: any; icon?: any; tone?: "default" | "teal" | "green" | "amber" | "blue" | "red" }) {
+  const themes: Record<string, any> = {
+    default: { bg: "#ffffff", border: "#dbe8ef", color: "#19305a" },
+    teal: { bg: "#ecfeff", border: "#bfeaf0", color: "#0ea5b7" },
+    green: { bg: "#eefdf3", border: "#cdeed7", color: "#16a34a" },
+    amber: { bg: "#fff8eb", border: "#f6e1b5", color: "#d97706" },
+    blue: { bg: "#eff6ff", border: "#cfe0f7", color: "#2563eb" },
+    red: { bg: "#fef2f2", border: "#fecaca", color: "#dc2626" },
+  };
+
+  const theme = themes[props.tone || "default"];
 
   return (
     <section
       style={{
-        border: "1px solid #e5e7eb",
-        borderRadius: 12,
+        border: `1px solid ${theme.border}`,
+        borderRadius: 22,
         padding: 16,
-        marginBottom: 16,
+        marginBottom: 14,
+        background: theme.bg,
+        boxShadow: "0 12px 30px rgba(15,23,42,0.045)",
       }}
     >
-      <h2 style={{ marginTop: 0, marginBottom: 12 }}>{title}</h2>
-      {children}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+        {props.icon ? (
+          <div
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 12,
+              background: "#ffffff",
+              border: `1px solid ${theme.border}`,
+              color: theme.color,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: "0 0 auto",
+            }}
+          >
+            {props.icon}
+          </div>
+        ) : null}
+        <h2
+          style={{
+            margin: 0,
+            fontSize: 18,
+            lineHeight: 1.1,
+            letterSpacing: "-0.03em",
+            color: "#19305a",
+          }}
+        >
+          {props.title}
+        </h2>
+      </div>
+      {props.children}
     </section>
   );
 }
 
-function KeyValue(props: { label: string; value: any }) {
-  const { label, value } = props;
+function KeyValue(props: { label: string; value: any; tone?: any; compact?: boolean }) {
+  const theme = props.tone || {
+    bg: "#f8fbfd",
+    border: "#dbe8ef",
+    color: "#19305a",
+  };
 
   return (
-    <div style={{ marginBottom: 8 }}>
-      <strong>{label}:</strong> {value ?? "—"}
+    <div
+      style={{
+        border: `1px solid ${theme.border}`,
+        borderRadius: 14,
+        padding: props.compact ? "8px 9px" : "9px 10px",
+        background: theme.bg,
+        minHeight: props.compact ? 54 : 60,
+      }}
+    >
+      <div
+        style={{
+          fontSize: 8.5,
+          fontWeight: 950,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: "#60759a",
+          marginBottom: 5,
+          lineHeight: 1.1,
+        }}
+      >
+        {props.label}
+      </div>
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: 950,
+          lineHeight: 1.15,
+          color: theme.color,
+          wordBreak: "break-word",
+        }}
+      >
+        {props.value ?? "—"}
+      </div>
     </div>
   );
 }
 
-export default async function TravelerTripDetailPage({
-  params,
-}: TripPageProps) {
+function AppLink(props: { href: string; label: string; icon: any; primary?: boolean; tone?: "teal" | "amber" | "green" | "blue" | "red" }) {
+  const colors: Record<string, any> = {
+    teal: { bg: "#16bfd3", border: "#16bfd3", color: "#ffffff", shadow: "rgba(22,191,211,0.22)" },
+    amber: { bg: "#d97706", border: "#d97706", color: "#ffffff", shadow: "rgba(217,119,6,0.22)" },
+    green: { bg: "#16a34a", border: "#16a34a", color: "#ffffff", shadow: "rgba(22,163,74,0.20)" },
+    blue: { bg: "#2563eb", border: "#2563eb", color: "#ffffff", shadow: "rgba(37,99,235,0.20)" },
+    red: { bg: "#dc2626", border: "#dc2626", color: "#ffffff", shadow: "rgba(220,38,38,0.18)" },
+  };
+
+  const active = props.primary ? colors[props.tone || "teal"] : null;
+
+  return (
+    <a
+      href={props.href}
+      style={{
+        minHeight: 38,
+        borderRadius: 999,
+        padding: "0 14px",
+        background: active ? active.bg : "#ffffff",
+        border: active ? `1px solid ${active.border}` : "1px solid #dbe8ef",
+        color: active ? active.color : "#19305a",
+        textDecoration: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 7,
+        fontSize: 12,
+        fontWeight: 950,
+        boxShadow: active ? `0 10px 20px ${active.shadow}` : "0 8px 18px rgba(15,23,42,0.035)",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {props.icon}
+      {props.label}
+    </a>
+  );
+}
+
+function AppButton(props: { label: string; icon: any; tone?: "teal" | "amber" | "green" | "blue"; disabled?: boolean }) {
+  const tones: Record<string, any> = {
+    teal: { bg: "#16bfd3", border: "#16bfd3" },
+    amber: { bg: "#d97706", border: "#d97706" },
+    green: { bg: "#16a34a", border: "#16a34a" },
+    blue: { bg: "#2563eb", border: "#2563eb" },
+  };
+  const tone = tones[props.tone || "teal"];
+
+  return (
+    <button
+      type="submit"
+      disabled={props.disabled}
+      style={{
+        minHeight: 38,
+        borderRadius: 999,
+        padding: "0 14px",
+        background: props.disabled ? "#94a3b8" : tone.bg,
+        border: props.disabled ? "1px solid #94a3b8" : `1px solid ${tone.border}`,
+        color: "#ffffff",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 7,
+        fontSize: 12,
+        fontWeight: 950,
+        boxShadow: props.disabled ? "none" : "0 10px 20px rgba(22,191,211,0.18)",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {props.icon}
+      {props.label}
+    </button>
+  );
+}
+
+export default async function TravelerTripDetailPage({ params }: TripPageProps) {
   const { tripId } = await params;
   const user = await getCurrentUser();
 
@@ -200,230 +544,287 @@ export default async function TravelerTripDetailPage({
 
   const { trip, error } = await getTrip(tripId);
 
-  return (
-    <main style={{ maxWidth: 920, margin: "0 auto", padding: 24 }}>
-      <h1 style={{ marginBottom: 8 }}>Traveler Trip Detail</h1>
-      <p style={{ marginTop: 0, marginBottom: 24 }}>
-        Trip contract viewer for registration, clearance, pass, current
-        booking/payment state, and dev-only companion add flow.
-      </p>
+  const tripTitle = trip?.tripTitle || "Traveler Trip";
+  const tripStatusTheme = statusTheme(trip?.tripStatus);
+  const clearanceTheme = statusTheme(trip?.clearanceStatus);
+  const paymentTheme = statusTheme(trip?.currentPaymentState?.state);
+  const passTheme = statusTheme(trip?.pass?.passStatus);
+  const manifestTheme = statusTheme(trip?.manifestReadiness?.isManifestListed ? "LISTED" : "NOT LISTED");
+  const bookingCurrency = trip?.currentBooking?.currencyCode || "PHP";
 
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
-        <a href="/">Home</a>
-        <a href="/traveler/trips">My Trips</a>
-        <a href="/traveler/pass">Traveler Pass</a>
-        <a href="/logout">Logout</a>
+  return (
+    <main
+      style={{
+        maxWidth: 430,
+        margin: "0 auto",
+        padding: "18px 14px 22px",
+        minHeight: "100vh",
+        background: "linear-gradient(180deg, #f8fcff 0%, #ffffff 58%)",
+        color: "#19305a",
+        boxSizing: "border-box",
+      }}
+    >
+      <div style={{ marginBottom: 16 }}>
+        <AppLink href="/traveler/trips" label="Back to Trips" icon={<Icon kind="trips" />} />
       </div>
 
-      <Section title="Trip Access Note">
-        <p style={{ marginTop: 0 }}>
-          This page uses the authenticated session to load the selected traveler trip.
+      <header style={{ marginBottom: 16 }}>
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 950,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "#0e7490",
+            marginBottom: 8,
+          }}
+        >
+          Trip Command Screen
+        </div>
+        <h1
+          style={{
+            margin: 0,
+            fontSize: 34,
+            lineHeight: 0.98,
+            letterSpacing: "-0.055em",
+            color: "#19305a",
+          }}
+        >
+          View Trip
+        </h1>
+        <p style={{ marginTop: 9, marginBottom: 0, color: "#64748b", lineHeight: 1.4, fontSize: 14 }}>
+          Review your trip, clearance, booking, payment, and pass state.
         </p>
-        <p style={{ marginBottom: 0 }}>
-          Traveler trip selection remains controlled by the current role-aware entry flow.
-        </p>
-      </Section>
+      </header>
+
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
+        <AppLink href="/" label="Home" icon={<Icon kind="home" />} />
+        <AppLink href="/traveler/pass" label="Pass" icon={<Icon kind="pass" />} />
+        <AppLink href="/traveler/passport-map" label="Passport Map" icon={<Icon kind="map" />} />
+        <AppLink href="/logout" label="Logout" icon={<Icon kind="logout" />} />
+      </div>
 
       {error ? (
-        <Section title="Load Error">
-          <p style={{ margin: 0 }}>{error}</p>
+        <Section title="Load Error" icon={<Icon kind="shield" />} tone="red">
+          <p style={{ margin: 0, color: "#dc2626", fontSize: 14, lineHeight: 1.45, fontWeight: 800 }}>{error}</p>
         </Section>
       ) : null}
 
       {!trip ? null : (
         <>
-          <Section title="Trip Overview">
-            <KeyValue label="Trip ID" value={trip.id} />
-            <KeyValue label="Trip Status" value={trip.tripStatus} />
-            <KeyValue
-              label="Registration Status"
-              value={trip.registrationStatus}
-            />
-            <KeyValue label="Clearance Status" value={trip.clearanceStatus} />
-            <KeyValue label="Manifest Listed" value={trip.manifestReadiness?.isManifestListed ? "YES" : "NO"} />
-            <KeyValue label="Manifest Status" value={trip.manifestReadiness?.latestManifestStatus} />
-            <KeyValue label="Manifest Ref" value={trip.manifestReadiness?.latestManifestReference} />
-            <KeyValue label="Arrival Date" value={trip.arrivalDate} />
-            <KeyValue label="Departure Date" value={trip.departureDate} />
-            <KeyValue label="Origin" value={trip.originLocation} />
-            <KeyValue
-              label="Accommodation"
-              value={trip.declaredAccommodationName}
-            />
+          <section
+            style={{
+              border: "1px solid #bfeaf0",
+              borderRadius: 24,
+              background: "linear-gradient(180deg, #ecfeff 0%, #ffffff 100%)",
+              padding: 16,
+              marginBottom: 14,
+              boxShadow: "0 14px 34px rgba(15,23,42,0.06)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+              <div
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 16,
+                  background: "#d6f6f8",
+                  border: "1px solid #bfeaf0",
+                  color: "#0ea5b7",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flex: "0 0 auto",
+                }}
+              >
+                <Icon kind="trips" size={24} />
+              </div>
+
+              <div style={{ minWidth: 0, flex: "1 1 auto" }}>
+                <div style={{ fontSize: 11, fontWeight: 950, letterSpacing: "0.08em", textTransform: "uppercase", color: "#0e7490" }}>
+                  Active Trip Record
+                </div>
+                <h2
+                  style={{
+                    margin: "6px 0 0",
+                    fontSize: 24,
+                    lineHeight: 1.05,
+                    letterSpacing: "-0.045em",
+                    color: "#19305a",
+                  }}
+                >
+                  {tripTitle}
+                </h2>
+                <p style={{ margin: "8px 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.35, fontWeight: 750 }}>
+                  {formatDate(trip.arrivalDate)} – {formatDate(trip.departureDate)}
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <Section title="Core Status" icon={<Icon kind="shield" />} tone="default">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
+              <KeyValue label="Trip" value={normalizeStatus(trip.tripStatus)} tone={tripStatusTheme} />
+              <KeyValue label="Clearance" value={normalizeStatus(trip.clearanceStatus)} tone={clearanceTheme} />
+              <KeyValue label="Manifest" value={trip.manifestReadiness?.isManifestListed ? "Listed" : "Not Listed"} tone={manifestTheme} />
+              <KeyValue label="Pass" value={normalizeStatus(trip.pass?.passStatus || "Not Issued")} tone={passTheme} />
+            </div>
           </Section>
 
-          <Section title="Trip Members">
+          <Section title="Trip Details" icon={<Icon kind="calendar" />} tone="blue">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
+              <KeyValue label="Arrival" value={formatDate(trip.arrivalDate)} />
+              <KeyValue label="Departure" value={formatDate(trip.departureDate)} />
+              <KeyValue label="Origin" value={trip.originLocation} />
+              <KeyValue label="Accommodation" value={trip.declaredAccommodationName} />
+            </div>
+          </Section>
+
+          <Section title="Trip Members" icon={<Icon kind="person" />} tone="default">
             {Array.isArray(trip.members) && trip.members.length > 0 ? (
-              <div style={{ display: "grid", gap: 12, marginBottom: 16 }}>
+              <div style={{ display: "grid", gap: 10, marginBottom: 14 }}>
                 {trip.members.map((member: any) => (
                   <div
                     key={member.id}
                     style={{
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 10,
+                      border: "1px solid #dbe8ef",
+                      borderRadius: 18,
                       padding: 12,
+                      background: "#ffffff",
                     }}
                   >
-                    <KeyValue label="Member ID" value={member.id} />
-                    <KeyValue label="Type" value={member.memberType} />
-                    <KeyValue label="Full Name" value={member.fullName} />
-                    <KeyValue
-                      label="Nationality"
-                      value={member.nationalityCode}
-                    />
-                    <KeyValue label="Age" value={member.age} />
-                    <KeyValue
-                      label="Passport / ID Hint"
-                      value={member.passportOrIdHint}
-                    />
-                    <KeyValue
-                      label="Primary Traveler"
-                      value={String(member.isPrimaryTraveler)}
-                    />
+                    <div style={{ fontSize: 15, fontWeight: 950, color: "#19305a", marginBottom: 8 }}>
+                      {member.fullName || "Trip Member"}
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
+                      <KeyValue label="Type" value={normalizeStatus(member.memberType)} compact />
+                      <KeyValue label="Nationality" value={member.nationalityCode} compact />
+                      <KeyValue label="Age" value={member.age} compact />
+                      <KeyValue label="Primary" value={member.isPrimaryTraveler ? "Yes" : "No"} compact />
+                    </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p>No trip members yet.</p>
+              <p style={{ marginTop: 0, color: "#64748b", fontSize: 14, lineHeight: 1.45 }}>No trip members yet.</p>
             )}
 
-            <form action={addCompanion} style={{ display: "grid", gap: 12 }}>
-              <input type="hidden" name="tripId" value={trip.id} />
+            <div
+              style={{
+                border: "1px solid #dbe8ef",
+                borderRadius: 18,
+                background: "#f8fbfd",
+                padding: 12,
+              }}
+            >
+              <div style={{ fontSize: 13, fontWeight: 950, color: "#19305a", marginBottom: 10 }}>
+                Add Companion
+              </div>
 
-              <label>
-                <div style={{ marginBottom: 4 }}>Companion Full Name</div>
+              <form action={addCompanion} style={{ display: "grid", gap: 10 }}>
+                <input type="hidden" name="tripId" value={trip.id} />
+
                 <input
                   name="fullName"
                   required
-                  style={{ width: "100%", padding: 8 }}
+                  placeholder="Companion full name"
+                  style={{
+                    minHeight: 40,
+                    borderRadius: 12,
+                    border: "1px solid #dbe8ef",
+                    padding: "0 12px",
+                    fontSize: 13,
+                    fontWeight: 700,
+                  }}
                 />
-              </label>
 
-              <label>
-                <div style={{ marginBottom: 4 }}>Nationality Code</div>
-                <input
-                  name="nationalityCode"
-                  placeholder="PH"
-                  style={{ width: "100%", padding: 8 }}
-                />
-              </label>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
+                  <input
+                    name="nationalityCode"
+                    placeholder="PH"
+                    style={{
+                      minHeight: 40,
+                      borderRadius: 12,
+                      border: "1px solid #dbe8ef",
+                      padding: "0 12px",
+                      fontSize: 13,
+                      fontWeight: 700,
+                    }}
+                  />
+                  <input
+                    name="age"
+                    type="number"
+                    min="0"
+                    placeholder="Age"
+                    style={{
+                      minHeight: 40,
+                      borderRadius: 12,
+                      border: "1px solid #dbe8ef",
+                      padding: "0 12px",
+                      fontSize: 13,
+                      fontWeight: 700,
+                    }}
+                  />
+                </div>
 
-              <label>
-                <div style={{ marginBottom: 4 }}>Age</div>
-                <input
-                  name="age"
-                  type="number"
-                  min="0"
-                  style={{ width: "100%", padding: 8 }}
-                />
-              </label>
-
-              <label>
-                <div style={{ marginBottom: 4 }}>Passport / ID Hint</div>
                 <input
                   name="passportOrIdHint"
-                  placeholder="ID-1234"
-                  style={{ width: "100%", padding: 8 }}
+                  placeholder="Passport / ID hint"
+                  style={{
+                    minHeight: 40,
+                    borderRadius: 12,
+                    border: "1px solid #dbe8ef",
+                    padding: "0 12px",
+                    fontSize: 13,
+                    fontWeight: 700,
+                  }}
                 />
-              </label>
 
-              <button type="submit" style={{ padding: "10px 14px" }}>
-                Add Companion
-              </button>
-            </form>
+                <div>
+                  <AppButton label="Add Companion" icon={<Icon kind="plus" />} tone="teal" />
+                </div>
+              </form>
+            </div>
           </Section>
 
-          <Section title="Booking Summary">
-            <KeyValue
-              label="Total Linked Bookings"
-              value={trip.bookingSummary?.totalLinkedBookings}
-            />
-            <KeyValue
-              label="Paid Bookings"
-              value={trip.bookingSummary?.paidBookings}
-            />
-            <KeyValue
-              label="Unpaid Bookings"
-              value={trip.bookingSummary?.unpaidBookings}
-            />
-            <KeyValue
-              label="Latest Linked Booking ID"
-              value={trip.bookingSummary?.latestLinkedBookingId}
-            />
+          <Section title="Booking Summary" icon={<Icon kind="booking" />} tone="blue">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
+              <KeyValue label="Total" value={trip.bookingSummary?.totalLinkedBookings} />
+              <KeyValue label="Paid" value={trip.bookingSummary?.paidBookings} tone={statusTheme("PAID")} />
+              <KeyValue label="Unpaid" value={trip.bookingSummary?.unpaidBookings} tone={statusTheme("UNPAID")} />
+              <KeyValue label="Latest Ref" value={trip.currentBooking?.bookingReference || "—"} />
+            </div>
           </Section>
 
-          <Section title="Current Booking">
-            <KeyValue label="Booking ID" value={trip.currentBooking?.id} />
-            <KeyValue
-              label="Booking Reference"
-              value={trip.currentBooking?.bookingReference}
-            />
-            <KeyValue
-              label="Booking Status"
-              value={trip.currentBooking?.bookingStatus}
-            />
-            <KeyValue
-              label="Booking Total PHP"
-              value={trip.currentBooking?.bookingTotalPhp}
-            />
-            <KeyValue
-              label="Currency Code"
-              value={trip.currentBooking?.currencyCode}
-            />
+          <Section title="Current Booking" icon={<Icon kind="receipt" />} tone="default">
+            <div style={{ display: "grid", gap: 8 }}>
+              <KeyValue label="Booking Reference" value={trip.currentBooking?.bookingReference} />
+              <KeyValue label="Booking Status" value={normalizeStatus(trip.currentBooking?.bookingStatus)} tone={statusTheme(trip.currentBooking?.bookingStatus)} />
+              <KeyValue label="Booking Total" value={formatMoney(trip.currentBooking?.bookingTotalPhp, bookingCurrency)} />
+              <KeyValue label="Currency" value={bookingCurrency} />
+            </div>
           </Section>
 
-          <Section title="Current Payment State">
-            <KeyValue
-              label="Payment State"
-              value={trip.currentPaymentState?.state}
-            />
-            <KeyValue
-              label="Paid Amount PHP"
-              value={trip.currentPaymentState?.paidAmountPhp}
-            />
-            <KeyValue
-              label="Unpaid Amount PHP"
-              value={trip.currentPaymentState?.unpaidAmountPhp}
-            />
-            <KeyValue
-              label="Last Payment Intent ID"
-              value={trip.currentPaymentState?.lastPaymentIntentId}
-            />
+          <Section title="Payment Status" icon={<Icon kind="payment" />} tone="amber">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
+              <KeyValue label="State" value={normalizeStatus(trip.currentPaymentState?.state)} tone={paymentTheme} />
+              <KeyValue label="Paid" value={formatMoney(trip.currentPaymentState?.paidAmountPhp, bookingCurrency)} tone={statusTheme("PAID")} />
+              <KeyValue label="Unpaid" value={formatMoney(trip.currentPaymentState?.unpaidAmountPhp, bookingCurrency)} tone={statusTheme("UNPAID")} />
+              <KeyValue label="Intent" value={trip.currentPaymentIntent?.intentReference || "—"} />
+            </div>
           </Section>
 
-          <Section title="Current Payment Intent">
-            <KeyValue label="Intent ID" value={trip.currentPaymentIntent?.id} />
-            <KeyValue
-              label="Intent Reference"
-              value={trip.currentPaymentIntent?.intentReference}
-            />
-            <KeyValue
-              label="Intent Status"
-              value={trip.currentPaymentIntent?.status}
-            />
-            <KeyValue
-              label="Amount PHP"
-              value={trip.currentPaymentIntent?.amountPhp}
-            />
-            <KeyValue
-              label="Provider"
-              value={trip.currentPaymentIntent?.provider}
-            />
-          </Section>
-
-          <Section title="Payment Actions">
+          <Section title="Payment Actions" icon={<Icon kind="payment" />} tone="amber">
             {!trip.currentBooking?.id ? (
-              <p style={{ margin: 0 }}>
+              <p style={{ margin: 0, color: "#64748b", fontSize: 14, lineHeight: 1.45 }}>
                 No current booking is linked to this trip yet, so payment actions are unavailable.
               </p>
             ) : (
-              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <form action={createPaymentIntentAction}>
                   <input type="hidden" name="tripId" value={trip.id} />
                   <input type="hidden" name="bookingId" value={trip.currentBooking.id} />
-                  <button type="submit" style={{ padding: "10px 14px" }}>
-                    Create Payment Intent
-                  </button>
+                  <AppButton label="Create Payment" icon={<Icon kind="plus" />} tone="amber" />
                 </form>
 
                 {trip.currentPaymentIntent?.id ? (
@@ -431,138 +832,79 @@ export default async function TravelerTripDetailPage({
                     <form action={confirmPaymentIntentAction}>
                       <input type="hidden" name="tripId" value={trip.id} />
                       <input type="hidden" name="intentId" value={trip.currentPaymentIntent.id} />
-                      <button type="submit" style={{ padding: "10px 14px" }}>
-                        Confirm Payment
-                      </button>
+                      <AppButton label="Confirm Payment" icon={<Icon kind="check" />} tone="green" />
                     </form>
 
-                    <a
+                    <AppLink
                       href={`/traveler/payments/${trip.currentPaymentIntent.id}`}
-                      style={{
-                        display: "inline-block",
-                        padding: "10px 14px",
-                        border: "1px solid #d1d5db",
-                        borderRadius: 8,
-                        textDecoration: "none",
-                      }}
-                    >
-                      Open Payment Detail
-                    </a>
+                      label="Payment Detail"
+                      icon={<Icon kind="receipt" />}
+                      primary
+                      tone="blue"
+                    />
                   </>
                 ) : null}
               </div>
             )}
           </Section>
 
-          <Section title="Pass">
-            <KeyValue label="Pass Code" value={trip.pass?.passCode} />
-            <KeyValue label="Pass Status" value={trip.pass?.passStatus} />
-            <KeyValue
-              label="QR Version"
-              value={trip.pass?.qrCredential?.qrVersion}
-            />
+          <Section title="Pass Access" icon={<Icon kind="pass" />} tone="green">
+            <div style={{ display: "grid", gap: 8 }}>
+              <KeyValue label="Pass Code" value={trip.pass?.passCode} />
+              <KeyValue label="Pass Status" value={normalizeStatus(trip.pass?.passStatus || "Not Issued")} tone={passTheme} />
+              <KeyValue label="QR Version" value={trip.pass?.qrCredential?.qrVersion} />
+            </div>
+
+            <div style={{ marginTop: 12, display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <AppLink href="/traveler/pass" label="Open Pass" icon={<Icon kind="pass" />} primary tone="green" />
+              <AppLink href="/traveler/passport-map" label="Passport Map" icon={<Icon kind="map" />} />
+            </div>
           </Section>
 
-          <Section title="Payment History">
-            {Array.isArray(trip.bookingLinks) && trip.bookingLinks.length > 0 ? (
-              <div style={{ display: "grid", gap: 12, marginBottom: 16 }}>
+          {Array.isArray(trip.bookingLinks) && trip.bookingLinks.length > 0 ? (
+            <Section title="Payment History" icon={<Icon kind="receipt" />} tone="default">
+              <div style={{ display: "grid", gap: 10 }}>
                 {trip.bookingLinks.map((link: any) => (
                   <div
-                    key={`payment-history-${link.id}`}
+                    key={link.id}
                     style={{
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 10,
+                      border: "1px solid #dbe8ef",
+                      borderRadius: 18,
+                      background: "#ffffff",
                       padding: 12,
                     }}
                   >
-                    <KeyValue
-                      label="Booking Reference"
-                      value={link.booking?.bookingReference}
-                    />
-                    <KeyValue
-                      label="Booking Status"
-                      value={link.booking?.bookingStatus}
-                    />
-                    <KeyValue
-                      label="Booking Total PHP"
-                      value={link.booking?.bookingTotalPhp}
-                    />
-                    <KeyValue
-                      label="Payment State"
-                      value={link.booking?.paymentState?.state}
-                    />
-                    <KeyValue
-                      label="Latest Payment Intent Reference"
-                      value={link.booking?.latestPaymentIntent?.intentReference}
-                    />
-                    <KeyValue
-                      label="Latest Payment Intent Status"
-                      value={link.booking?.latestPaymentIntent?.status}
-                    />
+                    <div style={{ display: "grid", gap: 8 }}>
+                      <KeyValue label="Booking Reference" value={link.booking?.bookingReference} />
+                      <KeyValue label="Booking Status" value={normalizeStatus(link.booking?.bookingStatus)} tone={statusTheme(link.booking?.bookingStatus)} />
+                      <KeyValue label="Payment State" value={normalizeStatus(link.booking?.paymentState?.state)} tone={statusTheme(link.booking?.paymentState?.state)} />
+                      <KeyValue label="Latest Intent" value={link.booking?.latestPaymentIntent?.intentReference} />
+                    </div>
 
                     {link.booking?.latestPaymentIntent?.id ? (
-                      <div style={{ marginTop: 8 }}>
-                        <a
+                      <div style={{ marginTop: 10 }}>
+                        <AppLink
                           href={`/traveler/payments/${link.booking.latestPaymentIntent.id}`}
-                          style={{
-                            display: "inline-block",
-                            padding: "10px 14px",
-                            border: "1px solid #d1d5db",
-                            borderRadius: 8,
-                            textDecoration: "none",
-                          }}
-                        >
-                          Open Payment Detail
-                        </a>
+                          label="Payment Detail"
+                          icon={<Icon kind="receipt" />}
+                          primary
+                          tone="blue"
+                        />
                       </div>
                     ) : null}
                   </div>
                 ))}
               </div>
-            ) : (
-              <p>No booking-linked payment history yet.</p>
-            )}
-          </Section>
+            </Section>
+          ) : null}
 
-          <Section title="Historical Booking Links">
-            {Array.isArray(trip.bookingLinks) && trip.bookingLinks.length > 0 ? (
-              <div style={{ display: "grid", gap: 12 }}>
-                {trip.bookingLinks.map((link: any) => (
-                  <div
-                    key={link.id}
-                    style={{
-                      border: "1px solid #e5e7eb",
-                      borderRadius: 10,
-                      padding: 12,
-                    }}
-                  >
-                    <KeyValue label="Link ID" value={link.id} />
-                    <KeyValue
-                      label="Booking ID"
-                      value={link.booking?.id || link.bookingId}
-                    />
-                    <KeyValue
-                      label="Booking Reference"
-                      value={link.booking?.bookingReference}
-                    />
-                    <KeyValue
-                      label="Booking Status"
-                      value={link.booking?.bookingStatus}
-                    />
-                    <KeyValue
-                      label="Payment State"
-                      value={link.booking?.paymentState?.state}
-                    />
-                    <KeyValue
-                      label="Latest Intent Status"
-                      value={link.booking?.latestPaymentIntent?.status}
-                    />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p style={{ margin: 0 }}>No linked bookings found.</p>
-            )}
+          <Section title="Technical Record" icon={<Icon kind="manifest" />} tone="default">
+            <div style={{ display: "grid", gap: 8 }}>
+              <KeyValue label="Trip ID" value={trip.id} />
+              <KeyValue label="Manifest Ref" value={trip.manifestReadiness?.latestManifestReference} />
+              <KeyValue label="Booking ID" value={trip.currentBooking?.id} />
+              <KeyValue label="Payment Intent ID" value={trip.currentPaymentIntent?.id} />
+            </div>
           </Section>
         </>
       )}
