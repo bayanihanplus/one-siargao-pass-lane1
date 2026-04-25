@@ -962,6 +962,9 @@ function TravelerShellFrame(props: {
   return (
     <header
       style={{
+        width: "100%",
+        maxWidth: 400,
+        margin: "0 auto 16px",
         marginBottom: 16,
       }}
     >
@@ -1051,8 +1054,8 @@ function TravelerShellFrame(props: {
             aria-label={notificationsAriaLabel}
             style={{
               position: "relative",
-              width: 38,
-              height: 38,
+              width: 34,
+              height: 34,
               borderRadius: "50%",
               display: "flex",
               alignItems: "center",
