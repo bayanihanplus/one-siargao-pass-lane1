@@ -41,7 +41,7 @@ export default async function TravelerPassportMapPage() {
       >
         <div
           style={{
-            padding: "18px 14px 92px",
+            padding: "16px 14px 88px",
           }}
         >
           <header
@@ -49,7 +49,7 @@ export default async function TravelerPassportMapPage() {
               display: "flex",
               alignItems: "center",
               gap: 10,
-              minHeight: 68,
+              minHeight: 64,
               position: "relative",
               zIndex: 5,
               paddingRight: 42,
@@ -59,21 +59,21 @@ export default async function TravelerPassportMapPage() {
               href="/"
               aria-label="Back to One Siargao Pass home"
               style={{
-                width: 58,
-                height: 58,
+                width: 54,
+                height: 54,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 textDecoration: "none",
-                flex: "0 0 58px",
+                flex: "0 0 54px",
               }}
             >
               <img
                 src="/osp/spm-header-mark.png"
                 alt="Siargao Passport Map"
                 style={{
-                  width: 58,
-                  height: 58,
+                  width: 54,
+                  height: 54,
                   objectFit: "contain",
                   display: "block",
                 }}
@@ -91,7 +91,7 @@ export default async function TravelerPassportMapPage() {
                 style={{
                   margin: 0,
                   fontFamily: 'Georgia, "Times New Roman", Times, serif',
-                  fontSize: 25,
+                  fontSize: 24,
                   lineHeight: 1.02,
                   letterSpacing: "-0.052em",
                   color: "#14264b",
@@ -107,7 +107,7 @@ export default async function TravelerPassportMapPage() {
                 style={{
                   margin: "5px 0 0",
                   color: "#6c7890",
-                  fontSize: 14,
+                  fontSize: 13,
                   lineHeight: 1.12,
                   fontWeight: 700,
                   whiteSpace: "nowrap",
@@ -170,8 +170,8 @@ export default async function TravelerPassportMapPage() {
 
           <section
             style={{
-              marginTop: 22,
-              minHeight: 520,
+              marginTop: 16,
+              minHeight: 500,
               borderRadius: 28,
               border: "1px solid rgba(19,168,183,0.14)",
               background:
@@ -182,7 +182,7 @@ export default async function TravelerPassportMapPage() {
           >
             <div
               style={{
-                minHeight: 450,
+                minHeight: 430,
                 borderRadius: 24,
                 background:
                   "linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(238,248,251,0.62) 52%, rgba(255,255,255,0.86) 100%)",
@@ -372,10 +372,10 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
   const ctaRoute = nextStop?.ctaRoute ?? "/traveler/trips";
   return (
     <section
-      aria-label="Preview-only continue journey card"
+      aria-label="Continue journey recommendation card"
       style={{
-        marginTop: 16,
-        marginBottom: 96,
+        marginTop: 14,
+        marginBottom: 92,
       }}
     >
       <div
@@ -463,7 +463,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
               fontWeight: 900,
             }}
           >
-            Daku Island
+            {title}
           </h2>
 
           <p
@@ -475,7 +475,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
               fontWeight: 700,
             }}
           >
-            Crystal clear waters and island vibes
+            {reason}
           </p>
 
           <div
@@ -495,7 +495,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
                 whiteSpace: "nowrap",
               }}
             >
-              About 15 min by boat from GL
+              {eta}
             </span>
 
             <a
@@ -546,7 +546,7 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
     .slice(0, 3);
   return (
     <section
-      aria-label="Preview-only verified stops cards"
+      aria-label="Verified stops cards"
       style={{
         marginTop: 18,
       }}
@@ -793,7 +793,7 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
     .slice(0, 3);
   return (
     <section
-      aria-label="Preview-only Passport Trails cards"
+      aria-label="Passport Trails cards"
       style={{
         marginTop: 2,
       }}
