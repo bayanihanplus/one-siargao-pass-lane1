@@ -868,6 +868,53 @@ export class SpmService {
 
     const nodeById = new Map(nodes.map((node) => [node.id, node]));
 
+    const [travelerStamps, travelerStopVerifications] =
+      latestTrip?.id && linkedNodeIds.length
+        ? await Promise.all([
+            this.prisma.spmTravelerStamp.findMany({
+              where: {
+                travelerUserId,
+                tripId: latestTrip.id,
+                trailNodeId: { in: linkedNodeIds },
+                status: 'ACTIVE',
+              },
+              select: {
+                id: true,
+                trailNodeId: true,
+                qrEventId: true,
+                verificationSource: true,
+                status: true,
+                stampedAt: true,
+              },
+            }),
+            this.prisma.spmTravelerStopVerification.findMany({
+              where: {
+                travelerUserId,
+                tripId: latestTrip.id,
+                trailNodeId: { in: linkedNodeIds },
+              },
+              select: {
+                id: true,
+                trailNodeId: true,
+                stampId: true,
+                verificationStatus: true,
+                verificationSource: true,
+                verifiedAt: true,
+              },
+            }),
+          ])
+        : [[], []];
+
+    const stampByNodeId = new Map(
+      travelerStamps.map((stamp) => [stamp.trailNodeId, stamp]),
+    );
+    const verificationByNodeId = new Map(
+      travelerStopVerifications.map((verification) => [
+        verification.trailNodeId,
+        verification,
+      ]),
+    );
+
     return {
       ok: true,
       data: {
@@ -940,6 +987,8 @@ export class SpmService {
             },
         nodes: packageNodes.map((link) => {
           const node = nodeById.get(link.trailNodeId);
+          const stamp = stampByNodeId.get(link.trailNodeId) ?? null;
+          const verification = verificationByNodeId.get(link.trailNodeId) ?? null;
 
           return {
             sortOrder: link.sortOrder,
@@ -948,6 +997,21 @@ export class SpmService {
             isConditional: link.isConditional,
             isStampEligible: link.isStampEligible,
             conditionNote: link.conditionNote,
+            stampState: {
+              isStamped: Boolean(stamp),
+              stampId: stamp?.id ?? null,
+              qrEventId: stamp?.qrEventId ?? null,
+              stampStatus: stamp?.status ?? 'NOT_STAMPED',
+              stampedAt: stamp?.stampedAt ?? null,
+              verificationSource: stamp?.verificationSource ?? null,
+            },
+            verificationState: {
+              verificationId: verification?.id ?? null,
+              stampId: verification?.stampId ?? stamp?.id ?? null,
+              verificationStatus: verification?.verificationStatus ?? 'NOT_VERIFIED',
+              verificationSource: verification?.verificationSource ?? stamp?.verificationSource ?? null,
+              verifiedAt: verification?.verifiedAt ?? null,
+            },
             node: node
               ? {
                   nodeId: node.id,
