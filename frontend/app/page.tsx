@@ -1819,8 +1819,8 @@ function TravelerShell(props: {
         width: "min(100%, 430px)",
         maxWidth: 430,
         margin: "0 auto",
-        paddingTop: 2,
-        paddingBottom: 18,
+        padding: "2px 10px 18px",
+        boxSizing: "border-box",
       }}
     >
       <TravelerShellFrame
@@ -1855,7 +1855,7 @@ export default async function HomePage() {
 
   if (!user) {
     return (
-      <main style={{ width: "100%", maxWidth: 960, margin: "0 auto", padding: "12px 8px 24px", boxSizing: "border-box" }}>
+      <main style={{ width: "100%", maxWidth: 960, margin: "0 auto", padding: "8px 0 24px", boxSizing: "border-box" }}>
         <h1 style={{ marginBottom: 8 }}>One Siargao Pass</h1>
         <p style={{ marginTop: 0, marginBottom: 24 }}>
           Role-aware landing flow is now active. Please log in to continue.
@@ -1879,7 +1879,7 @@ export default async function HomePage() {
   const latestTravelerTrip = travelerTripResult.trip;
 
   return (
-    <main style={{ width: "100%", maxWidth: 960, margin: "0 auto", padding: "12px 8px 24px", boxSizing: "border-box" }}>
+    <main style={{ width: "100%", maxWidth: 960, margin: "0 auto", padding: "8px 0 24px", boxSizing: "border-box" }}>
       {user.primaryRole === "TRAVELER" ? (
         <>
           {travelerTripResult.error ? (
