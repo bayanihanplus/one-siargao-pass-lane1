@@ -762,9 +762,9 @@ function TravelerShellFrame(props: {
             src="/osp/osp-official-logo.png"
             alt="One Siargao Pass official logo"
             style={{
-              width: 60,
-              height: 60,
-              borderRadius: 18,
+              width: 56,
+              height: 56,
+              borderRadius: 16,
               objectFit: "cover",
               flex: "0 0 auto",
               boxShadow: "0 8px 18px rgba(15,23,42,0.08)",
@@ -776,10 +776,10 @@ function TravelerShellFrame(props: {
             <h1
               style={{
                 margin: 0,
-                fontSize: 24,
-                fontWeight: 700,
-                lineHeight: 1,
-                letterSpacing: "-0.02em",
+                fontSize: 23,
+                fontWeight: 850,
+                lineHeight: 0.98,
+                letterSpacing: "-0.035em",
                 color: "#19305a",
               }}
             >
@@ -787,11 +787,12 @@ function TravelerShellFrame(props: {
             </h1>
             <div
               style={{
-                marginTop: 8,
+                marginTop: 7,
                 display: "flex",
                 alignItems: "center",
-                gap: 8,
-                fontSize: 13,
+                gap: 7,
+                fontSize: 12,
+                fontWeight: 700,
                 color: "#64748b",
               }}
             >
@@ -867,9 +868,9 @@ function TravelerShellFrame(props: {
         <div
           style={{
             position: "relative",
-            minHeight: 446,
+            minHeight: 420,
             overflow: "hidden",
-            padding: "20px 20px 20px",
+            padding: "22px 20px 20px",
             color: "#ffffff",
             backgroundImage:
               'linear-gradient(90deg, rgba(5,39,82,0.99) 0%, rgba(6,59,108,0.97) 33%, rgba(7,92,140,0.58) 53%, rgba(7,110,164,0.12) 69%), url("/osp/osp-hero-map.png")',
@@ -887,7 +888,7 @@ function TravelerShellFrame(props: {
             }}
           />
 
-          <div style={{ position: "relative", zIndex: 1, maxWidth: "46%" }}>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: "48%" }}>
             <div
               style={{
                 marginBottom: 12,
@@ -901,8 +902,8 @@ function TravelerShellFrame(props: {
                 style={{
                   borderRadius: 999,
                   padding: "6px 14px",
-                  fontSize: 13,
-                  fontWeight: 700,
+                  fontSize: 12,
+                  fontWeight: 850,
                   background: hero.pillBg,
                   color: "#ffffff",
                 }}
@@ -915,8 +916,8 @@ function TravelerShellFrame(props: {
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
-                  fontSize: 15,
-                  fontWeight: 600,
+                  fontSize: 13,
+                  fontWeight: 750,
                   color: "rgba(255,255,255,0.95)",
                 }}
               >
@@ -938,10 +939,10 @@ function TravelerShellFrame(props: {
               style={{
                 margin: 0,
                 whiteSpace: "pre-line",
-                fontSize: 32,
-                fontWeight: 800,
-                lineHeight: 1.02,
-                letterSpacing: "-0.05em",
+                fontSize: 34,
+                fontWeight: 900,
+                lineHeight: 0.98,
+                letterSpacing: "-0.055em",
                 color: "#ffffff",
               }}
             >
@@ -950,10 +951,10 @@ function TravelerShellFrame(props: {
 
             <p
               style={{
-                marginTop: 18,
+                marginTop: 16,
                 marginBottom: 0,
                 whiteSpace: "pre-line",
-                fontSize: 14,
+                fontSize: 13,
                 lineHeight: 1.45,
                 color: "rgba(255,255,255,0.9)",
               }}
@@ -961,21 +962,21 @@ function TravelerShellFrame(props: {
               {hero.body}
             </p>
 
-            <div style={{ marginTop: 22, display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
               <a
                 href="/traveler/pass"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  minWidth: 186,
-                  height: 54,
+                  minWidth: 188,
+                  height: 52,
                   borderRadius: 999,
                   background: "#16bfd3",
                   padding: "0 18px",
-                  fontSize: 15,
+                  fontSize: 14,
                   whiteSpace: "nowrap",
-                  fontWeight: 600,
+                  fontWeight: 850,
                   color: "#ffffff",
                   textDecoration: "none",
                   boxShadow: "0 12px 30px rgba(22,191,211,0.35)",
@@ -1016,15 +1017,15 @@ function TravelerShellFrame(props: {
                   alignItems: "center",
                   justifyContent: "center",
                   gap: 12,
-                  minWidth: 186,
-                  height: 50,
+                  minWidth: 188,
+                  height: 48,
                   borderRadius: 999,
-                  border: "1px solid rgba(255,255,255,0.45)",
-                  background: "transparent",
+                  border: "1px solid rgba(255,255,255,0.48)",
+                  background: "rgba(255,255,255,0.08)",
                   padding: "0 18px",
-                  fontSize: 15,
+                  fontSize: 14,
                   whiteSpace: "nowrap",
-                  fontWeight: 600,
+                  fontWeight: 800,
                   color: "#ffffff",
                   textDecoration: "none",
                 }}
