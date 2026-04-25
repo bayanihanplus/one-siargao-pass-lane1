@@ -610,59 +610,69 @@ function getTravelerReassuranceMessage(trip: any) {
   };
 }
 
-function TravelerStatusRowCard(props: { title: string; value: string; icon: any }) {
+function TravelerStatusRowCard(props: {
+  title: string;
+  value: string;
+  icon: any;
+  shellBg?: string;
+  borderColor?: string;
+  chipBg?: string;
+  accentColor?: string;
+}) {
+  const shellBg = props.shellBg || "#ffffff";
+  const borderColor = props.borderColor || "#e6e8ed";
+  const chipBg = props.chipBg || "#f4f7fb";
+  const accentColor = props.accentColor || getStatusRowValueColor(props.value);
+
   return (
     <div
       style={{
-        border: "1px solid #e5e7eb",
+        border: `1px solid ${borderColor}`,
         borderRadius: 16,
-        background: "#ffffff",
-        padding: "10px 8px",
-        minHeight: 88,
-        boxShadow: "0 6px 18px rgba(15,23,42,0.04)",
+        background: shellBg,
+        minHeight: 78,
+        padding: "7px 8px",
+        boxShadow: "0 7px 20px rgba(15,23,42,0.035)",
       }}
     >
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 8 }}>
-        <div
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 10,
-            background: "#f3f6fa",
-            color: "#64748b",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flex: "0 0 auto",
-          }}
-        >
-          {props.icon}
-        </div>
-        <div style={{ minWidth: 0 }}>
-          <div
-            style={{
-              fontSize: 7,
-              fontWeight: 700,
-              lineHeight: 1.2,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "#334155",
-            }}
-          >
-            {props.title}
-          </div>
-          <div
-            style={{
-              marginTop: 2,
-              fontSize: 10,
-              lineHeight: 1.15,
-              fontWeight: 700,
-              color: getStatusRowValueColor(props.value),
-            }}
-          >
-            {props.value}
-          </div>
-        </div>
+      <div
+        style={{
+          width: 26,
+          height: 26,
+          borderRadius: 8,
+          background: chipBg,
+          border: `1px solid ${borderColor}`,
+          color: accentColor,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 6,
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.72)",
+        }}
+      >
+        {props.icon}
+      </div>
+      <div
+        style={{
+          fontSize: 7.5,
+          fontWeight: 950,
+          textTransform: "uppercase",
+          color: "#60759a",
+          lineHeight: 1.1,
+        }}
+      >
+        {props.title}
+      </div>
+      <div
+        style={{
+          marginTop: 3,
+          fontSize: 10.5,
+          fontWeight: 950,
+          lineHeight: 1.05,
+          color: accentColor,
+        }}
+      >
+        {props.value}
       </div>
     </div>
   );
@@ -683,12 +693,12 @@ function TravelerJourneyCard(props: {
       href={props.href}
       style={{
         border: `1px solid ${props.borderColor}`,
-        borderRadius: 20,
+        borderRadius: 18,
         background: props.shellBg,
-        padding: "13px 11px",
-        minHeight: 134,
+        padding: "8px 9px",
+        minHeight: 96,
         textDecoration: "none",
-        boxShadow: "0 10px 28px rgba(15,23,42,0.055)",
+        boxShadow: "0 8px 22px rgba(15,23,42,0.045)",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -697,9 +707,9 @@ function TravelerJourneyCard(props: {
     >
       <div
         style={{
-          width: 44,
-          height: 44,
-          borderRadius: 14,
+          width: 32,
+          height: 32,
+          borderRadius: 10,
           background: props.chipBg,
           border: `1px solid ${props.borderColor}`,
           color: props.accentColor,
@@ -715,10 +725,10 @@ function TravelerJourneyCard(props: {
       <div>
         <div
           style={{
-            marginTop: 10,
-            fontSize: 12,
+            marginTop: 6,
+            fontSize: 11,
             fontWeight: 950,
-            lineHeight: 1.1,
+            lineHeight: 1.08,
             color: "#19305a",
             letterSpacing: "-0.015em",
           }}
@@ -727,10 +737,10 @@ function TravelerJourneyCard(props: {
         </div>
         <div
           style={{
-            marginTop: 4,
-            fontSize: 9.5,
+            marginTop: 2,
+            fontSize: 8.5,
             fontWeight: 750,
-            lineHeight: 1.25,
+            lineHeight: 1.18,
             color: "#52677f",
           }}
         >
@@ -738,8 +748,8 @@ function TravelerJourneyCard(props: {
         </div>
         <div
           style={{
-            marginTop: 8,
-            fontSize: 9,
+            marginTop: 5,
+            fontSize: 8,
             fontWeight: 950,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
@@ -886,7 +896,7 @@ function TravelerShellFrame(props: {
             padding: 0,
           }}
         >
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
+          <svg viewBox="0 0 24 24" width="23" height="23" fill="none">
             <path
               d="M6.5 17.5h11l-1.4-1.6a2.5 2.5 0 0 1-.6-1.6V11a5.5 5.5 0 1 0-11 0v3.3c0 .6-.2 1.2-.6 1.6L6.5 17.5z"
               stroke="currentColor"
@@ -974,7 +984,7 @@ function TravelerShellFrame(props: {
                   color: "rgba(255,255,255,0.95)",
                 }}
               >
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" style={{ color: "#91f0cf" }}>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" style={{ color: "#91f0cf" }}>
                   <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
                   <path
                     d="M8 12.3l2.5 2.5L16.5 9"
@@ -1036,7 +1046,7 @@ function TravelerShellFrame(props: {
                 }}
               >
                 <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
                     <rect x="4" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
                     <rect x="14" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
                     <rect x="4" y="14" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
@@ -1044,7 +1054,7 @@ function TravelerShellFrame(props: {
                   </svg>
                   Show My QR
                 </span>
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
                   <path
                     d="M9 6l6 6-6 6"
                     stroke="currentColor"
@@ -1075,7 +1085,7 @@ function TravelerShellFrame(props: {
                   textDecoration: "none",
                 }}
               >
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
                   <path
                     d="M3 6.8l6-2.3 6 2.3 6-2.3v12.7l-6 2.3-6-2.3-6 2.3V6.8z"
                     stroke="currentColor"
@@ -1292,15 +1302,19 @@ function TravelerCompactStatusRow(props: {
   return (
     <section
       style={{
-        marginTop: 14,
+        marginTop: 10,
         display: "grid",
         gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-        gap: 6,
+        gap: 7,
       }}
     >
       <TravelerStatusRowCard
         title="Clearance Status"
         value={clearanceStatus}
+        shellBg="#eefdf3"
+        borderColor="#cdeed7"
+        chipBg="#dcfce7"
+        accentColor="#16a34a"
         icon={
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
             <rect x="5" y="3.5" width="14" height="17" rx="2" stroke="currentColor" strokeWidth="1.8" />
@@ -1312,6 +1326,10 @@ function TravelerCompactStatusRow(props: {
       <TravelerStatusRowCard
         title="Payment Status"
         value={paymentStatus}
+        shellBg="#fff8eb"
+        borderColor="#f6e1b5"
+        chipBg="#fef0c7"
+        accentColor="#d97706"
         icon={
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
             <rect x="3.5" y="6" width="17" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
@@ -1323,6 +1341,10 @@ function TravelerCompactStatusRow(props: {
       <TravelerStatusRowCard
         title="Pass Status"
         value={passStatus}
+        shellBg="#ecfeff"
+        borderColor="#bfeaf0"
+        chipBg="#d6f6f8"
+        accentColor="#0ea5b7"
         icon={
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
             <path
@@ -1345,6 +1367,10 @@ function TravelerCompactStatusRow(props: {
       <TravelerStatusRowCard
         title="Trip Dates"
         value={tripDates}
+        shellBg="#eff6ff"
+        borderColor="#cfe0f7"
+        chipBg="#dceeff"
+        accentColor="#2563eb"
         icon={
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
             <rect x="3.5" y="5.5" width="17" height="15" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
@@ -1396,7 +1422,7 @@ function TravelerReassuranceAndJourney(props: {
         </div>
       </section>
 
-      <section style={{ marginTop: 28 }}>
+      <section style={{ marginTop: 20 }}>
         <h3
           style={{
             margin: 0,
@@ -1411,10 +1437,10 @@ function TravelerReassuranceAndJourney(props: {
 
         <div
           style={{
-            marginTop: 12,
+            marginTop: 9,
             display: "grid",
             gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-            gap: 9,
+            gap: 7,
           }}
         >
           <TravelerJourneyCard
@@ -1426,7 +1452,7 @@ function TravelerReassuranceAndJourney(props: {
             chipBg="#dceeff"
             accentColor="#2563eb"
             icon={
-              <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
+              <svg viewBox="0 0 24 24" width="23" height="23" fill="none">
                 <path d="M6 5.5h8.5a3.5 3.5 0 0 1 0 7H9.5a3.5 3.5 0 0 0 0 7H18" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
                 <circle cx="6" cy="5.5" r="2" stroke="currentColor" strokeWidth="1.9" />
                 <circle cx="18" cy="19.5" r="2" stroke="currentColor" strokeWidth="1.9" />
@@ -1443,7 +1469,7 @@ function TravelerReassuranceAndJourney(props: {
             chipBg="#fef0c7"
             accentColor="#d97706"
             icon={
-              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" style={{ color: "#16bfd3" }}>
+              <svg viewBox="0 0 24 24" width="23" height="23" fill="none" style={{ color: "#16bfd3" }}>
                 <path d="M6 3.8h12v16.4l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2-2 1.2V3.8Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
                 <path d="M9 8h6M9 11.5h6M9 15h3.4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
               </svg>
@@ -1459,7 +1485,7 @@ function TravelerReassuranceAndJourney(props: {
             chipBg="#d6f6f8"
             accentColor="#0ea5b7"
             icon={
-              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" style={{ color: "#16bfd3" }}>
+              <svg viewBox="0 0 24 24" width="23" height="23" fill="none" style={{ color: "#16bfd3" }}>
                 <path
                   d="M3 6.8l6-2.3 6 2.3 6-2.3v12.7l-6 2.3-6-2.3-6 2.3V6.8z"
                   stroke="currentColor"
