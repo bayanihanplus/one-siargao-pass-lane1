@@ -484,4 +484,342 @@ export class SpmService {
     };
   }
 
+  async listPassportTrailPackagesForTraveler() {
+    const packages = await this.prisma.spmTrailPackage.findMany({
+      orderBy: [
+        { productType: 'asc' },
+        { code: 'asc' },
+      ],
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        publicLabel: true,
+        description: true,
+        shortDescription: true,
+        productType: true,
+        curationSource: true,
+        fulfillmentPartnerType: true,
+        bookabilityStatus: true,
+        approvalStatus: true,
+        distributionEnabled: true,
+        stampEnabled: true,
+        requiresOperatorApproval: true,
+        requiresPriceBeforePublish: true,
+        instantCheckoutAllowed: true,
+        trailFamilyId: true,
+      },
+    });
+
+    const packageIds = packages.map((item) => item.id);
+
+    const [packageNodes, pricingRules, families] = await Promise.all([
+      this.prisma.spmTrailPackageNode.findMany({
+        where: { trailPackageId: { in: packageIds } },
+        select: {
+          trailPackageId: true,
+          trailNodeId: true,
+          isRequired: true,
+          isOptional: true,
+          isConditional: true,
+          isStampEligible: true,
+        },
+      }),
+      this.prisma.spmPricingRule.findMany({
+        where: { trailPackageId: { in: packageIds } },
+        select: {
+          trailPackageId: true,
+          pricingMode: true,
+          currencyCode: true,
+          basePrice: true,
+          priceRangeMin: true,
+          priceRangeMax: true,
+          packageFlatRate: true,
+          fillableRequired: true,
+          requestToConfirmRequired: true,
+          instantCheckoutAllowed: true,
+          approvalStatus: true,
+        },
+      }),
+      this.prisma.spmTrailFamily.findMany({
+        where: { id: { in: packages.map((item) => item.trailFamilyId) } },
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          publicLabel: true,
+        },
+      }),
+    ]);
+
+    const nodeCountByPackage = new Map<string, number>();
+    const stampCountByPackage = new Map<string, number>();
+    for (const link of packageNodes) {
+      nodeCountByPackage.set(
+        link.trailPackageId,
+        (nodeCountByPackage.get(link.trailPackageId) ?? 0) + 1,
+      );
+
+      if (link.isStampEligible) {
+        stampCountByPackage.set(
+          link.trailPackageId,
+          (stampCountByPackage.get(link.trailPackageId) ?? 0) + 1,
+        );
+      }
+    }
+
+    const pricingByPackage = new Map(
+      pricingRules.map((rule) => [rule.trailPackageId, rule]),
+    );
+
+    const familyById = new Map(families.map((family) => [family.id, family]));
+
+    const data = packages.map((item) => {
+      const pricing = pricingByPackage.get(item.id) ?? null;
+      const family = familyById.get(item.trailFamilyId) ?? null;
+
+      return {
+        packageId: item.id,
+        packageCode: item.code,
+        packageSlug: String(item.code).toLowerCase().replaceAll('_', '-'),
+        packageName: item.name,
+        publicLabel: item.publicLabel,
+        description: item.description,
+        shortDescription: item.shortDescription,
+        productType: item.productType,
+        curationSource: item.curationSource,
+        fulfillmentPartnerType: item.fulfillmentPartnerType,
+        bookabilityStatus: item.bookabilityStatus,
+        approvalStatus: item.approvalStatus,
+        distributionEnabled: item.distributionEnabled,
+        stampEnabled: item.stampEnabled,
+        requiresOperatorApproval: item.requiresOperatorApproval,
+        requiresPriceBeforePublish: item.requiresPriceBeforePublish,
+        instantCheckoutAllowed: item.instantCheckoutAllowed,
+        trailFamily: family
+          ? {
+              trailId: family.id,
+              trailCode: family.code,
+              trailName: family.publicLabel ?? family.name,
+            }
+          : null,
+        linkedNodeCount: nodeCountByPackage.get(item.id) ?? 0,
+        stampEligibleNodeCount: stampCountByPackage.get(item.id) ?? 0,
+        pricing: pricing
+          ? {
+              pricingMode: pricing.pricingMode,
+              currencyCode: pricing.currencyCode,
+              basePrice: pricing.basePrice,
+              priceRangeMin: pricing.priceRangeMin,
+              priceRangeMax: pricing.priceRangeMax,
+              packageFlatRate: pricing.packageFlatRate,
+              fillableRequired: pricing.fillableRequired,
+              requestToConfirmRequired: pricing.requestToConfirmRequired,
+              instantCheckoutAllowed: pricing.instantCheckoutAllowed,
+              approvalStatus: pricing.approvalStatus,
+            }
+          : null,
+      };
+    });
+
+    return {
+      ok: true,
+      data,
+      dataIntegrity: {
+        packageCatalogIncluded: true,
+        pricingIncluded: true,
+        linkedNodesIncluded: true,
+        checkoutIncluded: false,
+        paymentExecutionIncluded: false,
+        operatorDashboardMutationIncluded: false,
+        visualFallbackUsed: false,
+      },
+    };
+  }
+
+  async getPassportTrailPackageDetail(packageCode: string) {
+    const normalizedCode = packageCode.toUpperCase().replaceAll('-', '_');
+
+    const item = await this.prisma.spmTrailPackage.findFirst({
+      where: { code: normalizedCode },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        publicLabel: true,
+        description: true,
+        shortDescription: true,
+        productType: true,
+        curationSource: true,
+        fulfillmentPartnerType: true,
+        bookabilityStatus: true,
+        approvalStatus: true,
+        distributionEnabled: true,
+        stampEnabled: true,
+        requiresOperatorApproval: true,
+        requiresPriceBeforePublish: true,
+        instantCheckoutAllowed: true,
+        trailFamilyId: true,
+      },
+    });
+
+    if (!item) {
+      return {
+        ok: false,
+        error: 'PASSPORT_TRAIL_PACKAGE_NOT_FOUND',
+        data: null,
+      };
+    }
+
+    const [family, packageNodes, pricing] = await Promise.all([
+      this.prisma.spmTrailFamily.findFirst({
+        where: { id: item.trailFamilyId },
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          publicLabel: true,
+        },
+      }),
+      this.prisma.spmTrailPackageNode.findMany({
+        where: { trailPackageId: item.id },
+        orderBy: { sortOrder: 'asc' },
+        select: {
+          trailNodeId: true,
+          isRequired: true,
+          isOptional: true,
+          isConditional: true,
+          isStampEligible: true,
+          sortOrder: true,
+          conditionNote: true,
+        },
+      }),
+      this.prisma.spmPricingRule.findFirst({
+        where: { trailPackageId: item.id },
+        select: {
+          pricingMode: true,
+          currencyCode: true,
+          basePrice: true,
+          priceRangeMin: true,
+          priceRangeMax: true,
+          packageFlatRate: true,
+          fillableRequired: true,
+          requestToConfirmRequired: true,
+          instantCheckoutAllowed: true,
+          approvalStatus: true,
+        },
+      }),
+    ]);
+
+    const linkedNodeIds = packageNodes.map((link) => link.trailNodeId);
+    const nodes = await this.prisma.spmTrailNode.findMany({
+      where: { id: { in: linkedNodeIds } },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        description: true,
+        nodeType: true,
+        requirementType: true,
+        approvalStatus: true,
+        isOfficialNode: true,
+        isCandidateNode: true,
+        isConditionalNode: true,
+        conditionNote: true,
+        stampEligible: true,
+        bookingRequired: true,
+        operatorRequired: true,
+        guideRequirement: true,
+        safetyControlled: true,
+      },
+    });
+
+    const nodeById = new Map(nodes.map((node) => [node.id, node]));
+
+    return {
+      ok: true,
+      data: {
+        packageId: item.id,
+        packageCode: item.code,
+        packageSlug: String(item.code).toLowerCase().replaceAll('_', '-'),
+        packageName: item.name,
+        publicLabel: item.publicLabel,
+        description: item.description,
+        shortDescription: item.shortDescription,
+        productType: item.productType,
+        curationSource: item.curationSource,
+        fulfillmentPartnerType: item.fulfillmentPartnerType,
+        bookabilityStatus: item.bookabilityStatus,
+        approvalStatus: item.approvalStatus,
+        distributionEnabled: item.distributionEnabled,
+        stampEnabled: item.stampEnabled,
+        requiresOperatorApproval: item.requiresOperatorApproval,
+        requiresPriceBeforePublish: item.requiresPriceBeforePublish,
+        instantCheckoutAllowed: item.instantCheckoutAllowed,
+        trailFamily: family
+          ? {
+              trailId: family.id,
+              trailCode: family.code,
+              trailName: family.publicLabel ?? family.name,
+            }
+          : null,
+        pricing: pricing
+          ? {
+              pricingMode: pricing.pricingMode,
+              currencyCode: pricing.currencyCode,
+              basePrice: pricing.basePrice,
+              priceRangeMin: pricing.priceRangeMin,
+              priceRangeMax: pricing.priceRangeMax,
+              packageFlatRate: pricing.packageFlatRate,
+              fillableRequired: pricing.fillableRequired,
+              requestToConfirmRequired: pricing.requestToConfirmRequired,
+              instantCheckoutAllowed: pricing.instantCheckoutAllowed,
+              approvalStatus: pricing.approvalStatus,
+            }
+          : null,
+        nodes: packageNodes.map((link) => {
+          const node = nodeById.get(link.trailNodeId);
+
+          return {
+            sortOrder: link.sortOrder,
+            isRequired: link.isRequired,
+            isOptional: link.isOptional,
+            isConditional: link.isConditional,
+            isStampEligible: link.isStampEligible,
+            conditionNote: link.conditionNote,
+            node: node
+              ? {
+                  nodeId: node.id,
+                  nodeCode: node.code,
+                  nodeName: node.name,
+                  description: node.description,
+                  nodeType: node.nodeType,
+                  requirementType: node.requirementType,
+                  approvalStatus: node.approvalStatus,
+                  isOfficialNode: node.isOfficialNode,
+                  isCandidateNode: node.isCandidateNode,
+                  isConditionalNode: node.isConditionalNode,
+                  decisionClass: node.conditionNote,
+                  stampEligible: node.stampEligible,
+                  bookingRequired: node.bookingRequired,
+                  operatorRequired: node.operatorRequired,
+                  guideRequirement: node.guideRequirement,
+                  safetyControlled: node.safetyControlled,
+                }
+              : null,
+          };
+        }),
+      },
+      dataIntegrity: {
+        packageCatalogIncluded: true,
+        pricingIncluded: true,
+        linkedNodesIncluded: true,
+        checkoutIncluded: false,
+        paymentExecutionIncluded: false,
+        operatorDashboardMutationIncluded: false,
+        visualFallbackUsed: false,
+      },
+    };
+  }
+
 }

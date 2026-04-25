@@ -35,6 +35,18 @@ export class SpmController {
   }
 
   @Roles('TRAVELER')
+  @Get('passport-trail-packages')
+  listPassportTrailPackagesForTraveler() {
+    return this.spmService.listPassportTrailPackagesForTraveler();
+  }
+
+  @Roles('TRAVELER')
+  @Get('passport-trail-packages/:packageCode')
+  getPassportTrailPackageDetail(@Param('packageCode') packageCode: string) {
+    return this.spmService.getPassportTrailPackageDetail(packageCode);
+  }
+
+  @Roles('TRAVELER')
   @Get('traveler-preview')
   getTravelerPreview(@CurrentUserId() userId: string) {
     return this.spmService.getTravelerPreview(userId);
