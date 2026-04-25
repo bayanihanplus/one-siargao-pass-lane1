@@ -25,7 +25,7 @@ export default async function TravelerPassportMapPage() {
         minHeight: "100vh",
         background: "#f5f9fc",
         color: "#14264b",
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
       }}
     >
       <div
@@ -91,7 +91,7 @@ export default async function TravelerPassportMapPage() {
               <h1
                 style={{
                   margin: 0,
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
                   fontSize: 25,
                   lineHeight: 1,
                   letterSpacing: "-0.056em",
@@ -242,7 +242,7 @@ export default async function TravelerPassportMapPage() {
                 <h2
                   style={{
                     margin: 0,
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
                     fontSize: 29,
                     lineHeight: 0.98,
                     letterSpacing: "-0.052em",
@@ -305,7 +305,7 @@ export default async function TravelerPassportMapPage() {
                     margin: "3px 0 0",
                     maxWidth: 190,
                     color: "#607089",
-                    fontFamily: "Arial, Helvetica, sans-serif",
+                    fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
                     fontSize: 12,
                     lineHeight: 1.3,
                     fontWeight: 400,
@@ -453,7 +453,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
           <h2
             style={{
               margin: "5px 0 0",
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
               fontSize: 20,
               lineHeight: 1.02,
               letterSpacing: "-0.04em",
@@ -565,7 +565,7 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
           <h2
             style={{
               margin: 0,
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
               fontSize: 24,
               lineHeight: 1,
               letterSpacing: "-0.04em",
@@ -833,7 +833,7 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
           <h2
             style={{
               margin: 0,
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
               fontSize: 24,
               lineHeight: 1,
               letterSpacing: "-0.04em",
@@ -1341,7 +1341,7 @@ function StatusCard(props: {
         <div
           style={{
             color: "#14264b",
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+            fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
             fontSize: valueLines.length > 1 ? 10.5 : 17,
             lineHeight: valueLines.length > 1 ? 0.96 : 1,
             fontWeight: 590,

@@ -40,7 +40,7 @@ export default async function TravelerPassportTrailDetailPage({
         background:
           "radial-gradient(circle at 18% 8%, rgba(19,168,183,0.16) 0, transparent 28%), linear-gradient(180deg, #f7fbff 0%, #eef8f7 45%, #fff8e8 100%)",
         color: "#14264b",
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
         padding: "14px 12px 104px",
       }}
     >
@@ -66,7 +66,7 @@ export default async function TravelerPassportTrailDetailPage({
               <h1
                 style={{
                   margin: "4px 0 0",
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
                   fontSize: 30,
                   lineHeight: 0.95,
                   letterSpacing: "-0.05em",
@@ -173,7 +173,7 @@ export default async function TravelerPassportTrailDetailPage({
             <h2
               style={{
                 margin: "0 2px",
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
                 fontSize: 24,
                 lineHeight: 1,
                 letterSpacing: "-0.04em",
