@@ -44,6 +44,42 @@ const tripDetailDictionaryFallback: TravelerDictionary = {
   "tripDetail.companion.agePlaceholder": "Age",
   "tripDetail.companion.passportPlaceholder": "Passport / ID hint",
   "tripDetail.companion.submit": "Add Companion",
+  "tripDetail.bookingSummary.title": "Booking Summary",
+  "tripDetail.bookingSummary.total": "Total",
+  "tripDetail.bookingSummary.paid": "Paid",
+  "tripDetail.bookingSummary.unpaid": "Unpaid",
+  "tripDetail.bookingSummary.latestRef": "Latest Ref",
+  "tripDetail.currentBooking.title": "Current Booking",
+  "tripDetail.currentBooking.reference": "Booking Reference",
+  "tripDetail.currentBooking.status": "Booking Status",
+  "tripDetail.currentBooking.total": "Booking Total",
+  "tripDetail.currentBooking.currency": "Currency",
+  "tripDetail.paymentStatus.title": "Payment Status",
+  "tripDetail.paymentStatus.state": "State",
+  "tripDetail.paymentStatus.paid": "Paid",
+  "tripDetail.paymentStatus.unpaid": "Unpaid",
+  "tripDetail.paymentStatus.intent": "Intent",
+  "tripDetail.paymentActions.title": "Payment Actions",
+  "tripDetail.paymentActions.noBooking": "No current booking is linked to this trip yet, so payment actions are unavailable.",
+  "tripDetail.paymentActions.create": "Create Payment",
+  "tripDetail.paymentActions.confirm": "Confirm Payment",
+  "tripDetail.paymentActions.detail": "Payment Detail",
+  "tripDetail.passAccess.title": "Pass Access",
+  "tripDetail.passAccess.passCode": "Pass Code",
+  "tripDetail.passAccess.passStatus": "Pass Status",
+  "tripDetail.passAccess.qrVersion": "QR Version",
+  "tripDetail.passAccess.openPass": "Open Pass",
+  "tripDetail.passAccess.passportMap": "Passport Map",
+  "tripDetail.paymentHistory.title": "Payment History",
+  "tripDetail.paymentHistory.bookingReference": "Booking Reference",
+  "tripDetail.paymentHistory.bookingStatus": "Booking Status",
+  "tripDetail.paymentHistory.paymentState": "Payment State",
+  "tripDetail.paymentHistory.latestIntent": "Latest Intent",
+  "tripDetail.technical.title": "Technical Record",
+  "tripDetail.technical.tripId": "Trip ID",
+  "tripDetail.technical.manifestRef": "Manifest Ref",
+  "tripDetail.technical.bookingId": "Booking ID",
+  "tripDetail.technical.paymentIntentId": "Payment Intent ID",
 };
 
 async function getTravelerDictionary(languageCode?: string | null): Promise<TravelerDictionary> {
@@ -872,44 +908,44 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
             </div>
           </Section>
 
-          <Section title="Booking Summary" icon={<Icon kind="booking" />} tone="blue">
+          <Section title={t(dictionary, "tripDetail.bookingSummary.title", "Booking Summary")} icon={<Icon kind="booking" />} tone="blue">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-              <KeyValue label="Total" value={trip.bookingSummary?.totalLinkedBookings} />
-              <KeyValue label="Paid" value={trip.bookingSummary?.paidBookings} tone={statusTheme("PAID")} />
-              <KeyValue label="Unpaid" value={trip.bookingSummary?.unpaidBookings} tone={statusTheme("UNPAID")} />
-              <KeyValue label="Latest Ref" value={trip.currentBooking?.bookingReference || "—"} />
+              <KeyValue label={t(dictionary, "tripDetail.bookingSummary.total", "Total")} value={trip.bookingSummary?.totalLinkedBookings} />
+              <KeyValue label={t(dictionary, "tripDetail.bookingSummary.paid", "Paid")} value={trip.bookingSummary?.paidBookings} tone={statusTheme("PAID")} />
+              <KeyValue label={t(dictionary, "tripDetail.bookingSummary.unpaid", "Unpaid")} value={trip.bookingSummary?.unpaidBookings} tone={statusTheme("UNPAID")} />
+              <KeyValue label={t(dictionary, "tripDetail.bookingSummary.latestRef", "Latest Ref")} value={trip.currentBooking?.bookingReference || "—"} />
             </div>
           </Section>
 
-          <Section title="Current Booking" icon={<Icon kind="receipt" />} tone="default">
+          <Section title={t(dictionary, "tripDetail.currentBooking.title", "Current Booking")} icon={<Icon kind="receipt" />} tone="default">
             <div style={{ display: "grid", gap: 8 }}>
-              <KeyValue label="Booking Reference" value={trip.currentBooking?.bookingReference} />
-              <KeyValue label="Booking Status" value={normalizeStatus(trip.currentBooking?.bookingStatus)} tone={statusTheme(trip.currentBooking?.bookingStatus)} />
-              <KeyValue label="Booking Total" value={formatMoney(trip.currentBooking?.bookingTotalPhp, bookingCurrency)} />
-              <KeyValue label="Currency" value={bookingCurrency} />
+              <KeyValue label={t(dictionary, "tripDetail.currentBooking.reference", "Booking Reference")} value={trip.currentBooking?.bookingReference} />
+              <KeyValue label={t(dictionary, "tripDetail.currentBooking.status", "Booking Status")} value={normalizeStatus(trip.currentBooking?.bookingStatus)} tone={statusTheme(trip.currentBooking?.bookingStatus)} />
+              <KeyValue label={t(dictionary, "tripDetail.currentBooking.total", "Booking Total")} value={formatMoney(trip.currentBooking?.bookingTotalPhp, bookingCurrency)} />
+              <KeyValue label={t(dictionary, "tripDetail.currentBooking.currency", "Currency")} value={bookingCurrency} />
             </div>
           </Section>
 
-          <Section title="Payment Status" icon={<Icon kind="payment" />} tone="amber">
+          <Section title={t(dictionary, "tripDetail.paymentStatus.title", "Payment Status")} icon={<Icon kind="payment" />} tone="amber">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-              <KeyValue label="State" value={normalizeStatus(trip.currentPaymentState?.state)} tone={paymentTheme} />
-              <KeyValue label="Paid" value={formatMoney(trip.currentPaymentState?.paidAmountPhp, bookingCurrency)} tone={statusTheme("PAID")} />
-              <KeyValue label="Unpaid" value={formatMoney(trip.currentPaymentState?.unpaidAmountPhp, bookingCurrency)} tone={statusTheme("UNPAID")} />
-              <KeyValue label="Intent" value={trip.currentPaymentIntent?.intentReference || "—"} />
+              <KeyValue label={t(dictionary, "tripDetail.paymentStatus.state", "State")} value={normalizeStatus(trip.currentPaymentState?.state)} tone={paymentTheme} />
+              <KeyValue label={t(dictionary, "tripDetail.paymentStatus.paid", "Paid")} value={formatMoney(trip.currentPaymentState?.paidAmountPhp, bookingCurrency)} tone={statusTheme("PAID")} />
+              <KeyValue label={t(dictionary, "tripDetail.paymentStatus.unpaid", "Unpaid")} value={formatMoney(trip.currentPaymentState?.unpaidAmountPhp, bookingCurrency)} tone={statusTheme("UNPAID")} />
+              <KeyValue label={t(dictionary, "tripDetail.paymentStatus.intent", "Intent")} value={trip.currentPaymentIntent?.intentReference || "—"} />
             </div>
           </Section>
 
-          <Section title="Payment Actions" icon={<Icon kind="payment" />} tone="amber">
+          <Section title={t(dictionary, "tripDetail.paymentActions.title", "Payment Actions")} icon={<Icon kind="payment" />} tone="amber">
             {!trip.currentBooking?.id ? (
               <p style={{ margin: 0, color: "#64748b", fontSize: 14, lineHeight: 1.45 }}>
-                No current booking is linked to this trip yet, so payment actions are unavailable.
+                {t(dictionary, "tripDetail.paymentActions.noBooking", "No current booking is linked to this trip yet, so payment actions are unavailable.")}
               </p>
             ) : (
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <form action={createPaymentIntentAction}>
                   <input type="hidden" name="tripId" value={trip.id} />
                   <input type="hidden" name="bookingId" value={trip.currentBooking.id} />
-                  <AppButton label="Create Payment" icon={<Icon kind="plus" />} tone="amber" />
+                  <AppButton label={t(dictionary, "tripDetail.paymentActions.create", "Create Payment")} icon={<Icon kind="plus" />} tone="amber" />
                 </form>
 
                 {trip.currentPaymentIntent?.id ? (
@@ -917,12 +953,12 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
                     <form action={confirmPaymentIntentAction}>
                       <input type="hidden" name="tripId" value={trip.id} />
                       <input type="hidden" name="intentId" value={trip.currentPaymentIntent.id} />
-                      <AppButton label="Confirm Payment" icon={<Icon kind="check" />} tone="green" />
+                      <AppButton label={t(dictionary, "tripDetail.paymentActions.confirm", "Confirm Payment")} icon={<Icon kind="check" />} tone="green" />
                     </form>
 
                     <AppLink
                       href={`/traveler/payments/${trip.currentPaymentIntent.id}`}
-                      label="Payment Detail"
+                      label={t(dictionary, "tripDetail.paymentActions.detail", "Payment Detail")}
                       icon={<Icon kind="receipt" />}
                       primary
                       tone="blue"
@@ -933,21 +969,21 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
             )}
           </Section>
 
-          <Section title="Pass Access" icon={<Icon kind="pass" />} tone="green">
+          <Section title={t(dictionary, "tripDetail.passAccess.title", "Pass Access")} icon={<Icon kind="pass" />} tone="green">
             <div style={{ display: "grid", gap: 8 }}>
-              <KeyValue label="Pass Code" value={trip.pass?.passCode} />
-              <KeyValue label="Pass Status" value={normalizeStatus(trip.pass?.passStatus || "Not Issued")} tone={passTheme} />
-              <KeyValue label="QR Version" value={trip.pass?.qrCredential?.qrVersion} />
+              <KeyValue label={t(dictionary, "tripDetail.passAccess.passCode", "Pass Code")} value={trip.pass?.passCode} />
+              <KeyValue label={t(dictionary, "tripDetail.passAccess.passStatus", "Pass Status")} value={normalizeStatus(trip.pass?.passStatus || notIssuedLabel)} tone={passTheme} />
+              <KeyValue label={t(dictionary, "tripDetail.passAccess.qrVersion", "QR Version")} value={trip.pass?.qrCredential?.qrVersion} />
             </div>
 
             <div style={{ marginTop: 12, display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <AppLink href="/traveler/pass" label="Open Pass" icon={<Icon kind="pass" />} primary tone="green" />
-              <AppLink href="/traveler/passport-map" label="Passport Map" icon={<Icon kind="map" />} />
+              <AppLink href="/traveler/pass" label={t(dictionary, "tripDetail.passAccess.openPass", "Open Pass")} icon={<Icon kind="pass" />} primary tone="green" />
+              <AppLink href="/traveler/passport-map" label={t(dictionary, "tripDetail.passAccess.passportMap", "Passport Map")} icon={<Icon kind="map" />} />
             </div>
           </Section>
 
           {Array.isArray(trip.bookingLinks) && trip.bookingLinks.length > 0 ? (
-            <Section title="Payment History" icon={<Icon kind="receipt" />} tone="default">
+            <Section title={t(dictionary, "tripDetail.paymentHistory.title", "Payment History")} icon={<Icon kind="receipt" />} tone="default">
               <div style={{ display: "grid", gap: 10 }}>
                 {trip.bookingLinks.map((link: any) => (
                   <div
@@ -960,17 +996,17 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
                     }}
                   >
                     <div style={{ display: "grid", gap: 8 }}>
-                      <KeyValue label="Booking Reference" value={link.booking?.bookingReference} />
-                      <KeyValue label="Booking Status" value={normalizeStatus(link.booking?.bookingStatus)} tone={statusTheme(link.booking?.bookingStatus)} />
-                      <KeyValue label="Payment State" value={normalizeStatus(link.booking?.paymentState?.state)} tone={statusTheme(link.booking?.paymentState?.state)} />
-                      <KeyValue label="Latest Intent" value={link.booking?.latestPaymentIntent?.intentReference} />
+                      <KeyValue label={t(dictionary, "tripDetail.paymentHistory.bookingReference", "Booking Reference")} value={link.booking?.bookingReference} />
+                      <KeyValue label={t(dictionary, "tripDetail.paymentHistory.bookingStatus", "Booking Status")} value={normalizeStatus(link.booking?.bookingStatus)} tone={statusTheme(link.booking?.bookingStatus)} />
+                      <KeyValue label={t(dictionary, "tripDetail.paymentHistory.paymentState", "Payment State")} value={normalizeStatus(link.booking?.paymentState?.state)} tone={statusTheme(link.booking?.paymentState?.state)} />
+                      <KeyValue label={t(dictionary, "tripDetail.paymentHistory.latestIntent", "Latest Intent")} value={link.booking?.latestPaymentIntent?.intentReference} />
                     </div>
 
                     {link.booking?.latestPaymentIntent?.id ? (
                       <div style={{ marginTop: 10 }}>
                         <AppLink
                           href={`/traveler/payments/${link.booking.latestPaymentIntent.id}`}
-                          label="Payment Detail"
+                          label={t(dictionary, "tripDetail.paymentActions.detail", "Payment Detail")}
                           icon={<Icon kind="receipt" />}
                           primary
                           tone="blue"
@@ -983,12 +1019,12 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
             </Section>
           ) : null}
 
-          <Section title="Technical Record" icon={<Icon kind="manifest" />} tone="default">
+          <Section title={t(dictionary, "tripDetail.technical.title", "Technical Record")} icon={<Icon kind="manifest" />} tone="default">
             <div style={{ display: "grid", gap: 8 }}>
-              <KeyValue label="Trip ID" value={trip.id} />
-              <KeyValue label="Manifest Ref" value={trip.manifestReadiness?.latestManifestReference} />
-              <KeyValue label="Booking ID" value={trip.currentBooking?.id} />
-              <KeyValue label="Payment Intent ID" value={trip.currentPaymentIntent?.id} />
+              <KeyValue label={t(dictionary, "tripDetail.technical.tripId", "Trip ID")} value={trip.id} />
+              <KeyValue label={t(dictionary, "tripDetail.technical.manifestRef", "Manifest Ref")} value={trip.manifestReadiness?.latestManifestReference} />
+              <KeyValue label={t(dictionary, "tripDetail.technical.bookingId", "Booking ID")} value={trip.currentBooking?.id} />
+              <KeyValue label={t(dictionary, "tripDetail.technical.paymentIntentId", "Payment Intent ID")} value={trip.currentPaymentIntent?.id} />
             </div>
           </Section>
         </>
