@@ -169,7 +169,7 @@ export default async function TravelerPassportTrailsPage() {
               }}
             >
               Explore governed Passport Trails™ packages with live progress, pricing visibility,
-              and stamp-ready nodes. Checkout remains disabled in this layer.
+              and stamp-ready nodes. Booking actions will activate only after governed operator, pricing, and payment readiness.
             </p>
 
             <div
