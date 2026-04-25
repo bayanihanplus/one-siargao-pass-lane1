@@ -673,14 +673,18 @@ function TravelerJourneyCard(props: {
   subtitle: string;
   href: string;
   icon: any;
+  shellBg: string;
+  borderColor: string;
+  chipBg: string;
+  accentColor: string;
 }) {
   return (
     <a
       href={props.href}
       style={{
-        border: "1px solid #dbe8ef",
+        border: `1px solid ${props.borderColor}`,
         borderRadius: 20,
-        background: "#ffffff",
+        background: props.shellBg,
         padding: "13px 11px",
         minHeight: 134,
         textDecoration: "none",
@@ -696,9 +700,9 @@ function TravelerJourneyCard(props: {
           width: 44,
           height: 44,
           borderRadius: 14,
-          background: "linear-gradient(180deg, #f7fcff 0%, #edf8fc 100%)",
-          border: "1px solid #d8e7ef",
-          color: "#16bfd3",
+          background: props.chipBg,
+          border: `1px solid ${props.borderColor}`,
+          color: props.accentColor,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -725,12 +729,24 @@ function TravelerJourneyCard(props: {
           style={{
             marginTop: 4,
             fontSize: 9.5,
-            fontWeight: 700,
+            fontWeight: 750,
             lineHeight: 1.25,
-            color: "#64748b",
+            color: "#52677f",
           }}
         >
           {props.subtitle}
+        </div>
+        <div
+          style={{
+            marginTop: 8,
+            fontSize: 9,
+            fontWeight: 950,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: props.accentColor,
+          }}
+        >
+          Open
         </div>
       </div>
     </a>
@@ -1021,18 +1037,10 @@ function TravelerShellFrame(props: {
               >
                 <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
-                    <path
-                      d="M4 9h5V4H4v5zm11 0h5V4h-5v5zM4 20h5v-5H4v5zm11 0h5v-5h-5v5z"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M9 6h6M12 9V15M15 18H9"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                    />
+                    <rect x="4" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
+                    <rect x="14" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
+                    <rect x="4" y="14" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
+                    <path d="M14 14h2.5v2.5H19V20h-5v-6Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
                   </svg>
                   Show My QR
                 </span>
@@ -1075,6 +1083,7 @@ function TravelerShellFrame(props: {
                     strokeLinejoin="round"
                   />
                   <path d="M9 4.5v12.7M15 6.8v12.7" stroke="currentColor" strokeWidth="1.8" />
+                  <circle cx="12" cy="11.2" r="1.7" fill="currentColor" />
                 </svg>
                 Open Passport Map
               </a>
@@ -1412,10 +1421,15 @@ function TravelerReassuranceAndJourney(props: {
             href="/traveler/trips"
             title="Trips"
             subtitle="Plans & records"
+            shellBg="#eff6ff"
+            borderColor="#cfe0f7"
+            chipBg="#dceeff"
+            accentColor="#2563eb"
             icon={
               <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
-                <rect x="4" y="7" width="16" height="11" rx="2" stroke="currentColor" strokeWidth="1.8" />
-                <path d="M8 7V5M16 7V5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                <path d="M6 5.5h8.5a3.5 3.5 0 0 1 0 7H9.5a3.5 3.5 0 0 0 0 7H18" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+                <circle cx="6" cy="5.5" r="2" stroke="currentColor" strokeWidth="1.9" />
+                <circle cx="18" cy="19.5" r="2" stroke="currentColor" strokeWidth="1.9" />
               </svg>
             }
           />
@@ -1424,10 +1438,14 @@ function TravelerReassuranceAndJourney(props: {
             href="/traveler/trips"
             title="Payments"
             subtitle="Status & receipts"
+            shellBg="#fff8eb"
+            borderColor="#f6e1b5"
+            chipBg="#fef0c7"
+            accentColor="#d97706"
             icon={
               <svg viewBox="0 0 24 24" width="28" height="28" fill="none" style={{ color: "#16bfd3" }}>
-                <rect x="3.5" y="6" width="17" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.8" />
-                <path d="M3.5 10.2h17" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M6 3.8h12v16.4l-2-1.2-2 1.2-2-1.2-2 1.2-2-1.2-2 1.2V3.8Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+                <path d="M9 8h6M9 11.5h6M9 15h3.4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
               </svg>
             }
           />
@@ -1436,15 +1454,21 @@ function TravelerReassuranceAndJourney(props: {
             href="/traveler/passport-map"
             title="Passport Map"
             subtitle="Trails & stamps"
+            shellBg="#ecfeff"
+            borderColor="#bfeaf0"
+            chipBg="#d6f6f8"
+            accentColor="#0ea5b7"
             icon={
               <svg viewBox="0 0 24 24" width="28" height="28" fill="none" style={{ color: "#16bfd3" }}>
                 <path
                   d="M3 6.8l6-2.3 6 2.3 6-2.3v12.7l-6 2.3-6-2.3-6 2.3V6.8z"
                   stroke="currentColor"
-                  strokeWidth="1.8"
+                  strokeWidth="1.9"
                   strokeLinejoin="round"
                 />
-                <path d="M9 4.5v12.7M15 6.8v12.7" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M9 4.5v12.7M15 6.8v12.7" stroke="currentColor" strokeWidth="1.9" />
+                <path d="M12 9.2c1.2 0 2.1.9 2.1 2.1 0 1.8-2.1 3.6-2.1 3.6s-2.1-1.8-2.1-3.6c0-1.2.9-2.1 2.1-2.1Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+                <circle cx="12" cy="11.25" r=".65" fill="currentColor" />
               </svg>
             }
           />
@@ -1453,15 +1477,14 @@ function TravelerReassuranceAndJourney(props: {
             href="/traveler/pass"
             title="Checkpoints"
             subtitle="QR & access state"
+            shellBg="#eefdf3"
+            borderColor="#cdeed7"
+            chipBg="#dcfce7"
+            accentColor="#16a34a"
             icon={
               <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
-                <path
-                  d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11z"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinejoin="round"
-                />
-                <circle cx="12" cy="10" r="2.2" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M12 3.5 18.5 6v5.2c0 4.2-2.7 7.5-6.5 9.3-3.8-1.8-6.5-5.1-6.5-9.3V6L12 3.5Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+                <path d="M8.8 12.1 11 14.2l4.4-4.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             }
           />
@@ -1525,13 +1548,10 @@ function TravelerBottomNav() {
           aria-label="Open active pass QR"
         >
           <svg viewBox="0 0 24 24" width="32" height="32" fill="none">
-            <circle cx="12" cy="12" r="2.2" stroke="currentColor" strokeWidth="1.8" />
-            <path
-              d="M12 3.5v3M12 17.5v3M20.5 12h-3M6.5 12h-3M17.7 6.3l-2.1 2.1M8.4 15.6l-2.1 2.1M17.7 17.7l-2.1-2.1M8.4 8.4L6.3 6.3"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-            />
+            <rect x="4.5" y="4.5" width="5.5" height="5.5" rx="1.3" stroke="currentColor" strokeWidth="1.9" />
+            <rect x="14" y="4.5" width="5.5" height="5.5" rx="1.3" stroke="currentColor" strokeWidth="1.9" />
+            <rect x="4.5" y="14" width="5.5" height="5.5" rx="1.3" stroke="currentColor" strokeWidth="1.9" />
+            <path d="M14 14h2.4v2.4h3.1v3.1H14V14Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
           </svg>
         </a>
 
