@@ -2,6 +2,76 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../../src/lib/server-auth";
 
+type TravelerDictionary = Record<string, string>;
+
+const tripDetailDictionaryFallback: TravelerDictionary = {
+  "tripDetail.nav.backToTrips": "Back to Trips",
+  "tripDetail.nav.home": "Home",
+  "tripDetail.nav.pass": "Pass",
+  "tripDetail.nav.passportMap": "Passport Map",
+  "tripDetail.nav.logout": "Logout",
+  "tripDetail.header.eyebrow": "Trip Command Screen",
+  "tripDetail.title": "View Trip",
+  "tripDetail.header.body": "Review your trip, clearance, booking, payment, and pass state.",
+  "tripDetail.hero.activeRecord": "Active Trip Record",
+  "tripDetail.tripFallbackTitle": "Traveler Trip",
+  "tripDetail.loadError.title": "Load Error",
+  "tripDetail.coreStatus.title": "Core Status",
+  "tripDetail.coreStatus.trip": "Trip",
+  "tripDetail.coreStatus.clearance": "Clearance",
+  "tripDetail.coreStatus.manifest": "Manifest",
+  "tripDetail.coreStatus.pass": "Pass",
+  "tripDetail.status.listed": "Listed",
+  "tripDetail.status.notListed": "Not Listed",
+  "tripDetail.status.notIssued": "Not Issued",
+  "tripDetail.details.title": "Trip Details",
+  "tripDetail.details.arrival": "Arrival",
+  "tripDetail.details.departure": "Departure",
+  "tripDetail.details.origin": "Origin",
+  "tripDetail.details.accommodation": "Accommodation",
+  "tripDetail.members.title": "Trip Members",
+  "tripDetail.members.fallbackName": "Trip Member",
+  "tripDetail.members.type": "Type",
+  "tripDetail.members.nationality": "Nationality",
+  "tripDetail.members.age": "Age",
+  "tripDetail.members.primary": "Primary",
+  "tripDetail.members.yes": "Yes",
+  "tripDetail.members.no": "No",
+  "tripDetail.members.empty": "No trip members yet.",
+  "tripDetail.companion.title": "Add Companion",
+  "tripDetail.companion.fullNamePlaceholder": "Companion full name",
+  "tripDetail.companion.nationalityPlaceholder": "PH",
+  "tripDetail.companion.agePlaceholder": "Age",
+  "tripDetail.companion.passportPlaceholder": "Passport / ID hint",
+  "tripDetail.companion.submit": "Add Companion",
+};
+
+async function getTravelerDictionary(languageCode?: string | null): Promise<TravelerDictionary> {
+  try {
+    const res = await fetch(`${getApiBaseUrl()}/language-packs/${encodeURIComponent(languageCode || "en")}/dictionary?scope=traveler`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) return tripDetailDictionaryFallback;
+
+    const payload = await res.json();
+    const dictionary = payload?.dictionary;
+
+    if (!dictionary || typeof dictionary !== "object") return tripDetailDictionaryFallback;
+
+    return {
+      ...tripDetailDictionaryFallback,
+      ...dictionary,
+    };
+  } catch {
+    return tripDetailDictionaryFallback;
+  }
+}
+
+function t(dictionary: TravelerDictionary, key: string, fallback: string) {
+  return dictionary?.[key] || fallback;
+}
+
 type TripPageProps = {
   params: Promise<{
     tripId: string;
@@ -543,8 +613,23 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
   }
 
   const { trip, error } = await getTrip(tripId);
+  const dictionary = await getTravelerDictionary(user?.preferredLanguage || "en");
 
-  const tripTitle = trip?.tripTitle || "Traveler Trip";
+  const backToTripsLabel = t(dictionary, "tripDetail.nav.backToTrips", "Back to Trips");
+  const navHomeLabel = t(dictionary, "tripDetail.nav.home", "Home");
+  const navPassLabel = t(dictionary, "tripDetail.nav.pass", "Pass");
+  const navPassportMapLabel = t(dictionary, "tripDetail.nav.passportMap", "Passport Map");
+  const navLogoutLabel = t(dictionary, "tripDetail.nav.logout", "Logout");
+  const headerEyebrow = t(dictionary, "tripDetail.header.eyebrow", "Trip Command Screen");
+  const headerTitle = t(dictionary, "tripDetail.title", "View Trip");
+  const headerBody = t(dictionary, "tripDetail.header.body", "Review your trip, clearance, booking, payment, and pass state.");
+  const activeTripRecordLabel = t(dictionary, "tripDetail.hero.activeRecord", "Active Trip Record");
+  const tripFallbackTitle = t(dictionary, "tripDetail.tripFallbackTitle", "Traveler Trip");
+  const listedLabel = t(dictionary, "tripDetail.status.listed", "Listed");
+  const notListedLabel = t(dictionary, "tripDetail.status.notListed", "Not Listed");
+  const notIssuedLabel = t(dictionary, "tripDetail.status.notIssued", "Not Issued");
+
+  const tripTitle = trip?.tripTitle || tripFallbackTitle;
   const tripStatusTheme = statusTheme(trip?.tripStatus);
   const clearanceTheme = statusTheme(trip?.clearanceStatus);
   const paymentTheme = statusTheme(trip?.currentPaymentState?.state);
@@ -565,7 +650,7 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
       }}
     >
       <div style={{ marginBottom: 16 }}>
-        <AppLink href="/traveler/trips" label="Back to Trips" icon={<Icon kind="trips" />} />
+        <AppLink href="/traveler/trips" label={backToTripsLabel} icon={<Icon kind="trips" />} />
       </div>
 
       <header style={{ marginBottom: 16 }}>
@@ -579,7 +664,7 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
             marginBottom: 8,
           }}
         >
-          Trip Command Screen
+          {headerEyebrow}
         </div>
         <h1
           style={{
@@ -593,19 +678,19 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
           View Trip
         </h1>
         <p style={{ marginTop: 9, marginBottom: 0, color: "#64748b", lineHeight: 1.4, fontSize: 14 }}>
-          Review your trip, clearance, booking, payment, and pass state.
+          {headerBody}
         </p>
       </header>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
-        <AppLink href="/" label="Home" icon={<Icon kind="home" />} />
-        <AppLink href="/traveler/pass" label="Pass" icon={<Icon kind="pass" />} />
-        <AppLink href="/traveler/passport-map" label="Passport Map" icon={<Icon kind="map" />} />
-        <AppLink href="/logout" label="Logout" icon={<Icon kind="logout" />} />
+        <AppLink href="/" label={navHomeLabel} icon={<Icon kind="home" />} />
+        <AppLink href="/traveler/pass" label={navPassLabel} icon={<Icon kind="pass" />} />
+        <AppLink href="/traveler/passport-map" label={navPassportMapLabel} icon={<Icon kind="map" />} />
+        <AppLink href="/logout" label={navLogoutLabel} icon={<Icon kind="logout" />} />
       </div>
 
       {error ? (
-        <Section title="Load Error" icon={<Icon kind="shield" />} tone="red">
+        <Section title={t(dictionary, "tripDetail.loadError.title", "Load Error")} icon={<Icon kind="shield" />} tone="red">
           <p style={{ margin: 0, color: "#dc2626", fontSize: 14, lineHeight: 1.45, fontWeight: 800 }}>{error}</p>
         </Section>
       ) : null}
@@ -662,25 +747,25 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
             </div>
           </section>
 
-          <Section title="Core Status" icon={<Icon kind="shield" />} tone="default">
+          <Section title={t(dictionary, "tripDetail.coreStatus.title", "Core Status")} icon={<Icon kind="shield" />} tone="default">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-              <KeyValue label="Trip" value={normalizeStatus(trip.tripStatus)} tone={tripStatusTheme} />
-              <KeyValue label="Clearance" value={normalizeStatus(trip.clearanceStatus)} tone={clearanceTheme} />
-              <KeyValue label="Manifest" value={trip.manifestReadiness?.isManifestListed ? "Listed" : "Not Listed"} tone={manifestTheme} />
-              <KeyValue label="Pass" value={normalizeStatus(trip.pass?.passStatus || "Not Issued")} tone={passTheme} />
+              <KeyValue label={t(dictionary, "tripDetail.coreStatus.trip", "Trip")} value={normalizeStatus(trip.tripStatus)} tone={tripStatusTheme} />
+              <KeyValue label={t(dictionary, "tripDetail.coreStatus.clearance", "Clearance")} value={normalizeStatus(trip.clearanceStatus)} tone={clearanceTheme} />
+              <KeyValue label={t(dictionary, "tripDetail.coreStatus.manifest", "Manifest")} value={trip.manifestReadiness?.isManifestListed ? listedLabel : notListedLabel} tone={manifestTheme} />
+              <KeyValue label={t(dictionary, "tripDetail.coreStatus.pass", "Pass")} value={normalizeStatus(trip.pass?.passStatus || notIssuedLabel)} tone={passTheme} />
             </div>
           </Section>
 
-          <Section title="Trip Details" icon={<Icon kind="calendar" />} tone="blue">
+          <Section title={t(dictionary, "tripDetail.details.title", "Trip Details")} icon={<Icon kind="calendar" />} tone="blue">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-              <KeyValue label="Arrival" value={formatDate(trip.arrivalDate)} />
-              <KeyValue label="Departure" value={formatDate(trip.departureDate)} />
-              <KeyValue label="Origin" value={trip.originLocation} />
-              <KeyValue label="Accommodation" value={trip.declaredAccommodationName} />
+              <KeyValue label={t(dictionary, "tripDetail.details.arrival", "Arrival")} value={formatDate(trip.arrivalDate)} />
+              <KeyValue label={t(dictionary, "tripDetail.details.departure", "Departure")} value={formatDate(trip.departureDate)} />
+              <KeyValue label={t(dictionary, "tripDetail.details.origin", "Origin")} value={trip.originLocation} />
+              <KeyValue label={t(dictionary, "tripDetail.details.accommodation", "Accommodation")} value={trip.declaredAccommodationName} />
             </div>
           </Section>
 
-          <Section title="Trip Members" icon={<Icon kind="person" />} tone="default">
+          <Section title={t(dictionary, "tripDetail.members.title", "Trip Members")} icon={<Icon kind="person" />} tone="default">
             {Array.isArray(trip.members) && trip.members.length > 0 ? (
               <div style={{ display: "grid", gap: 10, marginBottom: 14 }}>
                 {trip.members.map((member: any) => (
@@ -694,19 +779,19 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
                     }}
                   >
                     <div style={{ fontSize: 15, fontWeight: 950, color: "#19305a", marginBottom: 8 }}>
-                      {member.fullName || "Trip Member"}
+                      {member.fullName || t(dictionary, "tripDetail.members.fallbackName", "Trip Member")}
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-                      <KeyValue label="Type" value={normalizeStatus(member.memberType)} compact />
-                      <KeyValue label="Nationality" value={member.nationalityCode} compact />
-                      <KeyValue label="Age" value={member.age} compact />
-                      <KeyValue label="Primary" value={member.isPrimaryTraveler ? "Yes" : "No"} compact />
+                      <KeyValue label={t(dictionary, "tripDetail.members.type", "Type")} value={normalizeStatus(member.memberType)} compact />
+                      <KeyValue label={t(dictionary, "tripDetail.members.nationality", "Nationality")} value={member.nationalityCode} compact />
+                      <KeyValue label={t(dictionary, "tripDetail.members.age", "Age")} value={member.age} compact />
+                      <KeyValue label={t(dictionary, "tripDetail.members.primary", "Primary")} value={member.isPrimaryTraveler ? t(dictionary, "tripDetail.members.yes", "Yes") : t(dictionary, "tripDetail.members.no", "No")} compact />
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p style={{ marginTop: 0, color: "#64748b", fontSize: 14, lineHeight: 1.45 }}>No trip members yet.</p>
+              <p style={{ marginTop: 0, color: "#64748b", fontSize: 14, lineHeight: 1.45 }}>{t(dictionary, "tripDetail.members.empty", "No trip members yet.")}</p>
             )}
 
             <div
@@ -718,7 +803,7 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
               }}
             >
               <div style={{ fontSize: 13, fontWeight: 950, color: "#19305a", marginBottom: 10 }}>
-                Add Companion
+                {t(dictionary, "tripDetail.companion.title", "Add Companion")}
               </div>
 
               <form action={addCompanion} style={{ display: "grid", gap: 10 }}>
@@ -727,7 +812,7 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
                 <input
                   name="fullName"
                   required
-                  placeholder="Companion full name"
+                  placeholder={t(dictionary, "tripDetail.companion.fullNamePlaceholder", "Companion full name")}
                   style={{
                     minHeight: 40,
                     borderRadius: 12,
@@ -741,7 +826,7 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
                   <input
                     name="nationalityCode"
-                    placeholder="PH"
+                    placeholder={t(dictionary, "tripDetail.companion.nationalityPlaceholder", "PH")}
                     style={{
                       minHeight: 40,
                       borderRadius: 12,
@@ -755,7 +840,7 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
                     name="age"
                     type="number"
                     min="0"
-                    placeholder="Age"
+                    placeholder={t(dictionary, "tripDetail.companion.agePlaceholder", "Age")}
                     style={{
                       minHeight: 40,
                       borderRadius: 12,
@@ -769,7 +854,7 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
 
                 <input
                   name="passportOrIdHint"
-                  placeholder="Passport / ID hint"
+                  placeholder={t(dictionary, "tripDetail.companion.passportPlaceholder", "Passport / ID hint")}
                   style={{
                     minHeight: 40,
                     borderRadius: 12,
@@ -781,7 +866,7 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
                 />
 
                 <div>
-                  <AppButton label="Add Companion" icon={<Icon kind="plus" />} tone="teal" />
+                  <AppButton label={t(dictionary, "tripDetail.companion.submit", "Add Companion")} icon={<Icon kind="plus" />} tone="teal" />
                 </div>
               </form>
             </div>
