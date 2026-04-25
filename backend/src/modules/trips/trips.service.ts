@@ -151,6 +151,8 @@ export class TripsService {
       (a, b) => new Date(b!.createdAt).getTime() - new Date(a!.createdAt).getTime(),
     )[0] ?? null;
 
+    const currentLinkedBooking = latestPaidBooking ?? latestLinkedBooking;
+
     const manifestMembers = trip.manifestMembers ?? [];
     const latestManifestMember = manifestMembers[0] ?? null;
 
@@ -185,42 +187,42 @@ export class TripsService {
         latestPayableBookingId: latestPayableBooking?.id ?? null,
         latestPaidBookingId: latestPaidBooking?.id ?? null,
       },
-      currentBooking: latestLinkedBooking
+      currentBooking: currentLinkedBooking
         ? {
-            id: latestLinkedBooking.id,
-            bookingReference: latestLinkedBooking.bookingReference,
-            bookingSource: latestLinkedBooking.bookingSource,
-            bookingStatus: latestLinkedBooking.bookingStatus,
-            bookingTotalPhp: latestLinkedBooking.bookingTotalPhp,
-            currencyCode: latestLinkedBooking.currencyCode,
-            createdAt: latestLinkedBooking.createdAt,
-            updatedAt: latestLinkedBooking.updatedAt,
+            id: currentLinkedBooking.id,
+            bookingReference: currentLinkedBooking.bookingReference,
+            bookingSource: currentLinkedBooking.bookingSource,
+            bookingStatus: currentLinkedBooking.bookingStatus,
+            bookingTotalPhp: currentLinkedBooking.bookingTotalPhp,
+            currencyCode: currentLinkedBooking.currencyCode,
+            createdAt: currentLinkedBooking.createdAt,
+            updatedAt: currentLinkedBooking.updatedAt,
           }
         : null,
-      currentPaymentState: latestLinkedBooking?.paymentState
+      currentPaymentState: currentLinkedBooking?.paymentState
         ? {
-            id: latestLinkedBooking.paymentState.id,
-            bookingId: latestLinkedBooking.paymentState.bookingId,
-            state: latestLinkedBooking.paymentState.state,
-            paidAmountPhp: latestLinkedBooking.paymentState.paidAmountPhp,
-            unpaidAmountPhp: latestLinkedBooking.paymentState.unpaidAmountPhp,
-            lastPaymentIntentId: latestLinkedBooking.paymentState.lastPaymentIntentId,
-            stateUpdatedAt: latestLinkedBooking.paymentState.stateUpdatedAt,
-            createdAt: latestLinkedBooking.paymentState.createdAt,
-            updatedAt: latestLinkedBooking.paymentState.updatedAt,
+            id: currentLinkedBooking.paymentState.id,
+            bookingId: currentLinkedBooking.paymentState.bookingId,
+            state: currentLinkedBooking.paymentState.state,
+            paidAmountPhp: currentLinkedBooking.paymentState.paidAmountPhp,
+            unpaidAmountPhp: currentLinkedBooking.paymentState.unpaidAmountPhp,
+            lastPaymentIntentId: currentLinkedBooking.paymentState.lastPaymentIntentId,
+            stateUpdatedAt: currentLinkedBooking.paymentState.stateUpdatedAt,
+            createdAt: currentLinkedBooking.paymentState.createdAt,
+            updatedAt: currentLinkedBooking.paymentState.updatedAt,
           }
         : null,
-      currentPaymentIntent: latestLinkedBooking?.paymentIntents?.[0]
+      currentPaymentIntent: currentLinkedBooking?.paymentIntents?.[0]
         ? {
-            id: latestLinkedBooking.paymentIntents[0].id,
-            intentReference: latestLinkedBooking.paymentIntents[0].intentReference,
-            amountPhp: latestLinkedBooking.paymentIntents[0].amountPhp,
-            currencyCode: latestLinkedBooking.paymentIntents[0].currencyCode,
-            status: latestLinkedBooking.paymentIntents[0].status,
-            provider: latestLinkedBooking.paymentIntents[0].provider,
-            confirmedAt: latestLinkedBooking.paymentIntents[0].confirmedAt,
-            createdAt: latestLinkedBooking.paymentIntents[0].createdAt,
-            updatedAt: latestLinkedBooking.paymentIntents[0].updatedAt,
+            id: currentLinkedBooking.paymentIntents[0].id,
+            intentReference: currentLinkedBooking.paymentIntents[0].intentReference,
+            amountPhp: currentLinkedBooking.paymentIntents[0].amountPhp,
+            currencyCode: currentLinkedBooking.paymentIntents[0].currencyCode,
+            status: currentLinkedBooking.paymentIntents[0].status,
+            provider: currentLinkedBooking.paymentIntents[0].provider,
+            confirmedAt: currentLinkedBooking.paymentIntents[0].confirmedAt,
+            createdAt: currentLinkedBooking.paymentIntents[0].createdAt,
+            updatedAt: currentLinkedBooking.paymentIntents[0].updatedAt,
           }
         : null,
       pass: trip.pass

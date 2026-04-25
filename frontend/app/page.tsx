@@ -1,6 +1,7 @@
 import { getCurrentUser, requireAccessToken } from "../src/lib/server-auth";
 import { getPreferredTravelerTrip } from "../src/lib/travelerTripSelection";
 import { redirect } from "next/navigation";
+import { QRCodeSVG } from "qrcode.react";
 
 function Section(props: { title: string; children: any }) {
   return (
@@ -353,108 +354,125 @@ function getPassCardVerificationLabel(trip: any) {
   return "NOT ISSUED";
 }
 
-function PassCardQrShell() {
+function PassCardQrShell(props: { qrToken?: string | null }) {
+  const hasQr = Boolean(props.qrToken);
+
   return (
     <div
+      aria-label={hasQr ? "OSP active pass QR code" : "OSP active pass QR unavailable"}
       style={{
         position: "relative",
-        width: 150,
-        height: 150,
-        borderRadius: 18,
-        background: "#ffffff",
-        boxShadow: "0 10px 24px rgba(15,23,42,0.08)",
+        width: 164,
+        height: 164,
+        borderRadius: 24,
+        background: "linear-gradient(180deg, #f9fcfe 0%, #edf7fc 100%)",
+        border: "1px solid #dbe7ef",
+        boxShadow: "0 16px 34px rgba(15,23,42,0.10)",
         overflow: "hidden",
+        flexShrink: 0,
       }}
     >
       <div
         style={{
           position: "absolute",
-          inset: 12,
-          borderRadius: 14,
-          border: "1px solid #e3e8ee",
-          background: "#fbfdff",
+          inset: 10,
+          borderRadius: 20,
+          background: "rgba(255,255,255,0.76)",
+          border: "1px solid rgba(219,231,239,0.95)",
         }}
       />
+
       <div
         style={{
           position: "absolute",
-          left: 18,
-          top: 18,
-          width: 26,
-          height: 26,
-          borderRadius: 6,
-          border: "3px solid #0f172a",
-          background: "#ffffff",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          right: 18,
-          top: 18,
-          width: 26,
-          height: 26,
-          borderRadius: 6,
-          border: "3px solid #0f172a",
-          background: "#ffffff",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          left: 18,
-          bottom: 18,
-          width: 26,
-          height: 26,
-          borderRadius: 6,
-          border: "3px solid #0f172a",
-          background: "#ffffff",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
+          top: 10,
+          left: 12,
+          right: 12,
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "space-between",
         }}
       >
         <div
           style={{
-            width: 84,
-            height: 84,
-            borderRadius: 16,
-            border: "2px solid #dce6ee",
-            background: "#ffffff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            fontSize: 8,
+            fontWeight: 800,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "#6d8398",
           }}
         >
+          Official Pass
+        </div>
+
+        <div
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: 999,
+            background: "#17b6c6",
+            boxShadow: "0 0 0 3px rgba(23,182,198,0.14)",
+          }}
+        />
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          left: 14,
+          right: 14,
+          top: 28,
+          bottom: 22,
+          borderRadius: 18,
+          background: "#ffffff",
+          border: "1px solid #e3edf4",
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 10,
+        }}
+      >
+        {hasQr ? (
+          <QRCodeSVG
+            value={props.qrToken as string}
+            size={104}
+            includeMargin={true}
+            level="H"
+            bgColor="#FFFFFF"
+            fgColor="#111827"
+          />
+        ) : (
           <div
             style={{
-              borderRadius: 999,
-              border: "2px solid #17b6c6",
-              background: "#ffffff",
-              padding: "8px 10px",
               textAlign: "center",
-              fontSize: 7,
+              fontSize: 11,
               fontWeight: 700,
-              textTransform: "uppercase",
-              lineHeight: 1.15,
-              color: "#17b6c6",
+              lineHeight: 1.35,
+              color: "#7b8ea2",
+              padding: "0 10px",
             }}
           >
-            <span>
-              One
-              <br />
-              Siargao
-              <br />
-              Pass
-            </span>
+            QR not available yet
           </div>
-        </div>
+        )}
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 7,
+          textAlign: "center",
+          fontSize: 8,
+          fontWeight: 800,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: "#6d8398",
+        }}
+      >
+        {hasQr ? "Scan to verify" : "Awaiting QR issuance"}
       </div>
     </div>
   );
@@ -740,32 +758,19 @@ function TravelerShellFrame(props: {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10, whiteSpace: "nowrap" }}>
-          <div
+          <img
+            src="/osp/osp-official-logo.png"
+            alt="One Siargao Pass official logo"
             style={{
               width: 60,
               height: 60,
-              borderRadius: "50%",
-              border: "2px solid #17b6c6",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-              fontSize: 10,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              lineHeight: 1.15,
-              color: "#17b6c6",
+              borderRadius: 18,
+              objectFit: "cover",
               flex: "0 0 auto",
+              boxShadow: "0 8px 18px rgba(15,23,42,0.08)",
+              background: "#ffffff",
             }}
-          >
-            <span>
-              One
-              <br />
-              Siargao
-              <br />
-              Pass
-            </span>
-          </div>
+          />
 
           <div>
             <h1
@@ -1189,7 +1194,7 @@ function TravelerPassCard(props: {
           </span>
 
           <div style={{ marginTop: 20 }}>
-            <PassCardQrShell />
+            <PassCardQrShell qrToken={props.latestTravelerTrip?.pass?.qrCredential?.qrToken} />
           </div>
 
           <div
