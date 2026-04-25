@@ -18,6 +18,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { GuidesModule } from './modules/guides/guides.module';
 import { SpmModule } from './modules/spm/spm.module';
 import { PrismaService } from './database/prisma.service';
+import { LanguagePacksModule } from './modules/language-packs/language-packs.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PrismaService } from './database/prisma.service';
     AuthModule,
     RolesModule,
     ProfilesModule,
+    LanguagePacksModule,
     GovernanceModule,
     AuditModule,
     TripsModule,
