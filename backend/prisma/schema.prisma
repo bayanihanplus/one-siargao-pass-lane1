@@ -1503,3 +1503,290 @@ model LanguageTranslationValue {
   @@index([translationKeyId])
   @@index([status])
 }
+
+// ============================================================================
+// SPM-05A — Passport Trails Product + Pricing Schema Foundation
+// Doctrine lock:
+// - Product categories: Siargao Partner Tour, Passport Trails™ Curated Tour,
+//   Build Your Own Passport Trail.
+// - SPM curates, OTA distributes, approved local partners fulfill.
+// - Pricing logic is schema-level now; Operator Dashboard price input comes later.
+// - No separate QR domain. Trail bookings attach into existing OspQrEvent trailBookingId.
+// ============================================================================
+
+enum SpmTrailProductType {
+  SIARGAO_PARTNER_TOUR
+  PASSPORT_TRAILS_CURATED_TOUR
+  DIY_PASSPORT_TRAIL
+  ADD_ON
+}
+
+enum SpmCurationSource {
+  OPERATOR_CREATED
+  SPM_CURATED
+  ADMIN_CREATED
+  TRAVELER_CREATED
+}
+
+enum SpmDistributionChannel {
+  SPM
+  OPERATOR_WEBSITE
+  OTA_PARTNER
+  TRAVEL_AGENCY
+  HOTEL_DESK
+  WALK_IN
+  AFFILIATE
+  ADMIN_CREATED
+}
+
+enum SpmFulfillmentPartnerType {
+  LOCAL_OPERATOR
+  APPROVED_GUIDE
+  TRANSPORT_PARTNER
+  RESTAURANT_PARTNER
+  COMMUNITY_PARTNER
+  SURF_SCHOOL
+  ADVENTURE_PARTNER
+  SELF_GUIDED_QR
+}
+
+enum SpmPricingMode {
+  FIXED_PER_HEAD
+  PAX_TIERED_PER_HEAD
+  PACKAGE_FLAT_RATE
+  FILLABLE_PRICE_REQUIRED
+  REQUEST_TO_CONFIRM
+  ADD_ON_PRICE
+  DISCOUNT_RULE
+  PRICE_RANGE
+  PACKAGE_INCLUSION
+}
+
+enum SpmBookabilityStatus {
+  INSTANT_BOOK
+  REQUEST_TO_CONFIRM
+  SAVE_ONLY
+  NOT_BOOKABLE
+  DISABLED_PENDING_PRICE
+  DISABLED_PENDING_APPROVAL
+}
+
+enum SpmTrailBookingStatus {
+  DRAFT
+  REQUESTED
+  PENDING_OPERATOR_CONFIRMATION
+  CONFIRMED
+  PAYMENT_PENDING
+  PAID
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+  REFUNDED
+}
+
+enum SpmDiscountType {
+  FIXED_AMOUNT_PER_HEAD
+  FIXED_PACKAGE_AMOUNT
+  PERCENTAGE
+}
+
+model SpmTrailPackage {
+  id                         String                    @id @default(cuid())
+  trailFamilyId              String
+  trailVariantId             String?
+  productType                SpmTrailProductType
+  curationSource             SpmCurationSource         @default(OPERATOR_CREATED)
+  fulfillmentPartnerType     SpmFulfillmentPartnerType @default(LOCAL_OPERATOR)
+  code                       String                    @unique
+  name                       String
+  publicLabel                String
+  description                String?
+  shortDescription           String?
+  operatorFacingName         String?
+  travelerFacingName         String?
+  bookabilityStatus          SpmBookabilityStatus      @default(REQUEST_TO_CONFIRM)
+  approvalStatus             SpmApprovalStatus         @default(DRAFT)
+  distributionEnabled        Boolean                   @default(false)
+  stampEnabled               Boolean                   @default(true)
+  guideRequirement           String                    @default("NO_GUIDE_REQUIRED")
+  difficultyLevel            String?
+  defaultStartTime           String?
+  defaultEndTime             String?
+  durationMinutes            Int?
+  pickupPolicyText           String?
+  inclusionsText             String?
+  exclusionsText             String?
+  weatherPolicyText          String?
+  cancellationPolicyText     String?
+  requiresOperatorApproval   Boolean                   @default(true)
+  requiresPriceBeforePublish Boolean                   @default(true)
+  instantCheckoutAllowed     Boolean                   @default(false)
+  createdAt                  DateTime                  @default(now())
+  updatedAt                  DateTime                  @updatedAt
+
+  @@index([trailFamilyId])
+  @@index([trailVariantId])
+  @@index([productType])
+  @@index([curationSource])
+  @@index([bookabilityStatus])
+  @@index([approvalStatus])
+  @@map("spm_trail_packages")
+}
+
+model SpmTrailPackageNode {
+  id              String   @id @default(cuid())
+  trailPackageId  String
+  trailNodeId     String
+  isRequired      Boolean  @default(false)
+  isOptional      Boolean  @default(false)
+  isConditional   Boolean  @default(false)
+  isStampEligible Boolean  @default(true)
+  sortOrder       Int      @default(0)
+  conditionNote   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([trailPackageId, trailNodeId])
+  @@index([trailPackageId])
+  @@index([trailNodeId])
+  @@map("spm_trail_package_nodes")
+}
+
+model SpmPricingRule {
+  id                       String            @id @default(cuid())
+  trailPackageId           String?
+  trailNodeId              String?
+  operatorUserId           String?
+  partnerId                String?
+  pricingMode              SpmPricingMode
+  currencyCode             String            @default("PHP")
+  basePrice                Decimal?          @db.Decimal(12, 2)
+  priceRangeMin            Decimal?          @db.Decimal(12, 2)
+  priceRangeMax            Decimal?          @db.Decimal(12, 2)
+  packageFlatRate          Decimal?          @db.Decimal(12, 2)
+  fillableRequired         Boolean           @default(false)
+  requestToConfirmRequired Boolean           @default(false)
+  instantCheckoutAllowed   Boolean           @default(false)
+  approvalStatus           SpmApprovalStatus @default(DRAFT)
+  effectiveFrom            DateTime?
+  effectiveTo              DateTime?
+  createdAt                DateTime          @default(now())
+  updatedAt                DateTime          @updatedAt
+
+  @@index([trailPackageId])
+  @@index([trailNodeId])
+  @@index([operatorUserId])
+  @@index([partnerId])
+  @@index([pricingMode])
+  @@index([approvalStatus])
+  @@map("spm_pricing_rules")
+}
+
+model SpmPaxTierPrice {
+  id            String   @id @default(cuid())
+  pricingRuleId String
+  minPax        Int
+  maxPax        Int?
+  pricePerHead  Decimal  @db.Decimal(12, 2)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([pricingRuleId])
+  @@index([minPax, maxPax])
+  @@map("spm_pax_tier_prices")
+}
+
+model SpmDiscountRule {
+  id                    String          @id @default(cuid())
+  pricingRuleId         String
+  discountType          SpmDiscountType
+  minPax                Int?
+  maxPax                Int?
+  discountAmountPerHead Decimal?        @db.Decimal(12, 2)
+  discountPercent       Decimal?        @db.Decimal(5, 2)
+  discountPackageAmount Decimal?        @db.Decimal(12, 2)
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  @@index([pricingRuleId])
+  @@index([discountType])
+  @@map("spm_discount_rules")
+}
+
+model SpmAddOn {
+  id                           String            @id @default(cuid())
+  code                         String            @unique
+  name                         String
+  description                  String?
+  addOnType                    String
+  pricingMode                  SpmPricingMode
+  priceAmount                  Decimal?          @db.Decimal(12, 2)
+  currencyCode                 String            @default("PHP")
+  requiresOperatorConfirmation Boolean           @default(false)
+  requiresPartnerConfirmation  Boolean           @default(false)
+  approvalStatus               SpmApprovalStatus @default(DRAFT)
+  createdAt                    DateTime          @default(now())
+  updatedAt                    DateTime          @updatedAt
+
+  @@index([addOnType])
+  @@index([pricingMode])
+  @@index([approvalStatus])
+  @@map("spm_add_ons")
+}
+
+model SpmTrailBooking {
+  id                     String                 @id @default(cuid())
+  tripId                 String
+  travelerUserId         String
+  trailPackageId         String?
+  diyTrailId             String?
+  trailFamilyId          String?
+  operatorUserId         String?
+  guideProfileId         String?
+  distributionChannel    SpmDistributionChannel @default(SPM)
+  bookingSourceReference String?
+  bookingStatus          SpmTrailBookingStatus  @default(DRAFT)
+  requestedDate          DateTime?
+  confirmedDate          DateTime?
+  paxCount               Int                    @default(1)
+  paymentStateId         String?
+  manifestId             String?
+  qrValidationRequired   Boolean                @default(true)
+  stampEnabled           Boolean                @default(true)
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+
+  @@index([tripId])
+  @@index([travelerUserId])
+  @@index([trailPackageId])
+  @@index([trailFamilyId])
+  @@index([operatorUserId])
+  @@index([guideProfileId])
+  @@index([distributionChannel])
+  @@index([bookingStatus])
+  @@map("spm_trail_bookings")
+}
+
+model SpmTrailPricingSnapshot {
+  id                      String   @id @default(cuid())
+  trailBookingId          String   @unique
+  pricingRuleId           String?
+  currencyCode            String   @default("PHP")
+  baseSupplyAmount        Decimal  @default(0) @db.Decimal(12, 2)
+  operatorNetRate         Decimal  @default(0) @db.Decimal(12, 2)
+  guideFeeAmount          Decimal  @default(0) @db.Decimal(12, 2)
+  addOnAmount             Decimal  @default(0) @db.Decimal(12, 2)
+  discountAmount          Decimal  @default(0) @db.Decimal(12, 2)
+  platformFeeAmount       Decimal  @default(0) @db.Decimal(12, 2)
+  paymentProcessingAmount Decimal  @default(0) @db.Decimal(12, 2)
+  currencyFxAmount        Decimal  @default(0) @db.Decimal(12, 2)
+  travelerTotalAmount     Decimal  @default(0) @db.Decimal(12, 2)
+  operatorPayoutAmount    Decimal  @default(0) @db.Decimal(12, 2)
+  guidePayoutAmount       Decimal  @default(0) @db.Decimal(12, 2)
+  snapshotJson            Json?
+  createdAt               DateTime @default(now())
+
+  @@index([pricingRuleId])
+  @@map("spm_trail_pricing_snapshots")
+}
