@@ -487,6 +487,10 @@ export class SpmService {
 
   async listPassportTrailPackagesForTraveler() {
     const packages = await this.prisma.spmTrailPackage.findMany({
+      where: {
+        approvalStatus: 'APPROVED',
+        distributionEnabled: true,
+      },
       orderBy: [
         { productType: 'asc' },
         { code: 'asc' },
@@ -528,8 +532,14 @@ export class SpmService {
       }),
       this.prisma.spmPricingRule.findMany({
         where: { trailPackageId: { in: packageIds } },
+        orderBy: [
+          { approvalStatus: 'asc' },
+          { operatorUserId: 'desc' },
+        ],
         select: {
           trailPackageId: true,
+          operatorUserId: true,
+          partnerId: true,
           pricingMode: true,
           currencyCode: true,
           basePrice: true,
@@ -569,9 +579,17 @@ export class SpmService {
       }
     }
 
-    const pricingByPackage = new Map(
-      pricingRules.map((rule) => [rule.trailPackageId, rule]),
-    );
+    const pricingByPackage = new Map<string, any>();
+    for (const rule of pricingRules) {
+      if (!rule.trailPackageId) continue;
+
+      const current = pricingByPackage.get(rule.trailPackageId);
+      const isApprovedOperatorRule = Boolean(rule.operatorUserId) && rule.approvalStatus === 'APPROVED';
+
+      if (!current || isApprovedOperatorRule) {
+        pricingByPackage.set(rule.trailPackageId, rule);
+      }
+    }
 
     const familyById = new Map(families.map((family) => [family.id, family]));
 
@@ -672,7 +690,20 @@ export class SpmService {
       };
     }
 
-    const [family, packageNodes, pricing] = await Promise.all([
+    if (item.approvalStatus !== 'APPROVED' || item.distributionEnabled !== true) {
+      return {
+        ok: false,
+        error: 'PASSPORT_TRAIL_PACKAGE_NOT_AVAILABLE',
+        data: {
+          packageCode: item.code,
+          approvalStatus: item.approvalStatus,
+          distributionEnabled: item.distributionEnabled,
+          instantCheckoutAllowed: item.instantCheckoutAllowed,
+        },
+      };
+    }
+
+    const [family, packageNodes, pricingRules] = await Promise.all([
       this.prisma.spmTrailFamily.findFirst({
         where: { id: item.trailFamilyId },
         select: {
@@ -695,9 +726,15 @@ export class SpmService {
           conditionNote: true,
         },
       }),
-      this.prisma.spmPricingRule.findFirst({
+      this.prisma.spmPricingRule.findMany({
         where: { trailPackageId: item.id },
+        orderBy: [
+          { approvalStatus: 'asc' },
+          { operatorUserId: 'desc' },
+        ],
         select: {
+          operatorUserId: true,
+          partnerId: true,
           pricingMode: true,
           currencyCode: true,
           basePrice: true,
@@ -711,6 +748,11 @@ export class SpmService {
         },
       }),
     ]);
+
+    const pricing =
+      pricingRules.find((rule) => Boolean(rule.operatorUserId) && rule.approvalStatus === 'APPROVED') ??
+      pricingRules.find((rule) => !rule.operatorUserId && !rule.partnerId) ??
+      null;
 
     const linkedNodeIds = packageNodes.map((link) => link.trailNodeId);
     const nodes = await this.prisma.spmTrailNode.findMany({
