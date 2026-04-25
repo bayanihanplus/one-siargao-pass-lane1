@@ -91,9 +91,9 @@ export default async function TravelerPassportMapPage() {
                 style={{
                   margin: 0,
                   fontFamily: 'Georgia, "Times New Roman", Times, serif',
-                  fontSize: 24,
-                  lineHeight: 1.02,
-                  letterSpacing: "-0.052em",
+                  fontSize: 25,
+                  lineHeight: 1,
+                  letterSpacing: "-0.056em",
                   color: "#14264b",
                   fontWeight: 900,
                   whiteSpace: "nowrap",
@@ -105,10 +105,10 @@ export default async function TravelerPassportMapPage() {
 
               <p
                 style={{
-                  margin: "5px 0 0",
-                  color: "#6c7890",
+                  margin: "6px 0 0",
+                  color: "#5f6f87",
                   fontSize: 13,
-                  lineHeight: 1.12,
+                  lineHeight: 1.1,
                   fontWeight: 700,
                   whiteSpace: "nowrap",
                   overflow: "visible",
@@ -170,23 +170,23 @@ export default async function TravelerPassportMapPage() {
 
           <section
             style={{
-              marginTop: 16,
-              minHeight: 500,
-              borderRadius: 28,
-              border: "1px solid rgba(19,168,183,0.14)",
+              marginTop: 18,
+              minHeight: 452,
+              borderRadius: 30,
+              border: "1px solid rgba(19,168,183,0.16)",
               background:
-                "linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(238,248,251,0.94) 52%, rgba(255,255,255,0.96) 100%)",
-              boxShadow: "0 18px 46px rgba(15,23,42,0.07)",
+                "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(235,248,252,0.96) 50%, rgba(255,255,255,0.98) 100%)",
+              boxShadow: "0 22px 52px rgba(15,23,42,0.088)",
               padding: 18,
             }}
           >
             <div
               style={{
-                minHeight: 430,
-                borderRadius: 24,
+                minHeight: 388,
+                borderRadius: 26,
                 background:
-                  "linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(238,248,251,0.62) 52%, rgba(255,255,255,0.86) 100%)",
-                padding: "18px 6px 24px",
+                  "radial-gradient(circle at 76% 16%, rgba(19,168,183,0.16) 0, transparent 78px), radial-gradient(circle at 22% 84%, rgba(242,183,5,0.15) 0, transparent 64px), linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(238,248,251,0.66) 52%, rgba(255,255,255,0.90) 100%)",
+                padding: "18px 8px 20px",
                 position: "relative",
                 overflow: "hidden",
               }}
@@ -195,8 +195,8 @@ export default async function TravelerPassportMapPage() {
                 style={{
                   position: "relative",
                   zIndex: 3,
-                  maxWidth: 198,
-                  paddingTop: 4,
+                  maxWidth: 212,
+                  paddingTop: 6,
                 }}
               >
                 <div
@@ -242,8 +242,8 @@ export default async function TravelerPassportMapPage() {
                   style={{
                     margin: 0,
                     fontFamily: 'Georgia, "Times New Roman", Times, serif',
-                    fontSize: 27,
-                    lineHeight: 1.02,
+                    fontSize: 29,
+                    lineHeight: 0.98,
                     letterSpacing: "-0.052em",
                     color: "#14264b",
                     fontWeight: 900,
@@ -264,8 +264,8 @@ export default async function TravelerPassportMapPage() {
                     style={{
                       fontFamily:
                         '"Snell Roundhand", "Apple Chancery", "Bradley Hand", "Segoe Script", cursive',
-                      fontSize: 32,
-                      lineHeight: 0.9,
+                      fontSize: 35,
+                      lineHeight: 0.88,
                       fontWeight: 400,
                       color: "#0f9aa6",
                       letterSpacing: "-0.014em",
@@ -302,8 +302,8 @@ export default async function TravelerPassportMapPage() {
                 <p
                   style={{
                     margin: "3px 0 0",
-                    maxWidth: 176,
-                    color: "#6c7890",
+                    maxWidth: 190,
+                    color: "#607089",
                     fontFamily: "Arial, Helvetica, sans-serif",
                     fontSize: 12,
                     lineHeight: 1.3,
