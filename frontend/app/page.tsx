@@ -800,6 +800,70 @@ function TravelerBottomNavLink(props: {
   );
 }
 
+function HeaderControlButton(props: {
+  label: string;
+  ariaLabel: string;
+  href?: string;
+  icon: "language" | "currency" | "assistant";
+}) {
+  const icon =
+    props.icon === "language" ? (
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M3.8 12h16.4M12 3.5c2 2.2 3 5.1 3 8.5s-1 6.3-3 8.5c-2-2.2-3-5.1-3-8.5s1-6.3 3-8.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      </svg>
+    ) : props.icon === "currency" ? (
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true">
+        <path d="M8 4h5.5a4 4 0 0 1 0 8H8V4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M8 12h6a4 4 0 0 1 0 8H8V12ZM6 8h11M6 16h11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    ) : (
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true">
+        <path d="M12 3.5l1.4 4.2 4.1 1.4-4.1 1.4L12 14.7l-1.4-4.2-4.1-1.4 4.1-1.4L12 3.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M18 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      </svg>
+    );
+
+  const content = (
+    <>
+      {icon}
+      <span>{props.label}</span>
+    </>
+  );
+
+  const style = {
+    minWidth: 42,
+    height: 34,
+    borderRadius: 999,
+    border: "1px solid #dbe8ef",
+    background: "#ffffff",
+    color: "#19305a",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+    padding: "0 9px",
+    fontSize: 10,
+    fontWeight: 950,
+    textDecoration: "none",
+    boxShadow: "0 8px 18px rgba(15,23,42,0.045)",
+  } as const;
+
+  if (props.href) {
+    return (
+      <a href={props.href} aria-label={props.ariaLabel} style={style}>
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <button type="button" aria-label={props.ariaLabel} style={style}>
+      {content}
+    </button>
+  );
+}
+
 function TravelerShellFrame(props: {
   latestTravelerTrip: any;
 }) {
@@ -879,23 +943,37 @@ function TravelerShellFrame(props: {
           </div>
         </div>
 
-        <button
-          type="button"
-          aria-label="Notifications"
+        <div
           style={{
-            position: "relative",
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            color: "#19305a",
-            background: "transparent",
-            border: "none",
-            padding: 0,
+            justifyContent: "flex-end",
+            gap: 6,
+            flex: "0 0 auto",
           }}
         >
+          <HeaderControlButton label="EN" ariaLabel="Open language selector" href="/traveler/settings?panel=language" icon="language" />
+          <HeaderControlButton label="PHP" ariaLabel="Open currency selector" href="/traveler/settings?panel=currency" icon="currency" />
+          <HeaderControlButton label="AI" ariaLabel="Open OSP Travel Assistant" href="/traveler/settings?panel=assistant" icon="assistant" />
+
+          <a
+            href="/traveler/settings?panel=notifications"
+            aria-label="Notifications"
+            style={{
+              position: "relative",
+              width: 38,
+              height: 38,
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#19305a",
+              background: "#ffffff",
+              border: "1px solid #dbe8ef",
+              padding: 0,
+              boxShadow: "0 8px 18px rgba(15,23,42,0.045)",
+            }}
+          >
           <svg viewBox="0 0 24 24" width="23" height="23" fill="none">
             <path
               d="M6.5 17.5h11l-1.4-1.6a2.5 2.5 0 0 1-.6-1.6V11a5.5 5.5 0 1 0-11 0v3.3c0 .6-.2 1.2-.6 1.6L6.5 17.5z"
@@ -906,18 +984,19 @@ function TravelerShellFrame(props: {
             />
             <path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
           </svg>
-          <span
-            style={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              width: 10,
-              height: 10,
-              borderRadius: "50%",
-              background: "#ff6a45",
-            }}
-          />
-        </button>
+            <span
+              style={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                width: 9,
+                height: 9,
+                borderRadius: "50%",
+                background: "#ff6a45",
+              }}
+            />
+          </a>
+        </div>
       </div>
 
       <section

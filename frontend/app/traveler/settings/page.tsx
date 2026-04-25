@@ -1,0 +1,312 @@
+type PanelKey = "language" | "currency" | "assistant" | "notifications";
+
+function getPanel(searchParams?: { [key: string]: string | string[] | undefined }): PanelKey {
+  const raw = searchParams?.panel;
+  const value = Array.isArray(raw) ? raw[0] : raw;
+
+  if (value === "currency") return "currency";
+  if (value === "assistant") return "assistant";
+  if (value === "notifications") return "notifications";
+  return "language";
+}
+
+function PanelIcon(props: { panel: PanelKey }) {
+  if (props.panel === "language") {
+    return (
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M3.8 12h16.4M12 3.5c2 2.2 3 5.1 3 8.5s-1 6.3-3 8.5c-2-2.2-3-5.1-3-8.5s1-6.3 3-8.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  if (props.panel === "currency") {
+    return (
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+        <path d="M8 4h5.5a4 4 0 0 1 0 8H8V4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M8 12h6a4 4 0 0 1 0 8H8V12ZM6 8h11M6 16h11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (props.panel === "assistant") {
+    return (
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+        <path d="M12 3.5l1.4 4.2 4.1 1.4-4.1 1.4L12 14.7l-1.4-4.2-4.1-1.4 4.1-1.4L12 3.5Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+        <path d="M18 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+      <path d="M18 8.5a6 6 0 1 0-12 0c0 7-2.5 7.7-2.5 9h17c0-1.3-2.5-2-2.5-9Z" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9.8 20.2a2.4 2.4 0 0 0 4.4 0" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function panelCopy(panel: PanelKey) {
+  if (panel === "language") {
+    return {
+      eyebrow: "Language Access",
+      title: "Choose your travel language",
+      body: "International and Filipino language packs are planned as controlled content layers. This screen is the access point until full localization is wired.",
+      chips: ["English", "Filipino", "Bisaya", "Surigaonon", "Chinese", "Korean", "Japanese"],
+      accent: "#0ea5b7",
+      bg: "#ecfeff",
+      border: "#bfeaf0",
+    };
+  }
+
+  if (panel === "currency") {
+    return {
+      eyebrow: "Currency / FX",
+      title: "Review traveler currency options",
+      body: "Currency display must eventually be booking-linked and snapshot-based. No conversion value is shown here until FX logic is wired.",
+      chips: ["PHP", "USD", "EUR", "JPY", "KRW", "CNY", "HKD", "AUD", "SGD"],
+      accent: "#d97706",
+      bg: "#fff8eb",
+      border: "#f6e1b5",
+    };
+  }
+
+  if (panel === "assistant") {
+    return {
+      eyebrow: "OSP Travel Assistant",
+      title: "Ask for pass, trip, QR, or map guidance",
+      body: "The assistant will explain and guide. It must not approve clearance, issue passes, override payment, or invent booking or stamp records.",
+      chips: ["Pass help", "Trip status", "QR guidance", "Passport Map", "Payment status", "Language help"],
+      accent: "#7c3aed",
+      bg: "#f5f3ff",
+      border: "#ddd6fe",
+    };
+  }
+
+  return {
+    eyebrow: "Notifications",
+    title: "Traveler alerts and updates",
+    body: "Notifications will support traveler attention and status awareness. Operational approvals still depend on governed backend records.",
+    chips: ["Pass updates", "Trip alerts", "Payment updates", "Checkpoint notices"],
+    accent: "#2563eb",
+    bg: "#eff6ff",
+    border: "#cfe0f7",
+  };
+}
+
+export default function TravelerSettingsPage({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+  const activePanel = getPanel(searchParams);
+  const copy = panelCopy(activePanel);
+
+  const tabs: { key: PanelKey; label: string; href: string }[] = [
+    { key: "language", label: "Language", href: "/traveler/settings?panel=language" },
+    { key: "currency", label: "Currency", href: "/traveler/settings?panel=currency" },
+    { key: "assistant", label: "AI", href: "/traveler/settings?panel=assistant" },
+    { key: "notifications", label: "Alerts", href: "/traveler/settings?panel=notifications" },
+  ];
+
+  return (
+    <main
+      style={{
+        maxWidth: 430,
+        margin: "0 auto",
+        padding: "18px 14px 22px",
+        minHeight: "100vh",
+        background: "linear-gradient(180deg, #f8fcff 0%, #ffffff 58%)",
+        color: "#19305a",
+        boxSizing: "border-box",
+      }}
+    >
+      <div style={{ marginBottom: 16 }}>
+        <a
+          href="/"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            minHeight: 34,
+            borderRadius: 999,
+            border: "1px solid #dbe8ef",
+            padding: "0 12px",
+            background: "#ffffff",
+            color: "#19305a",
+            textDecoration: "none",
+            fontSize: 12,
+            fontWeight: 900,
+          }}
+        >
+          ← Back to Home
+        </a>
+      </div>
+
+      <header style={{ marginBottom: 16 }}>
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 950,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "#0e7490",
+            marginBottom: 8,
+          }}
+        >
+          One Siargao Pass
+        </div>
+        <h1
+          style={{
+            margin: 0,
+            fontSize: 34,
+            lineHeight: 0.98,
+            letterSpacing: "-0.055em",
+            color: "#19305a",
+          }}
+        >
+          Traveler Controls
+        </h1>
+        <p style={{ marginTop: 9, marginBottom: 0, color: "#64748b", lineHeight: 1.4, fontSize: 14 }}>
+          Language, currency, assistant access, and alerts.
+        </p>
+      </header>
+
+      <nav
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+          gap: 7,
+          marginBottom: 14,
+        }}
+      >
+        {tabs.map((tab) => {
+          const active = tab.key === activePanel;
+          return (
+            <a
+              key={tab.key}
+              href={tab.href}
+              style={{
+                minHeight: 38,
+                borderRadius: 999,
+                border: active ? "1px solid #16bfd3" : "1px solid #dbe8ef",
+                background: active ? "#ecfeff" : "#ffffff",
+                color: active ? "#0e7490" : "#19305a",
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 11,
+                fontWeight: 950,
+                boxShadow: "0 8px 18px rgba(15,23,42,0.035)",
+              }}
+            >
+              {tab.label}
+            </a>
+          );
+        })}
+      </nav>
+
+      <section
+        style={{
+          border: `1px solid ${copy.border}`,
+          borderRadius: 24,
+          background: copy.bg,
+          padding: 18,
+          boxShadow: "0 14px 34px rgba(15,23,42,0.06)",
+        }}
+      >
+        <div
+          style={{
+            width: 48,
+            height: 48,
+            borderRadius: 16,
+            border: `1px solid ${copy.border}`,
+            background: "#ffffff",
+            color: copy.accent,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 14,
+          }}
+        >
+          <PanelIcon panel={activePanel} />
+        </div>
+
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 950,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: copy.accent,
+          }}
+        >
+          {copy.eyebrow}
+        </div>
+
+        <h2
+          style={{
+            margin: "7px 0 0",
+            fontSize: 26,
+            lineHeight: 1.04,
+            letterSpacing: "-0.045em",
+            color: "#19305a",
+          }}
+        >
+          {copy.title}
+        </h2>
+
+        <p style={{ margin: "10px 0 0", color: "#475569", fontSize: 14, lineHeight: 1.45, fontWeight: 650 }}>
+          {copy.body}
+        </p>
+
+        <div
+          style={{
+            marginTop: 16,
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 8,
+          }}
+        >
+          {copy.chips.map((chip) => (
+            <span
+              key={chip}
+              style={{
+                minHeight: 32,
+                borderRadius: 999,
+                border: `1px solid ${copy.border}`,
+                background: "#ffffff",
+                color: "#19305a",
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "0 11px",
+                fontSize: 12,
+                fontWeight: 900,
+              }}
+            >
+              {chip}
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section
+        style={{
+          marginTop: 14,
+          border: "1px solid #dbe8ef",
+          borderRadius: 20,
+          background: "#ffffff",
+          padding: 16,
+          boxShadow: "0 10px 26px rgba(15,23,42,0.04)",
+        }}
+      >
+        <div style={{ fontSize: 12, fontWeight: 950, color: "#19305a", marginBottom: 6 }}>
+          Controlled access only
+        </div>
+        <p style={{ margin: 0, color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
+          This page exposes the traveler controls without claiming full translation, live FX conversion, or AI runtime until those systems are built.
+        </p>
+      </section>
+    </main>
+  );
+}
