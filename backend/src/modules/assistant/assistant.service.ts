@@ -438,4 +438,62 @@ export class AssistantService {
       },
     };
   }
+  async handleChatMessage(user: any, body: any) {
+    const userId = getUserId(user);
+    const message = String(body?.message || '').trim();
+    const source = String(body?.source || 'traveler-assistant').trim();
+
+    if (!message) {
+      return {
+        ok: false,
+        source: 'KUYA_TALA_CHAT_ENDPOINT',
+        reason: 'MESSAGE_REQUIRED',
+        message: 'Please enter a question for Kuya Tala™.',
+      };
+    }
+
+    const [travelerContext, knowledgeSpine] = await Promise.all([
+      this.getTravelerContext(user),
+      this.getKnowledgeSpine(user),
+    ]);
+
+    return {
+      ok: true,
+      source: 'KUYA_TALA_CHAT_ENDPOINT_PHASE_1',
+      runtimeMode: 'DETERMINISTIC_READ_ONLY_NO_LLM',
+      assistant: {
+        name: 'Kuya Tala™',
+        title: 'Your Siargao Journey Guide',
+      },
+      received: {
+        userId,
+        source,
+        message,
+      },
+      response: {
+        greeting:
+          knowledgeSpine?.responsePolicy?.simpleGreeting ||
+          'Hi, I’m Kuya Tala™ — your One Siargao Pass journey guide.',
+        answer:
+          'I can guide you using your visible OSP/SPM context and the approved knowledge spine. Full AI-generated answers will be activated in Phase 2 after retrieval, moderation, and approved KB ingestion are in place.',
+        nextActions: [
+          'Check Pass / QR status',
+          'Open Passport Map',
+          'Review Passport Trails',
+          'Check Trip Status',
+          'Review Payment Status',
+        ],
+        limits: [
+          'I cannot approve clearance.',
+          'I cannot issue passes.',
+          'I cannot mark payment as paid.',
+          'I cannot unlock stamps without governed QR/stamp records.',
+          'I cannot treat submitted KB as official until approved.',
+        ],
+      },
+      context: travelerContext,
+      knowledgeCoverage: knowledgeSpine?.spineCoverage || {},
+    };
+  }
+
 }

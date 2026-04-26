@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { AssistantService } from './assistant.service';
@@ -16,5 +16,10 @@ export class AssistantController {
   @Get('knowledge-spine')
   getKnowledgeSpine(@Req() req: any) {
     return this.assistantService.getKnowledgeSpine(req.user);
+  }
+
+  @Post('chat/messages')
+  postChatMessage(@Req() req: any, @Body() body: any) {
+    return this.assistantService.handleChatMessage(req.user, body);
   }
 }
