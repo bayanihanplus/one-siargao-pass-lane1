@@ -196,7 +196,7 @@ export default function TravelerStartPage() {
           </div>
 
           <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <MiniButton href="/traveler/register" icon="▣">Create account</MiniButton>
+            <MiniButton href="/login?mode=traveler" icon="▣">Sign in</MiniButton>
             <MiniButton href="/traveler/passport-map" icon="🗺️" variant="secondary">Preview map</MiniButton>
           </div>
         </header>
@@ -290,7 +290,7 @@ export default function TravelerStartPage() {
             OSP Pass / QR access depends on your trip record. Continue to sign in first, then complete the traveler path when registration is enabled.
           </p>
           <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <MiniButton href="/traveler/register" icon="▣">Create account</MiniButton>
+            <MiniButton href="/login?mode=traveler" icon="▣">Continue</MiniButton>
             <MiniButton href="/traveler/pass" icon="◈" variant="secondary">View pass</MiniButton>
           </div>
         </section>

@@ -439,7 +439,7 @@ function SecondaryLink(props: { href: string; children: string; icon?: string })
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ next?: string; mode?: string; provider?: string; status?: string }>;
+  searchParams?: Promise<{ next?: string; mode?: string; provider?: string; status?: string; registered?: string }>;
 }) {
   const user = await getCurrentUser();
   const resolvedSearchParams = await searchParams;
@@ -448,6 +448,7 @@ export default async function LoginPage({
   const requestedNextPath = resolvedSearchParams?.next || copy.next;
   const nextPath = requestedNextPath || "/";
   const providerStatus = resolvedSearchParams?.status === "coming-soon" ? "Easy Google / Apple access is not connected yet. Use email access for now." : null;
+  const registeredStatus = resolvedSearchParams?.registered === "1" ? "Traveler account created. Sign in to continue your trip setup." : null;
 
   return (
     <main
@@ -697,6 +698,23 @@ export default async function LoginPage({
 
               <form action={loginAction} style={{ marginTop: 13, display: "grid", gap: 12 }}>
                 <input type="hidden" name="next" value={nextPath} />
+
+              {registeredStatus ? (
+                <div
+                  style={{
+                    borderRadius: 16,
+                    background: "rgba(22,163,74,0.10)",
+                    border: "1px solid rgba(22,163,74,0.18)",
+                    color: "#166534",
+                    padding: "10px 11px",
+                    fontSize: 12,
+                    lineHeight: 1.35,
+                    fontWeight: 820,
+                  }}
+                >
+                  {registeredStatus}
+                </div>
+              ) : null}
 
               {providerStatus ? (
                 <div
