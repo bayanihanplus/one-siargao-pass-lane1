@@ -1449,7 +1449,7 @@ function SpmMapVisualPreview() {
       }}
     >
       <img
-        src="/osp/spm-hero-banner-bg-approved.png"
+        src="/spm/spm-own-map-canvas.png"
         alt=""
         style={{
           width: "100%",
