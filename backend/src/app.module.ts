@@ -20,9 +20,11 @@ import { SpmModule } from './modules/spm/spm.module';
 import { PrismaService } from './database/prisma.service';
 import { LanguagePacksModule } from './modules/language-packs/language-packs.module';
 import { FxModule } from './modules/fx/fx.module';
+import { AssistantModule } from './modules/assistant/assistant.module';
 
 @Module({
   imports: [
+    AssistantModule,
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     RolesModule,
