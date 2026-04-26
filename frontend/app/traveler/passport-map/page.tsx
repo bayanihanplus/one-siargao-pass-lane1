@@ -1226,7 +1226,7 @@ function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emp
             background: props.emptyState ? "#8b95a1" : "#f2b705",
           }}
         />
-        {props.emptyState ? "No Stamps Yet" : "Live Progress"}
+        {props.emptyState ? "No Stamps Yet" : "Verified Progress"}
       </div>
 
       <div
@@ -1274,8 +1274,7 @@ function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emp
           fontWeight: 590,
         }}
       >
-        Metrics use governed OSP/SPM QR, Passport Stamp, and traveler progress records only.
-        Visual placeholder cards do not count as verified progress.
+        Verified progress uses governed OSP/SPM QR, Passport Stamp, and traveler progress records only. Preview cards do not count as verified progress.
       </p>
     </div>
   );
@@ -2356,7 +2355,7 @@ function SpmCuratedPassportTours() {
             Island Hopping Trail
           </div>
           <div style={{ marginTop: 4, fontSize: 10.2, fontWeight: 700, color: "#607089", lineHeight: 1.12 }}>
-            2/6 stamps • Guyam • Daku • Naked
+            Stamp progress appears from verified records
           </div>
         </div>
 
@@ -2659,8 +2658,8 @@ function SpmPassportRewardsRetention() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
         {[
-          ["2", "Places verified"],
-          ["33%", "Trail progress"],
+          ["Live", "When verified"],
+          ["SPM", "Record-based"],
           ["Next", "Unlock pending"],
         ].map(([value, label]) => (
           <div key={label} style={{ borderRadius: 16, background: "rgba(255,255,255,0.86)", padding: "10px 8px", border: "1px solid rgba(197,138,0,0.12)" }}>
