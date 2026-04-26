@@ -289,29 +289,7 @@ function StatusTile(props: { icon: string; label: string; value: string }) {
   );
 }
 
-function SocialIcon(props: { provider: "google" | "apple" }) {
-  if (props.provider === "google") {
-    return (
-      <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
-        <path fill="#4285F4" d="M21.6 12.23c0-.74-.07-1.45-.19-2.13H12v4.03h5.38a4.6 4.6 0 0 1-1.99 3.02v2.51h3.23c1.89-1.74 2.98-4.3 2.98-7.43Z" />
-        <path fill="#34A853" d="M12 22c2.7 0 4.96-.89 6.62-2.34l-3.23-2.51c-.9.6-2.04.95-3.39.95-2.6 0-4.8-1.75-5.58-4.11H3.08v2.59A10 10 0 0 0 12 22Z" />
-        <path fill="#FBBC05" d="M6.42 13.99A6.01 6.01 0 0 1 6.1 12c0-.69.12-1.36.32-1.99V7.42H3.08A10 10 0 0 0 2 12c0 1.61.39 3.14 1.08 4.58l3.34-2.59Z" />
-        <path fill="#EA4335" d="M12 5.9c1.47 0 2.78.5 3.82 1.49l2.87-2.87C16.95 2.9 14.7 2 12 2a10 10 0 0 0-8.92 5.42l3.34 2.59C7.2 7.65 9.4 5.9 12 5.9Z" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
-      <path
-        fill="currentColor"
-        d="M16.37 1.64c.04 1.01-.36 2.01-1.08 2.78-.72.77-1.9 1.37-2.91 1.29-.12-.98.37-2.02 1.04-2.75.74-.81 2.03-1.39 2.95-1.32ZM20.5 17.23c-.55 1.25-.82 1.8-1.53 2.91-.99 1.51-2.38 3.39-4.1 3.41-1.53.02-1.92-.99-4-.98-2.07.01-2.5 1-4.03.98-1.72-.02-3.03-1.71-4.02-3.22-2.75-4.21-3.04-9.15-1.34-11.77 1.21-1.86 3.11-2.95 4.9-2.95 1.82 0 2.96 1 4.46 1 1.46 0 2.35-1 4.46-1 1.59 0 3.27.87 4.48 2.36-3.94 2.16-3.3 7.79.76 9.26Z"
-      />
-    </svg>
-  );
-}
-
-function SocialAccessLink(props: { href: string; provider: "google" | "apple"; label: string; note: string }) {
+function SocialAccessLink(props: { href: string; icon: string; label: string; note: string }) {
   return (
     <a
       href={props.href}
@@ -325,7 +303,7 @@ function SocialAccessLink(props: { href: string; provider: "google" | "apple"; l
         justifyContent: "space-between",
         gap: 10,
         textDecoration: "none",
-        background: "rgba(255,255,255,0.94)",
+        background: "rgba(255,255,255,0.92)",
         color: "#10234a",
         border: "1px solid rgba(14,116,144,0.15)",
         boxShadow: "0 8px 18px rgba(15,23,42,0.06)",
@@ -338,17 +316,18 @@ function SocialAccessLink(props: { href: string; provider: "google" | "apple"; l
             width: 30,
             height: 30,
             borderRadius: 12,
-            background: props.provider === "google" ? "#ffffff" : "#111827",
-            color: props.provider === "google" ? "#10234a" : "#ffffff",
-            border: props.provider === "google" ? "1px solid rgba(15,23,42,0.10)" : "1px solid rgba(15,23,42,0.18)",
+            background: props.icon === "G" ? "rgba(255,255,255,0.95)" : "rgba(15,23,42,0.92)",
+            color: props.icon === "G" ? "#10234a" : "#ffffff",
+            border: props.icon === "G" ? "1px solid rgba(15,23,42,0.10)" : "1px solid rgba(15,23,42,0.18)",
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
+            fontSize: 15,
+            fontWeight: 950,
             flex: "0 0 auto",
-            boxShadow: "0 5px 12px rgba(15,23,42,0.08)",
           }}
         >
-          <SocialIcon provider={props.provider} />
+          {props.icon}
         </span>
         <span style={{ minWidth: 0 }}>
           <span style={{ display: "block", fontSize: 12.6, lineHeight: 1.1, fontWeight: 950 }}>
@@ -439,7 +418,7 @@ function SecondaryLink(props: { href: string; children: string; icon?: string })
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ next?: string; mode?: string; provider?: string; status?: string }>;
+  searchParams?: Promise<{ next?: string; mode?: string }>;
 }) {
   const user = await getCurrentUser();
   const resolvedSearchParams = await searchParams;
@@ -725,13 +704,13 @@ export default async function LoginPage({
               >
                 <SocialAccessLink
                   href="/login?provider=google&status=coming-soon"
-                  provider="google"
+                  icon="G"
                   label="Continue with Google"
                   note="Easy access coming soon"
                 />
                 <SocialAccessLink
                   href="/login?provider=apple&status=coming-soon"
-                  provider="apple"
+                  icon=""
                   label="Continue with Apple"
                   note="Easy access coming soon"
                 />
@@ -783,10 +762,10 @@ export default async function LoginPage({
           style={{
             marginTop: 13,
             borderRadius: 24,
-            background: "linear-gradient(180deg, rgba(240,253,250,0.98), rgba(220,252,231,0.88))",
-            color: "#10234a",
-            border: "1px solid rgba(22,163,74,0.16)",
-            boxShadow: "0 16px 36px rgba(15,23,42,0.08)",
+            background: "linear-gradient(145deg, rgba(15,23,42,0.96), rgba(16,35,74,0.96))",
+            color: "#ffffff",
+            border: "1px solid rgba(255,255,255,0.12)",
+            boxShadow: "0 18px 42px rgba(15,23,42,0.20)",
             padding: 14,
           }}
         >
@@ -796,13 +775,13 @@ export default async function LoginPage({
               fontWeight: 950,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "#0f766e",
+              color: "#67e8f9",
             }}
           >
             Traveler start path
           </div>
 
-          <h2 style={{ margin: "5px 0 0", fontSize: 20, lineHeight: 1.1, fontWeight: 950, color: "#10234a" }}>
+          <h2 style={{ margin: "5px 0 0", fontSize: 20, lineHeight: 1.1, fontWeight: 950 }}>
             Simple start. Clear next steps.
           </h2>
 
@@ -820,8 +799,8 @@ export default async function LoginPage({
                   alignItems: "center",
                   gap: 10,
                   borderRadius: 18,
-                  background: "rgba(255,255,255,0.78)",
-                  border: "1px solid rgba(22,163,74,0.13)",
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.11)",
                   padding: "10px 11px",
                 }}
               >
@@ -834,8 +813,8 @@ export default async function LoginPage({
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    background: "rgba(22,163,74,0.12)",
-                    color: "#166534",
+                    background: "rgba(103,232,249,0.14)",
+                    color: "#67e8f9",
                     fontSize: 12,
                     fontWeight: 950,
                     flex: "0 0 auto",
@@ -843,7 +822,7 @@ export default async function LoginPage({
                 >
                   {number}
                 </span>
-                <span style={{ fontSize: 12.8, lineHeight: 1.35, fontWeight: 800, color: "rgba(15,23,42,0.70)" }}>
+                <span style={{ fontSize: 12.8, lineHeight: 1.35, fontWeight: 800, color: "rgba(255,255,255,0.76)" }}>
                   {label}
                 </span>
               </div>
