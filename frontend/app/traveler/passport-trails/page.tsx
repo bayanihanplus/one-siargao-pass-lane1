@@ -264,7 +264,7 @@ export default function PassportTrailsCatalogPage() {
                   <div style={{ fontSize: 14.4, fontWeight: 860, lineHeight: 1.03 }}>{tour.title}</div>
                   <div style={{ marginTop: 4, fontSize: 10.2, fontWeight: 690, color: "#53657d" }}>{tour.route}</div>
                   <div style={{ marginTop: 6, display: "inline-flex", borderRadius: 999, background: "linear-gradient(135deg, #e8fbff, #ffffff)", padding: "3px 7px", fontSize: 8.8, fontWeight: 830, color: "#067889" }}>
-                    Stamp-ready • Partner-operated
+                    Stamp rules • Partner-operated
                   </div>
                 </div>
 
@@ -392,7 +392,7 @@ export default function PassportTrailsCatalogPage() {
               color: "#355071",
             }}
           >
-            Pricing appears before checkout. Verified stamps unlock through governed records only.
+            Pricing must appear before confirmation. Verified stamps count through governed records only.
           </div>
         </section>
 
@@ -414,7 +414,7 @@ export default function PassportTrailsCatalogPage() {
             Build your route.
           </h2>
           <p style={{ margin: 0, fontSize: 11.6, lineHeight: 1.35, color: "#53657d", fontWeight: 680 }}>
-            Plan your route first. Partner support appears only when a real service is required.
+            Plan a curated route request. Operator and guide support appear only when real service fulfillment is required.
           </p>
 
           <a

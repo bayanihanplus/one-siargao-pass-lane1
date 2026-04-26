@@ -423,7 +423,7 @@ type SpmNextStopPreviewData = {
 function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | null }) {
   const nextStop = props.nextStop;
   const title = nextStop?.recommendedStopName ?? "Continue Passport Trail";
-  const reason = nextStop?.recommendationReason ?? "Choose a trail, visit verified stops, scan your OSP QR, and unlock Passport Stamps as you move.";
+  const reason = nextStop?.recommendationReason ?? "Choose a trail, visit verified stops, and use your OSP QR only when governed validation records are available. Passport Stamps count only after approved OSP/SPM records.";
   const eta = nextStop?.distanceOrEtaLabel ?? "Your next stop activates from verified QR / stamp progress.";
   const ctaRoute = nextStop?.ctaRoute ?? "/traveler/passport-map";
   return (
@@ -2042,7 +2042,7 @@ function SpmFeaturedPartnerTours() {
       label: "Siargao Partner Tour",
       title: "Corregidor + Tri-Island",
       subtitle: "Corregidor • Guyam • Daku",
-      badge: "Pricing before checkout",
+      badge: "Pricing before confirmation",
       action: "Preview",
       href: "/traveler/passport-trails",
       tone: "#0f9aa8",
@@ -2466,7 +2466,7 @@ function SpmCuratedPassportTours() {
           border: "1px solid rgba(191,231,238,0.62)",
         }}
       >
-        Pricing appears before checkout. Verified Passport stamps unlock only through governed OSP/SPM records.
+        Pricing must appear before checkout. Verified Passport stamps count only through governed OSP/SPM records.
       </div>
     </section>
   );
@@ -2519,7 +2519,7 @@ function SpmBuildYourOwnTrailSection() {
             Build Your Own Passport Trail
           </div>
           <div style={{ marginTop: 2, fontSize: 16, fontWeight: 840, lineHeight: 1.04, color: "#14264b" }}>
-            Plan your route
+            Plan a curated route request
           </div>
           <div style={{ marginTop: 4, fontSize: 10.6, fontWeight: 670, color: "#53657d", lineHeight: 1.14 }}>
             SPM-guided. Partner support only when needed.
@@ -2687,9 +2687,9 @@ function SpmPassportExperienceCards() {
     {
       icon: "🛶",
       label: "Siargao Partner Tour",
-      title: "Book a local tour",
+      title: "Explore a local tour",
       sub: "Partner-operated",
-      badge: "Pricing shown before booking",
+      badge: "Pricing required before booking",
       href: "/traveler/passport-trails/island-hopping",
       tone: "#13a8b7",
       cta: "↗ View Tours",
@@ -2699,7 +2699,7 @@ function SpmPassportExperienceCards() {
       label: "Passport Trails™ Curated Tour",
       title: "Follow an official trail",
       sub: "SPM-guided",
-      badge: "Stamps unlock when verified",
+      badge: "Stamps count when verified",
       href: "/traveler/passport-trails",
       tone: "#16a34a",
       cta: "⌁ Explore Trails",
@@ -2707,7 +2707,7 @@ function SpmPassportExperienceCards() {
     {
       icon: "🧩",
       label: "Build Your Own Passport Trail",
-      title: "Plan your route",
+      title: "Plan a curated route request",
       sub: "SPM-guided planning",
       badge: "Preview first",
       href: "/traveler/passport-trails/diy-trail-builder",

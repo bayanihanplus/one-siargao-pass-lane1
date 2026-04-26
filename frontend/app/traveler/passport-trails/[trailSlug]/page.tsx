@@ -28,7 +28,7 @@ const TRAILS: Record<string, TrailDetail> = {
     eyebrow: "PASSPORT TRAILS™",
     title: "Island Hopping Trail",
     subtitle:
-      "Follow official Island Hopping nodes through OSP/SPM verification. Stamps unlock only after verified QR / Passport records.",
+      "Follow official Island Hopping nodes through OSP/SPM verification. Stamps count only after verified QR / Passport records.",
     progressLabel: "1/5 Core Stops",
     statusLabel: "Live Trail",
     nextStop: "Daku Island",
@@ -38,7 +38,7 @@ const TRAILS: Record<string, TrailDetail> = {
       {
         name: "Guyam Island",
         shortCode: "GU",
-        note: "Official QR stamp node. Stamp unlocked from verified OSP/SPM validation.",
+        note: "Official QR stamp node. Stamp record verified from verified OSP/SPM validation.",
         status: "STAMP_UNLOCKED",
         source: "QR",
       },
@@ -419,7 +419,7 @@ const TRAILS: Record<string, TrailDetail> = {
 function statusTone(status: StopStatus) {
   if (status === "STAMP_UNLOCKED") {
     return {
-      label: "Stamp unlocked",
+      label: "Stamp record verified",
       color: "#138a58",
       background: "#d8fbef",
       border: "#1fa45b",
@@ -1145,7 +1145,7 @@ export default function PassportTrailDetailPage({
                 color: "#53657d",
               }}
             >
-              Open camera to verify this trail stop. Stamps unlock only after governed QR validation.
+              Use governed QR validation when available. Stamps count only after approved OSP/SPM records.
             </div>
           </div>
 
@@ -1189,7 +1189,7 @@ export default function PassportTrailDetailPage({
                 letterSpacing: "-0.035em",
               }}
             >
-              Use your OSP QR to unlock Passport Stamps.
+              Use your OSP QR for Passport Stamp validation.
             </h2>
             <p
               style={{

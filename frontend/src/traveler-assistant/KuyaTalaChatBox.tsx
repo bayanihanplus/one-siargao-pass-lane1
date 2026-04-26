@@ -109,7 +109,7 @@ function getActionHref(action: string) {
   }
 
   if (value.includes("payment")) {
-    return "/traveler/payments/demo-payment-001";
+    return "/traveler/trips";
   }
 
   if (value.includes("passport map") || value.includes("verified stop")) {
