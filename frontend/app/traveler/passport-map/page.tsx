@@ -2046,7 +2046,7 @@ function SpmJourneyHubEngagement() {
             lineHeight: 1.12,
           }}
         >
-          Not sure what to do next?
+          Need help choosing?
         </div>
         <p
           style={{
@@ -2057,16 +2057,16 @@ function SpmJourneyHubEngagement() {
             color: "#607089",
           }}
         >
-          Ask the Passport Assistant about trails, stamps, QR verification, DIY routes, and events.
+          Ask the Passport Assistant which experience fits your trip, how stamps work, and what to do next.
         </p>
 
         <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 7 }}>
           {[
-            "Help me choose a trail",
+            "Help me choose",
+            "Partner Tour or Passport Trail?",
+            "How do stamps work?",
+            "Plan my route",
             "What can I unlock next?",
-            "How do Passport Stamps work?",
-            "Plan a DIY trail",
-            "What events fit my journey?",
           ].map((prompt) => (
             <a
               key={prompt}
