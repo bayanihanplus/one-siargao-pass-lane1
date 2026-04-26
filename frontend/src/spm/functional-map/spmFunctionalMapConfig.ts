@@ -198,6 +198,76 @@ export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = 
     ],
   },
 
+  "north-siargao": {
+    slug: "north-siargao",
+    familyLabel: "North Siargao",
+    heading: "North Siargao Trail map journey",
+    subheading:
+      "Pacifico, Alegria Beach, and Taktak Falls are approved North Siargao nodes. Burgos and Coconut Road remain pending-review corridor nodes.",
+    nextUnlockLabel: "Alegria Beach",
+    nextUnlockDescription:
+      "Pacifico is the approved north anchor. Alegria Beach and Taktak Falls are approved QR nodes; Burgos and Coconut Road stay locked until final local validation is completed.",
+    imageSrc: "/spm/trails/north-siargao-functional-map.png",
+    nodes: [
+      {
+        key: "PACIFICO",
+        label: "Pacifico",
+        shortLabel: "PF",
+        xPercent: 72,
+        yPercent: 23,
+        labelPosition: "left",
+        state: "verified",
+        priority: "primary",
+      },
+      {
+        key: "ALEGRIA_BEACH",
+        label: "Alegria Beach",
+        shortLabel: "AL",
+        xPercent: 58,
+        yPercent: 32,
+        labelPosition: "bottom",
+        state: "next",
+        priority: "primary",
+      },
+      {
+        key: "TAKTAK_FALLS",
+        label: "Taktak Falls",
+        shortLabel: "TF",
+        xPercent: 30,
+        yPercent: 66,
+        labelPosition: "right",
+        state: "qr_ready",
+        priority: "primary",
+      },
+      {
+        key: "BURGOS",
+        label: "Burgos",
+        shortLabel: "BG",
+        xPercent: 49,
+        yPercent: 45,
+        labelPosition: "bottom",
+        state: "locked",
+        priority: "secondary",
+      },
+      {
+        key: "COCONUT_ROAD",
+        label: "Coconut Road",
+        shortLabel: "CR",
+        xPercent: 44,
+        yPercent: 78,
+        labelPosition: "top",
+        state: "locked",
+        priority: "secondary",
+      },
+    ],
+    segments: [
+      { from: "PACIFICO", to: "ALEGRIA_BEACH", style: "active" },
+      { from: "ALEGRIA_BEACH", to: "TAKTAK_FALLS", style: "upcoming" },
+      { from: "TAKTAK_FALLS", to: "BURGOS", style: "locked" },
+      { from: "BURGOS", to: "COCONUT_ROAD", style: "locked" },
+    ],
+  },
+
 };
 
 export function getFunctionalTrailMapBySlug(trailSlug: string) {
