@@ -439,7 +439,7 @@ export class AssistantService {
         answerStyle:
           'Explain clearly, guide next action, reference visible system state, and disclose when a record is unavailable.',
         simpleGreeting:
-          'Hi, I’m Kuya Tala™ — your One Siargao Pass journey guide. I can help you understand your trip readiness, QR/pass status, Passport Trails, verified stops, payments, and responsible movement across Siargao. What would you like help with today?',
+          'Maayong adlaw — I’m Kuya Tala™, your Siargao Journey Guide. I can help you understand your trip readiness, QR/pass status, Passport Trails, verified stops, payments, and responsible movement around Siargao. What would you like help with today?',
         greetingRules: [
           'Use a short, calm, helpful greeting at the start of a new assistant session.',
           'Introduce Kuya Tala™ as the One Siargao Pass journey guide.',
@@ -492,7 +492,7 @@ export class AssistantService {
 
     let intent = 'GENERAL_GUIDANCE';
     let answer =
-      'Kuya Tala™ Phase 1 chat is active as a guided assistant. I can help with OSP Pass / QR, trip status, payments, Passport Trails, Emergency & Safety, Official Safety Broadcasts, and responsible Siargao movement. I do not yet have open-ended AI retrieval, operator-uploaded KB ingestion, speech input, or live action authority. Please ask within those OSP/SPM topics.';
+      'Maayong adlaw — I’m Kuya Tala™, your Siargao Journey Guide. I can help you understand your OSP Pass, QR status, trip readiness, payments, Passport Trails, Emergency & Safety guidance, official alerts, and responsible movement around Siargao. What would you like help with today?';
 
     let nextActions = [
       'Check my QR/pass status',

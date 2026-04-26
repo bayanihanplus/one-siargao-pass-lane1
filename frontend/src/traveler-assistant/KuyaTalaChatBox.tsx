@@ -21,7 +21,7 @@ const TOPIC_CONTEXT: Record<KuyaTalaTopic, { label: string; intro: string; place
   general: {
     label: "General OSP/SPM guidance",
     intro:
-      "Hi, I’m Kuya Tala™ — your One Siargao Pass journey guide. Phase 1 chat is active. I can guide you using approved OSP/SPM rules and visible trip context, but I cannot create bookings, approve clearance, issue passes, mark payments, unlock stamps, send broadcasts, or dispatch emergency help.",
+      "Maayong adlaw — I’m Kuya Tala™, your Siargao Journey Guide. I can help you understand your OSP Pass, QR status, trip readiness, payments, Passport Trails, Emergency & Safety guidance, official alerts, and responsible movement around Siargao. What would you like help with today?",
     placeholder: "Ask Kuya Tala™ about your trip, QR/pass, Passport Trails, safety, or alerts…",
   },
   map: {

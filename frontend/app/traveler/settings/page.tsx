@@ -563,7 +563,7 @@ function KuyaTalaAssistantPanel(props: {
   const spine = assistantDataSafe?.knowledgeSpine || { ok: false, error: "Knowledge spine not loaded yet." };
   const greeting =
     spine?.responsePolicy?.simpleGreeting ||
-    "Hi, I’m Kuya Tala™ — your One Siargao Pass journey guide. I can help you understand your trip readiness, QR/pass status, Passport Trails, verified stops, payments, and responsible movement across Siargao. What would you like help with today?";
+    "Maayong adlaw — I’m Kuya Tala™, your Siargao Journey Guide. I can help you understand your trip readiness, QR/pass status, Passport Trails, verified stops, payments, and responsible movement around Siargao. What would you like help with today?";
 
   const tripState = context?.tripLifecycle?.returnContinuityState || "Not confirmed";
   const latestTrip = context?.latestTrip;
