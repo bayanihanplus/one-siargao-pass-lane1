@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SpmFunctionalJourneyMap } from "../../../../src/spm/functional-map/SpmFunctionalJourneyMap";
 import { notFound } from "next/navigation";
 
 type StopStatus = "STAMP_UNLOCKED" | "READY_TO_VERIFY" | "LOCKED";
@@ -27,32 +28,53 @@ const TRAILS: Record<string, TrailDetail> = {
     eyebrow: "PASSPORT TRAILS™",
     title: "Island Hopping Trail",
     subtitle:
-      "Follow Guyam, Daku, and Naked Island through OSP/SPM verification. Stamps unlock only after verified QR / Passport records.",
-    progressLabel: "33% Complete",
+      "Follow official Island Hopping nodes through OSP/SPM verification. Stamps unlock only after verified QR / Passport records.",
+    progressLabel: "1/5 Core Stops",
     statusLabel: "Live Trail",
     nextStop: "Daku Island",
     nextStopReason:
-      "Guyam is already stamped. Daku is the next ready-to-verify stop in this Island Hopping journey.",
+      "Guyam is already stamped. Daku is the next ready-to-verify official Island Hopping node. Corregidor, Mam-on, and Secret Island stay locked until governed package or progress rules apply.",
     stops: [
       {
         name: "Guyam Island",
         shortCode: "GU",
-        note: "Stamp unlocked from verified OSP/SPM validation.",
+        note: "Official QR stamp node. Stamp unlocked from verified OSP/SPM validation.",
         status: "STAMP_UNLOCKED",
         source: "QR",
       },
       {
         name: "Daku Island",
         shortCode: "DA",
-        note: "Ready for QR-based stop verification.",
+        note: "Official QR stamp node. Ready for QR-based stop verification.",
         status: "READY_TO_VERIFY",
         source: "Pending",
       },
       {
         name: "Naked Island",
         shortCode: "NA",
-        note: "Ready for QR-based stop verification.",
+        note: "Official QR stamp node. Ready for QR-based stop verification.",
         status: "READY_TO_VERIFY",
+        source: "Pending",
+      },
+      {
+        name: "Corregidor Island",
+        shortCode: "CO",
+        note: "Official QR stamp node. Locked until selected route/package progress allows it.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Mam-on Island",
+        shortCode: "MO",
+        note: "Official QR stamp node. Locked until selected route/package progress allows it.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Secret Island",
+        shortCode: "SI",
+        note: "Conditional package-only node. Hidden or locked until governed package rules apply.",
+        status: "LOCKED",
         source: "Pending",
       },
     ],
@@ -119,256 +141,6 @@ function SectionEyebrow(props: { children: React.ReactNode }) {
   );
 }
 
-
-function TrailFunctionalJourneyMap(props: { trail: TrailDetail }) {
-  const completedCount = props.trail.stops.filter((stop) => stop.status === "STAMP_UNLOCKED").length;
-  const readyCount = props.trail.stops.filter((stop) => stop.status === "READY_TO_VERIFY").length;
-  const lockedCount = props.trail.stops.filter((stop) => stop.status === "LOCKED").length;
-
-  const nodes = props.trail.stops.map((stop) => {
-    if (stop.status === "STAMP_UNLOCKED") {
-      return {
-        label: stop.shortCode,
-        title: stop.name,
-        icon: "✓",
-        tone: "#16a34a",
-        softBg: "rgba(220,252,231,0.94)",
-        border: "rgba(34,184,90,0.34)",
-      };
-    }
-
-    if (stop.status === "READY_TO_VERIFY") {
-      return {
-        label: stop.shortCode,
-        title: stop.name,
-        icon: "↗",
-        tone: "#f59e0b",
-        softBg: "rgba(255,248,220,0.96)",
-        border: "rgba(245,158,11,0.36)",
-      };
-    }
-
-    return {
-      label: stop.shortCode,
-      title: stop.name,
-      icon: "▣",
-      tone: "#64748b",
-      softBg: "rgba(248,250,252,0.98)",
-      border: "rgba(148,163,184,0.34)",
-    };
-  });
-
-  return (
-    <div style={{ marginTop: 16 }}>
-      <ShellCard ariaLabel="Trail functional journey map">
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-          <div style={{ minWidth: 0 }}>
-            <SectionEyebrow>Functional Journey Map</SectionEyebrow>
-            <h2
-              style={{
-                margin: "6px 0 0",
-                fontSize: 20,
-                lineHeight: 1.06,
-                fontWeight: 760,
-                letterSpacing: "-0.04em",
-                color: "#14264b",
-              }}
-            >
-              {props.trail.title} route state
-            </h2>
-            <p
-              style={{
-                margin: "5px 0 0",
-                fontSize: 11.4,
-                lineHeight: 1.28,
-                fontWeight: 640,
-                color: "#53657d",
-              }}
-            >
-              Verified stops, QR-ready stops, and locked progress stay record-based.
-            </p>
-          </div>
-
-          <Link
-            href="/traveler/pass"
-            aria-label="Open OSP Pass QR for this trail"
-            style={{
-              flexShrink: 0,
-              minHeight: 40,
-              minWidth: 74,
-              borderRadius: 15,
-              background: "linear-gradient(135deg, #14b8c6, #078da0)",
-              color: "#ffffff",
-              display: "grid",
-              placeItems: "center",
-              textDecoration: "none",
-              fontSize: 10,
-              fontWeight: 820,
-              boxShadow: "0 10px 22px rgba(7,141,160,0.20)",
-            }}
-          >
-            Show QR
-          </Link>
-        </div>
-
-        <div
-          aria-label="Trail route progress visualization"
-          style={{
-            marginTop: 12,
-            borderRadius: 22,
-            border: "1px solid rgba(191,231,238,0.82)",
-            background: "linear-gradient(135deg, #e8fbff 0%, #ffffff 54%, #f8fafc 100%)",
-            padding: "14px 12px",
-            position: "relative",
-            overflow: "hidden",
-            minHeight: 136,
-          }}
-        >
-          <div
-            aria-hidden="true"
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "radial-gradient(circle at 18% 26%, rgba(20,184,198,0.14), transparent 26%), radial-gradient(circle at 72% 46%, rgba(245,158,11,0.13), transparent 28%)",
-            }}
-          />
-
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 320 112"
-            width="100%"
-            height="112"
-            preserveAspectRatio="none"
-            style={{ position: "relative", display: "block" }}
-          >
-            <path
-              d="M34 80 C92 38, 142 74, 184 42 C224 14, 263 28, 294 46"
-              fill="none"
-              stroke="rgba(148,163,184,0.38)"
-              strokeWidth="7"
-              strokeLinecap="round"
-              strokeDasharray="8 10"
-            />
-            <path
-              d="M34 80 C92 38, 142 74, 184 42"
-              fill="none"
-              stroke="#16a34a"
-              strokeWidth="7"
-              strokeLinecap="round"
-            />
-            <path
-              d="M184 42 C224 14, 263 28, 294 46"
-              fill="none"
-              stroke="#f59e0b"
-              strokeWidth="7"
-              strokeLinecap="round"
-              strokeDasharray="4 8"
-            />
-          </svg>
-
-          {nodes.map((node, index) => {
-            const positions = [
-              { left: "8%", bottom: 31 },
-              { left: "50%", top: 39 },
-              { right: "6%", top: 47 },
-            ];
-            const position = positions[index] ?? positions[positions.length - 1];
-
-            return (
-              <div
-                key={node.title}
-                title={node.title}
-                style={{
-                  position: "absolute",
-                  ...position,
-                  width: index === 1 ? 38 : 34,
-                  height: index === 1 ? 38 : 34,
-                  borderRadius: index === 1 ? 16 : 14,
-                  background: node.tone,
-                  color: "#ffffff",
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: index === 1 ? 18 : 16,
-                  fontWeight: 950,
-                  boxShadow: `0 12px 24px ${node.tone}33`,
-                }}
-              >
-                {node.icon}
-              </div>
-            );
-          })}
-
-          <div
-            style={{
-              position: "absolute",
-              left: 12,
-              top: 12,
-              borderRadius: 999,
-              background: "linear-gradient(135deg, #ffffff, #f4fdff)",
-              border: "1px solid rgba(191,231,238,0.76)",
-              padding: "5px 8px",
-              fontSize: 8.5,
-              fontWeight: 900,
-              color: "#067889",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-            }}
-          >
-            Trail detail / DB-ready
-          </div>
-        </div>
-
-        <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 7 }}>
-          {[
-            { label: "Verified", value: String(completedCount), tone: "#16a34a", bg: "rgba(220,252,231,0.94)" },
-            { label: "QR-ready", value: String(readyCount), tone: "#0891b2", bg: "rgba(232,251,255,0.96)" },
-            { label: "Locked", value: String(lockedCount), tone: "#64748b", bg: "rgba(248,250,252,0.98)" },
-          ].map((item) => (
-            <div
-              key={item.label}
-              style={{
-                borderRadius: 16,
-                border: "1px solid rgba(191,231,238,0.76)",
-                background: item.bg,
-                minHeight: 54,
-                display: "grid",
-                placeItems: "center",
-                textAlign: "center",
-                padding: "7px 4px",
-              }}
-            >
-              <div style={{ color: item.tone, fontSize: 15, lineHeight: 1, fontWeight: 950 }}>{item.value}</div>
-              <div style={{ marginTop: 5, color: "#14264b", fontSize: 8.6, lineHeight: 1.05, fontWeight: 820 }}>
-                {item.label}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div
-          style={{
-            marginTop: 10,
-            borderRadius: 18,
-            border: "1px solid rgba(245,158,11,0.28)",
-            background: "linear-gradient(135deg, #ffffff, #fff8dc)",
-            padding: "10px 11px",
-          }}
-        >
-          <div style={{ fontSize: 8.6, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase", color: "#b45309" }}>
-            Next Unlock
-          </div>
-          <div style={{ marginTop: 4, fontSize: 14.2, lineHeight: 1.08, fontWeight: 820, color: "#14264b" }}>
-            {props.trail.nextStop}
-          </div>
-          <div style={{ marginTop: 4, fontSize: 10.8, lineHeight: 1.3, fontWeight: 620, color: "#53657d" }}>
-            {props.trail.nextStopReason}
-          </div>
-        </div>
-      </ShellCard>
-    </div>
-  );
-}
 
 export default function PassportTrailDetailPage({
   params,
@@ -503,7 +275,7 @@ export default function PassportTrailDetailPage({
           </div>
         </section>
 
-        <TrailFunctionalJourneyMap trail={trail} />
+        <SpmFunctionalJourneyMap trailSlug={params.trailSlug} />
 
         <div style={{ marginTop: 16 }}>
           <ShellCard ariaLabel="Trail verification actions">
@@ -824,7 +596,7 @@ export default function PassportTrailDetailPage({
               {[
                 "How do I verify this stop?",
                 "What stamp can I unlock?",
-                "What should I do at Daku?",
+                "Which Island Hopping node is next?",
                 "Why is this not yet stamped?",
               ].map((prompt) => (
                 <Link
