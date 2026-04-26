@@ -342,6 +342,54 @@ export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = 
       { from: "COCONUT_FOREST_SCENIC_CORRIDOR", to: "SUGBA_LAGOON_ACCESS_NODE", style: "locked" },
     ],
   },
+
+  "culture-community": {
+    slug: "culture-community",
+    familyLabel: "Culture & Community",
+    heading: "Culture & Community Trail map journey",
+    subheading:
+      "Culture & Community is consent-first. Boodle Fight Experience remains package-only, pending review, conditional, and not stamp-eligible.",
+    nextUnlockLabel: "Boodle Fight Experience",
+    nextUnlockDescription:
+      "Boodle Fight Experience requires booking and operator participation. Partner Approval Required and Community Consent Review remain governance-locked before any public completion behavior is exposed.",
+    imageSrc: "/spm/trails/culture-community-functional-map.png",
+    nodes: [
+      {
+        key: "BOODLE_FIGHT_EXPERIENCE",
+        label: "Boodle Fight Experience",
+        shortLabel: "BF",
+        xPercent: 36,
+        yPercent: 54,
+        labelPosition: "right",
+        state: "conditional",
+        priority: "primary",
+      },
+      {
+        key: "PARTNER_APPROVAL_REQUIRED",
+        label: "Partner Approval Required",
+        shortLabel: "PA",
+        xPercent: 58,
+        yPercent: 40,
+        labelPosition: "bottom",
+        state: "locked",
+        priority: "secondary",
+      },
+      {
+        key: "COMMUNITY_CONSENT_REVIEW",
+        label: "Community Consent Review",
+        shortLabel: "CR",
+        xPercent: 68,
+        yPercent: 68,
+        labelPosition: "left",
+        state: "locked",
+        priority: "secondary",
+      },
+    ],
+    segments: [
+      { from: "BOODLE_FIGHT_EXPERIENCE", to: "PARTNER_APPROVAL_REQUIRED", style: "locked" },
+      { from: "BOODLE_FIGHT_EXPERIENCE", to: "COMMUNITY_CONSENT_REVIEW", style: "locked" },
+    ],
+  },
 };
 
 export function getFunctionalTrailMapBySlug(slug: string) {

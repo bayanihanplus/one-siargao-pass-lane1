@@ -222,17 +222,31 @@ const TRAILS: Record<string, TrailDetail> = {
     eyebrow: "PASSPORT TRAILS™",
     title: "Culture & Community Trail",
     subtitle:
-      "Culture and community stops are not yet activated as completion nodes. This page is reserved for future governed community validation.",
-    progressLabel: "Research pending",
-    statusLabel: "Future Trail",
-    nextStop: "Community node review",
+      "Consent-first cultural participation surface. Public completion is not open until partner approval and community consent governance are complete.",
+    progressLabel: "Governance locked",
+    statusLabel: "Consent-first Trail",
+    nextStop: "Boodle Fight Experience",
     nextStopReason:
-      "Community-related stops require local validation, partner consent, and governance before appearing as approved Passport Stamp nodes.",
+      "Boodle Fight Experience is package-only, pending review, conditional, booking-led, operator-participation based, and not stamp-eligible. No public culture/community completion route is implied.",
     stops: [
       {
-        name: "Community Node Review",
+        name: "Boodle Fight Experience",
+        shortCode: "BF",
+        note: "Conditional package-only participation node. Requires booking and operator participation. Not stamp-eligible.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Partner Approval Required",
+        shortCode: "PA",
+        note: "Governance lock. Approved operator / partner participation is required before public behavior is exposed.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Community Consent Review",
         shortCode: "CR",
-        note: "Placeholder only. No approved completion claim is made.",
+        note: "Governance lock. Community consent and review are required before completion logic is exposed.",
         status: "LOCKED",
         source: "Pending",
       },
