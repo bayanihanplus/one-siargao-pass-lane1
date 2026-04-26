@@ -8,7 +8,7 @@ import { getApiBaseUrl } from "../../../src/lib/server-auth";
  * It does not issue OSP Pass.
  * It does not issue QR.
  * It does not implement Google/Apple OAuth.
- * Successful registration redirects to /login?mode=returning&registered=1&next=/traveler/trips/new.
+ * Successful registration redirects to /login?mode=returning&registered=1.
  */
 
 async function registerTravelerAction(formData: FormData) {
@@ -63,7 +63,7 @@ async function registerTravelerAction(formData: FormData) {
     redirect(`/traveler/register?error=register-failed&message=${message}`);
   }
 
-  redirect("/login?mode=returning&registered=1&next=/traveler/trips/new");
+  redirect("/login?mode=returning&registered=1");
 }
 
 function getErrorMessage(error?: string, message?: string) {
