@@ -1,5 +1,6 @@
 import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 import { getPreferredTravelerTrip } from "../../../src/lib/travelerTripSelection";
+import KuyaTalaEntryButton from "../../../src/traveler-assistant/KuyaTalaEntryButton";
 
 type TravelerDictionary = Record<string, string>;
 
@@ -378,6 +379,7 @@ export default async function TravelerTripsPage() {
         boxSizing: "border-box",
       }}
     >
+      <KuyaTalaEntryButton topic="trips" title="Ask Kuya Tala™ about your trips" note="Get guided help understanding trip readiness, records, pass status, and next traveler actions." />
       <div style={{ marginBottom: 16 }}>
         <a
           href="/"

@@ -178,7 +178,7 @@ export default async function TravelerPassportMapPage() {
               </a>
 
               <a
-                href="/traveler/settings?panel=assistant"
+                href="/traveler/settings?panel=assistant&topic=map"
                 aria-label="Open OSP trip assistant"
                 title="Trip Assistant"
                 style={{

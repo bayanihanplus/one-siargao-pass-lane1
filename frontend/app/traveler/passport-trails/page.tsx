@@ -1,4 +1,5 @@
 import { SpmThreeJourneyScanQrPanel } from "../../../src/spm/scan/SpmScanQrCta";
+import KuyaTalaEntryButton from "../../../src/traveler-assistant/KuyaTalaEntryButton";
 const partnerTours = [
   {
     title: "Island Hopping Trail",
@@ -104,6 +105,7 @@ export default function PassportTrailsCatalogPage() {
         boxSizing: "border-box",
       }}
     >
+      <KuyaTalaEntryButton topic="trail" title="Ask Kuya Tala™ about Passport Trails" note="Get guided help choosing trails, understanding QR/stamp logic, and planning your next Siargao move." />
       <div style={{ width: "100%", maxWidth: 430, margin: "0 auto" }}>
         <header
           style={{

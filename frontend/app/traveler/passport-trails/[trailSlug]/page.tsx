@@ -1251,7 +1251,7 @@ export default function PassportTrailDetailPage({
               </Link>
 
               <Link
-                href="/traveler/settings?panel=assistant"
+                href="/traveler/settings?panel=assistant&topic=trail"
                 aria-label="Ask Passport Assistant about this trail"
                 style={{
                   textDecoration: "none",
@@ -1507,7 +1507,7 @@ export default function PassportTrailDetailPage({
               ].map((prompt) => (
                 <Link
                   key={prompt}
-                  href="/traveler/settings?panel=assistant"
+                  href="/traveler/settings?panel=assistant&topic=trail"
                   style={{
                     textDecoration: "none",
                     border: "1px solid rgba(11,151,166,0.18)",

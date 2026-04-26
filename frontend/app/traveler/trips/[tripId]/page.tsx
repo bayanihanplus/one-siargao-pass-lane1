@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../../src/lib/server-auth";
+import KuyaTalaEntryButton from "../../../../src/traveler-assistant/KuyaTalaEntryButton";
 
 type TravelerDictionary = Record<string, string>;
 
@@ -701,6 +702,7 @@ export default async function TravelerTripDetailPage({ params }: TripPageProps) 
         boxSizing: "border-box",
       }}
     >
+      <KuyaTalaEntryButton topic="trip" title="Ask Kuya Tala™ about this trip" note="Get guided help reading this trip, status, QR/pass context, payments, and readiness notes." />
       <div style={{ marginBottom: 16 }}>
         <AppLink href="/traveler/trips" label={backToTripsLabel} icon={<Icon kind="trips" />} />
       </div>

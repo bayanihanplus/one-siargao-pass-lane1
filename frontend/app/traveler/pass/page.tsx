@@ -1,6 +1,7 @@
 import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 import { getPreferredTravelerTrip } from "../../../src/lib/travelerTripSelection";
 import { QRCodeSVG } from "qrcode.react";
+import KuyaTalaEntryButton from "../../../src/traveler-assistant/KuyaTalaEntryButton";
 
 type TravelerDictionary = Record<string, string>;
 
@@ -389,6 +390,7 @@ export default async function TravelerPassPage() {
         boxSizing: "border-box",
       }}
     >
+      <KuyaTalaEntryButton topic="pass" title="Ask Kuya Tala™ about your OSP Pass" note="Get guided help understanding pass readiness, QR status, validity, and what the system can or cannot confirm." />
       <div
         style={{
           marginBottom: 18,

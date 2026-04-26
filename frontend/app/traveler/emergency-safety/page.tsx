@@ -234,7 +234,7 @@ export default async function TravelerEmergencySafetyPage() {
           </a>
 
           <a
-            href="/traveler/settings?panel=assistant"
+            href="/traveler/settings?panel=assistant&topic=emergency"
             style={{
               minHeight: 42,
               borderRadius: 18,
@@ -324,7 +324,7 @@ export default async function TravelerEmergencySafetyPage() {
             {safeText(emergencyKb[0], "For immediate danger, contact local emergency services or nearby authorities directly.")}
           </p>
           <div style={{ marginTop: 12, display: "grid", gap: 8 }}>
-            <ActionButton href="/traveler/settings?panel=assistant" label="Ask Kuya Tala™" note="Get safety guidance and find your OSP records." primary />
+            <ActionButton href="/traveler/settings?panel=assistant&topic=emergency" label="Ask Kuya Tala™" note="Get safety guidance and find your OSP records." primary />
           </div>
         </ShellCard>
 

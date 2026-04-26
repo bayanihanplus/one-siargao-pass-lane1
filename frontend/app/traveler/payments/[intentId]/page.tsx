@@ -1,4 +1,5 @@
 import { getApiBaseUrl, requireAccessToken } from "../../../../src/lib/server-auth";
+import KuyaTalaEntryButton from "../../../../src/traveler-assistant/KuyaTalaEntryButton";
 
 type TravelerDictionary = Record<string, string>;
 
@@ -481,6 +482,7 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
         boxSizing: "border-box",
       }}
     >
+      <KuyaTalaEntryButton topic="payment" title="Ask Kuya Tala™ about this payment" note="Get guided help understanding payment state, display currency estimates, and next safe steps." />
       <div style={{ marginBottom: 16 }}>
         <AppLink href="/traveler/trips" label={backToTripsLabel} icon={<Icon kind="trips" />} />
       </div>
