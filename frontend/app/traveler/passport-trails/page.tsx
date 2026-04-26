@@ -8,14 +8,86 @@ const partnerTours = [
 ];
 
 const officialTrails = [
-  ["Island Hopping Trail", "Active", "/traveler/passport-trails/tri-island-joiner"],
-  ["Surf Explorer Trail", "Preview", "/traveler/passport-trails"],
-  ["North Siargao Trail", "Preview", "/traveler/passport-trails"],
-  ["Inland Discovery Trail", "Preview", "/traveler/passport-trails"],
-  ["Culture & Community Trail", "Preview", "/traveler/passport-trails"],
-  ["Sunset & Scenic Stops Trail", "Preview", "/traveler/passport-trails"],
-  ["Adventure Trail", "Preview", "/traveler/passport-trails"],
-  ["Return Traveler Continuity Trail", "Preview", "/traveler/passport-trails"],
+  {
+    title: "Island Hopping Trail",
+    status: "Active",
+    href: "/traveler/passport-trails/tri-island-joiner",
+    tone: "#16a34a",
+    buttonTone: "#16a34a",
+    softBg: "rgba(227,255,243,0.92)",
+    softBorder: "#a9ebc9",
+    icon: "🏝️",
+  },
+  {
+    title: "Surf Explorer Trail",
+    status: "Preview",
+    href: "/traveler/passport-trails",
+    tone: "#0891b2",
+    buttonTone: "#0891b2",
+    softBg: "rgba(232,251,255,0.96)",
+    softBorder: "#aee7f2",
+    icon: "🌊",
+  },
+  {
+    title: "North Siargao Trail",
+    status: "Preview",
+    href: "/traveler/passport-trails",
+    tone: "#2563eb",
+    buttonTone: "#2563eb",
+    softBg: "rgba(239,246,255,0.96)",
+    softBorder: "#bfd7ff",
+    icon: "🧭",
+  },
+  {
+    title: "Inland Discovery Trail",
+    status: "Preview",
+    href: "/traveler/passport-trails",
+    tone: "#65a30d",
+    buttonTone: "#65a30d",
+    softBg: "rgba(244,252,232,0.96)",
+    softBorder: "#d4edaa",
+    icon: "🌿",
+  },
+  {
+    title: "Culture & Community Trail",
+    status: "Preview",
+    href: "/traveler/passport-trails",
+    tone: "#d97706",
+    buttonTone: "#d97706",
+    softBg: "rgba(255,247,230,0.96)",
+    softBorder: "#f3d49b",
+    icon: "🧺",
+  },
+  {
+    title: "Sunset & Scenic Stops Trail",
+    status: "Preview",
+    href: "/traveler/passport-trails",
+    tone: "#f59e0b",
+    buttonTone: "#f59e0b",
+    softBg: "rgba(255,248,220,0.96)",
+    softBorder: "#f6dd8f",
+    icon: "🌅",
+  },
+  {
+    title: "Adventure Trail",
+    status: "Preview",
+    href: "/traveler/passport-trails",
+    tone: "#7c3aed",
+    buttonTone: "#7c3aed",
+    softBg: "rgba(245,240,255,0.96)",
+    softBorder: "#d8c7ff",
+    icon: "⛰️",
+  },
+  {
+    title: "Return Traveler Continuity Trail",
+    status: "Preview",
+    href: "/traveler/passport-trails",
+    tone: "#64748b",
+    buttonTone: "#475569",
+    softBg: "rgba(248,250,252,0.98)",
+    softBorder: "#d8e2ee",
+    icon: "↻",
+  },
 ];
 
 export default function PassportTrailsCatalogPage() {
@@ -230,37 +302,66 @@ export default function PassportTrailsCatalogPage() {
           </h2>
 
           <div style={{ display: "grid", gap: 8 }}>
-            {officialTrails.map(([title, status, href], index) => (
+            {officialTrails.map((family, index) => (
               <a
-                key={title}
-                href={href}
-                aria-label={`Open ${title}`}
+                key={family.title}
+                href={family.href}
+                aria-label={`Open ${family.title}`}
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 84px",
                   alignItems: "center",
                   gap: 8,
-                  border: index === 0 ? "1px solid #bdebd6" : "1px solid #d3eef2",
+                  border: `1px solid ${(family.softBorder ?? '#bfe7ee')}`,
                   borderRadius: 16,
-                  background: index === 0 ? "linear-gradient(135deg, #e3fff3, #f3ffff)" : "linear-gradient(135deg, #ffffff, #f7fcfd)",
+                  background: `linear-gradient(135deg, ${(family.softBg ?? 'rgba(244,253,255,0.94)')}, #ffffff)`,
                   padding: 10,
                   color: "inherit",
                   textDecoration: "none",
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 13.4, fontWeight: 850, lineHeight: 1.04 }}>{title}</div>
+                  <div
+                    style={{
+                      width: 36,
+                      minHeight: 36,
+                      borderRadius: 14,
+                      background: "rgba(255,255,255,0.72)",
+                      display: "grid",
+                      placeItems: "center",
+                      color: (family.tone ?? '#078da0'),
+                      fontSize: 18,
+                      boxShadow: "0 8px 18px rgba(15,23,42,0.06)",
+                    }}
+                  >
+                    {(family.icon ?? '⌁')}
+                  </div>
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
+                      aria-hidden="true"
+                      style={{
+                        width: 30,
+                        height: 4,
+                        borderRadius: 999,
+                        background: (family.tone ?? '#078da0'),
+                        marginBottom: 7,
+                        opacity: 0.82,
+                      }}
+                    />
+                    <div style={{ fontSize: 13.4, fontWeight: 850, lineHeight: 1.04 }}>{family.title}</div>
                   <div style={{ marginTop: 4, fontSize: 10.6, fontWeight: 690, color: "#53657d" }}>
                     Verified Passport stamps
                   </div>
+                </div>
                 </div>
 
                 <div
                   style={{
                     minHeight: 42,
                     borderRadius: 14,
-                    background: index === 0 ? "#16a34a" : "#e4fbff",
-                    color: index === 0 ? "#ffffff" : "#078da0",
+                    background: index === 0 ? "linear-gradient(135deg, #22b85a, #11843d)" : `linear-gradient(135deg, ${(family.softBg ?? 'rgba(244,253,255,0.94)')}, #ffffff)`,
+                    color: index === 0 ? "#ffffff" : (family.buttonTone ?? '#078da0'),
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -268,7 +369,7 @@ export default function PassportTrailsCatalogPage() {
                     fontWeight: 850,
                   }}
                 >
-                  {status}
+                  {family.status}
                 </div>
               </a>
             ))}

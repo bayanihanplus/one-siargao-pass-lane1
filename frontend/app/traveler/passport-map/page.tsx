@@ -2235,15 +2235,100 @@ function SpmFeaturedPartnerTours() {
 
 
 function SpmCuratedPassportTours() {
-  const moreTrails = [
-    ["Surf Explorer Trail", "Surf stops • coastal route", "/traveler/passport-trails"],
-    ["North Siargao Trail", "Pacifico • north route", "/traveler/passport-trails"],
-    ["Inland Discovery Trail", "Falls • inland stops", "/traveler/passport-trails"],
-    ["Culture & Community Trail", "Local life • culture stops", "/traveler/passport-trails"],
-    ["Sunset & Scenic Stops Trail", "Golden hour • scenic points", "/traveler/passport-trails"],
-    ["Adventure Trail", "High-energy route", "/traveler/passport-trails"],
-    ["Return Traveler Continuity Trail", "Come back and continue", "/traveler/passport-trails"],
+  const officialTrails = [
+    {
+      title: "Island Hopping Trail",
+      subtitle: "Verified stamp route",
+      status: "Recommended",
+      cta: "Continue",
+      href: "/traveler/passport-trails/tri-island-joiner",
+      icon: "✓",
+      tone: "#16a34a",
+      softBg: "rgba(227,255,243,0.94)",
+      softBorder: "#a9ebc9",
+      buttonBg: "linear-gradient(135deg, #22b85a, #11843d)",
+    },
+    {
+      title: "Surf Explorer Trail",
+      subtitle: "Surf stops • coastal route",
+      cta: "Preview",
+      href: "/traveler/passport-trails",
+      icon: "🌊",
+      tone: "#0891b2",
+      softBg: "rgba(232,251,255,0.96)",
+      softBorder: "#aee7f2",
+      buttonBg: "linear-gradient(135deg, #e8fbff, #ffffff)",
+    },
+    {
+      title: "North Siargao Trail",
+      subtitle: "Pacifico • north route",
+      cta: "Preview",
+      href: "/traveler/passport-trails",
+      icon: "🧭",
+      tone: "#2563eb",
+      softBg: "rgba(239,246,255,0.96)",
+      softBorder: "#bfd7ff",
+      buttonBg: "linear-gradient(135deg, #eef6ff, #ffffff)",
+    },
+    {
+      title: "Inland Discovery Trail",
+      subtitle: "Falls • inland stops",
+      cta: "Preview",
+      href: "/traveler/passport-trails",
+      icon: "🌿",
+      tone: "#65a30d",
+      softBg: "rgba(244,252,232,0.96)",
+      softBorder: "#d4edaa",
+      buttonBg: "linear-gradient(135deg, #f4fce8, #ffffff)",
+    },
+    {
+      title: "Culture & Community Trail",
+      subtitle: "Local life • culture stops",
+      cta: "Preview",
+      href: "/traveler/passport-trails",
+      icon: "🧺",
+      tone: "#d97706",
+      softBg: "rgba(255,247,230,0.96)",
+      softBorder: "#f3d49b",
+      buttonBg: "linear-gradient(135deg, #fff7e6, #ffffff)",
+    },
+    {
+      title: "Sunset & Scenic Stops Trail",
+      subtitle: "Golden hour • scenic points",
+      cta: "Preview",
+      href: "/traveler/passport-trails",
+      icon: "🌅",
+      tone: "#f59e0b",
+      softBg: "rgba(255,248,220,0.96)",
+      softBorder: "#f6dd8f",
+      buttonBg: "linear-gradient(135deg, #fff8dc, #ffffff)",
+    },
+    {
+      title: "Adventure Trail",
+      subtitle: "High-energy route",
+      cta: "Preview",
+      href: "/traveler/passport-trails",
+      icon: "⛰️",
+      tone: "#7c3aed",
+      softBg: "rgba(245,240,255,0.96)",
+      softBorder: "#d8c7ff",
+      buttonBg: "linear-gradient(135deg, #f5f0ff, #ffffff)",
+    },
+    {
+      title: "Return Traveler Continuity Trail",
+      subtitle: "Come back and continue",
+      cta: "Preview",
+      href: "/traveler/passport-trails",
+      icon: "↻",
+      tone: "#64748b",
+      softBg: "rgba(248,250,252,0.98)",
+      softBorder: "#d8e2ee",
+      buttonBg: "linear-gradient(135deg, #f8fafc, #ffffff)",
+    },
   ];
+
+  const featuredTrail = officialTrails[0];
+  const previewTrails = officialTrails.slice(1);
 
   return (
     <section
@@ -2252,17 +2337,17 @@ function SpmCuratedPassportTours() {
         marginTop: 14,
         border: "1px solid #bfe7ee",
         borderRadius: 24,
-        background: "linear-gradient(135deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
+        background: "linear-gradient(180deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
         padding: 12,
         boxShadow: "0 16px 38px rgba(8,61,103,0.10)",
       }}
     >
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
         <div>
-          <div style={{ fontSize: 9, fontWeight: 820, letterSpacing: "0.13em", textTransform: "uppercase", color: "#0796a6" }}>
+          <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: "0.13em", textTransform: "uppercase", color: "#0796a6" }}>
             Passport Trails™ Curated Tours
           </div>
-          <h2 style={{ margin: "5px 0 0", fontSize: 21, lineHeight: 1.03, fontWeight: 760, letterSpacing: "-0.045em", color: "#14264b" }}>
+          <h2 style={{ margin: "5px 0 0", fontSize: 21, lineHeight: 1.03, fontWeight: 850, letterSpacing: "-0.045em", color: "#14264b" }}>
             Official trails.
           </h2>
         </div>
@@ -2272,12 +2357,15 @@ function SpmCuratedPassportTours() {
           aria-label="Explore all Passport Trails"
           style={{
             flexShrink: 0,
-            borderRadius: 999,
+            minHeight: 42,
+            minWidth: 78,
+            borderRadius: 16,
             background: "linear-gradient(135deg, #22b85a, #11843d)",
             color: "#ffffff",
-            padding: "9px 12px",
+            display: "grid",
+            placeItems: "center",
             fontSize: 10.6,
-            fontWeight: 860,
+            fontWeight: 900,
             textDecoration: "none",
             boxShadow: "0 12px 26px rgba(17,132,61,0.22)",
           }}
@@ -2287,129 +2375,132 @@ function SpmCuratedPassportTours() {
       </div>
 
       <a
-        href="/traveler/passport-trails/tri-island-joiner"
-        aria-label="Continue Island Hopping Trail"
+        href={featuredTrail.href}
+        aria-label={`Continue ${featuredTrail.title}`}
         style={{
           marginTop: 10,
           display: "grid",
-          gridTemplateColumns: "46px 1fr 96px",
+          gridTemplateColumns: "44px 1fr 82px",
           alignItems: "center",
-          gap: 9,
-          border: "1px solid #bdebd6",
-          borderLeft: "5px solid #16a34a",
+          gap: 8,
+          border: `1px solid ${featuredTrail.softBorder}`,
+          borderLeft: `5px solid ${featuredTrail.tone}`,
           borderRadius: 18,
-          background: "linear-gradient(135deg, #e3fff3, #f3ffff)",
-          padding: 10,
+          background: `linear-gradient(135deg, ${featuredTrail.softBg}, #ffffff)`,
+          padding: 9,
           color: "inherit",
           textDecoration: "none",
-          boxShadow: "0 10px 24px rgba(22,163,74,0.08)",
+          boxShadow: "0 10px 24px rgba(22,163,74,0.10)",
         }}
       >
         <div
           style={{
-            width: 46,
-            height: 46,
-            borderRadius: 18,
-            background: "linear-gradient(135deg, #22b85a, #11843d)",
+            width: 40,
+            height: 40,
+            borderRadius: 16,
+            background: featuredTrail.buttonBg,
             color: "#ffffff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            display: "grid",
+            placeItems: "center",
             fontSize: 19,
-            fontWeight: 900,
+            fontWeight: 950,
           }}
         >
-          ✓
+          {featuredTrail.icon}
         </div>
 
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 8.9, fontWeight: 850, letterSpacing: "0.11em", textTransform: "uppercase", color: "#11843d" }}>
+          <div style={{ fontSize: 8.6, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: featuredTrail.tone }}>
             Recommended
           </div>
-          <div style={{ marginTop: 2, fontSize: 15.5, fontWeight: 860, lineHeight: 1.03, color: "#14264b" }}>
-            Island Hopping Trail
+          <div style={{ marginTop: 2, fontSize: 14.3, fontWeight: 900, lineHeight: 1.03, color: "#14264b" }}>
+            {featuredTrail.title}
           </div>
-          <div style={{ marginTop: 4, fontSize: 10.6, fontWeight: 700, color: "#53657d", lineHeight: 1.12 }}>
-            Stamp progress appears from verified records
+          <div style={{ marginTop: 4, fontSize: 9.7, fontWeight: 720, color: "#53657d", lineHeight: 1.12 }}>
+            {featuredTrail.subtitle}
           </div>
         </div>
 
         <div
           style={{
-            minHeight: 48,
-            borderRadius: 16,
-            background: "linear-gradient(135deg, #22b85a, #11843d)",
+            minHeight: 40,
+            borderRadius: 15,
+            background: featuredTrail.buttonBg,
             color: "#ffffff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            display: "grid",
+            placeItems: "center",
             textAlign: "center",
-            fontSize: 10.8,
-            fontWeight: 880,
+            fontSize: 9.8,
+            fontWeight: 900,
             lineHeight: 1.05,
-            boxShadow: "0 12px 26px rgba(17,132,61,0.22)",
+            boxShadow: "0 10px 22px rgba(17,132,61,0.18)",
           }}
         >
-          Continue
+          {featuredTrail.cta}
         </div>
       </a>
 
-      <div
-        style={{
-          marginTop: 12,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 10,
-        }}
-      >
-        <div style={{ fontSize: 10.5, fontWeight: 850, color: "#14264b" }}>
-          More official trails
-        </div>
-        <div style={{ fontSize: 10, fontWeight: 760, color: "#53657d" }}>
-          Preview before booking
-        </div>
+      <div style={{ marginTop: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+        <div style={{ fontSize: 10.2, fontWeight: 900, color: "#14264b" }}>More official trails</div>
+        <div style={{ fontSize: 9.6, fontWeight: 780, color: "#53657d" }}>Preview first</div>
       </div>
 
-      <div style={{ marginTop: 8, display: "grid", gap: 7 }}>
-        {moreTrails.map(([family, hint, href]) => (
+      <div style={{ marginTop: 8, display: "grid", gap: 8 }}>
+        {previewTrails.map((trail) => (
           <a
-            key={family}
-            href={href}
-            aria-label={`Preview ${family}`}
+            key={trail.title}
+            href={trail.href}
+            aria-label={`Preview ${trail.title}`}
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 76px",
+              gridTemplateColumns: "32px 1fr 68px",
               alignItems: "center",
               gap: 8,
-              border: "1px solid #bfe7ee",
+              border: `1px solid ${trail.softBorder}`,
               borderRadius: 16,
-              background: "linear-gradient(135deg, #ffffff, #f7fcfd)",
-              padding: "9px",
+              background: `linear-gradient(135deg, ${trail.softBg}, #ffffff)`,
+              padding: "8px 9px",
               color: "inherit",
               textDecoration: "none",
+              boxShadow: "0 7px 18px rgba(8,61,103,0.05)",
             }}
           >
+            <div
+              style={{
+                width: 29,
+                height: 29,
+                borderRadius: 13,
+                background: "rgba(255,255,255,0.82)",
+                display: "grid",
+                placeItems: "center",
+                fontSize: 14,
+                color: trail.tone,
+                boxShadow: "0 6px 14px rgba(15,23,42,0.055)",
+              }}
+            >
+              {trail.icon}
+            </div>
+
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 12.3, fontWeight: 830, lineHeight: 1.04, color: "#14264b" }}>
-                {family}
+              <div style={{ fontSize: 11.3, fontWeight: 880, lineHeight: 1.04, color: "#14264b" }}>
+                {trail.title}
               </div>
-              <div style={{ marginTop: 3, fontSize: 9.7, fontWeight: 660, color: "#53657d", lineHeight: 1.12 }}>
-                {hint}
+              <div style={{ marginTop: 3, fontSize: 8.8, fontWeight: 680, color: "#53657d", lineHeight: 1.1 }}>
+                {trail.subtitle}
               </div>
             </div>
 
             <div
               style={{
-                minHeight: 40,
-                borderRadius: 14,
-                background: "linear-gradient(135deg, #e8fbff, #ffffff)",
-                color: "#067889",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 10,
-                fontWeight: 850,
+                minHeight: 34,
+                borderRadius: 13,
+                background: trail.buttonBg,
+                color: trail.tone,
+                display: "grid",
+                placeItems: "center",
+                fontSize: 8.9,
+                fontWeight: 900,
+                border: `1px solid ${trail.softBorder}`,
               }}
             >
               Preview
@@ -2424,10 +2515,11 @@ function SpmCuratedPassportTours() {
           borderRadius: 14,
           background: "linear-gradient(135deg, #f8fbfc, #ffffff)",
           padding: "8px 10px",
-          fontSize: 10,
-          lineHeight: 1.25,
-          fontWeight: 720,
+          fontSize: 9.8,
+          lineHeight: 1.22,
+          fontWeight: 740,
           color: "#355071",
+          border: "1px solid rgba(191,231,238,0.62)",
         }}
       >
         Pricing appears before checkout. Verified Passport stamps unlock only through governed OSP/SPM records.
@@ -2435,8 +2527,6 @@ function SpmCuratedPassportTours() {
     </section>
   );
 }
-
-
 
 
 
