@@ -2143,7 +2143,7 @@ function SpmCuratedPassportTours() {
       title: "Surf Explorer Trail",
       subtitle: "Surf stops • coastal route",
       cta: "Preview",
-      href: "/traveler/passport-trails",
+      href: "/traveler/passport-trails/surf-explorer",
       icon: "🌊",
       tone: "#0891b2",
       softBg: "rgba(232,251,255,0.96)",
@@ -2154,7 +2154,7 @@ function SpmCuratedPassportTours() {
       title: "North Siargao Trail",
       subtitle: "Pacifico • north route",
       cta: "Preview",
-      href: "/traveler/passport-trails",
+      href: "/traveler/passport-trails/north-siargao",
       icon: "🧭",
       tone: "#2563eb",
       softBg: "rgba(239,246,255,0.96)",
@@ -2165,7 +2165,7 @@ function SpmCuratedPassportTours() {
       title: "Inland Discovery Trail",
       subtitle: "Falls • inland stops",
       cta: "Preview",
-      href: "/traveler/passport-trails",
+      href: "/traveler/passport-trails/inland-discovery",
       icon: "🌿",
       tone: "#65a30d",
       softBg: "rgba(244,252,232,0.96)",
@@ -2176,7 +2176,7 @@ function SpmCuratedPassportTours() {
       title: "Culture & Community Trail",
       subtitle: "Local life • culture stops",
       cta: "Preview",
-      href: "/traveler/passport-trails",
+      href: "/traveler/passport-trails/culture-community",
       icon: "🧺",
       tone: "#d97706",
       softBg: "rgba(255,247,230,0.96)",
@@ -2187,7 +2187,7 @@ function SpmCuratedPassportTours() {
       title: "Sunset & Scenic Stops Trail",
       subtitle: "Golden hour • scenic points",
       cta: "Preview",
-      href: "/traveler/passport-trails",
+      href: "/traveler/passport-trails/sunset-scenic",
       icon: "🌅",
       tone: "#f59e0b",
       softBg: "rgba(255,248,220,0.96)",
@@ -2198,7 +2198,7 @@ function SpmCuratedPassportTours() {
       title: "Adventure Trail",
       subtitle: "High-energy route",
       cta: "Preview",
-      href: "/traveler/passport-trails",
+      href: "/traveler/passport-trails/adventure",
       icon: "⛰️",
       tone: "#7c3aed",
       softBg: "rgba(245,240,255,0.96)",
@@ -2209,7 +2209,7 @@ function SpmCuratedPassportTours() {
       title: "Return Traveler Continuity Trail",
       subtitle: "Come back and continue",
       cta: "Preview",
-      href: "/traveler/passport-trails",
+      href: "/traveler/passport-trails/return-traveler-continuity",
       icon: "↻",
       tone: "#64748b",
       softBg: "rgba(248,250,252,0.98)",
@@ -2719,8 +2719,7 @@ function SpmPassportExperienceCards() {
             >
               {item.icon}
             </div>
-
-            <div style={{ minWidth: 0 }}>
+<div style={{ minWidth: 0 }}>
               <div style={{ fontSize: 8, fontWeight: 840, letterSpacing: "0.09em", textTransform: "uppercase", color: item.tone }}>
                 {item.label}
               </div>

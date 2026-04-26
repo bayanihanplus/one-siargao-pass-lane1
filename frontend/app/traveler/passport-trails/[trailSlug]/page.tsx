@@ -79,6 +79,236 @@ const TRAILS: Record<string, TrailDetail> = {
       },
     ],
   },
+  "surf-explorer": {
+    eyebrow: "PASSPORT TRAILS™",
+    title: "Surf Explorer Trail",
+    subtitle:
+      "Cloud 9 is the approved surf anchor. Other surf nodes stay pending-review until local validation is completed.",
+    progressLabel: "1 approved anchor",
+    statusLabel: "Presentation Trail",
+    nextStop: "Cloud 9",
+    nextStopReason:
+      "Cloud 9 is the approved Surf Explorer anchor. Jacking Horse, Quicksilver, Tuason Point, Stimpy’s, and Pacifico Surf Area are shown as pending-review surf nodes, not approved completion nodes.",
+    stops: [
+      {
+        name: "Cloud 9",
+        shortCode: "C9",
+        note: "Approved Surf Explorer anchor node.",
+        status: "STAMP_UNLOCKED",
+        source: "QR",
+      },
+      {
+        name: "Jacking Horse",
+        shortCode: "JH",
+        note: "Pending-review beginner surf-side node.",
+        status: "READY_TO_VERIFY",
+        source: "Pending",
+      },
+      {
+        name: "Quicksilver",
+        shortCode: "QS",
+        note: "Pending-review surf break candidate.",
+        status: "READY_TO_VERIFY",
+        source: "Pending",
+      },
+      {
+        name: "Tuason Point",
+        shortCode: "TP",
+        note: "Pending-review advanced surf candidate.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Stimpy’s",
+        shortCode: "ST",
+        note: "Pending-review reef / offshore surf candidate.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Pacifico Surf Area",
+        shortCode: "PF",
+        note: "Pending-review north surf expansion node.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+    ],
+  },
+  "north-siargao": {
+    eyebrow: "PASSPORT TRAILS™",
+    title: "North Siargao Trail",
+    subtitle:
+      "North Siargao trail details are being prepared for approved node placement and QR validation.",
+    progressLabel: "Node setup pending",
+    statusLabel: "Preparation Trail",
+    nextStop: "Pacifico",
+    nextStopReason:
+      "Pacifico is the North Siargao anchor candidate. Additional north route stops must remain pending until governed validation and placement are locked.",
+    stops: [
+      {
+        name: "Pacifico",
+        shortCode: "PF",
+        note: "North Siargao anchor candidate. Final stamp behavior depends on approved DB and QR validation.",
+        status: "READY_TO_VERIFY",
+        source: "Pending",
+      },
+      {
+        name: "Alegria Beach",
+        shortCode: "AL",
+        note: "Candidate north-route stop pending final validation.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Taktak Falls",
+        shortCode: "TF",
+        note: "Candidate north-route stop pending final validation.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+    ],
+  },
+
+  "inland-discovery": {
+    eyebrow: "PASSPORT TRAILS™",
+    title: "Inland Discovery Trail",
+    subtitle:
+      "Inland route details are being prepared for approved node placement, tide/safety rules, and QR validation.",
+    progressLabel: "Node setup pending",
+    statusLabel: "Preparation Trail",
+    nextStop: "Maasin River",
+    nextStopReason:
+      "Inland Discovery nodes must remain governed by safety, access, and QR validation rules before completion can be claimed.",
+    stops: [
+      {
+        name: "Maasin River",
+        shortCode: "MR",
+        note: "Inland candidate / anchor stop pending final page map placement.",
+        status: "READY_TO_VERIFY",
+        source: "Pending",
+      },
+      {
+        name: "Magpupungko Rock Pools",
+        shortCode: "MP",
+        note: "Tide and safety-sensitive node. Must not be treated as casual completion without validation.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Tayangban Cave Pool",
+        shortCode: "TC",
+        note: "Safety-controlled candidate node pending access validation.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+    ],
+  },
+
+  "culture-community": {
+    eyebrow: "PASSPORT TRAILS™",
+    title: "Culture & Community Trail",
+    subtitle:
+      "Culture and community stops are not yet activated as completion nodes. This page is reserved for future governed community validation.",
+    progressLabel: "Research pending",
+    statusLabel: "Future Trail",
+    nextStop: "Community node review",
+    nextStopReason:
+      "Community-related stops require local validation, partner consent, and governance before appearing as approved Passport Stamp nodes.",
+    stops: [
+      {
+        name: "Community Node Review",
+        shortCode: "CR",
+        note: "Placeholder only. No approved completion claim is made.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+    ],
+  },
+
+  "sunset-scenic": {
+    eyebrow: "PASSPORT TRAILS™",
+    title: "Sunset & Scenic Stops Trail",
+    subtitle:
+      "Scenic stops are being prepared for approved node placement and QR validation.",
+    progressLabel: "Node setup pending",
+    statusLabel: "Preparation Trail",
+    nextStop: "Cloud 9 Sunset Zone",
+    nextStopReason:
+      "Cloud 9 Sunset Zone can serve as a scenic anchor, but completion must still depend on approved QR validation.",
+    stops: [
+      {
+        name: "Cloud 9 Sunset Zone",
+        shortCode: "C9",
+        note: "Scenic anchor candidate / approved scenic reference depending on DB validation state.",
+        status: "READY_TO_VERIFY",
+        source: "Pending",
+      },
+      {
+        name: "Catangnan Bridge / Sunset Bridge",
+        shortCode: "CB",
+        note: "Candidate scenic stop pending final validation.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Pacifico Scenic / Sunset Point",
+        shortCode: "PS",
+        note: "Candidate north scenic stop pending final validation.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+    ],
+  },
+
+  "adventure": {
+    eyebrow: "PASSPORT TRAILS™",
+    title: "Adventure Trail",
+    subtitle:
+      "Adventure nodes require stricter safety and operator validation before Passport Stamp completion can be claimed.",
+    progressLabel: "Safety setup pending",
+    statusLabel: "Controlled Trail",
+    nextStop: "Adventure node review",
+    nextStopReason:
+      "Adventure trail nodes must be safety-controlled and may require operator, guide, or access validation before activation.",
+    stops: [
+      {
+        name: "Sugba Lagoon",
+        shortCode: "SL",
+        note: "Adventure candidate node. Requires safety/access validation before completion behavior is activated.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Tayangban Cave Pool",
+        shortCode: "TC",
+        note: "Safety-sensitive candidate node pending validation.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+    ],
+  },
+
+  "return-traveler-continuity": {
+    eyebrow: "PASSPORT TRAILS™",
+    title: "Return Traveler Continuity Trail",
+    subtitle:
+      "Return Traveler Continuity is a future journey layer based on previous stamps, unfinished routes, and repeat-visit reactivation.",
+    progressLabel: "Future logic pending",
+    statusLabel: "Future Trail",
+    nextStop: "Continue previous journey",
+    nextStopReason:
+      "This trail should activate only after historical passport progress and repeat-visit logic exist. No completion claim is made yet.",
+    stops: [
+      {
+        name: "Previous Journey Review",
+        shortCode: "RJ",
+        note: "Future continuity node. Requires historical stamp and trip data.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+    ],
+  },
+
 };
 
 function statusTone(status: StopStatus) {
@@ -276,6 +506,98 @@ export default function PassportTrailDetailPage({
         </section>
 
         <SpmFunctionalJourneyMap trailSlug={params.trailSlug} />
+
+        <section
+          aria-label="Scan site QR"
+          style={{
+            marginTop: 14,
+            border: "1px solid #bfe7ee",
+            borderRadius: 26,
+            background: "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(232,251,255,0.92))",
+            padding: 14,
+            display: "grid",
+            gridTemplateColumns: "auto 1fr auto",
+            gap: 12,
+            alignItems: "center",
+            boxShadow: "0 14px 34px rgba(8,61,103,0.08)",
+          }}
+        >
+          <div
+            aria-hidden="true"
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 18,
+              background: "linear-gradient(135deg, #14b8c6, #11843d)",
+              color: "#ffffff",
+              display: "grid",
+              placeItems: "center",
+              fontSize: 24,
+              fontWeight: 950,
+              boxShadow: "0 10px 22px rgba(7,141,160,0.18)",
+            }}
+          >
+            ▣
+          </div>
+
+          <div style={{ minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 950,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#0891b2",
+              }}
+            >
+              At Operator Site
+            </div>
+            <div
+              style={{
+                marginTop: 3,
+                fontSize: 16,
+                lineHeight: 1.08,
+                fontWeight: 950,
+                color: "#14264b",
+              }}
+            >
+              Scan site QR
+            </div>
+            <div
+              style={{
+                marginTop: 4,
+                fontSize: 12,
+                lineHeight: 1.3,
+                fontWeight: 720,
+                color: "#53657d",
+              }}
+            >
+              Open camera to verify this trail stop. Stamps unlock only after governed QR validation.
+            </div>
+          </div>
+
+          <Link
+            href={`/traveler/scan?source=passport-trails&trail=${params.trailSlug}`}
+            style={{
+              minHeight: 46,
+              borderRadius: 17,
+              background: "linear-gradient(135deg, #14b8c6, #11843d)",
+              color: "#ffffff",
+              display: "grid",
+              placeItems: "center",
+              textDecoration: "none",
+              padding: "0 15px",
+              fontSize: 13,
+              fontWeight: 950,
+              whiteSpace: "nowrap",
+              boxShadow: "0 8px 18px rgba(7,141,160,0.18)",
+            }}
+          >
+            Scan
+          </Link>
+        </section>
+
+
 
         <div style={{ marginTop: 16 }}>
           <ShellCard ariaLabel="Trail verification actions">

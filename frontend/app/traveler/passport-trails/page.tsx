@@ -1,3 +1,4 @@
+import { SpmThreeJourneyScanQrPanel } from "../../../src/spm/scan/SpmScanQrCta";
 const partnerTours = [
   {
     title: "Island Hopping Trail",
@@ -21,7 +22,7 @@ const officialTrails = [
   {
     title: "Surf Explorer Trail",
     status: "Preview",
-    href: "/traveler/passport-trails",
+    href: "/traveler/passport-trails/surf-explorer",
     tone: "#0891b2",
     buttonTone: "#0891b2",
     softBg: "rgba(232,251,255,0.96)",
@@ -31,7 +32,7 @@ const officialTrails = [
   {
     title: "North Siargao Trail",
     status: "Preview",
-    href: "/traveler/passport-trails",
+    href: "/traveler/passport-trails/north-siargao",
     tone: "#2563eb",
     buttonTone: "#2563eb",
     softBg: "rgba(239,246,255,0.96)",
@@ -41,7 +42,7 @@ const officialTrails = [
   {
     title: "Inland Discovery Trail",
     status: "Preview",
-    href: "/traveler/passport-trails",
+    href: "/traveler/passport-trails/inland-discovery",
     tone: "#65a30d",
     buttonTone: "#65a30d",
     softBg: "rgba(244,252,232,0.96)",
@@ -51,7 +52,7 @@ const officialTrails = [
   {
     title: "Culture & Community Trail",
     status: "Preview",
-    href: "/traveler/passport-trails",
+    href: "/traveler/passport-trails/culture-community",
     tone: "#d97706",
     buttonTone: "#d97706",
     softBg: "rgba(255,247,230,0.96)",
@@ -61,7 +62,7 @@ const officialTrails = [
   {
     title: "Sunset & Scenic Stops Trail",
     status: "Preview",
-    href: "/traveler/passport-trails",
+    href: "/traveler/passport-trails/sunset-scenic",
     tone: "#f59e0b",
     buttonTone: "#f59e0b",
     softBg: "rgba(255,248,220,0.96)",
@@ -71,7 +72,7 @@ const officialTrails = [
   {
     title: "Adventure Trail",
     status: "Preview",
-    href: "/traveler/passport-trails",
+    href: "/traveler/passport-trails/adventure",
     tone: "#7c3aed",
     buttonTone: "#7c3aed",
     softBg: "rgba(245,240,255,0.96)",
@@ -81,7 +82,7 @@ const officialTrails = [
   {
     title: "Return Traveler Continuity Trail",
     status: "Preview",
-    href: "/traveler/passport-trails",
+    href: "/traveler/passport-trails/return-traveler-continuity",
     tone: "#64748b",
     buttonTone: "#475569",
     softBg: "rgba(248,250,252,0.98)",
@@ -218,7 +219,9 @@ export default function PassportTrailsCatalogPage() {
           </p>
         </section>
 
-        <section
+                <SpmThreeJourneyScanQrPanel />
+
+<section
           aria-label="Siargao Partner Tours"
           style={{
             marginTop: 10,

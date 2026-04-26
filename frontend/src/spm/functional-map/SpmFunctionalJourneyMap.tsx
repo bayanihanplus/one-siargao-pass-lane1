@@ -311,7 +311,7 @@ export function SpmFunctionalJourneyMap({ trailSlug }: Props) {
                 position: "absolute",
                 left: `${node.xPercent}%`,
                 top: `${node.yPercent}%`,
-                transform: "translate(-50%, -50%)",
+                transform: "translate(-50%, -50%) scale(0.82)",
                 zIndex: isPrimary ? 5 : node.priority === "secondary" ? 4 : 3,
               }}
             >

@@ -1,3 +1,4 @@
+import { SpmScanQrCta } from "../../../../src/spm/scan/SpmScanQrCta";
 export default function BuildYourOwnPassportTrailPage() {
   const routeIdeas = [
     {
@@ -89,6 +90,15 @@ export default function BuildYourOwnPassportTrailPage() {
             ← Map
           </a>
         </header>
+
+        <SpmScanQrCta
+          source="diy-trail-builder"
+          eyebrow="DIY Verified Stops"
+          title="Scan QR at verified stop"
+          body="Use this only after choosing a verified stop or approved operator point. DIY progress must still come from governed QR validation."
+          cta="Scan"
+        />
+
 
         <section
           aria-label="Build Your Own Passport Trail hero"
