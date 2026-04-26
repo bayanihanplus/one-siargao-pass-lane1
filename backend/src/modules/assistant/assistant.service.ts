@@ -468,6 +468,10 @@ export class AssistantService {
     const userId = getUserId(user);
     const message = String(body?.message || '').trim();
     const source = String(body?.source || 'traveler-assistant').trim();
+    const rawTopic = String(body?.topic || 'general').trim().toLowerCase();
+    const topic = ['map', 'trail', 'trips', 'trip', 'pass', 'payment', 'emergency'].includes(rawTopic)
+      ? rawTopic
+      : 'general';
 
     if (!message) {
       return {
@@ -484,6 +488,13 @@ export class AssistantService {
     ]);
 
     const lower = message.toLowerCase();
+    const isPassQuestion = lower.includes('pass') || lower.includes('qr');
+    const isPaymentQuestion = lower.includes('payment') || lower.includes('paid') || lower.includes('pay');
+    const isTrailQuestion = lower.includes('trail') || lower.includes('stamp') || lower.includes('passport map');
+    const isEmergencyQuestion = lower.includes('emergency') || lower.includes('safety') || lower.includes('help');
+    const isBroadcastQuestion = lower.includes('broadcast') || lower.includes('alert') || lower.includes('lgu');
+    const isTripQuestion = lower.includes('trip') || lower.includes('status') || lower.includes('ready');
+    const isSiargaoQuestion = lower.includes('siargao') || lower.includes('tour') || lower.includes('travel');
     const passAndQr = (travelerContext?.passAndQr || {}) as any;
     const latestTrip = (travelerContext?.latestTrip || {}) as any;
     const bookingPaymentManifest = (travelerContext?.bookingPaymentManifest || {}) as any;
@@ -505,21 +516,23 @@ export class AssistantService {
       intent = 'PASS_QR';
       answer = `Your visible pass/QR context shows: QR credential ${passAndQr?.hasQrCredential ? 'available' : 'not confirmed'}, pass status ${passAndQr?.latestPassStatus || 'not confirmed'}. Use your OSP Pass screen when an operator, checkpoint, or safety contact needs your trip identity. I cannot issue or change your pass from chat.`;
       nextActions = ['Open OSP Pass / QR', 'Check Trip Status', 'Ask about checkpoints'];
-    } else if (lower.includes('payment') || lower.includes('paid') || lower.includes('pay')) {
+    } else if (topic === 'payment' || isPaymentQuestion) {
       intent = 'PAYMENT_STATUS';
       answer = `Your visible payment context shows payment state: ${bookingPaymentManifest?.latestPaymentState || 'not confirmed'} and booking status: ${bookingPaymentManifest?.latestBookingStatus || 'not confirmed'}. I can explain what the status means, but I cannot mark payments as paid or override payment records.`;
       nextActions = ['Open Payment Status', 'Check Booking Status', 'Ask about pass readiness'];
     } else if (lower.includes('trail') || lower.includes('passport map') || lower.includes('stamp')) {
       intent = 'PASSPORT_TRAILS';
       answer =
-        'Passport Trails help you follow verified Siargao routes, collect governed stamps, and continue your journey. Stamps only count when backed by OSP/SPM records. I cannot unlock stamps from chat, but I can help you choose the right trail page or explain verified stops.';
+        topic === 'map'
+          ? 'Passport Map helps you understand your Siargao journey progress, verified stops, and trail movement. Stamps and progress only count when backed by governed OSP/SPM records. I can explain the map, but I cannot mark a stop visited or unlock stamps from chat.'
+          : 'Passport Trails help you follow verified Siargao routes, collect governed stamps, and continue your journey. Stamps only count when backed by OSP/SPM records. I cannot unlock stamps from chat, but I can help you choose the right trail page or explain verified stops.';
       nextActions = ['Open Passport Map', 'Review Passport Trails', 'Ask about verified stops'];
     } else if (lower.includes('emergency') || lower.includes('safety') || lower.includes('danger')) {
       intent = 'EMERGENCY_SAFETY';
       answer =
         'For immediate danger, contact local emergency services, nearby authorities, your accommodation, or a trusted local contact directly. I can help you find your OSP Pass / QR and trip details quickly, but I cannot dispatch responders or confirm that LGU, police, coast guard, or medical help has been notified unless backend incident records prove it.';
       nextActions = ['Open Emergency & Safety', 'Show OSP Pass / QR', 'Open Trip Details'];
-    } else if (lower.includes('broadcast') || lower.includes('alert') || lower.includes('lgu')) {
+    } else if (isBroadcastQuestion) {
       intent = 'OFFICIAL_SAFETY_BROADCAST';
       answer =
         'Official Safety Broadcasts are controlled by Super Admin and LGU Admin surfaces. I can explain published official alerts visible to travelers, but I cannot create, approve, send, cancel, or override any LGU broadcast. SMS and push delivery remain future layers until governed delivery logs exist.';
@@ -546,6 +559,7 @@ export class AssistantService {
       received: {
         userId,
         source,
+        topic,
         message,
         intent,
       },
