@@ -483,10 +483,62 @@ export class AssistantService {
       this.getKnowledgeSpine(user),
     ]);
 
+    const lower = message.toLowerCase();
+    const passAndQr = (travelerContext?.passAndQr || {}) as any;
+    const latestTrip = (travelerContext?.latestTrip || {}) as any;
+    const bookingPaymentManifest = (travelerContext?.bookingPaymentManifest || {}) as any;
+    const tripLifecycle = (travelerContext?.tripLifecycle || {}) as any;
+    const tripState = tripLifecycle?.returnContinuityState || 'Not confirmed';
+
+    let intent = 'GENERAL_GUIDANCE';
+    let answer =
+      'Kuya Tala™ Phase 1 chat is active as a guided assistant. I can help with OSP Pass / QR, trip status, payments, Passport Trails, Emergency & Safety, Official Safety Broadcasts, and responsible Siargao movement. I do not yet have open-ended AI retrieval, operator-uploaded KB ingestion, speech input, or live action authority. Please ask within those OSP/SPM topics.';
+
+    let nextActions = [
+      'Check my QR/pass status',
+      'Help me with Passport Trails',
+      'What should I do in an emergency?',
+      'Any official safety broadcast?',
+    ];
+
+    if (lower.includes('qr') || lower.includes('pass')) {
+      intent = 'PASS_QR';
+      answer = `Your visible pass/QR context shows: QR credential ${passAndQr?.hasQrCredential ? 'available' : 'not confirmed'}, pass status ${passAndQr?.latestPassStatus || 'not confirmed'}. Use your OSP Pass screen when an operator, checkpoint, or safety contact needs your trip identity. I cannot issue or change your pass from chat.`;
+      nextActions = ['Open OSP Pass / QR', 'Check Trip Status', 'Ask about checkpoints'];
+    } else if (lower.includes('payment') || lower.includes('paid') || lower.includes('pay')) {
+      intent = 'PAYMENT_STATUS';
+      answer = `Your visible payment context shows payment state: ${bookingPaymentManifest?.latestPaymentState || 'not confirmed'} and booking status: ${bookingPaymentManifest?.latestBookingStatus || 'not confirmed'}. I can explain what the status means, but I cannot mark payments as paid or override payment records.`;
+      nextActions = ['Open Payment Status', 'Check Booking Status', 'Ask about pass readiness'];
+    } else if (lower.includes('trail') || lower.includes('passport map') || lower.includes('stamp')) {
+      intent = 'PASSPORT_TRAILS';
+      answer =
+        'Passport Trails help you follow verified Siargao routes, collect governed stamps, and continue your journey. Stamps only count when backed by OSP/SPM records. I cannot unlock stamps from chat, but I can help you choose the right trail page or explain verified stops.';
+      nextActions = ['Open Passport Map', 'Review Passport Trails', 'Ask about verified stops'];
+    } else if (lower.includes('emergency') || lower.includes('safety') || lower.includes('danger')) {
+      intent = 'EMERGENCY_SAFETY';
+      answer =
+        'For immediate danger, contact local emergency services, nearby authorities, your accommodation, or a trusted local contact directly. I can help you find your OSP Pass / QR and trip details quickly, but I cannot dispatch responders or confirm that LGU, police, coast guard, or medical help has been notified unless backend incident records prove it.';
+      nextActions = ['Open Emergency & Safety', 'Show OSP Pass / QR', 'Open Trip Details'];
+    } else if (lower.includes('broadcast') || lower.includes('alert') || lower.includes('lgu')) {
+      intent = 'OFFICIAL_SAFETY_BROADCAST';
+      answer =
+        'Official Safety Broadcasts are controlled by Super Admin and LGU Admin surfaces. I can explain published official alerts visible to travelers, but I cannot create, approve, send, cancel, or override any LGU broadcast. SMS and push delivery remain future layers until governed delivery logs exist.';
+      nextActions = ['Open Alerts', 'Ask about Emergency & Safety', 'Check Trip Details'];
+    } else if (lower.includes('trip') || lower.includes('arrival') || lower.includes('departure') || lower.includes('ingress') || lower.includes('egress')) {
+      intent = 'TRIP_CONTEXT';
+      answer = `Your visible trip context shows trip status: ${latestTrip?.tripStatus || 'not confirmed'} and return continuity state: ${tripState}. I can help you interpret the status, but I cannot invent missing travel records.`;
+      nextActions = ['Open Trip Details', 'Check Pass / QR status', 'Ask about return continuity'];
+    } else if (lower.includes('siargao') || lower.includes('tourism') || lower.includes('how to reach') || lower.includes('airport') || lower.includes('ferry')) {
+      intent = 'SIARGAO_GUIDANCE';
+      answer =
+        'Siargao is one of the Philippines’ most recognized island tourism destinations, known for surf culture, island hopping, lagoons, coastal scenery, local communities, food, nature, and slow-island travel. I can give general planning guidance, but live routes, fares, ferry schedules, weather, and advisories require verified current sources before confirmation.';
+      nextActions = ['Ask about Passport Trails', 'Ask about Emergency & Safety', 'Check Trip Details'];
+    }
+
     return {
       ok: true,
-      source: 'KUYA_TALA_CHAT_ENDPOINT_PHASE_1',
-      runtimeMode: 'DETERMINISTIC_READ_ONLY_NO_LLM',
+      source: 'KUYA_TALA_CHAT_ENDPOINT_PHASE_1_GUIDED',
+      runtimeMode: 'DETERMINISTIC_CONTEXT_AWARE_NO_LLM_NO_SPEECH',
       assistant: {
         name: 'Kuya Tala™',
         title: 'Your Siargao Journey Guide',
@@ -495,31 +547,31 @@ export class AssistantService {
         userId,
         source,
         message,
+        intent,
       },
       response: {
         greeting:
           knowledgeSpine?.responsePolicy?.simpleGreeting ||
           'Hi, I’m Kuya Tala™ — your One Siargao Pass journey guide.',
-        answer:
-          'I can guide you using your visible OSP/SPM context and the approved knowledge spine. Full AI-generated answers will be activated in Phase 2 after retrieval, moderation, and approved KB ingestion are in place.',
-        nextActions: [
-          'Check Pass / QR status',
-          'Open Passport Map',
-          'Review Passport Trails',
-          'Check Trip Status',
-          'Review Payment Status',
-        ],
+        answer,
+        nextActions,
         limits: [
           'I cannot approve clearance.',
           'I cannot issue passes.',
           'I cannot mark payment as paid.',
+          'I cannot create bookings or assign guides.',
           'I cannot unlock stamps without governed QR/stamp records.',
-          'I cannot treat submitted KB as official until approved.',
+          'I cannot confirm emergency dispatch or LGU broadcast delivery without backend proof.',
+          'Speech input is not active in Phase 1.',
         ],
       },
       context: travelerContext,
       knowledgeCoverage: knowledgeSpine?.spineCoverage || {},
     };
   }
+
+
+
+
 
 }

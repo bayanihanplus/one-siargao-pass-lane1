@@ -1,3 +1,4 @@
+import KuyaTalaChatBox from "../../../src/traveler-assistant/KuyaTalaChatBox";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../src/lib/server-auth";
@@ -162,6 +163,14 @@ function getPanel(searchParams?: { [key: string]: string | string[] | undefined 
   if (value === "assistant") return "assistant";
   if (value === "notifications") return "notifications";
   return "language";
+}
+
+function getSingleSearchParam(
+  searchParams: { [key: string]: string | string[] | undefined } | undefined,
+  key: string,
+) {
+  const value = searchParams?.[key];
+  return Array.isArray(value) ? value[0] || "" : value || "";
 }
 
 function getSaved(searchParams?: { [key: string]: string | string[] | undefined }) {
@@ -481,6 +490,52 @@ function CurrencySelector(props: {
 
 
 
+
+async function sendKuyaTalaChatMessage(formData: FormData) {
+  "use server";
+
+  const message = String(formData.get("message") || "").trim();
+
+  if (!message) {
+    redirect("/traveler/settings?panel=assistant&assistantStatus=empty");
+  }
+
+  try {
+    const token = await requireAccessToken();
+    const res = await fetch(`${getApiBaseUrl()}/assistant/chat/messages`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+      body: JSON.stringify({
+        source: "traveler-settings-assistant",
+        message,
+      }),
+    });
+
+    const payload = await res.json().catch(() => null);
+    const status = res.ok && payload?.ok ? "sent" : "failed";
+
+    const params = new URLSearchParams({
+      panel: "assistant",
+      assistantStatus: status,
+      assistantMessage: message.slice(0, 280),
+    });
+
+    redirect(`/traveler/settings?${params.toString()}`);
+  } catch {
+    const params = new URLSearchParams({
+      panel: "assistant",
+      assistantStatus: "failed",
+      assistantMessage: message.slice(0, 280),
+    });
+
+    redirect(`/traveler/settings?${params.toString()}`);
+  }
+}
+
 function safeList(value: any) {
   return Array.isArray(value) ? value : [];
 }
@@ -493,105 +548,14 @@ function safeText(value: any, fallback = "Not confirmed") {
   return fallback;
 }
 
-
 function KuyaTalaChatShell() {
-  return (
-    <section
-      aria-label="Kuya Tala chat message shell"
-      style={{
-        marginTop: 12,
-        borderRadius: 26,
-        padding: 14,
-        background: "linear-gradient(145deg, #ecfeff, #ffffff 52%, #fff8eb)",
-        border: "1px solid rgba(125,211,252,0.76)",
-        boxShadow: "0 18px 46px rgba(15,23,42,0.08)",
-      }}
-    >
-      <div
-        style={{
-          fontSize: 10,
-          fontWeight: 950,
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          color: "#078da0",
-        }}
-      >
-        Traveler Chat Message Endpoint
-      </div>
-
-      <h3
-        style={{
-          margin: "7px 0 6px",
-          fontSize: 20,
-          lineHeight: 1.05,
-          fontWeight: 850,
-          letterSpacing: "-0.045em",
-          color: "#10234a",
-        }}
-      >
-        Ask Kuya Tala™
-      </h3>
-
-      <p
-        style={{
-          margin: "0 0 12px",
-          fontSize: 11.8,
-          lineHeight: 1.45,
-          fontWeight: 650,
-          color: "#53657d",
-        }}
-      >
-        This traveler-facing window is for Kuya Tala™ chat access only. Knowledge uploads, guardrails, and approval workflows belong in the Admin Console, not the public traveler page.
-      </p>
-
-      <form
-        action="/api/not-wired-client-only"
-        style={{
-          display: "grid",
-          gap: 9,
-        }}
-      >
-        <textarea
-          name="message"
-          placeholder="Ask about trip readiness, QR/pass status, Passport Trails, payments, or responsible movement..."
-          disabled
-          rows={4}
-          style={{
-            width: "100%",
-            resize: "vertical",
-            borderRadius: 18,
-            border: "1px solid rgba(191,231,238,0.92)",
-            padding: 12,
-            fontSize: 12,
-            lineHeight: 1.4,
-            color: "#10234a",
-            background: "#f8fafc",
-            boxSizing: "border-box",
-          }}
-        />
-        <button
-          type="button"
-          disabled
-          style={{
-            minHeight: 48,
-            borderRadius: 18,
-            border: "1px solid rgba(125,211,252,0.76)",
-            background: "linear-gradient(135deg, #14b8c6, #078da0)",
-            color: "#ffffff",
-            fontWeight: 900,
-            fontSize: 12.5,
-            opacity: 0.74,
-          }}
-        >
-          Ask Kuya Tala™ — Phase 2 Activation Pending
-        </button>
-      </form>
-    </section>
-  );
+  return <KuyaTalaChatBox />;
 }
 
 function KuyaTalaAssistantPanel(props: {
   assistantData: any;
+  submittedMessage?: string;
+  assistantStatus?: string;
 }) {
   const assistantDataSafe = props.assistantData || {};
   const context = assistantDataSafe?.travelerContext || { ok: false, error: "Traveler context not loaded yet." };
@@ -934,30 +898,6 @@ function KuyaTalaAssistantPanel(props: {
               {label}
             </span>
           ))}
-
-          <a
-            href="/traveler/emergency-safety"
-            aria-label="Open Emergency and Safety"
-            title="Emergency & Safety route-only settings action"
-            style={{
-              minHeight: 46,
-              borderRadius: 18,
-              padding: "0 13px",
-              background: "linear-gradient(135deg, #fff1f2, #ffffff)",
-              border: "1px solid rgba(254,202,202,0.95)",
-              color: "#b91c1c",
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 12,
-              fontWeight: 900,
-              boxShadow: "0 10px 24px rgba(220,38,38,0.08)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Emergency
-          </a>
         </div>
 
         <div
@@ -1014,6 +954,8 @@ export default async function TravelerSettingsPage({
   const currentDisplayCurrency = user?.preferredDisplayCurrencyCode || "USD";
   const dictionary = await getTravelerDictionary(currentLanguage);
   const assistantData = activePanel === "assistant" ? await getKuyaTalaAssistantData() : null;
+  const assistantStatus = getSingleSearchParam(searchParams, "assistantStatus");
+  const assistantMessage = getSingleSearchParam(searchParams, "assistantMessage");
   const copy = panelCopy(activePanel, dictionary);
 
   const tabs: { key: PanelKey; label: string; href: string }[] = [
@@ -1081,9 +1023,93 @@ export default async function TravelerSettingsPage({
           {t(dictionary, "settings.title", "Traveler Controls")}
         </h1>
         <p style={{ marginTop: 9, marginBottom: 0, color: "#64748b", lineHeight: 1.4, fontSize: 14 }}>
-          Language, currency, assistant access, and alerts.
+          Language, currency, assistant access, emergency safety, and alerts.
         </p>
       </header>
+
+      <a
+        href="/traveler/emergency-safety"
+        aria-label="Open Emergency and Safety"
+        title="Emergency & Safety primary traveler control"
+        style={{
+          width: "100%",
+          minHeight: 78,
+          borderRadius: 24,
+          padding: "13px 14px",
+          marginBottom: 14,
+          background:
+            "linear-gradient(135deg, rgba(255,241,242,0.98), rgba(255,255,255,0.96))",
+          border: "1px solid rgba(254,202,202,0.95)",
+          color: "#10234a",
+          textDecoration: "none",
+          display: "grid",
+          gridTemplateColumns: "auto 1fr auto",
+          alignItems: "center",
+          gap: 12,
+          boxShadow: "0 14px 34px rgba(220,38,38,0.10)",
+          boxSizing: "border-box",
+        }}
+      >
+        <span
+          aria-hidden="true"
+          style={{
+            width: 46,
+            height: 46,
+            borderRadius: 18,
+            background: "linear-gradient(135deg, #ef4444, #b91c1c)",
+            color: "#ffffff",
+            display: "grid",
+            placeItems: "center",
+            fontSize: 22,
+            fontWeight: 950,
+            boxShadow: "0 12px 26px rgba(220,38,38,0.18)",
+          }}
+        >
+          !
+        </span>
+
+        <span style={{ display: "grid", gap: 3, minWidth: 0 }}>
+          <strong
+            style={{
+              fontSize: 14,
+              lineHeight: 1.05,
+              fontWeight: 950,
+              letterSpacing: "-0.025em",
+              color: "#10234a",
+            }}
+          >
+            Emergency & Safety
+          </strong>
+          <span
+            style={{
+              fontSize: 11.2,
+              lineHeight: 1.35,
+              fontWeight: 680,
+              color: "#64748b",
+            }}
+          >
+            Quickly access trip safety guidance, OSP Pass / QR, and emergency readiness information.
+          </span>
+        </span>
+
+        <span
+          aria-hidden="true"
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 13,
+            background: "#ffffff",
+            border: "1px solid rgba(254,202,202,0.95)",
+            color: "#b91c1c",
+            display: "grid",
+            placeItems: "center",
+            fontSize: 18,
+            fontWeight: 950,
+          }}
+        >
+          ›
+        </span>
+      </a>
 
       <nav
         style={{
@@ -1235,7 +1261,11 @@ export default async function TravelerSettingsPage({
           Controlled access only
         </div>
                   {activePanel === "assistant" ? (
-            <KuyaTalaAssistantPanel assistantData={assistantData} />
+            <KuyaTalaAssistantPanel
+              assistantData={assistantData}
+              submittedMessage={assistantMessage}
+              assistantStatus={assistantStatus}
+            />
           ) : null}
 
 <p style={{ margin: 0, color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
