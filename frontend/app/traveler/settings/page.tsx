@@ -934,6 +934,30 @@ function KuyaTalaAssistantPanel(props: {
               {label}
             </span>
           ))}
+
+          <a
+            href="/traveler/emergency-safety"
+            aria-label="Open Emergency and Safety"
+            title="Emergency & Safety route-only settings action"
+            style={{
+              minHeight: 46,
+              borderRadius: 18,
+              padding: "0 13px",
+              background: "linear-gradient(135deg, #fff1f2, #ffffff)",
+              border: "1px solid rgba(254,202,202,0.95)",
+              color: "#b91c1c",
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 12,
+              fontWeight: 900,
+              boxShadow: "0 10px 24px rgba(220,38,38,0.08)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Emergency
+          </a>
         </div>
 
         <div

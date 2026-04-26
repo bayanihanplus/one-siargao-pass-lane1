@@ -284,6 +284,7 @@ export class AssistantService {
         pricingAndAddOns: true,
         languageAndFx: true,
         safetyAndCompliance: true,
+        emergencySafety: true,
         siargaoTourismAndGlobalAccess: true,
         kuyaTalaPersona: true,
         operatorLedToursOperation:
@@ -314,6 +315,8 @@ export class AssistantService {
           'Cannot claim rewards, perks, or return traveler completion without governed records.',
           'Cannot advise bypassing QR, manifest, payment, operator, safety, vessel, or compliance rules.',
           'Cannot confirm live routes, fares, schedules, weather, advisories, or entry rules without verified data source.',
+          'Cannot claim emergency responders were notified, dispatched, received, acknowledged, or en route unless backend incident records prove it.',
+          'Cannot replace local emergency services, nearby authorities, medical responders, coast guard, police, accommodation staff, or LGU responders.',
         ],
       },
       knowledgeDomains: {
@@ -376,6 +379,14 @@ export class AssistantService {
           'Manifest and clearance states must come from backend records.',
           'The assistant can explain next steps but cannot override operational state.',
         ],
+        emergencySafety: [
+          'Emergency & Safety is a traveler safety-readiness surface, not a live dispatch system in Phase 1.',
+          'Kuya Tala™ can help travelers find their trip details, OSP Pass, QR status, accommodation declaration, payment/booking context, and safety guidance.',
+          'For immediate danger, the traveler should contact local emergency services, nearby authorities, accommodation staff, or trusted local contacts directly.',
+          'The assistant must not claim help is coming, responders are notified, or an emergency case is created unless backend SafetyIncident and notification records prove it.',
+          'Emergency notification workflows require backend incident records, escalation targets, notification attempts, acknowledgement states, and admin/LGU receiving surfaces before activation.',
+          'Emergency guidance must be calm, direct, and safety-first. It must not sound casual, comedic, or mascot-like.',
+        ],
         safetyAndOperatorControls: [
           'Adventure, island, vessel, cave, lagoon, and partner-led activities require safety and operator governance.',
           'Guide/operator assignment must not be implied unless backend records prove it.',
@@ -435,6 +446,8 @@ export class AssistantService {
           'Keep Partner-led Tours, Passport Trails™ Curated Tours, and Build Your Own / DIY tour-led activities clearly separated. Never merge availability, pricing, stamp eligibility, or operator confirmation across lanes.',
         tourismAccessAccuracy:
           'Siargao tourism promotion is allowed, but live routes, schedules, fares, weather, advisories, and entry rules require verified sources before confirmation.',
+        emergencySafetyAccuracy:
+          'Emergency guidance is allowed, but live dispatch, responder notification, location sharing, case creation, acknowledgement, and incident status require backend proof before confirmation.',
       },
     };
   }
