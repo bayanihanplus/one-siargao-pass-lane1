@@ -1631,44 +1631,54 @@ function NavIcon(props: {
 
 
 function SpmJourneyHubEngagement() {
+  const routeNodes = [
+    {
+      label: "Verified",
+      icon: "✓",
+      state: "completed",
+      tone: "#16a34a",
+      softBg: "rgba(220,252,231,0.92)",
+      border: "rgba(34,184,90,0.32)",
+    },
+    {
+      label: "Current",
+      icon: "⌁",
+      state: "active",
+      tone: "#0891b2",
+      softBg: "rgba(232,251,255,0.96)",
+      border: "rgba(8,145,178,0.34)",
+    },
+    {
+      label: "Next",
+      icon: "↗",
+      state: "next",
+      tone: "#f59e0b",
+      softBg: "rgba(255,248,220,0.96)",
+      border: "rgba(245,158,11,0.34)",
+    },
+    {
+      label: "Locked",
+      icon: "▣",
+      state: "locked",
+      tone: "#64748b",
+      softBg: "rgba(248,250,252,0.98)",
+      border: "rgba(148,163,184,0.34)",
+    },
+  ];
+
   return (
     <section
-      aria-label="SPM next best action"
+      aria-label="SPM Functional Journey Map"
       style={{
         marginTop: 16,
         border: "1px solid #bfe7ee",
-        borderRadius: 22,
-        background: "linear-gradient(135deg, rgba(236,254,255,0.98), rgba(255,255,255,0.97))",
-        padding: 12,
-        boxShadow: "0 14px 34px rgba(8,61,103,0.09)",
+        borderRadius: 24,
+        background: "linear-gradient(180deg, rgba(255,255,255,0.99), rgba(244,253,255,0.95))",
+        padding: 13,
+        boxShadow: "0 16px 38px rgba(8,61,103,0.10)",
       }}
     >
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "36px 1fr 88px",
-          gap: 10,
-          alignItems: "center",
-        }}
-      >
-        <div
-          aria-hidden="true"
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 15,
-            background: "linear-gradient(135deg, #14b8c6, #078da0)",
-            color: "#ffffff",
-            display: "grid",
-            placeItems: "center",
-            fontSize: 18,
-            fontWeight: 900,
-            boxShadow: "0 10px 22px rgba(7,141,160,0.20)",
-          }}
-        >
-          ↯
-        </div>
-
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
         <div style={{ minWidth: 0 }}>
           <div
             style={{
@@ -1679,15 +1689,15 @@ function SpmJourneyHubEngagement() {
               color: "#0796a6",
             }}
           >
-            Continue Trail
+            Functional Journey Map
           </div>
           <h2
             style={{
-              margin: "4px 0 0",
-              fontSize: 14.6,
-              lineHeight: 1.08,
+              margin: "5px 0 0",
+              fontSize: 18,
+              lineHeight: 1.04,
               fontWeight: 900,
-              letterSpacing: "-0.035em",
+              letterSpacing: "-0.045em",
               color: "#14264b",
             }}
           >
@@ -1695,36 +1705,225 @@ function SpmJourneyHubEngagement() {
           </h2>
           <p
             style={{
-              margin: "4px 0 0",
-              fontSize: 9.2,
-              lineHeight: 1.18,
-              fontWeight: 700,
+              margin: "5px 0 0",
+              fontSize: 10.4,
+              lineHeight: 1.22,
+              fontWeight: 720,
               color: "#53657d",
             }}
           >
-            Only verified QR activity counts toward stamps, unlocks, and progress.
+            A compact route view for verified stops, next unlocks, and locked trail progress.
           </p>
         </div>
 
         <a
           href="/traveler/passport-trails/tri-island-joiner"
-          aria-label="Continue Island Hopping Passport Trail"
+          aria-label="Open active Island Hopping Passport Trail"
           style={{
-            minHeight: 44,
-            borderRadius: 16,
+            flexShrink: 0,
+            minHeight: 40,
+            minWidth: 78,
+            borderRadius: 15,
             background: "linear-gradient(135deg, #22b85a, #11843d)",
             color: "#ffffff",
             display: "grid",
             placeItems: "center",
             textDecoration: "none",
-            fontSize: 9.4,
+            fontSize: 9.8,
             fontWeight: 900,
             boxShadow: "0 10px 22px rgba(17,132,61,0.20)",
-            transition: "box-shadow 160ms ease",
           }}
         >
-          Continue
+          Open Trail
         </a>
+      </div>
+
+      <div
+        aria-label="Compact route progress preview"
+        style={{
+          marginTop: 12,
+          borderRadius: 22,
+          border: "1px solid rgba(191,231,238,0.82)",
+          background: "linear-gradient(135deg, #e8fbff 0%, #ffffff 54%, #f8fafc 100%)",
+          padding: "14px 12px",
+          position: "relative",
+          overflow: "hidden",
+          minHeight: 150,
+        }}
+      >
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "radial-gradient(circle at 18% 22%, rgba(20,184,198,0.14), transparent 26%), radial-gradient(circle at 82% 34%, rgba(34,184,90,0.10), transparent 28%), radial-gradient(circle at 62% 88%, rgba(245,158,11,0.12), transparent 26%)",
+          }}
+        />
+
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 320 120"
+          width="100%"
+          height="120"
+          preserveAspectRatio="none"
+          style={{ position: "relative", display: "block" }}
+        >
+          <path
+            d="M28 88 C76 44, 110 76, 146 48 C184 18, 217 42, 257 25 C282 14, 298 22, 306 38"
+            fill="none"
+            stroke="rgba(148,163,184,0.42)"
+            strokeWidth="7"
+            strokeLinecap="round"
+            strokeDasharray="8 10"
+          />
+          <path
+            d="M28 88 C76 44, 110 76, 146 48"
+            fill="none"
+            stroke="#16a34a"
+            strokeWidth="7"
+            strokeLinecap="round"
+          />
+          <path
+            d="M146 48 C184 18, 217 42, 257 25"
+            fill="none"
+            stroke="#0891b2"
+            strokeWidth="7"
+            strokeLinecap="round"
+          />
+          <path
+            d="M257 25 C282 14, 298 22, 306 38"
+            fill="none"
+            stroke="#f59e0b"
+            strokeWidth="7"
+            strokeLinecap="round"
+            strokeDasharray="4 8"
+          />
+        </svg>
+
+        <div
+          style={{
+            position: "absolute",
+            left: "7%",
+            bottom: 35,
+            width: 32,
+            height: 32,
+            borderRadius: 14,
+            background: "#16a34a",
+            color: "#ffffff",
+            display: "grid",
+            placeItems: "center",
+            fontSize: 16,
+            fontWeight: 950,
+            boxShadow: "0 10px 22px rgba(22,163,74,0.24)",
+          }}
+        >
+          ✓
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            left: "42%",
+            top: 46,
+            width: 36,
+            height: 36,
+            borderRadius: 15,
+            background: "linear-gradient(135deg, #14b8c6, #078da0)",
+            color: "#ffffff",
+            display: "grid",
+            placeItems: "center",
+            fontSize: 18,
+            fontWeight: 950,
+            boxShadow: "0 12px 26px rgba(7,141,160,0.24)",
+          }}
+        >
+          ⌁
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            right: "18%",
+            top: 25,
+            width: 38,
+            height: 38,
+            borderRadius: 16,
+            background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
+            color: "#ffffff",
+            display: "grid",
+            placeItems: "center",
+            fontSize: 18,
+            fontWeight: 950,
+            boxShadow: "0 14px 30px rgba(245,158,11,0.28)",
+          }}
+        >
+          ↗
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            right: "4%",
+            top: 44,
+            width: 30,
+            height: 30,
+            borderRadius: 13,
+            background: "#64748b",
+            color: "#ffffff",
+            display: "grid",
+            placeItems: "center",
+            fontSize: 14,
+            fontWeight: 900,
+            boxShadow: "0 8px 18px rgba(100,116,139,0.20)",
+          }}
+        >
+          ▣
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            left: 12,
+            top: 12,
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.86)",
+            border: "1px solid rgba(191,231,238,0.76)",
+            padding: "5px 8px",
+            fontSize: 8.5,
+            fontWeight: 900,
+            color: "#067889",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+          }}
+        >
+          Preview / DB-ready
+        </div>
+      </div>
+
+      <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 7 }}>
+        {routeNodes.map((node) => (
+          <div
+            key={node.state}
+            style={{
+              minHeight: 58,
+              borderRadius: 16,
+              border: `1px solid ${node.border}`,
+              background: `linear-gradient(180deg, ${node.softBg}, rgba(255,255,255,0.96))`,
+              display: "grid",
+              placeItems: "center",
+              textAlign: "center",
+              padding: "7px 4px",
+            }}
+          >
+            <div style={{ color: node.tone, fontSize: 15, fontWeight: 950, lineHeight: 1 }}>
+              {node.icon}
+            </div>
+            <div style={{ marginTop: 5, color: "#14264b", fontSize: 8.7, lineHeight: 1.05, fontWeight: 900 }}>
+              {node.label}
+            </div>
+          </div>
+        ))}
       </div>
 
       <div
@@ -1744,7 +1943,7 @@ function SpmJourneyHubEngagement() {
           }}
         >
           <div style={{ fontSize: 8.3, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: "#067889" }}>
-            ⌁ Trail
+            Active Trail
           </div>
           <div style={{ marginTop: 3, fontSize: 11.4, fontWeight: 880, color: "#14264b", lineHeight: 1.06 }}>
             Island Hopping
@@ -1755,15 +1954,15 @@ function SpmJourneyHubEngagement() {
           style={{
             borderRadius: 16,
             border: "1px solid rgba(191,231,238,0.76)",
-            background: "linear-gradient(135deg, #ffffff, #f8fbfc)",
+            background: "linear-gradient(135deg, #ffffff, #fff8dc)",
             padding: "9px 10px",
           }}
         >
-          <div style={{ fontSize: 8.3, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: "#64748b" }}>
-            ▣ Unlock
+          <div style={{ fontSize: 8.3, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: "#b45309" }}>
+            Next Unlock
           </div>
           <div style={{ marginTop: 3, fontSize: 11.4, fontWeight: 880, color: "#14264b", lineHeight: 1.06 }}>
-            After scan
+            After verified QR scan
           </div>
         </div>
       </div>
