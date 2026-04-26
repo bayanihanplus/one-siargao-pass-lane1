@@ -616,60 +616,6 @@ export default function PassportTrailDetailPage({
           </ShellCard>
         </div>
 
-        <div style={{ marginTop: 16 }}>
-          <ShellCard ariaLabel="Recommended next move">
-            <SectionEyebrow>Recommended Next Move</SectionEyebrow>
-            <div
-              style={{
-                marginTop: 8,
-                display: "grid",
-                gridTemplateColumns: "40px 1fr",
-                gap: 8,
-                alignItems: "center",
-              }}
-            >
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: "#dff8ff",
-                  color: "#067889",
-                  fontSize: 20,
-                  fontWeight: 720,
-                }}
-              >
-                2
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontSize: 14.4,
-                    fontWeight: 720,
-                    lineHeight: 1.16,
-                  }}
-                >
-                  → Continue to {trail.nextStop}
-                </div>
-                <div
-                  style={{
-                    marginTop: 4,
-                    fontSize: 11.5,
-                    fontWeight: 600,
-                    color: "#53657d",
-                    lineHeight: 1.35,
-                  }}
-                >
-                  {trail.nextStopReason}
-                </div>
-              </div>
-            </div>
-          </ShellCard>
-        </div>
-
         <section style={{ marginTop: 18 }}>
           <div
             style={{
