@@ -168,7 +168,7 @@ function Section(props: { title: string; children: any }) {
           marginTop: 0,
           marginBottom: 14,
           fontSize: 18,
-          lineHeight: 1.1,
+          lineHeight: 1.16,
           letterSpacing: "-0.03em",
           color: "#19305a",
         }}
@@ -198,7 +198,7 @@ function KeyValue(props: { label: string; value: any }) {
       <div
         style={{
           fontSize: 11,
-          fontWeight: 900,
+          fontWeight: 690,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
           color: "#7a93ad",
@@ -207,7 +207,7 @@ function KeyValue(props: { label: string; value: any }) {
       >
         {label}
       </div>
-      <div style={{ fontWeight: 750, color: "#0f172a" }}>{value ?? "—"}</div>
+      <div style={{ fontWeight: 610, color: "#0f172a" }}>{value ?? "—"}</div>
     </div>
   );
 }
@@ -312,7 +312,7 @@ function StatusChip(props: { label: string; value: any }) {
       <div
         style={{
           fontSize: 10,
-          fontWeight: 900,
+          fontWeight: 690,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
           color: "#7a93ad",
@@ -321,7 +321,7 @@ function StatusChip(props: { label: string; value: any }) {
       >
         {props.label}
       </div>
-      <div style={{ fontSize: 15, fontWeight: 900, color: "#19305a" }}>{props.value ?? "—"}</div>
+      <div style={{ fontSize: 15, fontWeight: 690, color: "#19305a" }}>{props.value ?? "—"}</div>
     </div>
   );
 }
@@ -402,7 +402,7 @@ export default async function TravelerPassPage() {
           <div
             style={{
               fontSize: 12,
-              fontWeight: 950,
+              fontWeight: 720,
               letterSpacing: "0.14em",
               textTransform: "uppercase",
               color: "#0e7490",
@@ -458,7 +458,7 @@ export default async function TravelerPassPage() {
               color: "#19305a",
               textDecoration: "none",
               fontSize: 13,
-              fontWeight: 850,
+              fontWeight: 660,
               boxShadow: "0 8px 18px rgba(15,23,42,0.035)",
             }}
           >
@@ -522,7 +522,7 @@ export default async function TravelerPassPage() {
                   </svg>
                 </div>
                 <div>
-                  <div style={{ fontSize: 26, fontWeight: 950, lineHeight: 1.02, color: "#19305a", letterSpacing: "-0.04em" }}>{readiness.title}</div>
+                  <div style={{ fontSize: 26, fontWeight: 720, lineHeight: 1.02, color: "#19305a", letterSpacing: "-0.04em" }}>{readiness.title}</div>
                   <p style={{ marginTop: 7, marginBottom: 0, fontSize: 14, lineHeight: 1.4, color: "#475569", fontWeight: 650 }}>{readiness.body}</p>
                 </div>
               </div>
@@ -532,7 +532,7 @@ export default async function TravelerPassPage() {
           <Section title={t(dictionary, "pass.qr.sectionTitle", "QR Credential")}>
             {trip.pass?.qrCredential?.qrToken ? (
               <div style={{ marginBottom: 16 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, color: "#0e7490", fontWeight: 900 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, color: "#0e7490", fontWeight: 690 }}>
                   <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
                     <rect x="4" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
                     <rect x="14" y="4" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.9" />
@@ -606,7 +606,7 @@ export default async function TravelerPassPage() {
               }}
             >
               <div>
-                <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.08em", color: "#0e7490", textTransform: "uppercase" }}>
+                <div style={{ fontSize: 13, fontWeight: 690, letterSpacing: "0.08em", color: "#0e7490", textTransform: "uppercase" }}>
                   {t(dictionary, "pass.spm.eyebrow", "Second Screen")}
                 </div>
                 <h2 style={{ margin: "6px 0 0", fontSize: 24, lineHeight: 1.05 }}>
@@ -630,7 +630,7 @@ export default async function TravelerPassPage() {
                   background: "#0e7490",
                   color: "#ffffff",
                   textDecoration: "none",
-                  fontWeight: 900,
+                  fontWeight: 690,
                   boxShadow: "0 10px 20px rgba(14,116,144,0.18)",
                 }}
               >

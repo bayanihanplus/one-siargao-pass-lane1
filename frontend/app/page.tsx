@@ -881,6 +881,7 @@ function HeaderControlButton(props: {
   ariaLabel: string;
   href?: string;
   icon: "language" | "currency" | "assistant";
+  className?: string;
 }) {
   const icon =
     props.icon === "language" ? (
@@ -927,7 +928,7 @@ function HeaderControlButton(props: {
 
   if (props.href) {
     return (
-      <a href={props.href} aria-label={props.ariaLabel} style={style}>
+      <a className={props.className} href={props.href} aria-label={props.ariaLabel} style={style}>
         {content}
       </a>
     );
@@ -1048,9 +1049,10 @@ function TravelerShellFrame(props: {
         >
           <HeaderControlButton label={languageLabel} ariaLabel={languageAriaLabel} href="/traveler/settings?panel=language" icon="language" />
           <HeaderControlButton label="PHP" ariaLabel={currencyAriaLabel} href="/traveler/settings?panel=currency" icon="currency" />
-          <HeaderControlButton label="AI" ariaLabel={assistantAriaLabel} href="/traveler/settings?panel=assistant" icon="assistant" />
+          <HeaderControlButton className="osp-phone-secondary-control" label="AI" ariaLabel={assistantAriaLabel} href="/traveler/settings?panel=assistant" icon="assistant" />
 
           <a
+            className="osp-phone-hidden-notification"
             href="/traveler/settings?panel=notifications"
             aria-label={notificationsAriaLabel}
             style={{
@@ -1825,6 +1827,43 @@ function TravelerShell(props: {
         overflowX: "hidden",
       }}
     >
+      <style>
+        {`
+          @media (max-width: 360px) {
+            .osp-traveler-shell {
+              padding-left: 6px !important;
+              padding-right: 6px !important;
+            }
+
+            .osp-pass-text-column {
+              min-width: 126px !important;
+              max-width: 142px !important;
+            }
+
+            .osp-pass-qr-card {
+              width: 136px !important;
+              height: 136px !important;
+            }
+          }
+
+          @media (max-width: 429px) {
+            .osp-phone-hidden-notification {
+              display: flex !important;
+            }
+
+            .osp-phone-secondary-control {
+              display: none !important;
+            }
+          }
+
+          @media (min-width: 430px) {
+            .osp-phone-hidden-notification,
+            .osp-phone-secondary-control {
+              display: flex !important;
+            }
+          }
+        `}
+      </style>
       <TravelerShellFrame
         latestTravelerTrip={props.latestTravelerTrip}
         dictionary={props.dictionary}

@@ -1004,11 +1004,11 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
             </a>
 
             {[
-              { icon: "🌊", name: "Surf & Coastal", hint: "Beach and surf stops" },
-              { icon: "🍽️", name: "Food & Culture", hint: "Local flavors" },
-              { icon: "🌿", name: "Nature & Inland", hint: "Falls and inland stops" },
-              { icon: "🏘️", name: "Heritage & Local Life", hint: "Community routes" },
-              { icon: "⭐", name: "Hidden Gems", hint: "Curated discoveries" },
+              { icon: "🌊", name: "Surf & Coastal", href: "/traveler/passport-trails/surf-coastal", hint: "Beach and surf stops" },
+              { icon: "🍽️", name: "Food & Culture", href: "/traveler/passport-trails/food-culture", hint: "Local flavors" },
+              { icon: "🌿", name: "Nature & Inland", href: "/traveler/passport-trails/nature-inland", hint: "Falls and inland stops" },
+              { icon: "🏘️", name: "Heritage & Local Life", href: "/traveler/passport-trails/heritage-local-life", hint: "Community routes" },
+              { icon: "⭐", name: "Hidden Gems", href: "/traveler/passport-trails/hidden-gems", hint: "Curated discoveries" },
             ].map((family) => (
               <div
                 key={family.name}
