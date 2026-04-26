@@ -2263,10 +2263,10 @@ function SpmFeaturedPartnerTours() {
         Featured Siargao Partner Tours
       </div>
       <h2 style={{ margin: "7px 0 8px", fontSize: 23, lineHeight: 1.06, fontWeight: 690, letterSpacing: "-0.04em", color: "#14264b" }}>
-        Local tour products made Passport-ready.
+        Partner tours made Passport-ready.
       </h2>
       <p style={{ margin: "0 0 13px", fontSize: 12.5, lineHeight: 1.42, fontWeight: 600, color: "#607089" }}>
-        These are Siargao Partner Tours operated by approved local partners. They are commercial packages, not free map entries.
+        Siargao Partner Tours are operated by approved local partners. Package pricing applies when booking opens.
       </p>
 
       <div style={{ display: "grid", gap: 10 }}>
@@ -2400,7 +2400,7 @@ function SpmBuildYourOwnTrailSection() {
         Build Your Own Passport Trail
       </div>
       <h2 style={{ margin: "7px 0 8px", fontSize: 23, lineHeight: 1.06, fontWeight: 690, letterSpacing: "-0.04em", color: "#14264b" }}>
-        Create a personal route with SPM guidance.
+        Build a personal Passport Trail with SPM guidance.
       </h2>
       <p style={{ margin: "0 0 13px", fontSize: 12.5, lineHeight: 1.42, fontWeight: 600, color: "#607089" }}>
         Route guidance is provided by SPM. Approved local partner support may apply where transport, boat, guide, or activity service is required.
