@@ -53,7 +53,7 @@ export default async function TravelerPassportMapPage() {
               minHeight: 64,
               position: "relative",
               zIndex: 5,
-              paddingRight: 42,
+              paddingRight: 90,
             }}
           >
             <a
@@ -119,54 +119,107 @@ export default async function TravelerPassportMapPage() {
               </p>
             </div>
 
-            <a
-              href="/traveler/settings?panel=notifications"
-              aria-label="Open traveler notifications"
+            <div
+              aria-label="Passport Map header actions"
               style={{
-                width: 34,
-                minHeight: 42,
-                borderRadius: "50%",
-                color: "#14264b",
-                background: "rgba(255,255,255,0.9)",
-                border: "1px solid rgba(20,38,75,0.08)",
+                position: "absolute",
+                top: 12,
+                right: 0,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                textDecoration: "none",
-                position: "absolute",
-                top: 15,
-                right: 0,
-                boxShadow: "0 6px 14px rgba(15,23,42,0.05)",
+                gap: 7,
               }}
             >
-              <span
-                aria-hidden="true"
+              <a
+                href="/traveler/settings?panel=notifications"
+                aria-label="Open traveler notifications"
                 style={{
-                  position: "absolute",
-                  top: 6,
-                  right: 6,
-                  width: 7,
-                  height: 7,
-                  borderRadius: "50%",
-                  background: "#ff5638",
+                  width: 38,
+                  minHeight: 42,
+                  borderRadius: 18,
+                  color: "#14264b",
+                  background: "rgba(255,255,255,0.92)",
+                  border: "1px solid rgba(20,38,75,0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  position: "relative",
+                  boxShadow: "0 8px 18px rgba(15,23,42,0.06)",
                 }}
-              />
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
-                <path
-                  d="M18 8.5a6 6 0 1 0-12 0c0 7-2.5 7.7-2.5 9h17c0-1.3-2.5-2-2.5-9Z"
-                  stroke="currentColor"
-                  strokeWidth="1.9"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+              >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    top: 7,
+                    right: 7,
+                    width: 7,
+                    height: 7,
+                    borderRadius: "50%",
+                    background: "#ff5638",
+                  }}
                 />
-                <path
-                  d="M9.8 20.2a2.4 2.4 0 0 0 4.4 0"
-                  stroke="currentColor"
-                  strokeWidth="1.9"
-                  strokeLinecap="round"
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+                  <path
+                    d="M18 8.5a6 6 0 1 0-12 0c0 7-2.5 7.7-2.5 9h17c0-1.3-2.5-2-2.5-9Z"
+                    stroke="currentColor"
+                    strokeWidth="1.9"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M9.8 20.2a2.4 2.4 0 0 0 4.4 0"
+                    stroke="currentColor"
+                    strokeWidth="1.9"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </a>
+
+              <a
+                href="/traveler/settings?panel=assistant"
+                aria-label="Open OSP trip assistant"
+                title="Trip Assistant"
+                style={{
+                  minWidth: 42,
+                  minHeight: 42,
+                  borderRadius: 18,
+                  color: "#ffffff",
+                  background: "linear-gradient(135deg, #14b8c6, #078da0)",
+                  border: "1px solid rgba(255,255,255,0.58)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  position: "relative",
+                  boxShadow: "0 10px 22px rgba(7,141,160,0.22)",
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    inset: 3,
+                    borderRadius: 15,
+                    border: "1px solid rgba(255,255,255,0.22)",
+                  }}
                 />
-              </svg>
-            </a>
+                <span
+                  aria-hidden="true"
+                  style={{
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 15,
+                    fontWeight: 950,
+                    letterSpacing: "-0.04em",
+                    zIndex: 1,
+                  }}
+                >
+                  AI
+                </span>
+              </a>
+            </div>
           </header>
 
           <section
