@@ -8,7 +8,7 @@ Doctrine and backend spine audit foundation only. No live SMS, push, or email se
 
 Official Safety Broadcast.
 
-This is not Emergency Dispatch, Rescue Command, or responder assignment.
+This is not Emergency Dispatch or responder assignment.
 
 ## Access
 

@@ -100,7 +100,7 @@ export class OfficialSafetyBroadcastsService {
       access,
       productName: 'Official Safety Broadcast',
       productBoundary:
-        'Official Safety Broadcast is an authority-led public safety communication system. It is not emergency dispatch, rescue command, or responder assignment.',
+        'Official Safety Broadcast is an authority-led public safety communication system. It is not emergency dispatch or responder assignment.',
       phaseChannels: DELIVERY_CHANNELS,
       categories: BROADCAST_CATEGORIES,
       severities: BROADCAST_SEVERITIES,
