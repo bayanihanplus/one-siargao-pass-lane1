@@ -278,7 +278,7 @@ function LanguageSelector(props: {
             borderRadius: 16,
             border: "1px solid #cdeed7",
             background: "#eefdf3",
-            color: "#16a34a",
+            color: "#11843d",
             padding: "10px 12px",
             fontSize: 12,
             fontWeight: 900,
@@ -317,7 +317,7 @@ function LanguageSelector(props: {
                       type="submit"
                       aria-label={`Set language to ${option.label}`}
                       style={{
-                        minHeight: 34,
+                        minHeight: 42,
                         borderRadius: 999,
                         border: active ? `1px solid ${props.accent}` : `1px solid ${props.border}`,
                         background: active ? props.accent : "#ffffff",
@@ -359,7 +359,7 @@ function CurrencySelector(props: {
             borderRadius: 16,
             border: "1px solid #cdeed7",
             background: "#eefdf3",
-            color: "#16a34a",
+            color: "#11843d",
             padding: "10px 12px",
             fontSize: 12,
             fontWeight: 900,
@@ -373,7 +373,7 @@ function CurrencySelector(props: {
         style={{
           borderRadius: 18,
           border: `1px solid ${props.border}`,
-          background: "#ffffff",
+          background: "linear-gradient(135deg, #ffffff, #f4fdff)",
           padding: 12,
         }}
       >
@@ -481,11 +481,11 @@ export default async function TravelerSettingsPage({
           style={{
             display: "inline-flex",
             alignItems: "center",
-            minHeight: 34,
+            minHeight: 42,
             borderRadius: 999,
             border: "1px solid #dbe8ef",
             padding: "0 12px",
-            background: "#ffffff",
+            background: "linear-gradient(135deg, #ffffff, #f4fdff)",
             color: "#19305a",
             textDecoration: "none",
             fontSize: 12,
@@ -540,7 +540,7 @@ export default async function TravelerSettingsPage({
               key={tab.key}
               href={tab.href}
               style={{
-                minHeight: 38,
+                minHeight: 42,
                 borderRadius: 999,
                 border: active ? "1px solid #16bfd3" : "1px solid #dbe8ef",
                 background: active ? "#ecfeff" : "#ffffff",
@@ -572,10 +572,10 @@ export default async function TravelerSettingsPage({
         <div
           style={{
             width: 48,
-            height: 48,
+            minHeight: 48,
             borderRadius: 16,
             border: `1px solid ${copy.border}`,
-            background: "#ffffff",
+            background: "linear-gradient(135deg, #ffffff, #f4fdff)",
             color: copy.accent,
             display: "flex",
             alignItems: "center",
@@ -642,10 +642,10 @@ export default async function TravelerSettingsPage({
               <span
                 key={chip}
                 style={{
-                  minHeight: 32,
+                  minHeight: 42,
                   borderRadius: 999,
                   border: `1px solid ${copy.border}`,
-                  background: "#ffffff",
+                  background: "linear-gradient(135deg, #ffffff, #f4fdff)",
                   color: "#19305a",
                   display: "inline-flex",
                   alignItems: "center",
@@ -666,7 +666,7 @@ export default async function TravelerSettingsPage({
           marginTop: 14,
           border: "1px solid #dbe8ef",
           borderRadius: 20,
-          background: "#ffffff",
+          background: "linear-gradient(135deg, #ffffff, #f4fdff)",
           padding: 16,
           boxShadow: "0 10px 26px rgba(15,23,42,0.04)",
         }}

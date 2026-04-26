@@ -72,7 +72,7 @@ function statusTone(status: StopStatus) {
   if (status === "READY_TO_VERIFY") {
     return {
       label: "Ready to verify",
-      color: "#078da0",
+      color: "#067889",
       background: "#dff8ff",
       border: "#13a8b7",
     };
@@ -80,7 +80,7 @@ function statusTone(status: StopStatus) {
 
   return {
     label: "Locked",
-    color: "#718096",
+    color: "#53657d",
     background: "#edf2f5",
     border: "#a0aec0",
   };
@@ -91,10 +91,10 @@ function ShellCard(props: { children: React.ReactNode; ariaLabel?: string }) {
     <section
       aria-label={props.ariaLabel}
       style={{
-        border: "1px solid #d3eef2",
+        border: "1px solid #bfe7ee",
         borderRadius: 26,
-        background: "rgba(255,255,255,0.92)",
-        padding: 16,
+        background: "linear-gradient(135deg, rgba(255,255,255,0.96), rgba(244,253,255,0.88))",
+        padding: 13,
         boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
       }}
     >
@@ -148,7 +148,7 @@ export default function PassportTrailDetailPage({
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: 12,
+            gap: 8,
             marginBottom: 16,
           }}
         >
@@ -176,7 +176,7 @@ export default function PassportTrailDetailPage({
               background: "rgba(255,255,255,0.9)",
               color: "#0796a6",
               padding: "10px 14px",
-              fontSize: 12,
+              fontSize: 11.6,
               fontWeight: 720,
               whiteSpace: "nowrap",
             }}
@@ -215,13 +215,13 @@ export default function PassportTrailDetailPage({
           <h2
             style={{
               margin: "12px 0 8px",
-              fontSize: 24,
+              fontSize: 20,
               lineHeight: 1.08,
               fontWeight: 690,
               letterSpacing: "-0.035em",
             }}
           >
-            Verify stops. Unlock stamps. Continue the trail.
+            Verify stops. Unlock stamps. Continue.
           </h2>
 
           <p
@@ -238,11 +238,11 @@ export default function PassportTrailDetailPage({
 
           <div
             style={{
-              marginTop: 14,
+              marginTop: 10,
               display: "inline-flex",
               borderRadius: 999,
               padding: "7px 11px",
-              background: "#ffffff",
+              background: "linear-gradient(135deg, #ffffff, #f4fdff)",
               color: "#14264b",
               fontSize: 11,
               fontWeight: 720,
@@ -258,7 +258,7 @@ export default function PassportTrailDetailPage({
             <h2
               style={{
                 margin: "7px 0 8px",
-                fontSize: 22,
+                fontSize: 20,
                 lineHeight: 1.08,
                 fontWeight: 690,
                 letterSpacing: "-0.035em",
@@ -269,10 +269,10 @@ export default function PassportTrailDetailPage({
             <p
               style={{
                 margin: 0,
-                fontSize: 12.5,
+                fontSize: 12.1,
                 lineHeight: 1.42,
                 fontWeight: 600,
-                color: "#607089",
+                color: "#53657d",
               }}
             >
               At each verified stop, open your OSP Pass QR and present it for
@@ -282,10 +282,10 @@ export default function PassportTrailDetailPage({
 
             <div
               style={{
-                marginTop: 14,
+                marginTop: 10,
                 display: "grid",
                 gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                gap: 9,
+                gap: 8,
               }}
             >
               <Link
@@ -294,7 +294,7 @@ export default function PassportTrailDetailPage({
                 style={{
                   textDecoration: "none",
                   borderRadius: 18,
-                  background: "#13a8b7",
+                  background: "linear-gradient(135deg, #14b8c6, #078da0)",
                   color: "#ffffff",
                   padding: 13,
                   boxShadow: "0 12px 28px rgba(19,168,183,0.22)",
@@ -309,24 +309,24 @@ export default function PassportTrailDetailPage({
                     lineHeight: 1.12,
                   }}
                 >
-                  Show My QR
+                  ▣ Show My QR
                 </div>
                 <div
                   style={{
                     marginTop: 4,
-                    fontSize: 10.5,
+                    fontSize: 10.2,
                     fontWeight: 600,
                     opacity: 0.86,
                     lineHeight: 1.25,
                   }}
                 >
-                  Open traveler pass.
+                  ▣ Open traveler pass.
                 </div>
               </Link>
 
               <Link
                 href="/traveler/settings?panel=assistant"
-                aria-label="Ask Passport Assistant about this trail"
+                aria-label="✦ Ask Passport Assistant about this trail"
                 style={{
                   textDecoration: "none",
                   border: "1px solid #bdebf0",
@@ -350,9 +350,9 @@ export default function PassportTrailDetailPage({
                 <div
                   style={{
                     marginTop: 4,
-                    fontSize: 10.5,
+                    fontSize: 10.2,
                     fontWeight: 600,
-                    color: "#607089",
+                    color: "#53657d",
                     lineHeight: 1.25,
                   }}
                 >
@@ -371,7 +371,7 @@ export default function PassportTrailDetailPage({
                 marginTop: 8,
                 display: "grid",
                 gridTemplateColumns: "40px 1fr",
-                gap: 12,
+                gap: 8,
                 alignItems: "center",
               }}
             >
@@ -384,7 +384,7 @@ export default function PassportTrailDetailPage({
                   alignItems: "center",
                   justifyContent: "center",
                   background: "#dff8ff",
-                  color: "#078da0",
+                  color: "#067889",
                   fontSize: 20,
                   fontWeight: 720,
                 }}
@@ -394,19 +394,19 @@ export default function PassportTrailDetailPage({
               <div>
                 <div
                   style={{
-                    fontSize: 15,
+                    fontSize: 14.4,
                     fontWeight: 720,
                     lineHeight: 1.16,
                   }}
                 >
-                  Continue to {trail.nextStop}
+                  → Continue to {trail.nextStop}
                 </div>
                 <div
                   style={{
                     marginTop: 4,
                     fontSize: 11.5,
                     fontWeight: 600,
-                    color: "#607089",
+                    color: "#53657d",
                     lineHeight: 1.35,
                   }}
                 >
@@ -423,7 +423,7 @@ export default function PassportTrailDetailPage({
               display: "flex",
               alignItems: "flex-end",
               justifyContent: "space-between",
-              gap: 12,
+              gap: 8,
               marginBottom: 10,
             }}
           >
@@ -432,7 +432,7 @@ export default function PassportTrailDetailPage({
               <h2
                 style={{
                   margin: "5px 0 0",
-                  fontSize: 24,
+                  fontSize: 20,
                   lineHeight: 1.08,
                   fontWeight: 690,
                   letterSpacing: "-0.04em",
@@ -451,11 +451,11 @@ export default function PassportTrailDetailPage({
                 <article
                   key={stop.name}
                   style={{
-                    border: "1px solid #d3eef2",
+                    border: "1px solid #bfe7ee",
                     borderLeft: `5px solid ${tone.border}`,
                     borderRadius: 22,
                     background: "rgba(255,255,255,0.94)",
-                    padding: 14,
+                    padding: 13,
                     boxShadow: "0 10px 28px rgba(15,23,42,0.05)",
                   }}
                 >
@@ -464,7 +464,7 @@ export default function PassportTrailDetailPage({
                       display: "flex",
                       alignItems: "flex-start",
                       justifyContent: "space-between",
-                      gap: 10,
+                      gap: 8,
                     }}
                   >
                     <div>
@@ -509,10 +509,10 @@ export default function PassportTrailDetailPage({
                   <p
                     style={{
                       margin: "9px 0 0",
-                      fontSize: 12,
+                      fontSize: 11.6,
                       lineHeight: 1.4,
                       fontWeight: 600,
-                      color: "#607089",
+                      color: "#53657d",
                     }}
                   >
                     {stop.note}
@@ -520,7 +520,7 @@ export default function PassportTrailDetailPage({
 
                   <div
                     style={{
-                      marginTop: 12,
+                      marginTop: 10,
                       display: "grid",
                       gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
                       gap: 8,
@@ -529,7 +529,7 @@ export default function PassportTrailDetailPage({
                     <div
                       style={{
                         borderRadius: 14,
-                        background: "#f2f6f8",
+                        background: "linear-gradient(135deg, #f8fbfc, #ffffff)",
                         padding: "9px 10px",
                       }}
                     >
@@ -558,7 +558,7 @@ export default function PassportTrailDetailPage({
                     <div
                       style={{
                         borderRadius: 14,
-                        background: "#f2f6f8",
+                        background: "linear-gradient(135deg, #f8fbfc, #ffffff)",
                         padding: "9px 10px",
                       }}
                     >
@@ -592,11 +592,11 @@ export default function PassportTrailDetailPage({
 
         <div style={{ marginTop: 16 }}>
           <ShellCard ariaLabel="AI Passport Assistant trail detail prompt chips">
-            <SectionEyebrow>Ask Passport Assistant</SectionEyebrow>
+            <SectionEyebrow>✦ Ask Passport Assistant</SectionEyebrow>
             <div
               style={{
                 marginTop: 8,
-                fontSize: 15,
+                fontSize: 14.4,
                 fontWeight: 720,
                 lineHeight: 1.14,
               }}
@@ -609,13 +609,13 @@ export default function PassportTrailDetailPage({
                 fontSize: 11.5,
                 lineHeight: 1.38,
                 fontWeight: 600,
-                color: "#607089",
+                color: "#53657d",
               }}
             >
               Ask about stops, QR verification, stamp rules, and your next move. The assistant cannot confirm booking, payment, guide, or manifest status unless the system proves it.
             </p>
 
-            <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 7 }}>
+            <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 7 }}>
               {[
                 "How do I verify this stop?",
                 "What stamp can I unlock?",
@@ -631,8 +631,8 @@ export default function PassportTrailDetailPage({
                     borderRadius: 999,
                     background: "rgba(255,255,255,0.86)",
                     padding: "7px 9px",
-                    color: "#078da0",
-                    fontSize: 10.5,
+                    color: "#067889",
+                    fontSize: 10.2,
                     fontWeight: 720,
                     lineHeight: 1,
                   }}
@@ -696,7 +696,7 @@ export default function PassportTrailDetailPage({
             { label: "Map", href: "/traveler/passport-map", icon: "⌖" },
             { label: "Trails", href: "/traveler/passport-trails", icon: "⌁" },
             { label: "Pass", href: "/traveler/pass", icon: "▣" },
-            { label: "Profile", href: "/traveler/profile", icon: "○" },
+            { label: "Profile", href: "/traveler/settings", icon: "◉" },
           ].map((item) => (
             <Link
               key={item.label}

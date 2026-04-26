@@ -38,7 +38,7 @@ export default function BuildYourOwnPassportTrailPage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: 12,
+            gap: 8,
             marginBottom: 14,
           }}
         >
@@ -49,7 +49,7 @@ export default function BuildYourOwnPassportTrailPage() {
                 fontWeight: 850,
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
-                color: "#8b5cf6",
+                color: "#7048e8",
               }}
             >
               Build Your Own Passport Trail
@@ -72,18 +72,18 @@ export default function BuildYourOwnPassportTrailPage() {
             aria-label="Back to Siargao Passport Map"
             style={{
               borderRadius: 999,
-              border: "1px solid #d3eef2",
-              background: "#ffffff",
-              color: "#078da0",
+              border: "1px solid #bfe7ee",
+              background: "linear-gradient(135deg, #ffffff, #f3fcfd)",
+              color: "#067889",
               minHeight: 42,
               padding: "0 15px",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               textDecoration: "none",
-              fontSize: 12,
+              fontSize: 11.6,
               fontWeight: 850,
-              boxShadow: "0 8px 20px rgba(8,61,103,0.08)",
+              boxShadow: "0 14px 32px rgba(8,61,103,0.11)",
             }}
           >
             ← Map
@@ -96,7 +96,7 @@ export default function BuildYourOwnPassportTrailPage() {
             borderRadius: 26,
             background: "linear-gradient(135deg, #8b5cf6 0%, #13a8b7 100%)",
             color: "#ffffff",
-            padding: 18,
+            padding: 13,
             minHeight: 184,
             boxShadow: "0 18px 42px rgba(8,61,103,0.18)",
             position: "relative",
@@ -148,7 +148,7 @@ export default function BuildYourOwnPassportTrailPage() {
           <p
             style={{
               margin: "10px 0 0",
-              fontSize: 12.5,
+              fontSize: 12.1,
               lineHeight: 1.38,
               fontWeight: 680,
               color: "rgba(255,255,255,0.9)",
@@ -162,12 +162,12 @@ export default function BuildYourOwnPassportTrailPage() {
         <section
           aria-label="Route planning steps"
           style={{
-            marginTop: 14,
-            border: "1px solid #d3eef2",
+            marginTop: 10,
+            border: "1px solid #bfe7ee",
             borderRadius: 24,
-            background: "rgba(255,255,255,0.98)",
-            padding: 12,
-            boxShadow: "0 14px 34px rgba(8,61,103,0.08)",
+            background: "linear-gradient(135deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
+            padding: 11,
+            boxShadow: "0 16px 38px rgba(8,61,103,0.10)",
           }}
         >
           <div
@@ -200,11 +200,11 @@ export default function BuildYourOwnPassportTrailPage() {
                 key={item.title}
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "1fr 78px",
-                  gap: 9,
+                  gridTemplateColumns: "1fr 84px",
+                  gap: 8,
                   alignItems: "center",
-                  border: "1px solid #d3eef2",
-                  borderRadius: 17,
+                  border: "1px solid #bfe7ee",
+                  borderRadius: 18,
                   background: "linear-gradient(135deg, #ffffff, #f7fcfd)",
                   padding: 10,
                 }}
@@ -216,7 +216,7 @@ export default function BuildYourOwnPassportTrailPage() {
                       fontWeight: 850,
                       letterSpacing: "0.11em",
                       textTransform: "uppercase",
-                      color: "#8b5cf6",
+                      color: "#7048e8",
                     }}
                   >
                     {item.label}
@@ -234,10 +234,10 @@ export default function BuildYourOwnPassportTrailPage() {
                   <div
                     style={{
                       marginTop: 4,
-                      fontSize: 10.5,
+                      fontSize: 10.2,
                       lineHeight: 1.18,
                       fontWeight: 670,
-                      color: "#607089",
+                      color: "#53657d",
                     }}
                   >
                     {item.detail}
@@ -248,7 +248,7 @@ export default function BuildYourOwnPassportTrailPage() {
                   style={{
                     minHeight: 42,
                     borderRadius: 14,
-                    background: "#ede9fe",
+                    background: "linear-gradient(135deg, #f1edff, #ffffff)",
                     color: "#7c3aed",
                     display: "flex",
                     alignItems: "center",
@@ -268,12 +268,12 @@ export default function BuildYourOwnPassportTrailPage() {
         <section
           aria-label="Passport Assistant route support"
           style={{
-            marginTop: 14,
+            marginTop: 10,
             borderRadius: 24,
             background: "linear-gradient(135deg, #ffffff, #ecfeff)",
-            border: "1px solid #d3eef2",
+            border: "1px solid #bfe7ee",
             padding: 13,
-            boxShadow: "0 14px 34px rgba(8,61,103,0.08)",
+            boxShadow: "0 16px 38px rgba(8,61,103,0.10)",
           }}
         >
           <div
@@ -301,9 +301,9 @@ export default function BuildYourOwnPassportTrailPage() {
           <p
             style={{
               margin: 0,
-              fontSize: 12,
+              fontSize: 11.6,
               lineHeight: 1.34,
-              color: "#607089",
+              color: "#53657d",
               fontWeight: 680,
             }}
           >
@@ -312,23 +312,23 @@ export default function BuildYourOwnPassportTrailPage() {
 
           <a
             href="/traveler/passport-map"
-            aria-label="Ask Passport Assistant from Passport Map"
+            aria-label="✦ Ask Passport Assistant from Passport Map"
             style={{
-              marginTop: 12,
+              marginTop: 10,
               minHeight: 48,
               borderRadius: 16,
-              background: "#13a8b7",
+              background: "linear-gradient(135deg, #14b8c6, #078da0)",
               color: "#ffffff",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               textDecoration: "none",
-              fontSize: 12,
+              fontSize: 11.6,
               fontWeight: 880,
               boxShadow: "0 12px 24px rgba(19,168,183,0.22)",
             }}
           >
-            Ask Passport Assistant
+            ✦ Ask Passport Assistant
           </a>
         </section>
       </div>
