@@ -1,27 +1,31 @@
-export type SpmFunctionalNodeState =
+export type SpmFunctionalMapNodeState =
   | "verified"
   | "next"
   | "qr_ready"
   | "locked"
   | "conditional";
 
-export type SpmFunctionalLabelPosition = "top" | "right" | "bottom" | "left";
+export type SpmFunctionalMapNodePriority = "primary" | "secondary";
 
-export type SpmFunctionalNode = {
+export type SpmFunctionalMapLabelPosition = "top" | "right" | "bottom" | "left";
+
+export type SpmFunctionalMapSegmentStyle = "active" | "upcoming" | "locked";
+
+export type SpmFunctionalMapNode = {
   key: string;
   label: string;
-  shortLabel?: string;
+  shortLabel: string;
   xPercent: number;
   yPercent: number;
-  labelPosition: SpmFunctionalLabelPosition;
-  state: SpmFunctionalNodeState;
-  priority: "primary" | "secondary" | "tertiary";
+  labelPosition: SpmFunctionalMapLabelPosition;
+  state: SpmFunctionalMapNodeState;
+  priority: SpmFunctionalMapNodePriority;
 };
 
-export type SpmFunctionalRouteSegment = {
+export type SpmFunctionalMapSegment = {
   from: string;
   to: string;
-  style: "active" | "upcoming" | "locked";
+  style: SpmFunctionalMapSegmentStyle;
 };
 
 export type SpmFunctionalTrailMap = {
@@ -32,8 +36,8 @@ export type SpmFunctionalTrailMap = {
   nextUnlockLabel: string;
   nextUnlockDescription: string;
   imageSrc: string;
-  nodes: SpmFunctionalNode[];
-  segments: SpmFunctionalRouteSegment[];
+  nodes: SpmFunctionalMapNode[];
+  segments: SpmFunctionalMapSegment[];
 };
 
 export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = {
@@ -45,7 +49,7 @@ export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = 
       "SPM Own Map view with official node placement, QR-ready states, and governed unlock logic.",
     nextUnlockLabel: "Daku Island",
     nextUnlockDescription:
-      "Guyam is already stamped. Daku is the next ready-to-verify official Island Hopping node. Corregidor, Mam-on, and Secret Island remain governed secondary or conditional nodes.",
+      "Guyam is already stamped. Daku is the next ready-to-verify official Island Hopping node. Corregidor, Mam-on, and Secret Island stay locked until governed package or progress rules apply.",
     imageSrc: "/spm/trails/island-hopping-functional-map.png",
     nodes: [
       {
@@ -53,7 +57,7 @@ export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = 
         label: "Guyam Island",
         shortLabel: "GU",
         xPercent: 17,
-        yPercent: 62,
+        yPercent: 61,
         labelPosition: "bottom",
         state: "verified",
         priority: "primary",
@@ -62,8 +66,8 @@ export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = 
         key: "DAKU_ISLAND",
         label: "Daku Island",
         shortLabel: "DA",
-        xPercent: 44,
-        yPercent: 40,
+        xPercent: 42,
+        yPercent: 43,
         labelPosition: "bottom",
         state: "next",
         priority: "primary",
@@ -72,8 +76,8 @@ export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = 
         key: "NAKED_ISLAND",
         label: "Naked Island",
         shortLabel: "NA",
-        xPercent: 68,
-        yPercent: 50,
+        xPercent: 62,
+        yPercent: 55,
         labelPosition: "bottom",
         state: "qr_ready",
         priority: "primary",
@@ -82,9 +86,9 @@ export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = 
         key: "CORREGIDOR_ISLAND",
         label: "Corregidor Island",
         shortLabel: "CO",
-        xPercent: 30,
-        yPercent: 46,
-        labelPosition: "top",
+        xPercent: 26,
+        yPercent: 35,
+        labelPosition: "bottom",
         state: "locked",
         priority: "secondary",
       },
@@ -92,9 +96,9 @@ export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = 
         key: "MAM_ON_ISLAND",
         label: "Mam-on Island",
         shortLabel: "MO",
-        xPercent: 81,
-        yPercent: 62,
-        labelPosition: "right",
+        xPercent: 77,
+        yPercent: 51,
+        labelPosition: "bottom",
         state: "locked",
         priority: "secondary",
       },
@@ -102,30 +106,31 @@ export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = 
         key: "SECRET_ISLAND",
         label: "Secret Island",
         shortLabel: "SI",
-        xPercent: 53,
-        yPercent: 72,
+        xPercent: 50,
+        yPercent: 66,
         labelPosition: "bottom",
         state: "conditional",
-        priority: "tertiary",
+        priority: "secondary",
       },
     ],
     segments: [
       { from: "GUYAM_ISLAND", to: "DAKU_ISLAND", style: "active" },
       { from: "DAKU_ISLAND", to: "NAKED_ISLAND", style: "upcoming" },
-      { from: "DAKU_ISLAND", to: "CORREGIDOR_ISLAND", style: "locked" },
       { from: "NAKED_ISLAND", to: "MAM_ON_ISLAND", style: "locked" },
+      { from: "DAKU_ISLAND", to: "CORREGIDOR_ISLAND", style: "locked" },
       { from: "DAKU_ISLAND", to: "SECRET_ISLAND", style: "locked" },
     ],
   },
+
   "surf-explorer": {
     slug: "surf-explorer",
     familyLabel: "Surf Explorer",
     heading: "Surf Explorer Trail map journey",
     subheading:
       "Cloud 9 is the approved anchor. Surf breaks beyond Cloud 9 stay pending-review until locally validated.",
-    nextUnlockLabel: "Cloud 9",
+    nextUnlockLabel: "Jacking Horse",
     nextUnlockDescription:
-      "Cloud 9 is the approved Surf Explorer anchor. Jacking Horse, Quicksilver, Tuason Point, Stimpy’s, and Pacifico Surf Area are visible as pending-review surf nodes until local validation is completed.",
+      "Cloud 9 is the approved Surf Explorer anchor. Jacking Horse, Quicksilver, Tuason Point, Stimpy’s, and Pacifico Surf Area are shown as pending-review surf nodes, not approved completion nodes.",
     imageSrc: "/spm/trails/surf-explorer-functional-map.png",
     nodes: [
       {
@@ -268,8 +273,77 @@ export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = 
     ],
   },
 
+  "inland-discovery": {
+    slug: "inland-discovery",
+    familyLabel: "Inland Discovery",
+    heading: "Inland Discovery Trail map journey",
+    subheading:
+      "Maasin River and Magpupungko Rock Pools are approved Inland Discovery nodes. Coconut Forest, Tayangban, and Sugba access remain governed review nodes.",
+    nextUnlockLabel: "Magpupungko Rock Pools",
+    nextUnlockDescription:
+      "Maasin River is the approved inland anchor. Magpupungko Rock Pools is approved but tide and safety-sensitive. Tayangban Cave Pool and Sugba Lagoon Jump-Off require stricter access validation.",
+    imageSrc: "/spm/trails/inland-discovery-functional-map.png",
+    nodes: [
+      {
+        key: "MAASIN_RIVER",
+        label: "Maasin River",
+        shortLabel: "MR",
+        xPercent: 18,
+        yPercent: 62,
+        labelPosition: "right",
+        state: "verified",
+        priority: "primary",
+      },
+      {
+        key: "MAGPUPUNGKO_ROCK_POOLS",
+        label: "Magpupungko Rock Pools",
+        shortLabel: "MP",
+        xPercent: 78,
+        yPercent: 72,
+        labelPosition: "left",
+        state: "next",
+        priority: "primary",
+      },
+      {
+        key: "COCONUT_FOREST_SCENIC_CORRIDOR",
+        label: "Coconut Forest",
+        shortLabel: "CF",
+        xPercent: 48,
+        yPercent: 46,
+        labelPosition: "top",
+        state: "qr_ready",
+        priority: "secondary",
+      },
+      {
+        key: "TAYANGBAN_CAVE_POOL",
+        label: "Tayangban Cave Pool",
+        shortLabel: "TC",
+        xPercent: 24,
+        yPercent: 22,
+        labelPosition: "bottom",
+        state: "locked",
+        priority: "secondary",
+      },
+      {
+        key: "SUGBA_LAGOON_ACCESS_NODE",
+        label: "Sugba Access Node",
+        shortLabel: "SG",
+        xPercent: 74,
+        yPercent: 18,
+        labelPosition: "bottom",
+        state: "conditional",
+        priority: "secondary",
+      },
+    ],
+    segments: [
+      { from: "MAASIN_RIVER", to: "COCONUT_FOREST_SCENIC_CORRIDOR", style: "active" },
+      { from: "COCONUT_FOREST_SCENIC_CORRIDOR", to: "MAGPUPUNGKO_ROCK_POOLS", style: "upcoming" },
+      { from: "MAASIN_RIVER", to: "TAYANGBAN_CAVE_POOL", style: "locked" },
+      { from: "COCONUT_FOREST_SCENIC_CORRIDOR", to: "SUGBA_LAGOON_ACCESS_NODE", style: "locked" },
+    ],
+  },
 };
 
-export function getFunctionalTrailMapBySlug(trailSlug: string) {
-  return SPM_FUNCTIONAL_TRAIL_MAPS[trailSlug] ?? null;
+export function getFunctionalTrailMapBySlug(slug: string) {
+  return SPM_FUNCTIONAL_TRAIL_MAPS[slug] ?? null;
 }
