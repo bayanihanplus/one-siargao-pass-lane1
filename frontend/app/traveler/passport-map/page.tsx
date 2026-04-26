@@ -75,7 +75,7 @@ export default async function TravelerPassportMapPage() {
                 style={{
                   width: 54,
                   height: 54,
-                  objectFit: "contain",
+                  objectFit: "cover",
                   display: "block",
                 }}
               />
@@ -178,16 +178,16 @@ export default async function TravelerPassportMapPage() {
               background:
                 "linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(235,248,252,0.96) 50%, rgba(255,255,255,0.98) 100%)",
               boxShadow: "0 20px 56px rgba(15,23,42,0.092)",
-              padding: 18,
+              padding: 12,
             }}
           >
             <div
               style={{
-                height: 464,
+                height: 272,
                 borderRadius: 24,
                 background:
                   "radial-gradient(circle at 76% 16%, rgba(19,168,183,0.16) 0, transparent 78px), radial-gradient(circle at 22% 84%, rgba(242,183,5,0.15) 0, transparent 64px), linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(238,248,251,0.66) 52%, rgba(255,255,255,0.90) 100%)",
-                padding: "20px 8px 20px",
+                padding: "16px 8px 14px",
                 position: "relative",
                 overflow: "hidden",
               }}
@@ -314,11 +314,10 @@ export default async function TravelerPassportMapPage() {
                 >
                   Collect stamps. Unlock trails. Create memories that last.
                 </p>
+                <SpmLegendAndStatus metrics={spmPreview?.metrics} emptyState={spmPreview?.emptyState} />
               </div>
 
               <SpmMapVisualPreview />
-
-              <SpmLegendAndStatus metrics={spmPreview?.metrics} emptyState={spmPreview?.emptyState} />
             </div>
           </section>
 
@@ -1195,87 +1194,147 @@ function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emp
 
   return (
     <div
+      aria-label="SPM verified progress summary"
       style={{
-        position: "absolute",
-        left: 8,
-        right: 8,
-        bottom: 12,
-        zIndex: 3,
+        marginTop: 12,
+        width: "100%",
+        maxWidth: 210,
+        borderRadius: 18,
+        border: "1px solid rgba(203,213,225,0.58)",
+        background: "linear-gradient(135deg, rgba(255,255,255,0.92), rgba(240,250,252,0.82))",
+        boxShadow: "0 12px 30px rgba(15,23,42,0.08)",
+        padding: "7px 7px 6px",
+        backdropFilter: "blur(10px)",
       }}
     >
       <div
         style={{
-          display: "inline-flex",
+          display: "flex",
           alignItems: "center",
-          gap: 7,
-          borderRadius: 999,
-          background: "rgba(20,38,75,0.08)",
-          color: "#14264b",
-          padding: "6px 10px",
-          fontSize: 10,
-          fontWeight: 590,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-        }}
-      >
-        <span
-          style={{
-            width: 7,
-            height: 7,
-            borderRadius: "50%",
-            background: props.emptyState ? "#8b95a1" : "#f2b705",
-          }}
-        />
-        {props.emptyState ? "No Stamps Yet" : "Verified Progress"}
-      </div>
-
-      <div
-        style={{
-          marginTop: 12,
-          display: "grid",
-          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+          justifyContent: "space-between",
           gap: 8,
-          maxWidth: 245,
+          marginBottom: 7,
         }}
       >
-        <LegendItem color="#1fa45b" label="Completed" />
-        <LegendItem color="#13a8b7" label="Available" />
-        <LegendItem color="#8b95a1" label="Pending" />
-        <LegendRouteItem label="Your Route" />
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            minWidth: 0,
+            color: "#14264b",
+            fontSize: 8.4,
+            fontWeight: 820,
+            letterSpacing: "0.095em",
+            textTransform: "uppercase",
+            whiteSpace: "nowrap",
+          }}
+        >
+          <span
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: props.emptyState ? "#8b95a1" : "#f2b705",
+              boxShadow: "0 0 0 3px rgba(242,183,5,0.14)",
+              flex: "0 0 auto",
+            }}
+          />
+          {props.emptyState ? "No Stamps Yet" : "Verified Progress"}
+        </div>
+
+        <div
+          style={{
+            fontSize: 8.2,
+            fontWeight: 780,
+            color: "#078da0",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Record-based
+        </div>
       </div>
 
       <div
-        aria-label="SPM governed journey metrics"
         style={{
-          marginTop: 12,
           display: "grid",
           gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-          gap: 0,
-          width: "100%",
-          borderRadius: 17,
-          border: "1px solid rgba(203,213,225,0.72)",
-          background: "rgba(255,255,255,0.96)",
-          boxShadow: "0 10px 24px rgba(15,23,42,0.06)",
+          gap: 5,
+        }}
+      >
+        <HeroMetric value={String(trailsUnlocked)} label="Trails" tone="#13a8b7" />
+        <HeroMetric value={String(placesVerified)} label="Places" tone="#59aa61" />
+        <HeroMetric value={`${journeyProgress}%`} label="Progress" tone="#168fe3" />
+        <HeroMetric value={passStatus} label="QR" tone="#f2b705" />
+      </div>
+
+      <div
+        aria-hidden="true"
+        style={{
+          marginTop: 7,
+          height: 4,
+          borderRadius: 999,
+          background: "rgba(203,213,225,0.58)",
           overflow: "hidden",
         }}
       >
-        <StatusCard icon="⚑" value={String(trailsUnlocked)} label="Trails" tone="#13a8b7" withDivider />
-        <StatusCard icon="♙" value={String(placesVerified)} label="Places" tone="#59aa61" withDivider />
-        <StatusCard icon="▥" value={`${journeyProgress}%`} label="Progress" tone="#168fe3" withDivider />
-        <StatusCard icon="▣" value={passStatus} label="QR Ready" tone="#f2b705" />
+        <div
+          style={{
+            width: `${Math.max(0, Math.min(100, journeyProgress))}%`,
+            height: "100%",
+            borderRadius: 999,
+            background: "linear-gradient(90deg, #13a8b7, #16a34a)",
+          }}
+        />
       </div>
+    </div>
+  );
+}
 
-      <p
+function HeroMetric(props: { value: string; label: string; tone: string }) {
+  return (
+    <div
+      style={{
+        minWidth: 0,
+        minHeight: 34,
+        borderRadius: 12,
+        background: "rgba(255,255,255,0.72)",
+        border: "1px solid rgba(203,213,225,0.48)",
+        padding: "5px 3px",
+        display: "grid",
+        alignContent: "center",
+        justifyItems: "center",
+        gap: 2,
+      }}
+    >
+      <div
         style={{
-          margin: "7px 2px 0",
-          fontSize: 9.5,
-          lineHeight: 1.28,
-          color: "#718096",
-          fontWeight: 590,
+          color: props.tone,
+          fontSize: 11.8,
+          lineHeight: 1,
+          fontWeight: 850,
+          letterSpacing: "-0.025em",
+          maxWidth: "100%",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
         }}
       >
-        Verified progress uses governed OSP/SPM QR, Passport Stamp, and traveler progress records only. Preview cards do not count as verified progress.
-      </p>
+        {props.value}
+      </div>
+      <div
+        style={{
+          color: "#607089",
+          fontSize: 7.2,
+          lineHeight: 1,
+          fontWeight: 760,
+          letterSpacing: "0.035em",
+          textTransform: "uppercase",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {props.label}
+      </div>
     </div>
   );
 }
@@ -1336,78 +1395,6 @@ function LegendRouteItem(props: {
   );
 }
 
-function StatusCard(props: {
-  icon: string;
-  value: string;
-  label: string;
-  tone: string;
-  withDivider?: boolean;
-}) {
-  return (
-    <div
-      style={{
-        minWidth: 0,
-        minHeight: 46,
-        padding: "7px 4px",
-        borderRight: props.withDivider ? "1px solid rgba(203,213,225,0.72)" : "none",
-        display: "grid",
-        gridTemplateRows: "18px 15px 11px",
-        justifyItems: "center",
-        alignContent: "center",
-        gap: 2,
-      }}
-    >
-      <div
-        aria-hidden="true"
-        style={{
-          width: 18,
-          height: 18,
-          borderRadius: "50%",
-          background: props.tone,
-          color: "#ffffff",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 9,
-          fontWeight: 700,
-          boxShadow: "0 5px 10px rgba(15,23,42,0.10)",
-        }}
-      >
-        {props.icon}
-      </div>
-
-      <div
-        style={{
-          fontSize: 12,
-          lineHeight: 1,
-          fontWeight: 760,
-          color: "#14264b",
-          letterSpacing: "-0.015em",
-          whiteSpace: "nowrap",
-          maxWidth: "100%",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
-      >
-        {props.value}
-      </div>
-
-      <div
-        style={{
-          fontSize: 8.2,
-          lineHeight: 1,
-          fontWeight: 700,
-          color: "#607089",
-          textTransform: "uppercase",
-          letterSpacing: "0.045em",
-          whiteSpace: "nowrap",
-        }}
-      >
-        {props.label}
-      </div>
-    </div>
-  );
-}
 
 function SpmMapVisualPreview() {
   return (
@@ -1417,8 +1404,8 @@ function SpmMapVisualPreview() {
         position: "absolute",
         left: 0,
         right: 0,
-        top: -28,
-        height: 444,
+        top: -8,
+        height: 304,
         zIndex: 1,
         borderRadius: "24px 24px 0 0",
         overflow: "hidden",
@@ -1431,8 +1418,8 @@ function SpmMapVisualPreview() {
         style={{
           width: "100%",
           height: "100%",
-          objectFit: "contain",
-          objectPosition: "center center",
+          objectFit: "cover",
+          objectPosition: "center top",
           transform: "scale(1)",
           transformOrigin: "center center",
           display: "block",
@@ -1446,7 +1433,7 @@ function SpmMapVisualPreview() {
           left: 0,
           right: 0,
           bottom: 0,
-          height: 92,
+          height: 28,
           background:
             "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(246,251,253,0.88) 72%, rgba(246,251,253,1) 100%)",
         }}
