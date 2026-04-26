@@ -43,6 +43,87 @@ export type SpmFunctionalTrailMap = {
 };
 
 export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = {
+  "adventure": {
+    slug: "adventure",
+    familyLabel: "Adventure",
+    heading: "Adventure Trail map journey",
+    subheading:
+      "Adventure nodes are safety-controlled and operator-backed. This map shows candidate adventure zones only; completion requires governed QR, operator, guide, or partner validation.",
+    nextUnlockLabel: "Sugba Lagoon",
+    nextUnlockDescription:
+      "Sugba Lagoon is the next safety-controlled adventure anchor. Sohoton Cove, Bucas Grande Island, Tayangban Cave Pool, Siargao Wakepark, and Calicoan Paddle Trail remain locked or conditional until operator, access, safety, and partner validation rules are active.",
+    imageSrc: "/spm/trails/adventure-functional-map.png",
+    nodes: [
+      {
+        key: "SUGBA_LAGOON",
+        label: "Sugba Lagoon",
+        shortLabel: "SL",
+        xPercent: 20,
+        yPercent: 46,
+        labelPosition: "right",
+        state: "next",
+        priority: "primary",
+      },
+      {
+        key: "SOHOTON_COVE",
+        label: "Sohoton Cove",
+        shortLabel: "SC",
+        xPercent: 54,
+        yPercent: 34,
+        labelPosition: "bottom",
+        state: "locked",
+        priority: "primary",
+      },
+      {
+        key: "BUCAS_GRANDE_ISLAND",
+        label: "Bucas Grande Island",
+        shortLabel: "BG",
+        xPercent: 71,
+        yPercent: 38,
+        labelPosition: "left",
+        state: "locked",
+        priority: "primary",
+      },
+      {
+        key: "TAYANGBAN_CAVE_POOL",
+        label: "Tayangban Cave Pool",
+        shortLabel: "TC",
+        xPercent: 43,
+        yPercent: 67,
+        labelPosition: "top",
+        state: "locked",
+        priority: "secondary",
+      },
+      {
+        key: "SIARGAO_WAKEPARK",
+        label: "Siargao Wakepark",
+        shortLabel: "SW",
+        xPercent: 76,
+        yPercent: 63,
+        labelPosition: "left",
+        state: "qr_ready",
+        priority: "secondary",
+      },
+      {
+        key: "CALICOAN_PADDLE_TRAIL",
+        label: "Calicoan Paddle Trail",
+        shortLabel: "CP",
+        xPercent: 27,
+        yPercent: 78,
+        labelPosition: "right",
+        state: "conditional",
+        priority: "secondary",
+      },
+    ],
+    segments: [
+      { from: "SUGBA_LAGOON", to: "SOHOTON_COVE", style: "locked" },
+      { from: "SOHOTON_COVE", to: "BUCAS_GRANDE_ISLAND", style: "locked" },
+      { from: "SUGBA_LAGOON", to: "TAYANGBAN_CAVE_POOL", style: "locked" },
+      { from: "TAYANGBAN_CAVE_POOL", to: "SIARGAO_WAKEPARK", style: "locked" },
+      { from: "TAYANGBAN_CAVE_POOL", to: "CALICOAN_PADDLE_TRAIL", style: "locked" },
+    ],
+  },
+
   "sunset-scenic": {
     slug: "sunset-scenic",
     familyLabel: "Sunset & Scenic",
