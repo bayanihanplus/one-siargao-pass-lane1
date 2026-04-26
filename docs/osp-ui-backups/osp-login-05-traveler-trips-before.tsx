@@ -488,9 +488,6 @@ export default async function TravelerTripsPage() {
             }}
           >
             {t(dictionary, "trips.empty.body", "No trips found yet. Once you register or link a trip, it will appear here.")}
-            <div style={{ marginTop: 12 }}>
-              <PillLink href="/traveler/trips/new" label="Create Trip" primary icon={<TripsNavIcon kind="VIEW" />} />
-            </div>
           </div>
         ) : (
           <div style={{ display: "grid", gap: 12 }}>

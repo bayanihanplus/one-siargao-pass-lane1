@@ -196,7 +196,7 @@ export default function TravelerStartPage() {
           </div>
 
           <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <MiniButton href="/traveler/trips/new" icon="🧭">Create trip</MiniButton>
+            <MiniButton href="/traveler/register" icon="▣">Create account</MiniButton>
             <MiniButton href="/traveler/passport-map" icon="🗺️" variant="secondary">Preview map</MiniButton>
           </div>
         </header>
