@@ -548,14 +548,15 @@ function safeText(value: any, fallback = "Not confirmed") {
   return fallback;
 }
 
-function KuyaTalaChatShell() {
-  return <KuyaTalaChatBox />;
+function KuyaTalaChatShell(props: { topic?: string }) {
+  return <KuyaTalaChatBox topic={props.topic} />;
 }
 
 function KuyaTalaAssistantPanel(props: {
   assistantData: any;
   submittedMessage?: string;
   assistantStatus?: string;
+  topic?: string;
 }) {
   const assistantDataSafe = props.assistantData || {};
   const context = assistantDataSafe?.travelerContext || { ok: false, error: "Traveler context not loaded yet." };
@@ -935,7 +936,7 @@ function KuyaTalaAssistantPanel(props: {
         </div>
       </div>
 
-      <KuyaTalaChatShell />
+      <KuyaTalaChatShell topic={props.topic} />
     </section>
   );
 }
@@ -956,6 +957,7 @@ export default async function TravelerSettingsPage({
   const assistantData = activePanel === "assistant" ? await getKuyaTalaAssistantData() : null;
   const assistantStatus = getSingleSearchParam(searchParams, "assistantStatus");
   const assistantMessage = getSingleSearchParam(searchParams, "assistantMessage");
+  const assistantTopic = getSingleSearchParam(searchParams, "topic");
   const copy = panelCopy(activePanel, dictionary);
 
   const tabs: { key: PanelKey; label: string; href: string }[] = [
@@ -1265,6 +1267,7 @@ export default async function TravelerSettingsPage({
               assistantData={assistantData}
               submittedMessage={assistantMessage}
               assistantStatus={assistantStatus}
+              topic={assistantTopic}
             />
           ) : null}
 

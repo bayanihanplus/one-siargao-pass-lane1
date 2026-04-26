@@ -11,6 +11,78 @@ import {
 
 type ChatRole = "assistant" | "traveler" | "system";
 
+type KuyaTalaTopic = "map" | "trail" | "trips" | "trip" | "pass" | "payment" | "emergency" | "general";
+
+type KuyaTalaChatBoxProps = {
+  topic?: KuyaTalaTopic | string;
+};
+
+const TOPIC_CONTEXT: Record<KuyaTalaTopic, { label: string; intro: string; placeholder: string }> = {
+  general: {
+    label: "General OSP/SPM guidance",
+    intro:
+      "Hi, I’m Kuya Tala™ — your One Siargao Pass journey guide. Phase 1 chat is active. I can guide you using approved OSP/SPM rules and visible trip context, but I cannot create bookings, approve clearance, issue passes, mark payments, unlock stamps, send broadcasts, or dispatch emergency help.",
+    placeholder: "Ask Kuya Tala™ about your trip, QR/pass, Passport Trails, safety, or alerts…",
+  },
+  map: {
+    label: "Passport Map guidance",
+    intro:
+      "Hi, I’m Kuya Tala™. You opened me from the Passport Map. I can help explain map progress, verified stops, Passport Trails, QR/stamp logic, and responsible Siargao movement. I cannot mark places visited or unlock stamps unless system records prove it.",
+    placeholder: "Ask about Passport Map progress, verified stops, QR scans, or trail movement…",
+  },
+  trail: {
+    label: "Passport Trails guidance",
+    intro:
+      "Hi, I’m Kuya Tala™. You opened me from Passport Trails. I can help compare trail types, explain stop logic, QR verification, stamp rules, and next safe planning steps. I cannot confirm booking, pricing, guide assignment, or manifest status without system proof.",
+    placeholder: "Ask about trails, stops, QR verification, stamps, or planning your next move…",
+  },
+  trips: {
+    label: "Trip guidance",
+    intro:
+      "Hi, I’m Kuya Tala™. You opened me from your Trips area. I can help explain trip readiness, pass status, payments, QR context, and next traveler actions based on visible records. I cannot approve or change trip status.",
+    placeholder: "Ask about trip readiness, records, pass status, or next traveler actions…",
+  },
+  trip: {
+    label: "Trip detail guidance",
+    intro:
+      "Hi, I’m Kuya Tala™. You opened me from a trip detail page. I can help you read trip status, QR/pass context, payment readiness, and compliance notes. I cannot change trip, pass, payment, or clearance records.",
+    placeholder: "Ask about this trip, QR/pass status, payment readiness, or clearance notes…",
+  },
+  pass: {
+    label: "OSP Pass guidance",
+    intro:
+      "Hi, I’m Kuya Tala™. You opened me from your OSP Pass area. I can help explain pass readiness, QR status, validity, and what the system can or cannot confirm. I cannot issue, regenerate, or approve a pass without backend proof.",
+    placeholder: "Ask about OSP Pass readiness, QR status, validity, or pass limits…",
+  },
+  payment: {
+    label: "Payment guidance",
+    intro:
+      "Hi, I’m Kuya Tala™. You opened me from a payment page. I can help explain payment state, display currency estimates, settlement notes, and safe next steps. I cannot mark a payment paid, refund, or override payment records.",
+    placeholder: "Ask about payment status, currency estimates, settlement, or next safe steps…",
+  },
+  emergency: {
+    label: "Emergency & Safety guidance",
+    intro:
+      "Hi, I’m Kuya Tala™. You opened me from Emergency & Safety. I can guide you to safety information and OSP records, but I cannot dispatch responders, confirm help is coming, or create an emergency incident unless backend records prove it.",
+    placeholder: "Ask about safety guidance, emergency limits, OSP records, or official alerts…",
+  },
+};
+
+function normalizeTopic(value?: string): KuyaTalaTopic {
+  if (
+    value === "map" ||
+    value === "trail" ||
+    value === "trips" ||
+    value === "trip" ||
+    value === "pass" ||
+    value === "payment" ||
+    value === "emergency"
+  ) {
+    return value;
+  }
+  return "general";
+}
+
 type ChatMessage = {
   id: string;
   role: ChatRole;
@@ -40,19 +112,18 @@ function nowLabel() {
   });
 }
 
-function createIntroMessage(): ChatMessage {
+function createIntroMessage(topic?: string): ChatMessage {
+  const normalizedIntroTopic = normalizeTopic(topic);
   return {
-    id: "intro",
+    id: `assistant-intro-${normalizedIntroTopic}-${Date.now()}`,
     role: "assistant",
+    text: TOPIC_CONTEXT[normalizedIntroTopic].intro,
     createdAt: nowLabel(),
-    text:
-      "Hi, I’m Kuya Tala™ — your One Siargao Pass journey guide. Phase 1 chat is active. I can guide you using approved OSP/SPM rules and visible trip context, but I cannot create bookings, approve clearance, issue passes, mark payments, unlock stamps, send broadcasts, or dispatch emergency help.",
-    actions: STARTER_ACTIONS,
   };
 }
 
 function cleanMessage(value: string) {
-  return value.replace(/\s+/g, " ").trim();
+  return String(value || "").replace(/\s+/g, " ").trim().slice(0, MAX_MESSAGE_LENGTH);
 }
 
 function isSpeechRequest(value: string) {
@@ -65,12 +136,14 @@ function isSpeechRequest(value: string) {
   );
 }
 
-export default function KuyaTalaChatBox() {
+export default function KuyaTalaChatBox(props: KuyaTalaChatBoxProps) {
+  const normalizedTopic = normalizeTopic(props.topic);
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [lastError, setLastError] = useState("");
   const [loadedStorage, setLoadedStorage] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([createIntroMessage()]);
+  const storageKey = `${STORAGE_KEY}:${normalizedTopic}`;
+  const [messages, setMessages] = useState<ChatMessage[]>([createIntroMessage(normalizedTopic)]);
 
   const endRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -82,7 +155,7 @@ export default function KuyaTalaChatBox() {
 
   useEffect(() => {
     try {
-      const stored = window.sessionStorage.getItem(STORAGE_KEY);
+      const stored = window.sessionStorage.getItem(storageKey);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -104,7 +177,7 @@ export default function KuyaTalaChatBox() {
         }
       }
     } catch {
-      window.sessionStorage.removeItem(STORAGE_KEY);
+      window.sessionStorage.removeItem(storageKey);
     } finally {
       setLoadedStorage(true);
     }
@@ -114,11 +187,11 @@ export default function KuyaTalaChatBox() {
     if (!loadedStorage) return;
 
     try {
-      window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-30)));
+      window.sessionStorage.setItem(storageKey, JSON.stringify(messages.slice(-30)));
     } catch {
       // Best-effort only.
     }
-  }, [loadedStorage, messages]);
+  }, [loadedStorage, messages, storageKey]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -172,7 +245,7 @@ export default function KuyaTalaChatBox() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, topic: normalizedTopic }),
       });
 
       const payload = await res.json().catch(() => null);
@@ -248,7 +321,7 @@ export default function KuyaTalaChatBox() {
     ]);
 
     try {
-      window.sessionStorage.removeItem(STORAGE_KEY);
+      window.sessionStorage.removeItem(storageKey);
     } catch {
       // Ignore.
     }
@@ -526,7 +599,7 @@ export default function KuyaTalaChatBox() {
                 alignItems: "center",
               }}
             >
-              Kuya Tala™ is checking approved OSP/SPM context…
+              Kuya Tala™ is checking approved {TOPIC_CONTEXT[normalizedTopic].label.toLowerCase()} context…
             </div>
           ) : null}
 
@@ -579,7 +652,7 @@ export default function KuyaTalaChatBox() {
               }
             }}
             name="message"
-            placeholder="Ask Kuya Tala™ about your trip, QR/pass, Passport Trails, safety, or alerts…"
+            placeholder={TOPIC_CONTEXT[normalizedTopic].placeholder}
             rows={3}
             style={{
               width: "100%",
