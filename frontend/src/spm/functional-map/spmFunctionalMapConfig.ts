@@ -43,6 +43,87 @@ export type SpmFunctionalTrailMap = {
 };
 
 export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = {
+  "return-traveler-continuity": {
+    slug: "return-traveler-continuity",
+    familyLabel: "Return Traveler Continuity",
+    heading: "Your Siargao story continues",
+    subheading:
+      "A locked-preview continuity surface for verified trip history, completed egress, unfinished trails, and future return milestones. No return status is active until governed historical records exist.",
+    nextUnlockLabel: "Verified Trip Completion",
+    nextUnlockDescription:
+      "Return Continuity unlocks only after a verified trip lifecycle, such as traveler ingress plus egress, trip closeout, or approved completion fallback. Until then, this page remains an educational locked preview.",
+    imageSrc: "/spm/trails/return-traveler-continuity-functional-map.png",
+    nodes: [
+      {
+        key: "FIRST_TRIP_EXPLORER",
+        label: "First Trip Explorer",
+        shortLabel: "FT",
+        xPercent: 20,
+        yPercent: 69,
+        labelPosition: "right",
+        state: "locked",
+        priority: "primary",
+      },
+      {
+        key: "VERIFIED_EGRESS_HISTORY",
+        label: "Verified Egress History",
+        shortLabel: "EH",
+        xPercent: 32,
+        yPercent: 55,
+        labelPosition: "right",
+        state: "locked",
+        priority: "primary",
+      },
+      {
+        key: "UNFINISHED_TRAIL_REACTIVATION",
+        label: "Unfinished Trail Reactivation",
+        shortLabel: "UR",
+        xPercent: 45,
+        yPercent: 46,
+        labelPosition: "bottom",
+        state: "conditional",
+        priority: "primary",
+      },
+      {
+        key: "SECOND_TRIP_RETURN_EXPLORER",
+        label: "Second Trip Return Explorer",
+        shortLabel: "RT",
+        xPercent: 58,
+        yPercent: 42,
+        labelPosition: "bottom",
+        state: "locked",
+        priority: "primary",
+      },
+      {
+        key: "MULTI_TRAIL_PROGRESSION",
+        label: "Multi-Trail Progression",
+        shortLabel: "MT",
+        xPercent: 71,
+        yPercent: 54,
+        labelPosition: "left",
+        state: "locked",
+        priority: "secondary",
+      },
+      {
+        key: "DEEP_RETURN_TRAVELER",
+        label: "Deep Return Traveler",
+        shortLabel: "DR",
+        xPercent: 66,
+        yPercent: 73,
+        labelPosition: "top",
+        state: "locked",
+        priority: "secondary",
+      },
+    ],
+    segments: [
+      { from: "FIRST_TRIP_EXPLORER", to: "VERIFIED_EGRESS_HISTORY", style: "locked" },
+      { from: "VERIFIED_EGRESS_HISTORY", to: "UNFINISHED_TRAIL_REACTIVATION", style: "locked" },
+      { from: "UNFINISHED_TRAIL_REACTIVATION", to: "SECOND_TRIP_RETURN_EXPLORER", style: "locked" },
+      { from: "SECOND_TRIP_RETURN_EXPLORER", to: "MULTI_TRAIL_PROGRESSION", style: "locked" },
+      { from: "MULTI_TRAIL_PROGRESSION", to: "DEEP_RETURN_TRAVELER", style: "locked" },
+    ],
+  },
+
   "adventure": {
     slug: "adventure",
     familyLabel: "Adventure",

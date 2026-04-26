@@ -360,19 +360,54 @@ const TRAILS: Record<string, TrailDetail> = {
 
   "return-traveler-continuity": {
     eyebrow: "PASSPORT TRAILS™",
-    title: "Return Traveler Continuity Trail",
+    title: "Your Siargao Story Continues",
     subtitle:
-      "Return Traveler Continuity is a future journey layer based on previous stamps, unfinished routes, and repeat-visit reactivation.",
-    progressLabel: "Future logic pending",
-    statusLabel: "Future Trail",
-    nextStop: "Continue previous journey",
+      "Return Traveler Continuity is a locked-preview journey memory layer. It activates only after verified trip completion, such as ingress plus egress, trip closeout, or approved historical completion.",
+    progressLabel: "Locked preview",
+    statusLabel: "History Required",
+    nextStop: "Verified trip completion",
     nextStopReason:
-      "This trail should activate only after historical passport progress and repeat-visit logic exist. No completion claim is made yet.",
+      "This is not an open trail. Your return journey unlocks after a governed historical record exists. Until then, this page explains what will activate when your Siargao trip is completed and saved.",
     stops: [
       {
-        name: "Previous Journey Review",
-        shortCode: "RJ",
-        note: "Future continuity node. Requires historical stamp and trip data.",
+        name: "First Trip Explorer",
+        shortCode: "FT",
+        note: "Locked until the traveler has a verified completed Siargao trip. A journey becomes historical only after completion or egress proof exists.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Verified Egress History",
+        shortCode: "EH",
+        note: "Requires a completed trip lifecycle, such as TRAVELER_INGRESS_SCAN plus TRAVELER_EGRESS_SCAN, trip closeout, or approved completion fallback.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Unfinished Trail Reactivation",
+        shortCode: "UR",
+        note: "Future logic will surface unfinished Passport Trails from verified history. No unfinished progress is claimed until backed by stamp and trip records.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Second Trip Return Explorer",
+        shortCode: "RT",
+        note: "Unlocks only after a second verified Siargao trip cycle. Opening the app again is not enough.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Multi-Trail Progression",
+        shortCode: "MT",
+        note: "Future cross-trip progress across verified trail families. No badge, reward, or level is active without governed Passport Stamp history.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Deep Return Traveler",
+        shortCode: "DR",
+        note: "Long-term loyalty identity for repeat travelers only after multiple verified trip and trail records exist. No perks are promised yet.",
         status: "LOCKED",
         source: "Pending",
       },
