@@ -20,6 +20,8 @@ export type SpmFunctionalMapNode = {
   labelPosition: SpmFunctionalMapLabelPosition;
   state: SpmFunctionalMapNodeState;
   priority: SpmFunctionalMapNodePriority;
+
+
 };
 
 export type SpmFunctionalMapSegment = {
@@ -41,6 +43,76 @@ export type SpmFunctionalTrailMap = {
 };
 
 export const SPM_FUNCTIONAL_TRAIL_MAPS: Record<string, SpmFunctionalTrailMap> = {
+  "sunset-scenic": {
+    slug: "sunset-scenic",
+    familyLabel: "Sunset & Scenic",
+    heading: "Sunset & Scenic Stops Trail map journey",
+    subheading:
+      "Cloud 9 Sunset Zone and Catangnan Bridge are DB-approved scenic anchors. Malinao Skate Area, Coconut Road Scenic Point, and Magpupungko Scenic Area remain presentation-approved / pending DB review.",
+    nextUnlockLabel: "Catangnan Bridge / Sunset Bridge",
+    nextUnlockDescription:
+      "Cloud 9 Sunset Zone is the approved scenic anchor. Catangnan Bridge is next. Malinao, Coconut Road Scenic Point, and Magpupungko Scenic Area are shown only as presentation-approved pending-review nodes; no Pacifico scenic node is included in this focused route.",
+    imageSrc: "/spm/trails/sunset-scenic-functional-map.png",
+    nodes: [
+      {
+        key: "CLOUD_9_SUNSET_ZONE",
+        label: "Cloud 9 Sunset Zone",
+        shortLabel: "C9",
+        xPercent: 22,
+        yPercent: 62,
+        labelPosition: "top",
+        state: "verified",
+        priority: "primary",
+      },
+      {
+        key: "CATANGNAN_BRIDGE",
+        label: "Catangnan Bridge / Sunset Bridge",
+        shortLabel: "CB",
+        xPercent: 39,
+        yPercent: 55,
+        labelPosition: "bottom",
+        state: "next",
+        priority: "primary",
+      },
+      {
+        key: "MALINAO_SKATE_AREA",
+        label: "Malinao Skate Area",
+        shortLabel: "MS",
+        xPercent: 49,
+        yPercent: 73,
+        labelPosition: "top",
+        state: "qr_ready",
+        priority: "secondary",
+      },
+      {
+        key: "COCONUT_ROAD_SCENIC_POINT",
+        label: "Coconut Road Scenic Point",
+        shortLabel: "CR",
+        xPercent: 72,
+        yPercent: 45,
+        labelPosition: "left",
+        state: "locked",
+        priority: "secondary",
+      },
+      {
+        key: "MAGPUPUNGKO_SCENIC_AREA",
+        label: "Magpupungko Scenic Area",
+        shortLabel: "MG",
+        xPercent: 83,
+        yPercent: 28,
+        labelPosition: "left",
+        state: "locked",
+        priority: "secondary",
+      },
+    ],
+    segments: [
+      { from: "CLOUD_9_SUNSET_ZONE", to: "CATANGNAN_BRIDGE", style: "active" },
+      { from: "CATANGNAN_BRIDGE", to: "MALINAO_SKATE_AREA", style: "upcoming" },
+      { from: "MALINAO_SKATE_AREA", to: "COCONUT_ROAD_SCENIC_POINT", style: "locked" },
+      { from: "COCONUT_ROAD_SCENIC_POINT", to: "MAGPUPUNGKO_SCENIC_AREA", style: "locked" },
+    ],
+  },
+
   "island-hopping": {
     slug: "island-hopping",
     familyLabel: "Island Hopping",
