@@ -108,7 +108,7 @@ function SectionEyebrow(props: { children: React.ReactNode }) {
     <div
       style={{
         fontSize: 9,
-        fontWeight: 720,
+        fontWeight: 820,
         letterSpacing: "0.13em",
         textTransform: "uppercase",
         color: "#0796a6",
@@ -305,7 +305,7 @@ function TrailFunctionalJourneyMap(props: { trail: TrailDetail }) {
               left: 12,
               top: 12,
               borderRadius: 999,
-              background: "rgba(255,255,255,0.88)",
+              background: "linear-gradient(135deg, #ffffff, #f4fdff)",
               border: "1px solid rgba(191,231,238,0.76)",
               padding: "5px 8px",
               fontSize: 8.5,
@@ -422,13 +422,13 @@ export default function PassportTrailDetailPage({
             href="/traveler/passport-trails"
             style={{
               textDecoration: "none",
-              border: "1px solid #bdebf0",
+              border: "1px solid rgba(191,231,238,0.92)",
               borderRadius: 999,
               background: "rgba(255,255,255,0.9)",
               color: "#0796a6",
               padding: "10px 14px",
               fontSize: 11.6,
-              fontWeight: 720,
+              fontWeight: 820,
               whiteSpace: "nowrap",
             }}
           >
@@ -455,7 +455,7 @@ export default function PassportTrailDetailPage({
               padding: "6px 10px",
               background: "rgba(255,255,255,0.16)",
               fontSize: 9,
-              fontWeight: 720,
+              fontWeight: 820,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
             }}
@@ -496,7 +496,7 @@ export default function PassportTrailDetailPage({
               background: "linear-gradient(135deg, #ffffff, #f4fdff)",
               color: "#14264b",
               fontSize: 11,
-              fontWeight: 720,
+              fontWeight: 820,
             }}
           >
             {trail.progressLabel}
@@ -549,8 +549,9 @@ export default function PassportTrailDetailPage({
                   borderRadius: 18,
                   background: "linear-gradient(135deg, #14b8c6, #078da0)",
                   color: "#ffffff",
-                  padding: 13,
-                  boxShadow: "0 12px 28px rgba(19,168,183,0.22)",
+                  padding: 14,
+                  minHeight: 104,
+                  boxShadow: "0 14px 30px rgba(7,141,160,0.24)",
                 }}
               >
                 <div style={{ fontSize: 18, lineHeight: 1 }}>▦</div>
@@ -558,11 +559,11 @@ export default function PassportTrailDetailPage({
                   style={{
                     marginTop: 8,
                     fontSize: 14,
-                    fontWeight: 720,
+                    fontWeight: 820,
                     lineHeight: 1.12,
                   }}
                 >
-                  ▣ Show My QR
+                  ▣ Show QR
                 </div>
                 <div
                   style={{
@@ -573,7 +574,7 @@ export default function PassportTrailDetailPage({
                     lineHeight: 1.25,
                   }}
                 >
-                  ▣ Open traveler pass.
+                  Open your OSP Pass.
                 </div>
               </Link>
 
@@ -582,19 +583,21 @@ export default function PassportTrailDetailPage({
                 aria-label="Ask Passport Assistant about this trail"
                 style={{
                   textDecoration: "none",
-                  border: "1px solid #bdebf0",
+                  border: "1px solid rgba(191,231,238,0.92)",
                   borderRadius: 18,
-                  background: "rgba(255,255,255,0.88)",
+                  background: "linear-gradient(135deg, #ffffff, #f4fdff)",
                   color: "#14264b",
-                  padding: 13,
+                  padding: 14,
+                  minHeight: 104,
+                  boxShadow: "0 10px 24px rgba(8,61,103,0.07)",
                 }}
               >
-                <div style={{ fontSize: 18, lineHeight: 1 }}>🤖</div>
+                <div style={{ fontSize: 18, lineHeight: 1 }}>✦</div>
                 <div
                   style={{
                     marginTop: 8,
                     fontSize: 14,
-                    fontWeight: 720,
+                    fontWeight: 820,
                     lineHeight: 1.12,
                   }}
                 >
@@ -609,7 +612,7 @@ export default function PassportTrailDetailPage({
                     lineHeight: 1.25,
                   }}
                 >
-                  Help with stops and stamps.
+                  Ask route and stamp questions.
                 </div>
               </Link>
             </div>
@@ -637,7 +640,7 @@ export default function PassportTrailDetailPage({
                   letterSpacing: "-0.04em",
                 }}
               >
-                Visit, verify, unlock.
+                Verify each stop.
               </h2>
             </div>
           </div>
@@ -653,9 +656,9 @@ export default function PassportTrailDetailPage({
                     border: "1px solid #bfe7ee",
                     borderLeft: `5px solid ${tone.border}`,
                     borderRadius: 22,
-                    background: "rgba(255,255,255,0.94)",
+                    background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,253,255,0.94))",
                     padding: 13,
-                    boxShadow: "0 10px 28px rgba(15,23,42,0.05)",
+                    boxShadow: "0 12px 30px rgba(8,61,103,0.075)",
                   }}
                 >
                   <div
@@ -670,7 +673,7 @@ export default function PassportTrailDetailPage({
                       <div
                         style={{
                           fontSize: 9,
-                          fontWeight: 720,
+                          fontWeight: 820,
                           letterSpacing: "0.13em",
                           textTransform: "uppercase",
                           color: tone.color,
@@ -683,7 +686,7 @@ export default function PassportTrailDetailPage({
                           margin: "5px 0 0",
                           fontSize: 18,
                           lineHeight: 1.1,
-                          fontWeight: 720,
+                          fontWeight: 820,
                         }}
                       >
                         {stop.name}
@@ -697,8 +700,9 @@ export default function PassportTrailDetailPage({
                         background: tone.background,
                         color: tone.color,
                         fontSize: 9,
-                        fontWeight: 720,
+                        fontWeight: 900,
                         whiteSpace: "nowrap",
+                        border: `1px solid ${tone.border}33`,
                       }}
                     >
                       {tone.label}
@@ -727,15 +731,16 @@ export default function PassportTrailDetailPage({
                   >
                     <div
                       style={{
-                        borderRadius: 14,
-                        background: "linear-gradient(135deg, #f8fbfc, #ffffff)",
-                        padding: "9px 10px",
+                        borderRadius: 15,
+                        border: "1px solid rgba(191,231,238,0.58)",
+                        background: "linear-gradient(135deg, #ffffff, #f4fdff)",
+                        padding: "10px 10px",
                       }}
                     >
                       <div
                         style={{
                           fontSize: 8,
-                          fontWeight: 720,
+                          fontWeight: 820,
                           letterSpacing: "0.1em",
                           textTransform: "uppercase",
                           color: "#7b8aa0",
@@ -747,7 +752,7 @@ export default function PassportTrailDetailPage({
                         style={{
                           marginTop: 3,
                           fontSize: 11,
-                          fontWeight: 720,
+                          fontWeight: 820,
                         }}
                       >
                         {tone.label}
@@ -756,15 +761,16 @@ export default function PassportTrailDetailPage({
 
                     <div
                       style={{
-                        borderRadius: 14,
-                        background: "linear-gradient(135deg, #f8fbfc, #ffffff)",
-                        padding: "9px 10px",
+                        borderRadius: 15,
+                        border: "1px solid rgba(191,231,238,0.58)",
+                        background: "linear-gradient(135deg, #ffffff, #f4fdff)",
+                        padding: "10px 10px",
                       }}
                     >
                       <div
                         style={{
                           fontSize: 8,
-                          fontWeight: 720,
+                          fontWeight: 820,
                           letterSpacing: "0.1em",
                           textTransform: "uppercase",
                           color: "#7b8aa0",
@@ -776,7 +782,7 @@ export default function PassportTrailDetailPage({
                         style={{
                           marginTop: 3,
                           fontSize: 11,
-                          fontWeight: 720,
+                          fontWeight: 820,
                         }}
                       >
                         {stop.source}
@@ -796,7 +802,7 @@ export default function PassportTrailDetailPage({
               style={{
                 marginTop: 8,
                 fontSize: 14.4,
-                fontWeight: 720,
+                fontWeight: 820,
                 lineHeight: 1.14,
               }}
             >
@@ -828,11 +834,12 @@ export default function PassportTrailDetailPage({
                     textDecoration: "none",
                     border: "1px solid rgba(11,151,166,0.18)",
                     borderRadius: 999,
-                    background: "rgba(255,255,255,0.86)",
-                    padding: "7px 9px",
+                    background: "linear-gradient(135deg, #ffffff, #f4fdff)",
+                    padding: "8px 10px",
+                    boxShadow: "0 6px 14px rgba(8,61,103,0.045)",
                     color: "#067889",
                     fontSize: 10.2,
-                    fontWeight: 720,
+                    fontWeight: 820,
                     lineHeight: 1,
                   }}
                 >
@@ -858,7 +865,7 @@ export default function PassportTrailDetailPage({
                   style={{
                     border: "1px solid rgba(11,151,166,0.12)",
                     borderRadius: 16,
-                    background: "rgba(248,252,252,0.88)",
+                    background: "linear-gradient(135deg, #ffffff, #f8fbfc)",
                     padding: "9px 10px",
                     fontSize: 11.5,
                     lineHeight: 1.35,
@@ -883,7 +890,7 @@ export default function PassportTrailDetailPage({
             width: "min(392px, calc(100vw - 28px))",
             border: "1px solid #dbeef2",
             borderRadius: 26,
-            background: "rgba(255,255,255,0.94)",
+            background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,253,255,0.94))",
             boxShadow: "0 14px 36px rgba(15,23,42,0.08)",
             padding: 10,
             display: "grid",
@@ -906,9 +913,9 @@ export default function PassportTrailDetailPage({
                 padding: "9px 6px",
                 textAlign: "center",
                 color: item.label === "Trails" ? "#0796a6" : "#607089",
-                background: item.label === "Trails" ? "#dff8ff" : "transparent",
+                background: item.label === "Trails" ? "linear-gradient(135deg, #dff8ff, #ffffff)" : "transparent",
                 fontSize: 10,
-                fontWeight: 720,
+                fontWeight: 820,
               }}
             >
               <div style={{ fontSize: 16, lineHeight: 1 }}>{item.icon}</div>
