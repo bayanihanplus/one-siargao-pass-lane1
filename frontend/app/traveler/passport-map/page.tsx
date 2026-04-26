@@ -331,7 +331,6 @@ export default async function TravelerPassportMapPage() {
 
           <SpmVerifiedStopsPreview stops={spmPreview?.verifiedStops} />
 
-          <SpmContinueJourneyPreview nextStop={spmPreview?.nextStop} />
           <SpmJourneyHubEngagement />
         </div>
 
@@ -370,7 +369,7 @@ type SpmNextStopPreviewData = {
 
 function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | null }) {
   const nextStop = props.nextStop;
-  const title = nextStop?.recommendedStopName ?? "Continue your Passport Trail";
+  const title = nextStop?.recommendedStopName ?? "Continue Passport Trail";
   const reason = nextStop?.recommendationReason ?? "Choose a trail, visit verified stops, scan your OSP QR, and unlock Passport Stamps as you move.";
   const eta = nextStop?.distanceOrEtaLabel ?? "Your next stop activates from verified QR / stamp progress.";
   const ctaRoute = nextStop?.ctaRoute ?? "/traveler/passport-map";
@@ -420,7 +419,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
               left: 13,
               bottom: 12,
               width: 32,
-              minHeight: 42,
+              minHeight: 44,
               borderRadius: "50%",
               background: "linear-gradient(135deg, #14b8c6, #078da0)",
               color: "#ffffff",
@@ -508,7 +507,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                minHeight: 42,
+                minHeight: 44,
                 borderRadius: 999,
                 background: "linear-gradient(135deg, #14b8c6, #078da0)",
                 color: "#ffffff",
@@ -540,14 +539,33 @@ type SpmVerifiedStopPreviewData = {
   subtitle?: string | null;
   verificationStatus?: string;
   source?: string;
+  href?: string;
 };
 
 function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] | null }) {
   const realStops = props.stops?.length ? props.stops.slice(0, 3) : [];
   const visualPaddingStops = [
-    { stopName: "Passport stamp pending", subtitle: "Scan a governed OSP QR stop", verificationStatus: "available", source: "visual_padding" },
-    { stopName: "Approved node available", subtitle: "Official discovery only", verificationStatus: "available", source: "visual_padding" },
-    { stopName: "Trail progress waiting", subtitle: "No verified stamp yet", verificationStatus: "available", source: "visual_padding" },
+    {
+      stopName: "Stamp Lock",
+      subtitle: "Open pass / QR",
+      verificationStatus: "locked",
+      source: "visual_padding",
+      href: "/traveler/pass",
+    },
+    {
+      stopName: "QR Ready",
+      subtitle: "Show QR credential",
+      verificationStatus: "ready",
+      source: "visual_padding",
+      href: "/traveler/pass",
+    },
+    {
+      stopName: "Progress",
+      subtitle: "Open Passport Trails",
+      verificationStatus: "progress",
+      source: "visual_padding",
+      href: "/traveler/passport-trails",
+    },
   ];
 
   const stops = [...realStops, ...visualPaddingStops].slice(0, 3);
@@ -572,7 +590,7 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
             style={{
               margin: 0,
               fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
-              fontSize: 24,
+              fontSize: 23,
               lineHeight: 1.08,
               letterSpacing: "-0.04em",
               color: "#14264b",
@@ -584,19 +602,19 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
           <p
             style={{
               margin: "6px 0 0",
-              fontSize: 12,
-              lineHeight: 1.25,
+              fontSize: 11.4,
+              lineHeight: 1.2,
               color: "#6b7890",
               fontWeight: 610,
             }}
           >
-            Governed QR-validated stops appear first. Empty slots stay as visual placeholders.
+            QR-verified activity appears here. Pending cards unlock only after real scans.
           </p>
         </div>
 
         <a
-          href="/traveler/passport-map"
-          aria-label="See all verified stops"
+          href="/traveler/pass"
+          aria-label="View pass and QR records"
           style={{
             minHeight: 40,
             borderRadius: 999,
@@ -618,7 +636,7 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
             <path d="M12 3.5 18.5 6v5.2c0 4.2-2.7 7.5-6.5 9.3-3.8-1.8-6.5-5.1-6.5-9.3V6L12 3.5Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
             <path d="M8.8 12.1 11 14.2l4.4-4.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          See all
+          Pass
         </a>
       </div>
 
@@ -640,6 +658,8 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
               imageLabel={isPadding ? "SP" : (stop.stopName ?? "VS").slice(0, 2).toUpperCase()}
               variant={index === 1 ? "surf" : index === 2 ? "pool" : "town"}
               verified={!isPadding}
+              state={stop.verificationStatus ?? "pending"}
+              href={stop.href ?? (!isPadding ? "/traveler/pass" : "/traveler/passport-map")}
             />
           );
         })}
@@ -654,6 +674,8 @@ function StopPreviewCard(props: {
   imageLabel: string;
   variant: "town" | "surf" | "pool";
   verified: boolean;
+  state?: string;
+  href: string;
 }) {
   const imageBackground =
     props.variant === "town"
@@ -662,27 +684,41 @@ function StopPreviewCard(props: {
         ? "linear-gradient(135deg, #7fd2eb 0%, #dbf6ff 42%, #b9e6d1 100%)"
         : "linear-gradient(135deg, #b2d8ee 0%, #e8f7f4 46%, #d2dfb0 100%)";
 
+  const stateTone =
+    props.verified ? "#16a34a" : props.state === "ready" ? "#0891b2" : props.state === "progress" ? "#7c3aed" : "#64748b";
+  const stateSoft =
+    props.verified
+      ? "rgba(220,252,231,0.88)"
+      : props.state === "ready"
+        ? "rgba(232,251,255,0.94)"
+        : props.state === "progress"
+          ? "rgba(245,240,255,0.94)"
+          : "rgba(248,250,252,0.94)";
+  const stateIcon =
+    props.verified ? "✓" : props.state === "ready" ? "⌁" : props.state === "progress" ? "↗" : "▣";
+
   return (
     <a
-      href="/traveler/passport-map"
+      href={props.href}
       aria-label={`${props.name} preview stop. ${props.verified ? "Governed verified stop." : "Visual placeholder only."}`}
       style={{
-        minHeight: 126,
+        minHeight: 106,
         borderRadius: 20,
-        border: "1px solid rgba(191,231,238,0.82)",
-        background: props.verified ? "rgba(255,255,255,0.97)" : "rgba(248,250,252,0.92)",
-        boxShadow: "0 10px 24px rgba(15,23,42,0.05)",
+        border: `1px solid ${props.verified ? "rgba(34,184,90,0.32)" : "rgba(191,231,238,0.86)"}`,
+        background: `linear-gradient(180deg, ${stateSoft}, rgba(255,255,255,0.96))`,
+        boxShadow: "0 10px 24px rgba(15,23,42,0.055)",
         textDecoration: "none",
         overflow: "hidden",
         display: "grid",
-        gridTemplateRows: "70px auto",
-        opacity: props.verified ? 1 : 0.82,
+        gridTemplateRows: "52px auto",
+        opacity: 1,
+        transition: "box-shadow 160ms ease, border-color 160ms ease",
       }}
     >
       <div
         style={{
           position: "relative",
-          minHeight: 70,
+          minHeight: 52,
           background: imageBackground,
           borderBottom: "1px solid rgba(226,232,240,0.72)",
           filter: props.verified ? "none" : "saturate(0.65)",
@@ -702,16 +738,16 @@ function StopPreviewCard(props: {
             position: "absolute",
             left: 9,
             bottom: 9,
-            width: 28,
-            height: 28,
+            width: 26,
+            height: 26,
             borderRadius: "50%",
             background: "rgba(255,255,255,0.94)",
-            color: props.verified ? "#13a8b7" : "#8b95a1",
+            color: stateTone,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             fontSize: 9,
-            fontWeight: 640,
+            fontWeight: 850,
             boxShadow: "0 8px 16px rgba(15,23,42,0.10)",
           }}
         >
@@ -724,26 +760,26 @@ function StopPreviewCard(props: {
             position: "absolute",
             right: 8,
             bottom: 8,
-            width: 22,
-            height: 22,
+            width: 24,
+            height: 24,
             borderRadius: "50%",
-            background: props.verified ? "#1fa45b" : "#8b95a1",
+            background: stateTone,
             color: "#ffffff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 12,
-            fontWeight: 640,
+            fontSize: 13,
+            fontWeight: 900,
             boxShadow: props.verified ? "0 7px 14px rgba(31,164,91,0.20)" : "0 7px 14px rgba(100,116,139,0.16)",
           }}
         >
-          {props.verified ? "✓" : "•"}
+          {stateIcon}
         </div>
       </div>
 
       <div
         style={{
-          padding: "10px 10px 11px",
+          padding: "8px 9px 9px",
           minWidth: 0,
         }}
       >
@@ -751,9 +787,9 @@ function StopPreviewCard(props: {
           style={{
             margin: 0,
             color: "#14264b",
-            fontSize: 12,
-            lineHeight: 1.12,
-            fontWeight: 640,
+            fontSize: 11.4,
+            lineHeight: 1.1,
+            fontWeight: 820,
             letterSpacing: "-0.02em",
           }}
         >
@@ -764,9 +800,9 @@ function StopPreviewCard(props: {
           style={{
             margin: "5px 0 0",
             color: "#6b7890",
-            fontSize: 10,
-            lineHeight: 1.2,
-            fontWeight: 610,
+            fontSize: 9.3,
+            lineHeight: 1.12,
+            fontWeight: 700,
           }}
         >
           {props.subtitle}
@@ -924,7 +960,7 @@ function SpmTrailCardsPreview(props: any) {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: 900,
                 }}
               >
@@ -1296,7 +1332,7 @@ function HeroMetric(props: { value: string; label: string; tone: string }) {
     <div
       style={{
         minWidth: 0,
-        minHeight: 42,
+        minHeight: 44,
         borderRadius: 12,
         background: "rgba(255,255,255,0.72)",
         border: "1px solid rgba(203,213,225,0.48)",
@@ -1595,531 +1631,182 @@ function NavIcon(props: {
 
 
 function SpmJourneyHubEngagement() {
-  const trailFamilies = [
-    {
-      icon: "🏝️",
-      name: "Island Hopping",
-      status: "Live",
-      hint: "Guyam • Daku • Naked",
-      href: "/traveler/passport-trails/tri-island-joiner",
-      cta: "→ Continue Trail",
-      live: true,
-    },
-    {
-      icon: "🌊",
-      name: "Surf Explorer Trail",
-      status: "Preview",
-      hint: "Surf-family Passport stops",
-      href: "/traveler/passport-trails",
-      cta: "◌ Preview Trail",
-      live: false,
-    },
-    {
-      icon: "🍽️",
-      name: "Culture & Community Trail",
-      status: "Preview",
-      hint: "Culture and community stops",
-      href: "/traveler/passport-trails",
-      cta: "◌ Preview Trail",
-      live: false,
-    },
-    {
-      icon: "🌿",
-      name: "Inland Discovery Trail",
-      status: "Preview",
-      hint: "Inland discovery stops",
-      href: "/traveler/passport-trails",
-      cta: "◌ Preview Trail",
-      live: false,
-    },
-    {
-      icon: "🏘️",
-      name: "Culture & Community Trail",
-      status: "Preview",
-      hint: "Culture and community stops",
-      href: "/traveler/passport-trails",
-      cta: "◌ Preview Trail",
-      live: false,
-    },
-    {
-      icon: "⭐",
-      name: "Return Traveler Continuity Trail",
-      status: "Preview",
-      hint: "Return-traveler continuity",
-      href: "/traveler/passport-trails",
-      cta: "◌ Preview Trail",
-      live: false,
-    },
-  ];
-
-  const achievements = [
-    { icon: "✅", title: "First Stamp", body: "Unlock your first QR-verified Passport Stamp.", status: "In progress" },
-    { icon: "🏝️", title: "Island Starter", body: "Begin the Island Hopping Trail.", status: "Live" },
-    { icon: "🧭", title: "Trail Explorer", body: "Open and preview three trail families.", status: "Preview" },
-    { icon: "⭐", title: "Hidden Gem Hunter", body: "Future achievement for curated stops.", status: "Coming" },
-  ];
-
   return (
     <section
-      aria-label="SPM traveler journey hub"
+      aria-label="SPM next best action"
       style={{
-        marginTop: 18,
-        display: "grid",
-        gap: 16,
+        marginTop: 16,
+        border: "1px solid #bfe7ee",
+        borderRadius: 22,
+        background: "linear-gradient(135deg, rgba(236,254,255,0.98), rgba(255,255,255,0.97))",
+        padding: 12,
+        boxShadow: "0 14px 34px rgba(8,61,103,0.09)",
       }}
     >
       <div
         style={{
-          border: "1px solid #bfe7ee",
-          borderRadius: 28,
-          background: "linear-gradient(135deg, rgba(240,253,255,0.98), rgba(238,248,239,0.94))",
-          padding: 18,
-          boxShadow: "0 16px 40px rgba(15,23,42,0.07)",
+          display: "grid",
+          gridTemplateColumns: "36px 1fr 88px",
+          gap: 10,
+          alignItems: "center",
         }}
       >
         <div
+          aria-hidden="true"
           style={{
-            fontSize: 9,
-            fontWeight: 720,
-            letterSpacing: "0.13em",
-            textTransform: "uppercase",
-            color: "#0796a6",
+            width: 36,
+            height: 36,
+            borderRadius: 15,
+            background: "linear-gradient(135deg, #14b8c6, #078da0)",
+            color: "#ffffff",
+            display: "grid",
+            placeItems: "center",
+            fontSize: 18,
+            fontWeight: 900,
+            boxShadow: "0 10px 22px rgba(7,141,160,0.20)",
           }}
         >
-          SPM Journey Hub
+          ↯
         </div>
 
-        <h2
-          style={{
-            margin: "7px 0 8px",
-            fontSize: 25,
-            lineHeight: 1.04,
-            fontWeight: 690,
-            letterSpacing: "-0.045em",
-            color: "#14264b",
-          }}
-        >
-          Build your Siargao Passport, one trail at a time.
-        </h2>
-
-        <p
-          style={{
-            margin: 0,
-            fontSize: 13,
-            lineHeight: 1.45,
-            fontWeight: 600,
-            color: "#53657d",
-          }}
-        >
-          Choose a trail family, visit verified stops, unlock Passport Stamps, and let your journey record grow inside One Siargao Pass.
-        </p>
-
-        <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 9 }}>
-          <a
-            href="/traveler/passport-trails/tri-island-joiner"
-            style={{
-              textDecoration: "none",
-              borderRadius: 18,
-              background: "linear-gradient(135deg, #14b8c6, #078da0)",
-              color: "#ffffff",
-              padding: 13,
-              boxShadow: "0 12px 28px rgba(19,168,183,0.22)",
-            }}
-          >
-            <div style={{ fontSize: 10, fontWeight: 720, letterSpacing: "0.1em", textTransform: "uppercase", opacity: 0.86 }}>
-              Continue
-            </div>
-            <div style={{ marginTop: 5, fontSize: 15, fontWeight: 720, lineHeight: 1.12 }}>
-              Island Hopping
-            </div>
-            <div style={{ marginTop: 4, fontSize: 11, fontWeight: 600, opacity: 0.86 }}>
-              → Continue Trail →
-            </div>
-          </a>
-
+        <div style={{ minWidth: 0 }}>
           <div
             style={{
-              borderRadius: 18,
-              background: "rgba(255,255,255,0.82)",
-              border: "1px solid rgba(11,151,166,0.14)",
-              padding: 13,
-            }}
-          >
-            <div style={{ fontSize: 10, fontWeight: 720, letterSpacing: "0.1em", textTransform: "uppercase", color: "#0796a6" }}>
-              Next Unlock
-            </div>
-            <div style={{ marginTop: 5, fontSize: 15, fontWeight: 700, color: "#14264b", lineHeight: 1.12 }}>
-              Daku Island
-            </div>
-            <div style={{ marginTop: 4, fontSize: 11, fontWeight: 600, color: "#53657d", lineHeight: 1.25 }}>
-              Continue after verified QR / stamp progress.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        style={{
-          border: "1px solid #bfe7ee",
-          borderRadius: 28,
-          background: "rgba(255,255,255,0.92)",
-          padding: 16,
-          boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            gap: 12,
-          }}
-        >
-          <div>
-            <div
-              style={{
-                fontSize: 9,
-                fontWeight: 720,
-                letterSpacing: "0.13em",
-                textTransform: "uppercase",
-                color: "#0796a6",
-              }}
-            >
-              Choose Your Trail Family
-            </div>
-            <h2
-              style={{
-                margin: "6px 0 0",
-                fontSize: 22,
-                lineHeight: 1.08,
-                fontWeight: 690,
-                letterSpacing: "-0.035em",
-                color: "#14264b",
-              }}
-            >
-              Pick your travel style
-            </h2>
-          </div>
-
-          <a
-            href="/traveler/passport-trails"
-            style={{
-              textDecoration: "none",
-              borderRadius: 999,
-              border: "1px solid #bdebf0",
-              padding: "8px 11px",
-              fontSize: 11,
-              fontWeight: 720,
+              fontSize: 8.8,
+              fontWeight: 900,
+              letterSpacing: "0.13em",
+              textTransform: "uppercase",
               color: "#0796a6",
-              background: "linear-gradient(135deg, #ffffff, #f4fdff)",
-              whiteSpace: "nowrap",
             }}
           >
-            All Trails
-          </a>
+            Continue Trail
+          </div>
+          <h2
+            style={{
+              margin: "4px 0 0",
+              fontSize: 14.6,
+              lineHeight: 1.08,
+              fontWeight: 900,
+              letterSpacing: "-0.035em",
+              color: "#14264b",
+            }}
+          >
+            Continue Passport Trail
+          </h2>
+          <p
+            style={{
+              margin: "4px 0 0",
+              fontSize: 9.2,
+              lineHeight: 1.18,
+              fontWeight: 700,
+              color: "#53657d",
+            }}
+          >
+            Only verified QR activity counts toward stamps, unlocks, and progress.
+          </p>
         </div>
 
-        <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 9 }}>
-          {trailFamilies.map((family) => (
-            <a
-              key={family.name}
-              href={family.href}
-              aria-label={`Open ${family.name} trail family`}
-              style={{
-                textDecoration: "none",
-                border: family.live ? "1px solid rgba(11,151,166,0.22)" : "1px solid rgba(11,151,166,0.12)",
-                borderRadius: 20,
-                background: family.live
-                  ? "linear-gradient(135deg, rgba(221,253,255,0.98), rgba(232,250,239,0.96))"
-                  : "rgba(248,251,252,0.92)",
-                padding: 12,
-                minHeight: 106,
-                color: "#14264b",
-                boxShadow: family.live ? "0 10px 26px rgba(15,23,42,0.06)" : "none",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <span style={{ fontSize: 20, lineHeight: 1 }}>{family.icon}</span>
-                <span
-                  style={{
-                    borderRadius: 999,
-                    padding: "4px 7px",
-                    background: family.live ? "#d8fbef" : "#edf2f5",
-                    color: family.live ? "#138a58" : "#718096",
-                    fontSize: 8,
-                    fontWeight: 720,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {family.status}
-                </span>
-              </div>
-              <div style={{ marginTop: 9, fontSize: 13, fontWeight: 720, lineHeight: 1.14 }}>
-                {family.name}
-              </div>
-              <div style={{ marginTop: 5, fontSize: 10.5, fontWeight: 600, color: "#53657d", lineHeight: 1.25 }}>
-                {family.hint}
-              </div>
-              <div style={{ marginTop: 9, fontSize: 10, fontWeight: 720, color: family.live ? "#0796a6" : "#718096" }}>
-                {family.cta.includes('→') ? family.cta : `${family.cta} →`}
-              </div>
-            </a>
-          ))}
-        </div>
+        <a
+          href="/traveler/passport-trails/tri-island-joiner"
+          aria-label="Continue Island Hopping Passport Trail"
+          style={{
+            minHeight: 44,
+            borderRadius: 16,
+            background: "linear-gradient(135deg, #22b85a, #11843d)",
+            color: "#ffffff",
+            display: "grid",
+            placeItems: "center",
+            textDecoration: "none",
+            fontSize: 9.4,
+            fontWeight: 900,
+            boxShadow: "0 10px 22px rgba(17,132,61,0.20)",
+            transition: "box-shadow 160ms ease",
+          }}
+        >
+          Continue
+        </a>
       </div>
 
       <div
         style={{
-          border: "1px solid #bfe7ee",
-          borderRadius: 28,
-          background: "linear-gradient(135deg, rgba(255,255,255,0.94), rgba(246,251,255,0.94))",
-          padding: 16,
-          boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
-        }}
-      >
-        <div
-          style={{
-            fontSize: 9,
-            fontWeight: 720,
-            letterSpacing: "0.13em",
-            textTransform: "uppercase",
-            color: "#0796a6",
-          }}
-        >
-          Passport Stamps & Achievements
-        </div>
-
-        <h2
-          style={{
-            margin: "6px 0 12px",
-            fontSize: 22,
-            lineHeight: 1.08,
-            fontWeight: 690,
-            letterSpacing: "-0.035em",
-            color: "#14264b",
-          }}
-        >
-          Turn visits into progress
-        </h2>
-
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 9 }}>
-          {achievements.map((item) => (
-            <div
-              key={item.title}
-              style={{
-                border: "1px solid rgba(11,151,166,0.12)",
-                borderRadius: 18,
-                background: "rgba(255,255,255,0.82)",
-                padding: 12,
-                minHeight: 108,
-              }}
-            >
-              <div style={{ fontSize: 20, lineHeight: 1 }}>{item.icon}</div>
-              <div style={{ marginTop: 8, fontSize: 13, fontWeight: 720, lineHeight: 1.14, color: "#14264b" }}>
-                {item.title}
-              </div>
-              <div style={{ marginTop: 5, fontSize: 10.5, fontWeight: 600, color: "#53657d", lineHeight: 1.25 }}>
-                {item.body}
-              </div>
-              <div
-                style={{
-                  marginTop: 9,
-                  display: "inline-flex",
-                  borderRadius: 999,
-                  padding: "4px 7px",
-                  background: item.status === "Live" ? "#d8fbef" : item.status === "Coming" ? "#edf2f5" : "#dff8ff",
-                  color: item.status === "Live" ? "#138a58" : item.status === "Coming" ? "#718096" : "#078da0",
-                  fontSize: 8,
-                  fontWeight: 720,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                }}
-              >
-                {item.status}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div
-        style={{
+          marginTop: 10,
           display: "grid",
-          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-          gap: 10,
-        }}
-      >
-        <a
-          href="/traveler/passport-trails/diy-trail-builder"
-          style={{
-            textDecoration: "none",
-            border: "1px solid #bfe7ee",
-            borderRadius: 24,
-            background: "rgba(255,255,255,0.92)",
-            padding: 15,
-            color: "#14264b",
-          }}
-        >
-          <div style={{ fontSize: 20 }}>🧩</div>
-          <div style={{ marginTop: 8, fontSize: 14, fontWeight: 720, lineHeight: 1.14 }}>
-            ＋ Plan DIY Route
-          </div>
-          <div style={{ marginTop: 5, fontSize: 10.5, fontWeight: 600, color: "#53657d", lineHeight: 1.25 }}>
-            Plan your own Siargao route. Persistence comes later.
-          </div>
-        </a>
-
-        <a
-          href="/traveler/settings?panel=assistant"
-          style={{
-            textDecoration: "none",
-            border: "1px solid #bdebf0",
-            borderRadius: 24,
-            background: "linear-gradient(135deg, rgba(227,253,255,0.96), rgba(255,255,255,0.92))",
-            padding: 15,
-            color: "#14264b",
-          }}
-        >
-          <div style={{ fontSize: 20 }}>🤖</div>
-          <div style={{ marginTop: 8, fontSize: 14, fontWeight: 720, lineHeight: 1.14 }}>
-            ✦ Ask Passport Assistant
-          </div>
-          <div style={{ marginTop: 5, fontSize: 10.5, fontWeight: 600, color: "#53657d", lineHeight: 1.25 }}>
-            Get help choosing trails, stamps, events, and next moves.
-          </div>
-        </a>
-      </div>
-
-      <div
-        aria-label="AI Passport Assistant prompt chips"
-        style={{
-          border: "1px solid #bdebf0",
-          borderRadius: 24,
-          background: "linear-gradient(135deg, rgba(227,253,255,0.96), rgba(255,255,255,0.92))",
-          padding: 15,
+          gridTemplateColumns: "1fr 1fr",
+          gap: 8,
         }}
       >
         <div
           style={{
-            fontSize: 9,
-            fontWeight: 720,
-            letterSpacing: "0.13em",
-            textTransform: "uppercase",
-            color: "#0796a6",
+            borderRadius: 16,
+            border: "1px solid rgba(191,231,238,0.76)",
+            background: "linear-gradient(135deg, #ffffff, #f4fdff)",
+            padding: "9px 10px",
           }}
         >
-          AI Passport Assistant
+          <div style={{ fontSize: 8.3, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: "#067889" }}>
+            ⌁ Trail
+          </div>
+          <div style={{ marginTop: 3, fontSize: 11.4, fontWeight: 880, color: "#14264b", lineHeight: 1.06 }}>
+            Island Hopping
+          </div>
         </div>
+
         <div
           style={{
-            marginTop: 8,
-            fontSize: 17,
-            fontWeight: 720,
-            color: "#14264b",
-            lineHeight: 1.12,
+            borderRadius: 16,
+            border: "1px solid rgba(191,231,238,0.76)",
+            background: "linear-gradient(135deg, #ffffff, #f8fbfc)",
+            padding: "9px 10px",
           }}
         >
-          Need help choosing?
+          <div style={{ fontSize: 8.3, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: "#64748b" }}>
+            ▣ Unlock
+          </div>
+          <div style={{ marginTop: 3, fontSize: 11.4, fontWeight: 880, color: "#14264b", lineHeight: 1.06 }}>
+            After scan
+          </div>
         </div>
-        <p
-          style={{
-            margin: "6px 0 0",
-            fontSize: 11.5,
-            lineHeight: 1.38,
-            fontWeight: 600,
-            color: "#53657d",
-          }}
-        >
-          Ask the Passport Assistant which experience fits your trip, how stamps work, and what to do next.
-        </p>
-
-        <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 7 }}>
-          {[
-            "Help me choose",
-            "Partner Tour or Passport Trail?",
-            "How do stamps work?",
-            "Plan my route",
-            "What can I unlock next?",
-          ].map((prompt) => (
-            <a
-              key={prompt}
-              href="/traveler/settings?panel=assistant"
-              style={{
-                textDecoration: "none",
-                border: "1px solid rgba(11,151,166,0.18)",
-                borderRadius: 999,
-                background: "rgba(255,255,255,0.86)",
-                padding: "7px 9px",
-                color: "#067889",
-                fontSize: 10.5,
-                fontWeight: 720,
-                lineHeight: 1,
-              }}
-            >
-              {prompt}
-            </a>
-          ))}
-        </div>
-      </div>
-
-
-      <div
-        style={{
-          border: "1px solid #bfe7ee",
-          borderRadius: 24,
-          background: "rgba(255,255,255,0.9)",
-          padding: 15,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 9,
-            fontWeight: 720,
-            letterSpacing: "0.13em",
-            textTransform: "uppercase",
-            color: "#0796a6",
-          }}
-        >
-          Events Near Your Trail
-        </div>
-        <div style={{ marginTop: 8, fontSize: 15, fontWeight: 720, color: "#14264b", lineHeight: 1.14 }}>
-          This Week in Siargao
-        </div>
-        <p style={{ margin: "6px 0 0", fontSize: 11.5, lineHeight: 1.38, fontWeight: 600, color: "#53657d" }}>
-          Events will connect to Passport Trails later. For now, the assistant can explain which trail family fits your travel style.
-        </p>
       </div>
     </section>
   );
 }
 
 
+
 function SpmFeaturedPartnerTours() {
-  const tours = [
+  const partnerTours = [
     {
+      label: "Siargao Partner Tour",
       title: "Tri-Island Joiner",
-      route: "Guyam • Daku • Naked",
-      value: "Stamp-ready • Partner-operated",
-      badge: "Pricing before booking",
-      action: "↗ View Tour",
+      subtitle: "Guyam • Daku • Naked Island",
+      badge: "Passport-ready",
+      action: "View Tour",
       href: "/traveler/passport-trails/tri-island-joiner",
+      tone: "#0891b2",
+      softBg: "rgba(232,251,255,0.96)",
+      softBorder: "#aee7f2",
     },
     {
+      label: "Siargao Partner Tour",
       title: "Corregidor + Tri-Island",
-      route: "Corregidor • Guyam • Daku",
-      value: "Boat route • Partner-supported",
+      subtitle: "Corregidor • Guyam • Daku",
       badge: "Pricing before checkout",
-      action: "↗ View Tour",
-      href: "/traveler/passport-trails/tri-island-joiner",
+      action: "Preview",
+      href: "/traveler/passport-trails",
+      tone: "#0f9aa8",
+      softBg: "rgba(236,254,255,0.94)",
+      softBorder: "#bfe7ee",
     },
     {
+      label: "Siargao Partner Tour",
       title: "Sohoton Joiner",
-      route: "Sohoton • Bucas Grande",
-      value: "Long-route joiner • Partner-operated",
+      subtitle: "Sohoton • Bucas Grande",
       badge: "Activation-gated",
       action: "Preview Tour",
       href: "/traveler/passport-trails",
+      tone: "#14a3b8",
+      softBg: "rgba(240,253,255,0.94)",
+      softBorder: "#bfe7ee",
     },
   ];
 
@@ -2127,98 +1814,105 @@ function SpmFeaturedPartnerTours() {
     <section
       aria-label="Featured Siargao Partner Tours"
       style={{
-        marginTop: 14,
+        marginTop: 18,
         border: "1px solid #bfe7ee",
         borderRadius: 24,
-        background: "linear-gradient(135deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
+        background: "linear-gradient(180deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
         padding: 12,
         boxShadow: "0 16px 38px rgba(8,61,103,0.10)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
         <div>
-          <div style={{ fontSize: 9, fontWeight: 820, letterSpacing: "0.13em", textTransform: "uppercase", color: "#0796a6" }}>
+          <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: "0.13em", textTransform: "uppercase", color: "#0796a6" }}>
             Featured Siargao Partner Tours
           </div>
-          <h2 style={{ margin: "5px 0 0", fontSize: 21, lineHeight: 1.03, fontWeight: 760, letterSpacing: "-0.045em", color: "#14264b" }}>
+          <h2 style={{ margin: "5px 0 0", fontSize: 21, lineHeight: 1.03, fontWeight: 850, letterSpacing: "-0.045em", color: "#14264b" }}>
             Partner tours.
           </h2>
         </div>
 
         <a
           href="/traveler/passport-trails"
-          aria-label="View all partner tours"
+          aria-label="View all Siargao Partner Tours"
           style={{
-            flexShrink: 0,
-            borderRadius: 999,
+            minHeight: 40,
+            minWidth: 74,
+            borderRadius: 16,
             background: "linear-gradient(135deg, #14b8c6, #078da0)",
             color: "#ffffff",
-            padding: "9px 12px",
-            fontSize: 10.6,
-            fontWeight: 860,
+            display: "grid",
+            placeItems: "center",
+            fontSize: 10.2,
+            fontWeight: 900,
             textDecoration: "none",
-            boxShadow: "0 12px 26px rgba(7,141,160,0.24)",
+            boxShadow: "0 12px 26px rgba(7,141,160,0.22)",
           }}
         >
-          ↗ View All Tours
+          View All
         </a>
       </div>
 
       <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
-        {tours.map((tour) => (
+        {partnerTours.map((tour) => (
           <a
             key={tour.title}
             href={tour.href}
             aria-label={`Open ${tour.title}`}
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 92px",
+              gridTemplateColumns: "1fr 82px",
+              gap: 8,
               alignItems: "center",
-              gap: 9,
-              border: "1px solid #bfe7ee",
-              borderRadius: 18,
-              background: "linear-gradient(135deg, #ffffff, #f6fdff)",
-              padding: "10px",
-              color: "inherit",
               textDecoration: "none",
+              border: `1px solid ${tour.softBorder}`,
+              borderRadius: 17,
+              background: `linear-gradient(135deg, ${tour.softBg}, #ffffff)`,
+              padding: "9px 10px",
+              color: "inherit",
+              boxShadow: "0 8px 20px rgba(8,61,103,0.055)",
             }}
           >
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 8, fontWeight: 830, letterSpacing: "0.11em", textTransform: "uppercase", color: "#067889" }}>
-                Siargao Partner Tour
+              <div style={{ fontSize: 8.4, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase", color: tour.tone }}>
+                {tour.label}
               </div>
-
-              <div style={{ marginTop: 2, fontSize: 14.4, fontWeight: 840, lineHeight: 1.03, color: "#14264b" }}>
+              <div style={{ marginTop: 3, fontSize: 13.1, lineHeight: 1.03, fontWeight: 900, color: "#14264b" }}>
                 {tour.title}
               </div>
-
-              <div style={{ marginTop: 3, fontSize: 10.6, fontWeight: 690, color: "#53657d", lineHeight: 1.12 }}>
-                {tour.route}
+              <div style={{ marginTop: 4, fontSize: 9.4, lineHeight: 1.1, fontWeight: 700, color: "#53657d" }}>
+                {tour.subtitle}
               </div>
-
-              <div style={{ marginTop: 4, fontSize: 10, fontWeight: 820, color: "#067889", lineHeight: 1.12 }}>
-                {tour.value}
-              </div>
-
-              <div style={{ marginTop: 6, display: "inline-flex", borderRadius: 999, background: "linear-gradient(135deg, #e8fbff, #ffffff)", padding: "3px 7px", fontSize: 8.9, fontWeight: 800, color: "#067889" }}>
+              <div
+                style={{
+                  marginTop: 6,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  minHeight: 22,
+                  borderRadius: 999,
+                  background: "rgba(232,251,255,0.86)",
+                  color: "#067889",
+                  padding: "0 8px",
+                  fontSize: 8.4,
+                  fontWeight: 850,
+                }}
+              >
                 {tour.badge}
               </div>
             </div>
 
             <div
               style={{
-                minHeight: 48,
-                borderRadius: 16,
+                minHeight: 44,
+                borderRadius: 15,
                 background: "linear-gradient(135deg, #14b8c6, #078da0)",
                 color: "#ffffff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                display: "grid",
+                placeItems: "center",
+                fontSize: 9.4,
+                fontWeight: 900,
                 textAlign: "center",
-                fontSize: 10.8,
-                fontWeight: 880,
-                lineHeight: 1.05,
-                boxShadow: "0 12px 26px rgba(7,141,160,0.24)",
+                boxShadow: "0 10px 22px rgba(7,141,160,0.18)",
               }}
             >
               {tour.action}
@@ -2229,8 +1923,6 @@ function SpmFeaturedPartnerTours() {
     </section>
   );
 }
-
-
 
 
 
@@ -2357,7 +2049,7 @@ function SpmCuratedPassportTours() {
           aria-label="Explore all Passport Trails"
           style={{
             flexShrink: 0,
-            minHeight: 42,
+            minHeight: 44,
             minWidth: 78,
             borderRadius: 16,
             background: "linear-gradient(135deg, #22b85a, #11843d)",
@@ -2430,7 +2122,7 @@ function SpmCuratedPassportTours() {
             display: "grid",
             placeItems: "center",
             textAlign: "center",
-            fontSize: 9.8,
+            fontSize: 9.5,
             fontWeight: 900,
             lineHeight: 1.05,
             boxShadow: "0 10px 22px rgba(17,132,61,0.18)",
@@ -2442,7 +2134,7 @@ function SpmCuratedPassportTours() {
 
       <div style={{ marginTop: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
         <div style={{ fontSize: 10.2, fontWeight: 900, color: "#14264b" }}>More official trails</div>
-        <div style={{ fontSize: 9.6, fontWeight: 780, color: "#53657d" }}>Preview first</div>
+        <div style={{ fontSize: 9.8, fontWeight: 780, color: "#53657d" }}>Preview first</div>
       </div>
 
       <div style={{ marginTop: 8, display: "grid", gap: 8 }}>
@@ -2515,7 +2207,7 @@ function SpmCuratedPassportTours() {
           borderRadius: 14,
           background: "linear-gradient(135deg, #f8fbfc, #ffffff)",
           padding: "8px 10px",
-          fontSize: 9.8,
+          fontSize: 9.5,
           lineHeight: 1.22,
           fontWeight: 740,
           color: "#355071",
@@ -2659,7 +2351,7 @@ function SpmGuideSupportProvidedBy() {
             background: "linear-gradient(135deg, #e8fbff, #ffffff)",
             color: "#067889",
             padding: "8px 10px",
-            fontSize: 9.6,
+            fontSize: 9.8,
             fontWeight: 850,
             textDecoration: "none",
           }}
@@ -2800,7 +2492,7 @@ function SpmPassportExperienceCards() {
             aria-label={`Open ${item.label}`}
             style={{
               display: "grid",
-              gridTemplateColumns: "38px 1fr 96px",
+              gridTemplateColumns: "36px 1fr 88px",
               alignItems: "center",
               gap: 8,
               border: "1px solid #bfe7ee",

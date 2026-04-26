@@ -6,21 +6,21 @@ type TravelerDictionary = Record<string, string>;
 
 const passDictionaryFallback: TravelerDictionary = {
   "pass.header.eyebrow": "Official Traveler Pass",
-  "pass.header.title": "OSP Pass",
-  "pass.header.body": "View your issued pass, QR credential, trip status, and Passport Map bridge.",
+  "pass.header.title": "Your OSP Pass",
+  "pass.header.body": "Use your pass to view your QR credential, trip readiness, and Passport Map access.",
   "pass.nav.home": "Home",
   "pass.nav.myTrips": "My Trips",
-  "pass.nav.passportMap": "Passport Map",
+  "pass.nav.passportMap": "Map",
   "pass.nav.logout": "Logout",
-  "pass.accessNote.title": "Pass Access Note",
-  "pass.accessNote.body1": "This page uses the authenticated session to load the traveler pass view.",
-  "pass.accessNote.body2": "If an issued pass already exists, it is prioritized. Otherwise the latest traveler trip is checked for pass eligibility.",
-  "pass.loadError.title": "Load Error",
-  "pass.empty.title": "No Trips Available",
-  "pass.empty.body": "No traveler trip is available yet for pass viewing.",
+  "pass.accessNote.title": "Pass Status",
+  "pass.accessNote.body1": "Your pass appears here when your trip and QR credential are available.",
+  "pass.accessNote.body2": "If the pass cannot load, check your connection or return to your Passport Map.",
+  "pass.loadError.title": "Pass Data Unavailable",
+  "pass.empty.title": "No Active Trip Found",
+  "pass.empty.body": "Create or open a trip first. Your OSP Pass becomes available after the required trip records exist.",
   "pass.readiness.sectionTitle": "Pass Readiness",
   "pass.readiness.noTrip.title": "No Trip Available",
-  "pass.readiness.noTrip.body": "No traveler trip is available yet for pass viewing.",
+  "pass.readiness.noTrip.body": "Create or open a trip first. Your pass appears once the required trip records exist.",
   "pass.readiness.ready.title": "Pass Ready",
   "pass.readiness.ready.body": "Your pass is on file and ready for operational use.",
   "pass.readiness.onRecord.title": "Pass On Record",
@@ -34,9 +34,9 @@ const passDictionaryFallback: TravelerDictionary = {
   "pass.blocked.title": "Pass Blocked",
   "pass.spm.sectionTitle": "Siargao Passport Map",
   "pass.spm.eyebrow": "Second Screen",
-  "pass.spm.title": "Continue to your Passport Map",
+  "pass.spm.title": "Return to Passport Map",
   "pass.spm.body": "Your SPM trail progress uses governed OSP QR, stamp, pass, and trip records when available. Preview layout cards may appear only to preserve the approved map geometry.",
-  "pass.spm.cta": "Open Siargao Passport Map",
+  "pass.spm.cta": "↗ Open Passport Map",
   "pass.status.sectionTitle": "Key Status Summary",
 };
 
@@ -159,7 +159,7 @@ function Section(props: { title: string; children: any }) {
         borderRadius: 20,
         padding: 16,
         marginBottom: 14,
-        background: "#ffffff",
+        background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,253,255,0.94))",
         boxShadow: "0 12px 30px rgba(15,23,42,0.045)",
       }}
     >
@@ -270,7 +270,7 @@ function getPassReadinessSummary(trip: any, passUsageWarnings: string[], diction
   if (!trip) {
     return {
       title: t(dictionary, "pass.readiness.noTrip.title", "No Trip Available"),
-      body: t(dictionary, "pass.readiness.noTrip.body", "No traveler trip is available yet for pass viewing."),
+      body: t(dictionary, "pass.readiness.noTrip.body", "Create or open a trip first. Your pass appears once the required trip records exist."),
       accent: "#64748b",
     };
   }
@@ -414,7 +414,7 @@ export default async function TravelerPassPage() {
           <h1
             style={{
               margin: 0,
-              fontSize: 34,
+              fontSize: 36,
               lineHeight: 0.98,
               letterSpacing: "-0.055em",
               color: "#19305a",
@@ -454,7 +454,7 @@ export default async function TravelerPassPage() {
               borderRadius: 999,
               padding: "0 12px",
               border: "1px solid #dbe8ef",
-              background: "#ffffff",
+              background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,253,255,0.94))",
               color: "#19305a",
               textDecoration: "none",
               fontSize: 13,
@@ -479,15 +479,172 @@ export default async function TravelerPassPage() {
 
       {error ? (
         <Section title={t(dictionary, "pass.loadError.title", "Load Error")}>
-          <p style={{ margin: 0 }}>{error}</p>
+          <div
+            style={{
+              display: "grid",
+              gap: 10,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                padding: 12,
+                borderRadius: 18,
+                background: "linear-gradient(135deg, #fff7ed, #ffffff)",
+                border: "1px solid rgba(251,191,36,0.34)",
+              }}
+            >
+              <div
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 14,
+                  background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                  color: "#ffffff",
+                  display: "grid",
+                  placeItems: "center",
+                  fontWeight: 900,
+                }}
+              >
+                !
+              </div>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontSize: 13.5, fontWeight: 900, color: "#14264b" }}>
+                  Pass data could not load
+                </div>
+                <div style={{ marginTop: 3, fontSize: 11.5, lineHeight: 1.25, fontWeight: 700, color: "#7c5a21" }}>
+                  Start the backend service or return to Passport Map while pass records are unavailable.
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <a
+                href="/traveler/passport-map"
+                style={{
+                  minHeight: 42,
+                  borderRadius: 16,
+                  background: "linear-gradient(135deg, #14b8c6, #078da0)",
+                  color: "#ffffff",
+                  display: "grid",
+                  placeItems: "center",
+                  textDecoration: "none",
+                  fontSize: 11,
+                  fontWeight: 900,
+                  boxShadow: "0 10px 22px rgba(7,141,160,0.18)",
+                }}
+              >
+                ↗ Passport Map
+              </a>
+              <a
+                href="/traveler/trips"
+                style={{
+                  minHeight: 42,
+                  borderRadius: 16,
+                  background: "linear-gradient(135deg, #ffffff, #f4fdff)",
+                  color: "#067889",
+                  display: "grid",
+                  placeItems: "center",
+                  textDecoration: "none",
+                  fontSize: 11,
+                  fontWeight: 900,
+                  border: "1px solid rgba(191,231,238,0.88)",
+                }}
+              >
+                My Trips
+              </a>
+            </div>
+          </div>
         </Section>
       ) : null}
 
       {!trip ? (
         <Section title={t(dictionary, "pass.empty.title", "No Trips Available")}>
-          <p style={{ margin: 0 }}>
-            No traveler trip is available yet for pass viewing.
-          </p>
+          <div
+            style={{
+              display: "grid",
+              gap: 12,
+            }}
+          >
+            <div
+              style={{
+                borderRadius: 24,
+                border: "1px solid rgba(191,231,238,0.88)",
+                background: "linear-gradient(135deg, #ecfeff, #ffffff)",
+                padding: 14,
+                boxShadow: "0 14px 34px rgba(8,61,103,0.09)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div
+                  style={{
+                    width: 54,
+                    height: 54,
+                    borderRadius: 18,
+                    background: "linear-gradient(135deg, #14b8c6, #078da0)",
+                    color: "#ffffff",
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 24,
+                    fontWeight: 900,
+                    boxShadow: "0 12px 24px rgba(7,141,160,0.22)",
+                  }}
+                >
+                  QR
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase", color: "#0796a6" }}>
+                    Pass not issued yet
+                  </div>
+                  <div style={{ marginTop: 4, fontSize: 18, lineHeight: 1.05, fontWeight: 900, color: "#14264b" }}>
+                    Trip record required
+                  </div>
+                  <div style={{ marginTop: 5, fontSize: 11.5, lineHeight: 1.25, fontWeight: 700, color: "#53657d" }}>
+                    Your QR credential appears after an eligible trip and pass record are available.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <a
+                href="/traveler/trips"
+                style={{
+                  minHeight: 44,
+                  borderRadius: 16,
+                  background: "linear-gradient(135deg, #22b85a, #11843d)",
+                  color: "#ffffff",
+                  display: "grid",
+                  placeItems: "center",
+                  textDecoration: "none",
+                  fontSize: 11,
+                  fontWeight: 900,
+                  boxShadow: "0 10px 22px rgba(17,132,61,0.18)",
+                }}
+              >
+                Open Trips
+              </a>
+              <a
+                href="/traveler/passport-map"
+                style={{
+                  minHeight: 44,
+                  borderRadius: 16,
+                  background: "linear-gradient(135deg, #ffffff, #f4fdff)",
+                  color: "#067889",
+                  display: "grid",
+                  placeItems: "center",
+                  textDecoration: "none",
+                  fontSize: 11,
+                  fontWeight: 900,
+                  border: "1px solid rgba(191,231,238,0.88)",
+                }}
+              >
+                Passport Map
+              </a>
+            </div>
+          </div>
         </Section>
       ) : (
         <>
@@ -507,7 +664,7 @@ export default async function TravelerPassPage() {
                     width: 38,
                     height: 38,
                     borderRadius: 12,
-                    background: "#ffffff",
+                    background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,253,255,0.94))",
                     border: "1px solid #dbe8ef",
                     color: readiness.accent,
                     display: "flex",
@@ -546,7 +703,7 @@ export default async function TravelerPassPage() {
                     display: "inline-block",
                     padding: 12,
                     borderRadius: 20,
-                    background: "#ffffff",
+                    background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,253,255,0.94))",
                     border: "1px solid #dbe8ef",
                     boxShadow: "0 14px 32px rgba(15,23,42,0.07)",
                     opacity: passUsageWarnings.length > 0 ? 0.35 : 1,
@@ -683,6 +840,50 @@ export default async function TravelerPassPage() {
           </Section>
         </>
       )}
+
+      <nav
+        aria-label="Traveler pass bottom navigation"
+        style={{
+          position: "sticky",
+          bottom: 0,
+          margin: "22px -14px -22px",
+          padding: "10px 18px 12px",
+          borderTop: "1px solid rgba(191,231,238,0.92)",
+          background: "rgba(255,255,255,0.94)",
+          backdropFilter: "blur(16px)",
+          display: "grid",
+          gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+          gap: 6,
+          boxShadow: "0 -14px 32px rgba(8,61,103,0.07)",
+        }}
+      >
+        {[
+          { href: "/traveler/passport-map", label: "Map", icon: "▰" },
+          { href: "/traveler/passport-trails", label: "Trails", icon: "⌁" },
+          { href: "/traveler/pass", label: "Pass", icon: "▣", active: true },
+          { href: "/traveler/trips", label: "Trips", icon: "↗" },
+        ].map((item) => (
+          <a
+            key={item.href}
+            href={item.href}
+            style={{
+              minHeight: 52,
+              borderRadius: 16,
+              display: "grid",
+              placeItems: "center",
+              gap: 3,
+              textDecoration: "none",
+              color: item.active ? "#0796a6" : "#64748b",
+              background: item.active ? "rgba(236,254,255,0.92)" : "transparent",
+              fontSize: 10.2,
+              fontWeight: 850,
+            }}
+          >
+            <span style={{ fontSize: 18, lineHeight: 1 }}>{item.icon}</span>
+            <span>{item.label}</span>
+          </a>
+        ))}
+      </nav>
     </main>
   );
 }
