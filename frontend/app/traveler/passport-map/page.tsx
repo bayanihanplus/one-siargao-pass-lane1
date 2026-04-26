@@ -842,80 +842,11 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
               fontWeight: 590,
             }}
           >
-        <section
-          style={{
-            marginTop: 18,
-            border: "1px solid #d3eef2",
-            borderRadius: 24,
-            background: "linear-gradient(135deg, rgba(240,253,255,0.96), rgba(238,248,239,0.92))",
-            padding: 16,
-            boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 9,
-              fontWeight: 720,
-              letterSpacing: "0.13em",
-              textTransform: "uppercase",
-              color: "#0796a6",
-            }}
-          >
-            How Passport Trails Work
-          </div>
-          <p
-            style={{
-              margin: "7px 0 12px",
-              fontSize: 13,
-              lineHeight: 1.42,
-              fontWeight: 600,
-              color: "#355071",
-            }}
-          >
-            Choose a trail, visit verified stops, scan your OSP QR, and unlock Passport Stamps as your Siargao journey grows.
-          </p>
-          <div style={{ display: "grid", gap: 8 }}>
-            {[
-              "Choose a trail family",
-              "Visit verified destinations",
-              "Scan or verify at the stop",
-              "Unlock Passport Stamps",
-              "Complete your journey record",
-            ].map((step, index) => (
-              <div
-                key={step}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 9,
-                  border: "1px solid rgba(11,151,166,0.14)",
-                  borderRadius: 16,
-                  background: "rgba(255,255,255,0.72)",
-                  padding: "9px 10px",
-                }}
-              >
-                <span
-                  style={{
-                    width: 22,
-                    height: 22,
-                    borderRadius: "50%",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "#13a8b7",
-                    color: "#ffffff",
-                    fontSize: 11,
-                    fontWeight: 720,
-                    flex: "0 0 auto",
-                  }}
-                >
-                  {index + 1}
-                </span>
-                <span style={{ fontSize: 12.5, fontWeight: 650, color: "#14264b" }}>{step}</span>
-              </div>
-            ))}
-          </div>
-        </section>
+
+          <SpmFeaturedPartnerTours />
+          <SpmCuratedPassportTours />
+          <SpmBuildYourOwnTrailSection />
+          <SpmGuideSupportProvidedBy />
 
         <section
           style={{
@@ -2255,6 +2186,8 @@ function SpmJourneyHubEngagement() {
         </div>
       </div>
 
+          <SpmPassportRewardsRetention />
+
       <div
         style={{
           border: "1px solid #d3eef2",
@@ -2280,6 +2213,326 @@ function SpmJourneyHubEngagement() {
         <p style={{ margin: "6px 0 0", fontSize: 11.5, lineHeight: 1.38, fontWeight: 600, color: "#607089" }}>
           Events will connect to Passport Trails later. For now, the assistant can explain which trail family fits your travel style.
         </p>
+      </div>
+    </section>
+  );
+}
+
+
+function SpmFeaturedPartnerTours() {
+  const tours = [
+    {
+      title: "Tri-Island Joiner",
+      route: "Guyam • Daku • Naked Island",
+      support: "Provided by approved local partner",
+      stamps: "Passport stamps available",
+      commercial: "Package pricing applies when booking opens.",
+      href: "/traveler/passport-trails/tri-island-joiner",
+    },
+    {
+      title: "Corregidor + Tri-Island Joiner",
+      route: "Corregidor • Guyam • Daku • Naked Island",
+      support: "Provided by approved local partner",
+      stamps: "Passport stamps available",
+      commercial: "Pricing appears before checkout.",
+      href: "/traveler/passport-trails/tri-island-joiner",
+    },
+    {
+      title: "Sohoton Joiner",
+      route: "Sohoton • Bucas Grande route",
+      support: "Provided by approved local partner",
+      stamps: "Passport stamps available when activated",
+      commercial: "Booking opens when operator readiness is active.",
+      href: "/traveler/passport-trails/tri-island-joiner",
+    },
+  ];
+
+  return (
+    <section
+      aria-label="Featured Siargao Partner Tours"
+      style={{
+        marginTop: 18,
+        border: "1px solid #d3eef2",
+        borderRadius: 28,
+        background: "rgba(255,255,255,0.94)",
+        padding: 16,
+        boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
+      }}
+    >
+      <div style={{ fontSize: 9, fontWeight: 720, letterSpacing: "0.13em", textTransform: "uppercase", color: "#0796a6" }}>
+        Featured Siargao Partner Tours
+      </div>
+      <h2 style={{ margin: "7px 0 8px", fontSize: 23, lineHeight: 1.06, fontWeight: 690, letterSpacing: "-0.04em", color: "#14264b" }}>
+        Local tour products made Passport-ready.
+      </h2>
+      <p style={{ margin: "0 0 13px", fontSize: 12.5, lineHeight: 1.42, fontWeight: 600, color: "#607089" }}>
+        These are Siargao Partner Tours operated by approved local partners. They are commercial packages, not free map entries.
+      </p>
+
+      <div style={{ display: "grid", gap: 10 }}>
+        {tours.map((tour) => (
+          <a
+            key={tour.title}
+            href={tour.href}
+            aria-label={`Open ${tour.title}`}
+            style={{
+              textDecoration: "none",
+              border: "1px solid rgba(11,151,166,0.14)",
+              borderLeft: "5px solid #13a8b7",
+              borderRadius: 22,
+              background: "rgba(248,252,252,0.92)",
+              padding: 14,
+              color: "#14264b",
+            }}
+          >
+            <div style={{ fontSize: 9, fontWeight: 720, letterSpacing: "0.1em", textTransform: "uppercase", color: "#13a8b7" }}>
+              Siargao Partner Tour
+            </div>
+            <div style={{ marginTop: 4, fontSize: 16, fontWeight: 720, lineHeight: 1.14 }}>
+              {tour.title}
+            </div>
+            <div style={{ marginTop: 5, fontSize: 11.5, fontWeight: 600, color: "#607089", lineHeight: 1.35 }}>
+              {tour.route}
+            </div>
+            <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
+              <div style={{ borderRadius: 14, background: "#f2f6f8", padding: "8px 9px" }}>
+                <div style={{ fontSize: 8, fontWeight: 720, color: "#7b8aa0", letterSpacing: "0.08em", textTransform: "uppercase" }}>Guide Support</div>
+                <div style={{ marginTop: 3, fontSize: 10.5, fontWeight: 720, color: "#355071", lineHeight: 1.25 }}>{tour.support}</div>
+              </div>
+              <div style={{ borderRadius: 14, background: "#f2f6f8", padding: "8px 9px" }}>
+                <div style={{ fontSize: 8, fontWeight: 720, color: "#7b8aa0", letterSpacing: "0.08em", textTransform: "uppercase" }}>Stamps</div>
+                <div style={{ marginTop: 3, fontSize: 10.5, fontWeight: 720, color: "#355071", lineHeight: 1.25 }}>{tour.stamps}</div>
+              </div>
+            </div>
+            <div style={{ marginTop: 9, borderRadius: 14, background: "rgba(223,248,255,0.92)", padding: "8px 9px", fontSize: 10.5, fontWeight: 700, color: "#078da0", lineHeight: 1.28 }}>
+              {tour.commercial}
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SpmCuratedPassportTours() {
+  const families = [
+    "Island Hopping Trail",
+    "Surf Explorer Trail",
+    "North Siargao Trail",
+    "Inland Discovery Trail",
+    "Culture & Community Trail",
+    "Sunset & Scenic Stops Trail",
+    "Adventure Trail",
+    "Return Traveler Continuity Trail",
+  ];
+
+  return (
+    <section
+      aria-label="Passport Trails Curated Tours"
+      style={{
+        marginTop: 18,
+        border: "1px solid #d3eef2",
+        borderRadius: 28,
+        background: "rgba(255,255,255,0.94)",
+        padding: 16,
+        boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
+      }}
+    >
+      <div style={{ fontSize: 9, fontWeight: 720, letterSpacing: "0.13em", textTransform: "uppercase", color: "#0796a6" }}>
+        Passport Trails™ Curated Tours
+      </div>
+      <h2 style={{ margin: "7px 0 8px", fontSize: 23, lineHeight: 1.06, fontWeight: 690, letterSpacing: "-0.04em", color: "#14264b" }}>
+        Official SPM trail families.
+      </h2>
+      <p style={{ margin: "0 0 13px", fontSize: 12.5, lineHeight: 1.42, fontWeight: 600, color: "#607089" }}>
+        Curated Passport Trails™ are provided through SPM-approved trail operations, with approved local partner fulfillment where service is required.
+      </p>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 9 }}>
+        {families.map((family, index) => (
+          <a
+            key={family}
+            href={index === 0 ? "/traveler/passport-trails/tri-island-joiner" : "/traveler/passport-trails"}
+            aria-label={`Open ${family}`}
+            style={{
+              textDecoration: "none",
+              border: "1px solid rgba(11,151,166,0.14)",
+              borderRadius: 20,
+              background: index === 0 ? "linear-gradient(135deg, rgba(221,253,255,0.98), rgba(232,250,239,0.96))" : "rgba(248,252,252,0.92)",
+              padding: 12,
+              color: "#14264b",
+            }}
+          >
+            <div style={{ fontSize: 9, fontWeight: 720, letterSpacing: "0.08em", textTransform: "uppercase", color: index === 0 ? "#138a58" : "#718096" }}>
+              {index === 0 ? "Active Family" : "Preview Family"}
+            </div>
+            <div style={{ marginTop: 5, fontSize: 13.5, fontWeight: 720, lineHeight: 1.12 }}>
+              {family}
+            </div>
+            <div style={{ marginTop: 7, fontSize: 10.5, lineHeight: 1.28, fontWeight: 650, color: "#607089" }}>
+              Verified Passport stamps included when activated.
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div style={{ marginTop: 12, borderRadius: 16, background: "#f2f6f8", padding: "10px 11px", fontSize: 11, fontWeight: 700, color: "#355071", lineHeight: 1.3 }}>
+        Pricing appears before checkout. No curated trail should imply free fulfillment unless explicitly approved.
+      </div>
+    </section>
+  );
+}
+
+function SpmBuildYourOwnTrailSection() {
+  return (
+    <section
+      aria-label="Build Your Own Passport Trail"
+      style={{
+        marginTop: 18,
+        border: "1px solid #d3eef2",
+        borderRadius: 28,
+        background: "linear-gradient(135deg, rgba(247,250,255,0.98), rgba(239,253,255,0.96))",
+        padding: 16,
+        boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
+      }}
+    >
+      <div style={{ fontSize: 9, fontWeight: 720, letterSpacing: "0.13em", textTransform: "uppercase", color: "#8b5cf6" }}>
+        Build Your Own Passport Trail
+      </div>
+      <h2 style={{ margin: "7px 0 8px", fontSize: 23, lineHeight: 1.06, fontWeight: 690, letterSpacing: "-0.04em", color: "#14264b" }}>
+        Create a personal route with SPM guidance.
+      </h2>
+      <p style={{ margin: "0 0 13px", fontSize: 12.5, lineHeight: 1.42, fontWeight: 600, color: "#607089" }}>
+        Route guidance is provided by SPM. Approved local partner support may apply where transport, boat, guide, or activity service is required.
+      </p>
+
+      <a
+        href="/traveler/passport-trails/diy-trail-builder"
+        aria-label="Open Build Your Own Passport Trail"
+        style={{
+          display: "block",
+          textDecoration: "none",
+          borderRadius: 20,
+          background: "#8b5cf6",
+          color: "#ffffff",
+          padding: 14,
+          boxShadow: "0 12px 28px rgba(139,92,246,0.18)",
+        }}
+      >
+        <div style={{ fontSize: 18 }}>🧩</div>
+        <div style={{ marginTop: 8, fontSize: 16, fontWeight: 720, lineHeight: 1.12 }}>
+          Start DIY Trail Builder
+        </div>
+        <div style={{ marginTop: 5, fontSize: 11.5, fontWeight: 600, lineHeight: 1.32, opacity: 0.9 }}>
+          Planning preview now. Save, booking, fulfillment, and stamp activation come only when governed readiness is live.
+        </div>
+      </a>
+    </section>
+  );
+}
+
+function SpmGuideSupportProvidedBy() {
+  const support = [
+    {
+      label: "Siargao Partner Tour",
+      provided: "Provided by approved local partner",
+      note: "Best for partner-operated tours, island hopping, land tours, private trips, and commercial packages.",
+    },
+    {
+      label: "Passport Trails™ Curated Tour",
+      provided: "Provided through SPM-approved trail operations",
+      note: "Best for curated stamp journeys, verified route flow, and official trail family progression.",
+    },
+    {
+      label: "Build Your Own Passport Trail",
+      provided: "Route guidance provided by SPM",
+      note: "Approved local partner support may apply where transport, boat, guide, or activity service is required.",
+    },
+  ];
+
+  return (
+    <section
+      aria-label="Guide Support Provided By"
+      style={{
+        marginTop: 18,
+        border: "1px solid #d3eef2",
+        borderRadius: 28,
+        background: "rgba(255,255,255,0.94)",
+        padding: 16,
+        boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
+      }}
+    >
+      <div style={{ fontSize: 9, fontWeight: 720, letterSpacing: "0.13em", textTransform: "uppercase", color: "#0796a6" }}>
+        Guide Support / Provided By
+      </div>
+      <h2 style={{ margin: "7px 0 8px", fontSize: 23, lineHeight: 1.06, fontWeight: 690, letterSpacing: "-0.04em", color: "#14264b" }}>
+        Know who supports each journey.
+      </h2>
+      <p style={{ margin: "0 0 13px", fontSize: 12.5, lineHeight: 1.42, fontWeight: 600, color: "#607089" }}>
+        This explains support responsibility only. Guide selection and assignment happen later inside the governed booking/request flow.
+      </p>
+
+      <div style={{ display: "grid", gap: 9 }}>
+        {support.map((item) => (
+          <div
+            key={item.label}
+            style={{
+              border: "1px solid rgba(11,151,166,0.13)",
+              borderRadius: 18,
+              background: "rgba(248,252,252,0.92)",
+              padding: 12,
+            }}
+          >
+            <div style={{ fontSize: 13.5, fontWeight: 720, color: "#14264b", lineHeight: 1.12 }}>
+              {item.label}
+            </div>
+            <div style={{ marginTop: 5, fontSize: 11.5, fontWeight: 720, color: "#078da0", lineHeight: 1.25 }}>
+              {item.provided}
+            </div>
+            <div style={{ marginTop: 5, fontSize: 10.8, fontWeight: 600, color: "#607089", lineHeight: 1.32 }}>
+              {item.note}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SpmPassportRewardsRetention() {
+  return (
+    <section
+      aria-label="Passport Rewards and Return Traveler Continuity"
+      style={{
+        marginTop: 18,
+        border: "1px solid #d3eef2",
+        borderRadius: 28,
+        background: "linear-gradient(135deg, rgba(255,252,239,0.98), rgba(239,253,255,0.96))",
+        padding: 16,
+        boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
+      }}
+    >
+      <div style={{ fontSize: 9, fontWeight: 720, letterSpacing: "0.13em", textTransform: "uppercase", color: "#c58a00" }}>
+        Passport Rewards / Return Traveler Continuity
+      </div>
+      <h2 style={{ margin: "7px 0 8px", fontSize: 23, lineHeight: 1.06, fontWeight: 690, letterSpacing: "-0.04em", color: "#14264b" }}>
+        Keep building your Siargao Passport.
+      </h2>
+      <p style={{ margin: "0 0 13px", fontSize: 12.5, lineHeight: 1.42, fontWeight: 600, color: "#607089" }}>
+        Unlock stamps, complete trails, and continue unfinished journeys across future trips. Rewards remain preview-only until governed activation.
+      </p>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
+        {[
+          ["2", "Places verified"],
+          ["33%", "Trail progress"],
+          ["Next", "Unlock pending"],
+        ].map(([value, label]) => (
+          <div key={label} style={{ borderRadius: 16, background: "rgba(255,255,255,0.86)", padding: "10px 8px", border: "1px solid rgba(197,138,0,0.12)" }}>
+            <div style={{ fontSize: 17, fontWeight: 760, color: "#14264b" }}>{value}</div>
+            <div style={{ marginTop: 2, fontSize: 9.5, lineHeight: 1.15, fontWeight: 650, color: "#607089" }}>{label}</div>
+          </div>
+        ))}
       </div>
     </section>
   );
