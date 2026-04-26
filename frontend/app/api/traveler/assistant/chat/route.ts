@@ -5,6 +5,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}));
     const message = String(body?.message || "").trim();
+    const topic = String(body?.topic || "general").trim();
 
     if (!message) {
       return NextResponse.json(
@@ -29,6 +30,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         source: "traveler-settings-assistant-phase1-chat",
         message,
+        topic,
       }),
     });
 
