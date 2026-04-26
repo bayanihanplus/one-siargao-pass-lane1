@@ -322,6 +322,12 @@ export default async function TravelerPassportMapPage() {
             </div>
           </section>
 
+          <SpmPassportExperienceCards />
+          <SpmFeaturedPartnerTours />
+          <SpmCuratedPassportTours />
+          <SpmBuildYourOwnTrailSection />
+          <SpmGuideSupportProvidedBy />
+
           <SpmTrailCardsPreview trails={spmPreview?.trails} />
 
           <SpmVerifiedStopsPreview stops={spmPreview?.verifiedStops} />
@@ -844,13 +850,6 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
           >
 
 
-          <SpmPassportExperienceCards />
-          <SpmFeaturedPartnerTours />
-          <SpmCuratedPassportTours />
-          <SpmBuildYourOwnTrailSection />
-          <SpmGuideSupportProvidedBy />
-
-          <SpmPassportRewardsRetention />
 
         <section
           style={{
