@@ -23,9 +23,9 @@ type TrailDetail = {
 };
 
 const TRAILS: Record<string, TrailDetail> = {
-  "tri-island-joiner": {
+  "island-hopping": {
     eyebrow: "PASSPORT TRAILS™",
-    title: "Tri-Island Joiner",
+    title: "Island Hopping Trail",
     subtitle:
       "Follow Guyam, Daku, and Naked Island through OSP/SPM verification. Stamps unlock only after verified QR / Passport records.",
     progressLabel: "33% Complete",

@@ -1,9 +1,9 @@
 const partnerTours = [
   {
-    title: "Tri-Island Joiner",
+    title: "Island Hopping Trail",
     route: "Guyam • Daku • Naked Island",
     status: "Live",
-    href: "/traveler/passport-trails/tri-island-joiner",
+    href: "/traveler/passport-trails/island-hopping",
   },
 ];
 
@@ -11,7 +11,7 @@ const officialTrails = [
   {
     title: "Island Hopping Trail",
     status: "Active",
-    href: "/traveler/passport-trails/tri-island-joiner",
+    href: "/traveler/passport-trails/island-hopping",
     tone: "#16a34a",
     buttonTone: "#16a34a",
     softBg: "rgba(227,255,243,0.92)",

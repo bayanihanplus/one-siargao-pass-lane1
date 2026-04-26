@@ -852,7 +852,7 @@ function SpmTrailCardsPreview(props: any) {
       stopsCompleted: 2,
       stopsTotal: 6,
       progressPercentage: 33,
-      href: "/traveler/passport-trails/tri-island-joiner",
+      href: "/traveler/passport-trails/island-hopping",
     },
     {
       trailName: "Surf Explorer Trail",
@@ -1717,7 +1717,7 @@ function SpmJourneyHubEngagement() {
         </div>
 
         <a
-          href="/traveler/passport-trails/tri-island-joiner"
+          href="/traveler/passport-trails/island-hopping"
           aria-label="Open active Island Hopping Passport Trail"
           style={{
             flexShrink: 0,
@@ -1976,11 +1976,11 @@ function SpmFeaturedPartnerTours() {
   const partnerTours = [
     {
       label: "Siargao Partner Tour",
-      title: "Tri-Island Joiner",
+      title: "Island Hopping Trail",
       subtitle: "Guyam • Daku • Naked Island",
       badge: "Passport-ready",
       action: "View Tour",
-      href: "/traveler/passport-trails/tri-island-joiner",
+      href: "/traveler/passport-trails/island-hopping",
       tone: "#0891b2",
       softBg: "rgba(232,251,255,0.96)",
       softBorder: "#aee7f2",
@@ -2132,7 +2132,7 @@ function SpmCuratedPassportTours() {
       subtitle: "Verified stamp route",
       status: "Recommended",
       cta: "Continue",
-      href: "/traveler/passport-trails/tri-island-joiner",
+      href: "/traveler/passport-trails/island-hopping",
       icon: "✓",
       tone: "#16a34a",
       softBg: "rgba(227,255,243,0.94)",
@@ -2637,7 +2637,7 @@ function SpmPassportExperienceCards() {
       title: "Book a local tour",
       sub: "Partner-operated",
       badge: "Pricing shown before booking",
-      href: "/traveler/passport-trails/tri-island-joiner",
+      href: "/traveler/passport-trails/island-hopping",
       tone: "#13a8b7",
       cta: "↗ View Tours",
     },
