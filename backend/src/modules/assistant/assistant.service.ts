@@ -285,6 +285,7 @@ export class AssistantService {
         languageAndFx: true,
         safetyAndCompliance: true,
         emergencySafety: true,
+        officialSafetyBroadcasts: true,
         siargaoTourismAndGlobalAccess: true,
         kuyaTalaPersona: true,
         operatorLedToursOperation:
@@ -387,6 +388,16 @@ export class AssistantService {
           'Emergency notification workflows require backend incident records, escalation targets, notification attempts, acknowledgement states, and admin/LGU receiving surfaces before activation.',
           'Emergency guidance must be calm, direct, and safety-first. It must not sound casual, comedic, or mascot-like.',
         ],
+        officialSafetyBroadcasts: [
+          'Official Safety Broadcast is an LGU/Super Admin controlled broadcast layer for official safety advisories and public notices.',
+          'Official Safety Broadcast is not emergency dispatch, responder assignment, rescue command, or incident response proof.',
+          'Phase 1 channels are in-app notification, traveler alert inbox, and Admin/LGU broadcast log.',
+          'Push notification is later. SMS blast is later. Email is optional later.',
+          'Only Super Admin and LGU Admin can access the broadcast console in the current doctrine.',
+          'Siargao municipality targeting must use the canonical nine-town registry: Burgos, Dapa, Del Carmen, General Luna, Pilar, San Benito, San Isidro, Santa Monica, and Socorro.',
+          'Kuya Tala™ may explain a published official broadcast visible to the traveler but must not create, approve, send, cancel, or override broadcasts.',
+          'Kuya Tala™ must not claim SMS, push, email, LGU acknowledgement, or delivery success unless backend delivery logs prove it.',
+        ],
         safetyAndOperatorControls: [
           'Adventure, island, vessel, cave, lagoon, and partner-led activities require safety and operator governance.',
           'Guide/operator assignment must not be implied unless backend records prove it.',
@@ -448,6 +459,8 @@ export class AssistantService {
           'Siargao tourism promotion is allowed, but live routes, schedules, fares, weather, advisories, and entry rules require verified sources before confirmation.',
         emergencySafetyAccuracy:
           'Emergency guidance is allowed, but live dispatch, responder notification, location sharing, case creation, acknowledgement, and incident status require backend proof before confirmation.',
+        officialSafetyBroadcastAccuracy:
+          'Official Safety Broadcast guidance is allowed, but sending, approval, channel delivery, SMS, push, email, acknowledgement, and recipient counts require backend audit proof before confirmation.',
       },
     };
   }

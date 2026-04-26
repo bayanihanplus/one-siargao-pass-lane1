@@ -21,9 +21,11 @@ import { PrismaService } from './database/prisma.service';
 import { LanguagePacksModule } from './modules/language-packs/language-packs.module';
 import { FxModule } from './modules/fx/fx.module';
 import { AssistantModule } from './modules/assistant/assistant.module';
+import { OfficialSafetyBroadcastsModule } from './modules/official-safety-broadcasts/official-safety-broadcasts.module';
 
 @Module({
   imports: [
+    OfficialSafetyBroadcastsModule,
     AssistantModule,
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
