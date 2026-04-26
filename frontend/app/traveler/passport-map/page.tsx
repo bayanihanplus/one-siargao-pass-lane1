@@ -183,11 +183,11 @@ export default async function TravelerPassportMapPage() {
           >
             <div
               style={{
-                height: 438,
+                height: 464,
                 borderRadius: 24,
                 background:
                   "radial-gradient(circle at 76% 16%, rgba(19,168,183,0.16) 0, transparent 78px), radial-gradient(circle at 22% 84%, rgba(242,183,5,0.15) 0, transparent 64px), linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(238,248,251,0.66) 52%, rgba(255,255,255,0.90) 100%)",
-                padding: "18px 8px 18px",
+                padding: "20px 8px 20px",
                 position: "relative",
                 overflow: "hidden",
               }}
@@ -1259,10 +1259,10 @@ function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emp
           overflow: "hidden",
         }}
       >
-        <StatusCard icon="⚑" value={String(trailsUnlocked)} label="Trails\\nUnlocked" tone="#13a8b7" withDivider />
-        <StatusCard icon="♙" value={String(placesVerified)} label="Places\\nVerified" tone="#59aa61" withDivider />
-        <StatusCard icon="▥" value={`${journeyProgress}%`} label="Journey\\nProgress" tone="#168fe3" withDivider />
-        <StatusCard icon="▣" value={`Pass\\n${passStatus}`} label="OSP QR\\nReady" tone="#f2b705" />
+        <StatusCard icon="⚑" value={String(trailsUnlocked)} label="Trails" tone="#13a8b7" withDivider />
+        <StatusCard icon="♙" value={String(placesVerified)} label="Places" tone="#59aa61" withDivider />
+        <StatusCard icon="▥" value={`${journeyProgress}%`} label="Progress" tone="#168fe3" withDivider />
+        <StatusCard icon="▣" value={passStatus} label="QR Ready" tone="#f2b705" />
       </div>
 
       <p
@@ -1343,83 +1343,71 @@ function StatusCard(props: {
   tone: string;
   withDivider?: boolean;
 }) {
-  const valueLines = props.value.split("\\n");
-  const labelLines = props.label.split("\\n");
-
   return (
     <div
       style={{
         minWidth: 0,
-        minHeight: 48,
-        padding: "6px 4px",
-        borderRight: props.withDivider ? "1px solid rgba(203,213,225,0.78)" : "none",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 4,
-        textAlign: "left",
+        minHeight: 46,
+        padding: "7px 4px",
+        borderRight: props.withDivider ? "1px solid rgba(203,213,225,0.72)" : "none",
+        display: "grid",
+        gridTemplateRows: "18px 15px 11px",
+        justifyItems: "center",
+        alignContent: "center",
+        gap: 2,
       }}
     >
       <div
         aria-hidden="true"
         style={{
-          width: 22,
-          height: 22,
+          width: 18,
+          height: 18,
           borderRadius: "50%",
           background: props.tone,
           color: "#ffffff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 10,
-          fontWeight: 590,
-          flex: "0 0 22px",
+          fontSize: 9,
+          fontWeight: 700,
           boxShadow: "0 5px 10px rgba(15,23,42,0.10)",
         }}
       >
         {props.icon}
       </div>
 
-      <div style={{ minWidth: 0 }}>
-        <div
-          style={{
-            color: "#14264b",
-            fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
-            fontSize: valueLines.length > 1 ? 10.5 : 17,
-            lineHeight: valueLines.length > 1 ? 0.96 : 1,
-            fontWeight: 590,
-            letterSpacing: "-0.04em",
-            whiteSpace: "normal",
-          }}
-        >
-          {valueLines.map((line) => (
-            <span key={line} style={{ display: "block" }}>
-              {line}
-            </span>
-          ))}
-        </div>
+      <div
+        style={{
+          fontSize: 12,
+          lineHeight: 1,
+          fontWeight: 760,
+          color: "#14264b",
+          letterSpacing: "-0.015em",
+          whiteSpace: "nowrap",
+          maxWidth: "100%",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {props.value}
+      </div>
 
-        <div
-          style={{
-            marginTop: 2,
-            color: props.value.includes("Pass") ? "#1fa45b" : "#66738b",
-            fontSize: props.value.includes("Pass") ? 6.3 : 6.8,
-            lineHeight: 1.08,
-            fontWeight: 580,
-            letterSpacing: "0.01em",
-          }}
-        >
-          {labelLines.map((line) => (
-            <span key={line} style={{ display: "block" }}>
-              {line}
-            </span>
-          ))}
-        </div>
+      <div
+        style={{
+          fontSize: 8.2,
+          lineHeight: 1,
+          fontWeight: 700,
+          color: "#607089",
+          textTransform: "uppercase",
+          letterSpacing: "0.045em",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {props.label}
       </div>
     </div>
   );
 }
-
 
 function SpmMapVisualPreview() {
   return (
@@ -1429,8 +1417,8 @@ function SpmMapVisualPreview() {
         position: "absolute",
         left: 0,
         right: 0,
-        top: -36,
-        height: 430,
+        top: -28,
+        height: 444,
         zIndex: 1,
         borderRadius: "24px 24px 0 0",
         overflow: "hidden",
