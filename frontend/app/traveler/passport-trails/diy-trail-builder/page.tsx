@@ -312,7 +312,7 @@ export default function BuildYourOwnPassportTrailPage() {
 
           <a
             href="/traveler/passport-map"
-            aria-label="✦ Ask Passport Assistant from Passport Map"
+            aria-label="Ask Passport Assistant from Passport Map"
             style={{
               marginTop: 10,
               minHeight: 48,

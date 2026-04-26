@@ -2160,7 +2160,7 @@ function SpmFeaturedPartnerTours() {
             boxShadow: "0 12px 26px rgba(7,141,160,0.24)",
           }}
         >
-          ↗ View All Tours Tours
+          ↗ View All Tours
         </a>
       </div>
 

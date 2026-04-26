@@ -326,7 +326,7 @@ export default function PassportTrailDetailPage({
 
               <Link
                 href="/traveler/settings?panel=assistant"
-                aria-label="✦ Ask Passport Assistant about this trail"
+                aria-label="Ask Passport Assistant about this trail"
                 style={{
                   textDecoration: "none",
                   border: "1px solid #bdebf0",
