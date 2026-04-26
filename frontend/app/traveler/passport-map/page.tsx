@@ -880,7 +880,7 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
               color: "#14264b",
             }}
           >
-            Pick a journey, not just a card
+            Continue with official Passport Trail families
           </h2>
 
           <p
@@ -892,7 +892,7 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
               color: "#607089",
             }}
           >
-            Start with a live trail family or preview what will unlock next as more verified stops go live.
+            Follow official SPM trail families, unlock verified Passport Stamps, and continue your journey through governed OSP/SPM records.
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 9 }}>
@@ -936,11 +936,11 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
             </a>
 
             {[
-              { icon: "🌊", name: "Surf & Coastal", href: "/traveler/passport-trails/surf-coastal", hint: "Beach and surf stops" },
-              { icon: "🍽️", name: "Food & Culture", href: "/traveler/passport-trails/food-culture", hint: "Local flavors" },
-              { icon: "🌿", name: "Nature & Inland", href: "/traveler/passport-trails/nature-inland", hint: "Falls and inland stops" },
-              { icon: "🏘️", name: "Heritage & Local Life", href: "/traveler/passport-trails/heritage-local-life", hint: "Community routes" },
-              { icon: "⭐", name: "Hidden Gems", href: "/traveler/passport-trails/hidden-gems", hint: "Curated discoveries" },
+              { icon: "🌊", name: "Surf Explorer Trail", href: "/traveler/passport-trails/surf-coastal", hint: "Surf-family Passport stops" },
+              { icon: "🍽️", name: "Culture & Community Trail", href: "/traveler/passport-trails/food-culture", hint: "Culture and community stops" },
+              { icon: "🌿", name: "Inland Discovery Trail", href: "/traveler/passport-trails/nature-inland", hint: "Inland discovery stops" },
+              { icon: "🏘️", name: "Culture & Community Trail", href: "/traveler/passport-trails/heritage-local-life", hint: "Culture and community stops" },
+              { icon: "⭐", name: "Return Traveler Continuity Trail", href: "/traveler/passport-trails/hidden-gems", hint: "Return-traveler continuity" },
             ].map((family) => (
               <div
                 key={family.name}
@@ -1730,45 +1730,45 @@ function SpmJourneyHubEngagement() {
     },
     {
       icon: "🌊",
-      name: "Surf & Coastal",
+      name: "Surf Explorer Trail",
       status: "Preview",
-      hint: "Beach and surf stops",
+      hint: "Surf-family Passport stops",
       href: "/traveler/passport-trails/surf-coastal",
       cta: "Preview",
       live: false,
     },
     {
       icon: "🍽️",
-      name: "Food & Culture",
+      name: "Culture & Community Trail",
       status: "Preview",
-      hint: "Local flavors",
+      hint: "Culture and community stops",
       href: "/traveler/passport-trails/food-culture",
       cta: "Preview",
       live: false,
     },
     {
       icon: "🌿",
-      name: "Nature & Inland",
+      name: "Inland Discovery Trail",
       status: "Preview",
-      hint: "Falls and inland stops",
+      hint: "Inland discovery stops",
       href: "/traveler/passport-trails/nature-inland",
       cta: "Preview",
       live: false,
     },
     {
       icon: "🏘️",
-      name: "Heritage & Local Life",
+      name: "Culture & Community Trail",
       status: "Preview",
-      hint: "Community routes",
+      hint: "Culture and community stops",
       href: "/traveler/passport-trails/heritage-local-life",
       cta: "Preview",
       live: false,
     },
     {
       icon: "⭐",
-      name: "Hidden Gems",
+      name: "Return Traveler Continuity Trail",
       status: "Preview",
-      hint: "Curated discoveries",
+      hint: "Return-traveler continuity",
       href: "/traveler/passport-trails/hidden-gems",
       cta: "Preview",
       live: false,
