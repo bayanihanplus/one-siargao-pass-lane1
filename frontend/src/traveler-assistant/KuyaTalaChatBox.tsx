@@ -101,6 +101,36 @@ const STARTER_ACTIONS = [
   "Any official safety broadcast?",
 ];
 
+function getActionHref(action: string) {
+  const value = String(action || "").toLowerCase();
+
+  if (value.includes("osp pass") || value.includes("pass / qr") || value.includes("qr/pass") || value.includes("qr status") || value.includes("show osp pass") || value.includes("checkpoint")) {
+    return "/traveler/pass";
+  }
+
+  if (value.includes("payment")) {
+    return "/traveler/payments/demo-payment-001";
+  }
+
+  if (value.includes("passport map") || value.includes("verified stop")) {
+    return "/traveler/passport-map";
+  }
+
+  if (value.includes("passport trail") || value.includes("trail")) {
+    return "/traveler/passport-trails";
+  }
+
+  if (value.includes("emergency") || value.includes("safety") || value.includes("alert") || value.includes("broadcast")) {
+    return "/traveler/emergency-safety";
+  }
+
+  if (value.includes("trip") || value.includes("booking") || value.includes("return continuity")) {
+    return "/traveler/trips";
+  }
+
+  return "/traveler/settings?panel=assistant";
+}
+
 function makeId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
@@ -555,27 +585,34 @@ export default function KuyaTalaChatBox(props: KuyaTalaChatBoxProps) {
                       gap: 6,
                     }}
                   >
-                    {message.actions.map((action) => (
-                      <button
-                        key={action}
-                        type="button"
-                        onClick={() => sendMessage(action)}
-                        disabled={isSending}
-                        style={{
-                          borderRadius: 999,
-                          border: "1px solid rgba(125,211,252,0.76)",
-                          background: "#ffffff",
-                          color: "#078da0",
-                          padding: "7px 9px",
-                          fontSize: 10.5,
-                          fontWeight: 850,
-                          cursor: isSending ? "not-allowed" : "pointer",
-                          opacity: isSending ? 0.7 : 1,
-                        }}
-                      >
-                        {action}
-                      </button>
-                    ))}
+                    {message.actions.map((action) => {
+                      const href = getActionHref(action);
+
+                      return (
+                        <a
+                          key={action}
+                          href={href}
+                          style={{
+                            borderRadius: 999,
+                            border: "1px solid rgba(125,211,252,0.76)",
+                            background: "#ffffff",
+                            color: "#078da0",
+                            padding: "7px 9px",
+                            fontSize: 10.5,
+                            fontWeight: 850,
+                            cursor: "pointer",
+                            textDecoration: "none",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 6,
+                          }}
+                          aria-label={"Open " + action}
+                        >
+                          {action}
+                          <span aria-hidden="true">↗</span>
+                        </a>
+                      );
+                    })}
                   </div>
                 ) : null}
               </article>
