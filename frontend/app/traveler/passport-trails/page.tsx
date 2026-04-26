@@ -5,7 +5,7 @@ const partnerTours = [
     title: "Island Hopping Trail",
     route: "Guyam • Daku • Naked Island",
     status: "Live",
-    href: "/traveler/passport-trails/island-hopping",
+    href: "/traveler/partner-tours",
   },
 ];
 
