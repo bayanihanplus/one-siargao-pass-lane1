@@ -362,52 +362,52 @@ const TRAILS: Record<string, TrailDetail> = {
     eyebrow: "PASSPORT TRAILS™",
     title: "Your Siargao Story Continues",
     subtitle:
-      "Return Traveler Continuity is a locked-preview journey memory layer. It activates only after verified trip completion, such as ingress plus egress, trip closeout, or approved historical completion.",
-    progressLabel: "Locked preview",
-    statusLabel: "History Required",
-    nextStop: "Verified trip completion",
+      "Return Continuity is a gated journey-memory layer. First egress saves the first journey. Second ingress activates the Welcome Back experience. Second egress completes the return milestone.",
+    progressLabel: "State-gated preview",
+    statusLabel: "Ingress + Egress Required",
+    nextStop: "Second ingress return mode",
     nextStopReason:
-      "This is not an open trail. Your return journey unlocks after a governed historical record exists. Until then, this page explains what will activate when your Siargao trip is completed and saved.",
+      "This page is accessible as a locked preview, but active return identity requires verified travel history. Ingress activates the return journey. Egress completes the milestone.",
     stops: [
       {
-        name: "First Trip Explorer",
-        shortCode: "FT",
-        note: "Locked until the traveler has a verified completed Siargao trip. A journey becomes historical only after completion or egress proof exists.",
+        name: "No Verified History",
+        shortCode: "NH",
+        note: "Traveler can preview the page, but Return Continuity is locked until a verified Siargao trip lifecycle exists.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "Verified Egress History",
-        shortCode: "EH",
-        note: "Requires a completed trip lifecycle, such as TRAVELER_INGRESS_SCAN plus TRAVELER_EGRESS_SCAN, trip closeout, or approved completion fallback.",
+        name: "First Trip Active",
+        shortCode: "IA",
+        note: "Triggered when the traveler has ingress but no verified egress yet. The current trip is active, but return history is not completed.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "Unfinished Trail Reactivation",
-        shortCode: "UR",
-        note: "Future logic will surface unfinished Passport Trails from verified history. No unfinished progress is claimed until backed by stamp and trip records.",
+        name: "First Journey Saved",
+        shortCode: "FE",
+        note: "Unlock condition: first trip has verified egress, trip closeout, or approved completion fallback. This creates historical memory but not return-traveler completion.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "Second Trip Return Explorer",
-        shortCode: "RT",
-        note: "Unlocks only after a second verified Siargao trip cycle. Opening the app again is not enough.",
+        name: "Welcome Back / Return Journey Active",
+        shortCode: "RI",
+        note: "Triggered by second verified ingress after at least one completed past trip. The traveler is recognized as returning, but the Second Trip Return Explorer milestone is not complete yet.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "Multi-Trail Progression",
-        shortCode: "MT",
-        note: "Future cross-trip progress across verified trail families. No badge, reward, or level is active without governed Passport Stamp history.",
+        name: "Second Trip Return Explorer Completed",
+        shortCode: "RE",
+        note: "Unlock condition: second verified egress or completed second trip lifecycle. This is the first true return-traveler completion moment.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "Deep Return Traveler",
-        shortCode: "DR",
-        note: "Long-term loyalty identity for repeat travelers only after multiple verified trip and trail records exist. No perks are promised yet.",
+        name: "Multi-Return Traveler",
+        shortCode: "MR",
+        note: "Future state for multiple completed Siargao trip cycles and verified Passport Trail history. No reward, perk, or status is promised until governed rules exist.",
         status: "LOCKED",
         source: "Pending",
       },
@@ -477,6 +477,469 @@ function SectionEyebrow(props: { children: React.ReactNode }) {
 }
 
 
+function ReturnContinuityPremiumPanel() {
+  const lifecycleCards = [
+    {
+      number: "01",
+      eyebrow: "Current",
+      title: "First Trip Active",
+      body:
+        "Ingress means the traveler is already inside Siargao. The story has started, but it is not saved as historical memory until verified egress or trip closeout.",
+      tone: "teal",
+    },
+    {
+      number: "02",
+      eyebrow: "Required",
+      title: "Egress Saves Memory",
+      body:
+        "First egress turns the current trip into Passport history. This is the first real unlock condition for Return Continuity.",
+      tone: "gold",
+    },
+    {
+      number: "03",
+      eyebrow: "Later",
+      title: "Second Ingress Welcomes Back",
+      body:
+        "A second verified ingress after one completed trip activates the Welcome Back experience, but not the completed milestone yet.",
+      tone: "green",
+    },
+    {
+      number: "04",
+      eyebrow: "Milestone",
+      title: "Second Egress Completes Return",
+      body:
+        "Second verified egress completes the Second Trip Return Explorer milestone. Until then, completion stays locked.",
+      tone: "blue",
+    },
+  ];
+
+  const toneStyle = {
+    teal: {
+      shell: "linear-gradient(145deg, rgba(224,252,255,0.98), rgba(255,255,255,0.96))",
+      border: "rgba(103,232,249,0.82)",
+      icon: "linear-gradient(135deg, #12b8c7, #078da0)",
+      shadow: "0 16px 34px rgba(7,141,160,0.16)",
+    },
+    gold: {
+      shell: "linear-gradient(145deg, rgba(255,248,231,0.98), rgba(255,255,255,0.96))",
+      border: "rgba(253,224,138,0.9)",
+      icon: "linear-gradient(135deg, #f59e0b, #14b8a6)",
+      shadow: "0 16px 34px rgba(245,158,11,0.13)",
+    },
+    green: {
+      shell: "linear-gradient(145deg, rgba(240,253,244,0.98), rgba(255,255,255,0.96))",
+      border: "rgba(187,247,208,0.95)",
+      icon: "linear-gradient(135deg, #16a34a, #0891b2)",
+      shadow: "0 16px 34px rgba(22,163,74,0.13)",
+    },
+    blue: {
+      shell: "linear-gradient(145deg, rgba(239,246,255,0.98), rgba(255,255,255,0.96))",
+      border: "rgba(191,219,254,0.96)",
+      icon: "linear-gradient(135deg, #2563eb, #14b8c6)",
+      shadow: "0 16px 34px rgba(37,99,235,0.12)",
+    },
+  } as const;
+
+  return (
+    <section
+      aria-label="Return Traveler Continuity premium journey shell"
+      style={{
+        marginTop: 14,
+        borderRadius: 34,
+        padding: 12,
+        background:
+          "linear-gradient(145deg, rgba(236,254,255,0.96), rgba(240,253,250,0.92) 45%, rgba(255,251,235,0.84))",
+        border: "1px solid rgba(125,211,252,0.76)",
+        boxShadow:
+          "0 24px 70px rgba(8,61,103,0.14), inset 0 1px 0 rgba(255,255,255,0.92)",
+      }}
+    >
+      <div
+        style={{
+          borderRadius: 29,
+          padding: 15,
+          background:
+            "radial-gradient(circle at 15% 0%, rgba(20,184,198,0.22), transparent 35%), radial-gradient(circle at 92% 12%, rgba(245,158,11,0.16), transparent 31%), linear-gradient(145deg, rgba(255,255,255,0.98), rgba(248,253,255,0.92))",
+          border: "1px solid rgba(191,231,238,0.92)",
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.9)",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 10,
+            alignItems: "flex-start",
+          }}
+        >
+          <div style={{ minWidth: 0 }}>
+            <SectionEyebrow>Journey Memory Layer</SectionEyebrow>
+            <h2
+              style={{
+                margin: "7px 0 7px",
+                fontSize: 25,
+                lineHeight: 1,
+                fontWeight: 780,
+                letterSpacing: "-0.065em",
+                color: "#10234a",
+              }}
+            >
+              You are here. Your first Siargao story has started.
+            </h2>
+          </div>
+
+          <div
+            style={{
+              borderRadius: 999,
+              padding: "8px 10px",
+              background: "linear-gradient(135deg, #ecfeff, #ffffff)",
+              border: "1px solid rgba(125,211,252,0.84)",
+              color: "#078da0",
+              fontSize: 9.4,
+              fontWeight: 950,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
+              boxShadow: "0 10px 24px rgba(8,61,103,0.08)",
+            }}
+          >
+            First Visit Active
+          </div>
+        </div>
+
+        <p
+          style={{
+            margin: "0 0 13px",
+            fontSize: 12.7,
+            lineHeight: 1.48,
+            fontWeight: 650,
+            color: "#53657d",
+          }}
+        >
+          This page should feel different because it is not a place trail. It is
+          the traveler&apos;s continuity layer. First ingress starts the journey.
+          First egress saves it. Second ingress activates the welcome-back
+          experience. Second egress completes the return milestone.
+        </p>
+
+        <div
+          style={{
+            borderRadius: 26,
+            padding: 14,
+            background:
+              "linear-gradient(135deg, rgba(8,145,178,0.94), rgba(20,184,166,0.88))",
+            color: "#ffffff",
+            boxShadow: "0 18px 42px rgba(7,141,160,0.22)",
+            border: "1px solid rgba(255,255,255,0.35)",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <div
+              aria-hidden="true"
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 19,
+                display: "grid",
+                placeItems: "center",
+                background: "rgba(255,255,255,0.2)",
+                border: "1px solid rgba(255,255,255,0.35)",
+                fontSize: 24,
+                fontWeight: 950,
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.35)",
+              }}
+            >
+              ↗
+            </div>
+
+            <div style={{ minWidth: 0 }}>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 950,
+                  letterSpacing: "0.13em",
+                  textTransform: "uppercase",
+                  opacity: 0.86,
+                }}
+              >
+                Current state
+              </div>
+              <div
+                style={{
+                  marginTop: 3,
+                  fontSize: 19,
+                  lineHeight: 1.05,
+                  fontWeight: 920,
+                  letterSpacing: "-0.04em",
+                }}
+              >
+                First ingress detected. Egress required to save memory.
+              </div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              marginTop: 13,
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: 9,
+            }}
+          >
+            <Link
+              href="/traveler/passport-map"
+              aria-label="View Siargao Passport Map"
+              style={{
+                minHeight: 52,
+                borderRadius: 18,
+                background: "rgba(255,255,255,0.96)",
+                color: "#10234a",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 10,
+                padding: "0 13px",
+                textDecoration: "none",
+                fontSize: 12.4,
+                fontWeight: 920,
+                boxShadow: "0 12px 28px rgba(15,23,42,0.12)",
+              }}
+            >
+              <span>View Passport Map</span>
+              <span aria-hidden="true">›</span>
+            </Link>
+
+            <Link
+              href="/traveler/trips"
+              aria-label="View my trips"
+              style={{
+                minHeight: 52,
+                borderRadius: 18,
+                background: "rgba(255,255,255,0.18)",
+                color: "#ffffff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 10,
+                padding: "0 13px",
+                textDecoration: "none",
+                fontSize: 12.4,
+                fontWeight: 920,
+                border: "1px solid rgba(255,255,255,0.35)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.25)",
+              }}
+            >
+              <span>View Trip Status</span>
+              <span aria-hidden="true">›</span>
+            </Link>
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: 12,
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 10,
+          }}
+        >
+          {lifecycleCards.map((card) => {
+            const style = toneStyle[card.tone as keyof typeof toneStyle];
+
+            return (
+              <article
+                key={card.number}
+                style={{
+                  minHeight: 146,
+                  borderRadius: 24,
+                  padding: 13,
+                  background: style.shell,
+                  border: `1px solid ${style.border}`,
+                  boxShadow: style.shadow,
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: 8,
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: 16,
+                      display: "grid",
+                      placeItems: "center",
+                      background: style.icon,
+                      color: "#ffffff",
+                      fontWeight: 950,
+                      fontSize: 12,
+                      boxShadow: style.shadow,
+                    }}
+                  >
+                    {card.number}
+                  </div>
+
+                  <div
+                    style={{
+                      borderRadius: 999,
+                      padding: "6px 8px",
+                      background: "rgba(255,255,255,0.78)",
+                      border: `1px solid ${style.border}`,
+                      color: "#078da0",
+                      fontSize: 8.6,
+                      fontWeight: 950,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {card.eyebrow}
+                  </div>
+                </div>
+
+                <h3
+                  style={{
+                    margin: "11px 0 0",
+                    fontSize: 14.6,
+                    lineHeight: 1.08,
+                    fontWeight: 920,
+                    letterSpacing: "-0.035em",
+                    color: "#10234a",
+                  }}
+                >
+                  {card.title}
+                </h3>
+
+                <p
+                  style={{
+                    margin: "6px 0 0",
+                    fontSize: 10.8,
+                    lineHeight: 1.36,
+                    fontWeight: 650,
+                    color: "#53657d",
+                  }}
+                >
+                  {card.body}
+                </p>
+              </article>
+            );
+          })}
+        </div>
+
+        <div
+          style={{
+            marginTop: 12,
+            display: "grid",
+            gap: 9,
+          }}
+        >
+          <div
+            style={{
+              borderRadius: 24,
+              padding: 13,
+              background:
+                "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,253,250,0.9))",
+              border: "1px solid rgba(191,231,238,0.9)",
+              boxShadow: "0 14px 34px rgba(8,61,103,0.07)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 950,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#078da0",
+              }}
+            >
+              What remains locked
+            </div>
+            <div
+              style={{
+                marginTop: 7,
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 7,
+              }}
+            >
+              {[
+                "Return identity",
+                "Second-trip milestone",
+                "Rewards",
+                "Perks",
+                "Historical progress",
+              ].map((item) => (
+                <span
+                  key={item}
+                  style={{
+                    borderRadius: 999,
+                    padding: "8px 10px",
+                    background: "#f8fafc",
+                    border: "1px solid #dbeafe",
+                    color: "#53657d",
+                    fontSize: 10.5,
+                    fontWeight: 820,
+                  }}
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div
+            style={{
+              borderRadius: 24,
+              padding: 13,
+              background:
+                "linear-gradient(135deg, rgba(255,251,235,0.95), rgba(255,255,255,0.96))",
+              border: "1px solid rgba(253,230,138,0.92)",
+              boxShadow: "0 14px 34px rgba(245,158,11,0.09)",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 950,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#b45309",
+              }}
+            >
+              Compliance truth
+            </div>
+            <p
+              style={{
+                margin: "6px 0 0",
+                fontSize: 11.5,
+                lineHeight: 1.42,
+                fontWeight: 650,
+                color: "#53657d",
+              }}
+            >
+              This screen may preview the return journey, but only verified
+              trip lifecycle records can unlock historical memory or return
+              milestones. No QR stamp, reward, or status is created from viewing
+              this page.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
 export default function PassportTrailDetailPage({
   params,
 }: {
@@ -487,6 +950,9 @@ export default function PassportTrailDetailPage({
   if (!trail) {
     notFound();
   }
+
+  const isReturnContinuity =
+    params.trailSlug === "return-traveler-continuity";
 
   return (
     <main
@@ -612,6 +1078,8 @@ export default function PassportTrailDetailPage({
 
         <SpmFunctionalJourneyMap trailSlug={params.trailSlug} />
 
+        {isReturnContinuity ? <ReturnContinuityPremiumPanel /> : null}
+
         <section
           aria-label="Scan site QR"
           style={{
@@ -620,7 +1088,7 @@ export default function PassportTrailDetailPage({
             borderRadius: 26,
             background: "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(232,251,255,0.92))",
             padding: 14,
-            display: "grid",
+            display: isReturnContinuity ? "none" : "grid",
             gridTemplateColumns: "auto 1fr auto",
             gap: 12,
             alignItems: "center",
@@ -704,7 +1172,12 @@ export default function PassportTrailDetailPage({
 
 
 
-        <div style={{ marginTop: 16 }}>
+        <div
+          style={{
+            marginTop: 16,
+            display: isReturnContinuity ? "none" : "block",
+          }}
+        >
           <ShellCard ariaLabel="Trail verification actions">
             <SectionEyebrow>Verify Your Stop</SectionEyebrow>
             <h2
@@ -829,7 +1302,9 @@ export default function PassportTrailDetailPage({
             }}
           >
             <div>
-              <SectionEyebrow>Trail Stops</SectionEyebrow>
+              <SectionEyebrow>
+                {isReturnContinuity ? "Continuity States" : "Trail Stops"}
+              </SectionEyebrow>
               <h2
                 style={{
                   margin: "5px 0 0",
@@ -839,7 +1314,9 @@ export default function PassportTrailDetailPage({
                   letterSpacing: "-0.04em",
                 }}
               >
-                Verify each stop.
+                {isReturnContinuity
+                  ? "Follow the return lifecycle."
+                  : "Verify each stop."}
               </h2>
             </div>
           </div>
@@ -878,7 +1355,9 @@ export default function PassportTrailDetailPage({
                           color: tone.color,
                         }}
                       >
-                        Stop {index + 1}
+                        {isReturnContinuity
+                          ? `State ${index + 1}`
+                          : `Stop ${index + 1}`}
                       </div>
                       <h3
                         style={{
