@@ -93,7 +93,7 @@ export default async function TravelerPassportMapPage() {
                   margin: 0,
                   fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
                   fontSize: 25,
-                  lineHeight: 1,
+                  lineHeight: 1.08,
                   letterSpacing: "-0.056em",
                   color: "#14264b",
                   fontWeight: 590,
@@ -109,7 +109,7 @@ export default async function TravelerPassportMapPage() {
                   margin: "6px 0 0",
                   color: "#5f6f87",
                   fontSize: 13,
-                  lineHeight: 1.1,
+                  lineHeight: 1.16,
                   fontWeight: 590,
                   whiteSpace: "nowrap",
                   overflow: "visible",
@@ -216,7 +216,7 @@ export default async function TravelerPassportMapPage() {
                       fontFamily:
                         '"Snell Roundhand", "Apple Chancery", "Bradley Hand", "Segoe Script", cursive',
                       fontSize: 14,
-                      lineHeight: 1,
+                      lineHeight: 1.08,
                       fontWeight: 400,
                       color: "#14264b",
                       letterSpacing: "-0.004em",
@@ -229,7 +229,7 @@ export default async function TravelerPassportMapPage() {
                     aria-hidden="true"
                     style={{
                       fontSize: 12,
-                      lineHeight: 1,
+                      lineHeight: 1.08,
                       transform: "rotate(7deg)",
                       display: "inline-block",
                       marginTop: -1,
@@ -364,9 +364,9 @@ type SpmNextStopPreviewData = {
 
 function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | null }) {
   const nextStop = props.nextStop;
-  const title = nextStop?.recommendedStopName ?? "No governed recommendation yet";
-  const reason = nextStop?.recommendationReason ?? "Scan OSP QR-enabled stops to unlock verified Passport Trails™ recommendations.";
-  const eta = nextStop?.distanceOrEtaLabel ?? "Awaiting verified trail activity";
+  const title = nextStop?.recommendedStopName ?? "Continue your Passport Trail";
+  const reason = nextStop?.recommendationReason ?? "Choose a trail, visit verified stops, scan your OSP QR, and unlock Passport Stamps as you move.";
+  const eta = nextStop?.distanceOrEtaLabel ?? "Your next stop activates from verified QR / stamp progress.";
   const ctaRoute = nextStop?.ctaRoute ?? "/traveler/passport-map";
   return (
     <section
@@ -442,7 +442,7 @@ function SpmContinueJourneyPreview(props: { nextStop?: SpmNextStopPreviewData | 
             style={{
               color: "#13a8b7",
               fontSize: 9,
-              lineHeight: 1,
+              lineHeight: 1.08,
               fontWeight: 640,
               letterSpacing: "0.03em",
             }}
@@ -567,7 +567,7 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
               margin: 0,
               fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
               fontSize: 24,
-              lineHeight: 1,
+              lineHeight: 1.08,
               letterSpacing: "-0.04em",
               color: "#14264b",
               fontWeight: 590,
@@ -581,7 +581,7 @@ function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] |
               fontSize: 12,
               lineHeight: 1.25,
               color: "#6b7890",
-              fontWeight: 750,
+              fontWeight: 610,
             }}
           >
             Governed QR-validated stops appear first. Empty slots stay as visual placeholders.
@@ -760,7 +760,7 @@ function StopPreviewCard(props: {
             color: "#6b7890",
             fontSize: 9.5,
             lineHeight: 1.2,
-            fontWeight: 750,
+            fontWeight: 610,
           }}
         >
           {props.subtitle}
@@ -777,7 +777,7 @@ function StopPreviewCard(props: {
             color: props.verified ? "#1fa45b" : "#64748b",
             padding: "4px 6px",
             fontSize: 8,
-            lineHeight: 1,
+            lineHeight: 1.08,
             fontWeight: 640,
             textTransform: "uppercase",
             letterSpacing: "0.05em",
@@ -804,8 +804,8 @@ type SpmTrailPreviewData = {
 
 function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) {
   const visualPaddingTrails = [
-    { trailName: "Passport Trail pending", trailStatus: "pending", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: null, iconKey: "ISLAND_HOPPING", source: "visual_padding" },
-    { trailName: "Official trails available", trailStatus: "available", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: null, iconKey: "NORTH_SIARGAO", source: "visual_padding" },
+    { trailName: "More trail families coming", trailStatus: "pending", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: null, iconKey: "ISLAND_HOPPING", source: "visual_padding" },
+    { trailName: "Official trail families", trailStatus: "available", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: null, iconKey: "NORTH_SIARGAO", source: "visual_padding" },
     { trailName: "Scan to unlock progress", trailStatus: "available", stopsTotal: 0, stopsCompleted: 0, progressPercentage: 0, unlockRule: null, iconKey: "ADVENTURE", source: "visual_padding" },
   ];
 
@@ -835,12 +835,221 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
               margin: 0,
               fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
               fontSize: 24,
-              lineHeight: 1,
+              lineHeight: 1.08,
               letterSpacing: "-0.04em",
               color: "#14264b",
               fontWeight: 590,
             }}
           >
+        <section
+          style={{
+            marginTop: 18,
+            border: "1px solid #d3eef2",
+            borderRadius: 24,
+            background: "linear-gradient(135deg, rgba(240,253,255,0.96), rgba(238,248,239,0.92))",
+            padding: 16,
+            boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 9,
+              fontWeight: 720,
+              letterSpacing: "0.13em",
+              textTransform: "uppercase",
+              color: "#0796a6",
+            }}
+          >
+            How Passport Trails Work
+          </div>
+          <p
+            style={{
+              margin: "7px 0 12px",
+              fontSize: 13,
+              lineHeight: 1.42,
+              fontWeight: 600,
+              color: "#355071",
+            }}
+          >
+            Choose a trail, visit verified stops, scan your OSP QR, and unlock Passport Stamps as your Siargao journey grows.
+          </p>
+          <div style={{ display: "grid", gap: 8 }}>
+            {[
+              "Choose a trail family",
+              "Visit verified destinations",
+              "Scan or verify at the stop",
+              "Unlock Passport Stamps",
+              "Complete your journey record",
+            ].map((step, index) => (
+              <div
+                key={step}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 9,
+                  border: "1px solid rgba(11,151,166,0.14)",
+                  borderRadius: 16,
+                  background: "rgba(255,255,255,0.72)",
+                  padding: "9px 10px",
+                }}
+              >
+                <span
+                  style={{
+                    width: 22,
+                    height: 22,
+                    borderRadius: "50%",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "#13a8b7",
+                    color: "#ffffff",
+                    fontSize: 11,
+                    fontWeight: 720,
+                    flex: "0 0 auto",
+                  }}
+                >
+                  {index + 1}
+                </span>
+                <span style={{ fontSize: 12.5, fontWeight: 650, color: "#14264b" }}>{step}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section
+          style={{
+            marginTop: 18,
+            border: "1px solid #d3eef2",
+            borderRadius: 24,
+            background: "rgba(255,255,255,0.9)",
+            padding: 16,
+            boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 9,
+              fontWeight: 720,
+              letterSpacing: "0.13em",
+              textTransform: "uppercase",
+              color: "#0796a6",
+            }}
+          >
+            Passport Trail Families
+          </div>
+
+          <h2
+            style={{
+              margin: "7px 0 8px",
+              fontSize: 22,
+              lineHeight: 1.08,
+              fontWeight: 690,
+              letterSpacing: "-0.035em",
+              color: "#14264b",
+            }}
+          >
+            Pick a journey, not just a card
+          </h2>
+
+          <p
+            style={{
+              margin: "0 0 13px",
+              fontSize: 12.5,
+              lineHeight: 1.42,
+              fontWeight: 600,
+              color: "#607089",
+            }}
+          >
+            Start with a live trail family or preview what will unlock next as more verified stops go live.
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 9 }}>
+            <a
+              href="/traveler/passport-trails/tri-island-joiner"
+              aria-label="Open Island Hopping Trail"
+              style={{
+                textDecoration: "none",
+                border: "1px solid rgba(11,151,166,0.2)",
+                borderRadius: 18,
+                background: "linear-gradient(135deg, rgba(221,253,255,0.98), rgba(232,250,239,0.96))",
+                padding: 12,
+                minHeight: 94,
+                color: "#14264b",
+                boxShadow: "0 10px 24px rgba(15,23,42,0.05)",
+              }}
+            >
+              <div style={{ fontSize: 18, lineHeight: 1 }}>🏝️</div>
+              <div style={{ marginTop: 8, fontSize: 13, fontWeight: 720, lineHeight: 1.14 }}>
+                Island Hopping
+              </div>
+              <div style={{ marginTop: 5, fontSize: 10.5, fontWeight: 600, color: "#607089", lineHeight: 1.25 }}>
+                Guyam • Daku • Naked
+              </div>
+              <div
+                style={{
+                  marginTop: 9,
+                  display: "inline-flex",
+                  borderRadius: 999,
+                  padding: "4px 8px",
+                  background: "#d8fbef",
+                  color: "#138a58",
+                  fontSize: 8.5,
+                  fontWeight: 720,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Open Trail
+              </div>
+            </a>
+
+            {[
+              { icon: "🌊", name: "Surf & Coastal", hint: "Beach and surf stops" },
+              { icon: "🍽️", name: "Food & Culture", hint: "Local flavors" },
+              { icon: "🌿", name: "Nature & Inland", hint: "Falls and inland stops" },
+              { icon: "🏘️", name: "Heritage & Local Life", hint: "Community routes" },
+              { icon: "⭐", name: "Hidden Gems", hint: "Curated discoveries" },
+            ].map((family) => (
+              <div
+                key={family.name}
+                aria-label={`${family.name} coming soon`}
+                style={{
+                  border: "1px solid rgba(11,151,166,0.12)",
+                  borderRadius: 18,
+                  background: "rgba(248,251,252,0.9)",
+                  padding: 12,
+                  minHeight: 94,
+                  color: "#14264b",
+                }}
+              >
+                <div style={{ fontSize: 18, lineHeight: 1, opacity: 0.78 }}>{family.icon}</div>
+                <div style={{ marginTop: 8, fontSize: 13, fontWeight: 690, lineHeight: 1.14 }}>
+                  {family.name}
+                </div>
+                <div style={{ marginTop: 5, fontSize: 10.5, fontWeight: 600, color: "#607089", lineHeight: 1.25 }}>
+                  {family.hint}
+                </div>
+                <div
+                  style={{
+                    marginTop: 9,
+                    display: "inline-flex",
+                    borderRadius: 999,
+                    padding: "4px 8px",
+                    background: "#edf2f5",
+                    color: "#718096",
+                    fontSize: 8.5,
+                    fontWeight: 720,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Coming
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
             Your Trails
           </h2>
           <p
@@ -849,16 +1058,16 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
               fontSize: 12,
               lineHeight: 1.25,
               color: "#6b7890",
-              fontWeight: 750,
+              fontWeight: 610,
             }}
           >
-            Governed Passport Trails™ progress appears first. Empty slots are visual placeholders only.
+            Follow curated trail families, unlock verified stops, and continue your Siargao journey from your Passport Map.
           </p>
         </div>
 
         <a
           href="/traveler/passport-trails"
-          aria-label="View all passport trails"
+          aria-label="Explore Trails passport trails"
           style={{
             minHeight: 30,
             borderRadius: 999,
@@ -881,7 +1090,7 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
             <circle cx="6" cy="5.5" r="2" stroke="currentColor" strokeWidth="1.9" />
             <circle cx="18" cy="19.5" r="2" stroke="currentColor" strokeWidth="1.9" />
           </svg>
-          View all
+          Explore Trails
         </a>
       </div>
 
@@ -899,7 +1108,7 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
           const completed = trail.stopsCompleted ?? 0;
           const total = trail.stopsTotal ?? 0;
           const progressLabel = isPadding
-            ? "No governed progress yet"
+            ? "Unlock by visiting verified stops"
             : isLocked
               ? trail.unlockRule ?? "Complete more trails to unlock"
               : `${completed} / ${total} completed`;
@@ -1070,7 +1279,7 @@ function TrailPreviewCard(props: {
             margin: 0,
             color: "#14264b",
             fontSize: 11.5,
-            lineHeight: 1.1,
+            lineHeight: 1.16,
             fontWeight: 640,
             letterSpacing: "-0.03em",
           }}
@@ -1469,7 +1678,7 @@ function MapLabel(props: {
         right: props.right,
         color: "#25344d",
         fontSize: 10,
-        lineHeight: 1,
+        lineHeight: 1.08,
         fontWeight: 590,
         textShadow: "0 1px 2px rgba(255,255,255,0.95)",
         whiteSpace: "nowrap",

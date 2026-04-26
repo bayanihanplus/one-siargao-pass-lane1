@@ -260,7 +260,7 @@ export default async function TravelerPassportTrailsPage() {
                       whiteSpace: "nowrap",
                     }}
                   >
-                    View
+                    Explore
                   </span>
                 </div>
 
@@ -288,7 +288,7 @@ export default async function TravelerPassportTrailsPage() {
                 </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 7 }}>
-                  <MiniStat value={String(trail.linkedNodeCount ?? 0)} label="Nodes" />
+                  <MiniStat value={String(trail.linkedNodeCount ?? 0)} label="Stops" />
                   <MiniStat value={String(trail.stampEligibleNodeCount ?? 0)} label="Stamp-ready" />
                   <MiniStat value={`${trail.packageProgress?.progressPercentage ?? 0}%`} label="Progress" />
                 </div>
@@ -304,7 +304,7 @@ export default async function TravelerPassportTrailsPage() {
                   padding: 18,
                   color: "#64748b",
                   fontSize: 13,
-                  fontWeight: 750,
+                  fontWeight: 610,
                   lineHeight: 1.4,
                 }}
               >
