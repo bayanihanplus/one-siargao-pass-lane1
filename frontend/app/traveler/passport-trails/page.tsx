@@ -578,6 +578,69 @@ export default function PassportTrailsPage() {
         </section>
 
         <section
+          aria-label="AI Passport Assistant trail prompt chips"
+          style={{
+            marginTop: 18,
+            border: "1px solid #bdebf0",
+            borderRadius: 24,
+            background:
+              "linear-gradient(135deg, rgba(227,253,255,0.96), rgba(255,255,255,0.92))",
+            padding: 15,
+          }}
+        >
+          <SectionEyebrow>AI Passport Assistant</SectionEyebrow>
+          <div
+            style={{
+              marginTop: 8,
+              fontSize: 15,
+              fontWeight: 720,
+              lineHeight: 1.14,
+            }}
+          >
+            Let the assistant help you pick the right trail.
+          </div>
+          <p
+            style={{
+              margin: "6px 0 0",
+              fontSize: 11.5,
+              lineHeight: 1.38,
+              fontWeight: 600,
+              color: "#607089",
+            }}
+          >
+            Use it as your Passport Trails guide, not as booking or payment confirmation.
+          </p>
+
+          <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 7 }}>
+            {[
+              "Help me choose a trail",
+              "Show live trails",
+              "Explain preview trails",
+              "Plan a DIY trail",
+              "What events fit my journey?",
+            ].map((prompt) => (
+              <Link
+                key={prompt}
+                href="/traveler/settings?panel=assistant"
+                style={{
+                  textDecoration: "none",
+                  border: "1px solid rgba(11,151,166,0.18)",
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.86)",
+                  padding: "7px 9px",
+                  color: "#078da0",
+                  fontSize: 10.5,
+                  fontWeight: 720,
+                  lineHeight: 1,
+                }}
+              >
+                {prompt}
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section
           aria-label="Events preview"
           style={{
             marginTop: 18,

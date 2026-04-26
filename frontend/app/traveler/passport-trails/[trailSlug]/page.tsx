@@ -591,6 +591,60 @@ export default function PassportTrailDetailPage({
         </section>
 
         <div style={{ marginTop: 16 }}>
+          <ShellCard ariaLabel="AI Passport Assistant trail detail prompt chips">
+            <SectionEyebrow>Ask Passport Assistant</SectionEyebrow>
+            <div
+              style={{
+                marginTop: 8,
+                fontSize: 15,
+                fontWeight: 720,
+                lineHeight: 1.14,
+              }}
+            >
+              Need help at this trail?
+            </div>
+            <p
+              style={{
+                margin: "6px 0 0",
+                fontSize: 11.5,
+                lineHeight: 1.38,
+                fontWeight: 600,
+                color: "#607089",
+              }}
+            >
+              Ask about stops, QR verification, stamp rules, and your next move. The assistant cannot confirm booking, payment, guide, or manifest status unless the system proves it.
+            </p>
+
+            <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 7 }}>
+              {[
+                "How do I verify this stop?",
+                "What stamp can I unlock?",
+                "What should I do at Daku?",
+                "Why is this not yet stamped?",
+              ].map((prompt) => (
+                <Link
+                  key={prompt}
+                  href="/traveler/settings?panel=assistant"
+                  style={{
+                    textDecoration: "none",
+                    border: "1px solid rgba(11,151,166,0.18)",
+                    borderRadius: 999,
+                    background: "rgba(255,255,255,0.86)",
+                    padding: "7px 9px",
+                    color: "#078da0",
+                    fontSize: 10.5,
+                    fontWeight: 720,
+                    lineHeight: 1,
+                  }}
+                >
+                  {prompt}
+                </Link>
+              ))}
+            </div>
+          </ShellCard>
+        </div>
+
+        <div style={{ marginTop: 16 }}>
           <ShellCard ariaLabel="Passport stamp rules">
             <SectionEyebrow>Stamp Rules</SectionEyebrow>
             <div style={{ marginTop: 10, display: "grid", gap: 8 }}>

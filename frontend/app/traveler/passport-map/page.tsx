@@ -2184,6 +2184,78 @@ function SpmJourneyHubEngagement() {
       </div>
 
       <div
+        aria-label="AI Passport Assistant prompt chips"
+        style={{
+          border: "1px solid #bdebf0",
+          borderRadius: 24,
+          background: "linear-gradient(135deg, rgba(227,253,255,0.96), rgba(255,255,255,0.92))",
+          padding: 15,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 9,
+            fontWeight: 720,
+            letterSpacing: "0.13em",
+            textTransform: "uppercase",
+            color: "#0796a6",
+          }}
+        >
+          AI Passport Assistant
+        </div>
+        <div
+          style={{
+            marginTop: 8,
+            fontSize: 17,
+            fontWeight: 720,
+            color: "#14264b",
+            lineHeight: 1.12,
+          }}
+        >
+          Not sure what to do next?
+        </div>
+        <p
+          style={{
+            margin: "6px 0 0",
+            fontSize: 11.5,
+            lineHeight: 1.38,
+            fontWeight: 600,
+            color: "#607089",
+          }}
+        >
+          Ask the Passport Assistant about trails, stamps, QR verification, DIY routes, and events.
+        </p>
+
+        <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 7 }}>
+          {[
+            "Help me choose a trail",
+            "What can I unlock next?",
+            "How do Passport Stamps work?",
+            "Plan a DIY trail",
+            "What events fit my journey?",
+          ].map((prompt) => (
+            <a
+              key={prompt}
+              href="/traveler/settings?panel=assistant"
+              style={{
+                textDecoration: "none",
+                border: "1px solid rgba(11,151,166,0.18)",
+                borderRadius: 999,
+                background: "rgba(255,255,255,0.86)",
+                padding: "7px 9px",
+                color: "#078da0",
+                fontSize: 10.5,
+                fontWeight: 720,
+                lineHeight: 1,
+              }}
+            >
+              {prompt}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div
         style={{
           border: "1px solid #d3eef2",
           borderRadius: 24,
