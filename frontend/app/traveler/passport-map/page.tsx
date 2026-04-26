@@ -843,10 +843,14 @@ function SpmTrailCardsPreview(props: { trails?: SpmTrailPreviewData[] | null }) 
             }}
           >
 
+
+          <SpmPassportExperienceCards />
           <SpmFeaturedPartnerTours />
           <SpmCuratedPassportTours />
           <SpmBuildYourOwnTrailSection />
           <SpmGuideSupportProvidedBy />
+
+          <SpmPassportRewardsRetention />
 
         <section
           style={{
@@ -2186,7 +2190,6 @@ function SpmJourneyHubEngagement() {
         </div>
       </div>
 
-          <SpmPassportRewardsRetention />
 
       <div
         style={{
@@ -2532,6 +2535,167 @@ function SpmPassportRewardsRetention() {
             <div style={{ fontSize: 17, fontWeight: 760, color: "#14264b" }}>{value}</div>
             <div style={{ marginTop: 2, fontSize: 9.5, lineHeight: 1.15, fontWeight: 650, color: "#607089" }}>{label}</div>
           </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+function SpmPassportExperienceCards() {
+  const products = [
+    {
+      icon: "🛶",
+      label: "Siargao Partner Tour",
+      title: "Partner tours made Passport-ready",
+      body: "Operated by approved local partner. Passport stamps available.",
+      commercial: "Package pricing applies when booking opens.",
+      action: "View Partner Tours",
+      href: "/traveler/passport-trails/tri-island-joiner",
+      tone: "#13a8b7",
+    },
+    {
+      icon: "🗺️",
+      label: "Passport Trails™ Curated Tour",
+      title: "Official SPM trail families",
+      body: "Provided through SPM-approved trail operations. Verified Passport stamps included when activated.",
+      commercial: "Pricing appears before checkout.",
+      action: "Explore Curated Trails",
+      href: "/traveler/passport-trails",
+      tone: "#16a34a",
+    },
+    {
+      icon: "🧩",
+      label: "Build Your Own Passport Trail",
+      title: "Build a personal Passport Trail",
+      body: "Route guidance provided by SPM. Approved local partner support may apply where service is required.",
+      commercial: "Planning preview now. Partner fulfillment may apply later.",
+      action: "Build Your Trail",
+      href: "/traveler/passport-trails/diy-trail-builder",
+      tone: "#8b5cf6",
+    },
+  ];
+
+  return (
+    <section
+      aria-label="Choose your Passport experience"
+      style={{
+        marginTop: 18,
+        border: "1px solid #d3eef2",
+        borderRadius: 28,
+        background: "rgba(255,255,255,0.94)",
+        padding: 16,
+        boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
+      }}
+    >
+      <div
+        style={{
+          fontSize: 9,
+          fontWeight: 720,
+          letterSpacing: "0.13em",
+          textTransform: "uppercase",
+          color: "#0796a6",
+        }}
+      >
+        Choose Your Passport Experience
+      </div>
+
+      <h2
+        style={{
+          margin: "7px 0 8px",
+          fontSize: 23,
+          lineHeight: 1.06,
+          fontWeight: 690,
+          letterSpacing: "-0.04em",
+          color: "#14264b",
+        }}
+      >
+        Pick the journey layer that fits your trip.
+      </h2>
+
+      <p
+        style={{
+          margin: "0 0 13px",
+          fontSize: 12.5,
+          lineHeight: 1.42,
+          fontWeight: 600,
+          color: "#607089",
+        }}
+      >
+        Choose a partner tour, a curated Passport Trails™ experience, or build your own Passport Trail with SPM guidance.
+      </p>
+
+      <div style={{ display: "grid", gap: 10 }}>
+        {products.map((product) => (
+          <a
+            key={product.label}
+            href={product.href}
+            aria-label={`Open ${product.label}`}
+            style={{
+              textDecoration: "none",
+              border: "1px solid rgba(11,151,166,0.14)",
+              borderLeft: `5px solid ${product.tone}`,
+              borderRadius: 22,
+              background: "rgba(248,252,252,0.92)",
+              padding: 14,
+              color: "#14264b",
+              boxShadow: "0 8px 22px rgba(15,23,42,0.04)",
+            }}
+          >
+            <div style={{ display: "grid", gridTemplateColumns: "34px 1fr", gap: 11 }}>
+              <div
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  background: "rgba(223,248,255,0.95)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 18,
+                }}
+              >
+                {product.icon}
+              </div>
+
+              <div>
+                <div
+                  style={{
+                    fontSize: 9,
+                    fontWeight: 720,
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    color: product.tone,
+                  }}
+                >
+                  {product.label}
+                </div>
+                <div style={{ marginTop: 4, fontSize: 15, fontWeight: 720, lineHeight: 1.14 }}>
+                  {product.title}
+                </div>
+                <div style={{ marginTop: 5, fontSize: 11.5, fontWeight: 600, color: "#607089", lineHeight: 1.35 }}>
+                  {product.body}
+                </div>
+                <div
+                  style={{
+                    marginTop: 9,
+                    borderRadius: 14,
+                    background: "rgba(242,246,248,0.92)",
+                    padding: "8px 9px",
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                    color: "#355071",
+                    lineHeight: 1.28,
+                  }}
+                >
+                  {product.commercial}
+                </div>
+                <div style={{ marginTop: 9, fontSize: 10.5, fontWeight: 720, color: product.tone }}>
+                  {product.action} →
+                </div>
+              </div>
+            </div>
+          </a>
         ))}
       </div>
     </section>
