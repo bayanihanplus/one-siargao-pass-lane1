@@ -121,8 +121,6 @@ type TripPageProps = {
   searchParams?: Promise<{
     added?: string;
     error?: string;
-    submitted?: string;
-    submitError?: string;
   }>;
 };
 
@@ -291,42 +289,6 @@ function formatFxDisplayAmount(snapshot: any) {
 function formatFxRate(snapshot: any) {
   if (!snapshot?.fxRate || !snapshot?.sourceCurrencyCode || !snapshot?.displayCurrencyCode) return "—";
   return `1 ${snapshot.sourceCurrencyCode} = ${snapshot.fxRate} ${snapshot.displayCurrencyCode}`;
-}
-
-
-async function submitTripRegistrationAction(formData: FormData) {
-  "use server";
-
-  const tripId = String(formData.get("tripId") || "").trim();
-
-  if (!tripId) {
-    redirect("/traveler/trips?error=missing-trip");
-  }
-
-  const token = await requireAccessToken();
-
-  const res = await fetch(`${getApiBaseUrl()}/trips/${tripId}/submit-registration`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    let message = `HTTP ${res.status}`;
-    try {
-      const json = await res.json();
-      message = json?.message || json?.error || message;
-    } catch {}
-
-    redirect(`/traveler/trips/${tripId}?submitError=${encodeURIComponent(message)}`);
-  }
-
-  revalidatePath(`/traveler/trips/${tripId}`);
-  revalidatePath("/traveler/trips");
-  redirect(`/traveler/trips/${tripId}?submitted=1`);
 }
 
 function normalizeStatus(value: any) {
@@ -694,113 +656,8 @@ function AppButton(props: { label: string; icon: any; tone?: "teal" | "amber" | 
   );
 }
 
-
-function SubmitRegistrationPanel(props: {
-  tripId: string;
-  canSubmit: boolean;
-  submitted?: boolean;
-  submitError?: string;
-}) {
-  if (!props.canSubmit && !props.submitted && !props.submitError) return null;
-
-  return (
-    <Section title="Registration Step" icon={<Icon kind="shield" />} tone={props.canSubmit ? "green" : "blue"}>
-      <div
-        style={{
-          borderRadius: 20,
-          padding: 12,
-          background: props.canSubmit
-            ? "linear-gradient(180deg, rgba(240,253,250,0.98), rgba(220,252,231,0.86))"
-            : "rgba(255,255,255,0.92)",
-          border: props.canSubmit ? "1px solid rgba(22,163,74,0.18)" : "1px solid rgba(14,116,144,0.12)",
-          boxShadow: "0 12px 24px rgba(15,23,42,0.06)",
-        }}
-      >
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            borderRadius: 999,
-            padding: "6px 9px",
-            background: props.canSubmit ? "rgba(22,163,74,0.10)" : "rgba(14,165,233,0.10)",
-            border: props.canSubmit ? "1px solid rgba(22,163,74,0.16)" : "1px solid rgba(14,165,233,0.16)",
-            color: props.canSubmit ? "#166534" : "#0369a1",
-            fontSize: 11,
-            fontWeight: 950,
-            whiteSpace: "nowrap",
-          }}
-        >
-          <span aria-hidden="true">{props.canSubmit ? "🧾" : "✓"}</span>
-          {props.canSubmit ? "Ready to submit" : "Submission state"}
-        </div>
-
-        <h2 style={{ margin: "9px 0 0", fontSize: 19, lineHeight: 1.1, fontWeight: 950, color: "#10234a" }}>
-          {props.canSubmit ? "Submit your trip registration" : "Registration submitted"}
-        </h2>
-
-        <p style={{ margin: "7px 0 0", fontSize: 12.7, lineHeight: 1.42, color: "rgba(15,23,42,0.66)", fontWeight: 720 }}>
-          {props.canSubmit
-            ? "This moves your trip from draft to submitted registration. Pass, QR, booking, manifest, payment, and clearance remain separate controlled steps."
-            : "Your trip registration has been submitted. Clearance remains pending until review and downstream readiness checks are complete."}
-        </p>
-
-        {props.submitError ? (
-          <div
-            style={{
-              marginTop: 12,
-              borderRadius: 16,
-              padding: "10px 11px",
-              background: "rgba(217,119,6,0.10)",
-              border: "1px solid rgba(217,119,6,0.18)",
-              color: "#92400e",
-              fontSize: 12,
-              lineHeight: 1.35,
-              fontWeight: 820,
-            }}
-          >
-            {props.submitError}
-          </div>
-        ) : null}
-
-        {props.canSubmit ? (
-          <form action={submitTripRegistrationAction} style={{ marginTop: 12 }}>
-            <input type="hidden" name="tripId" value={props.tripId} />
-            <button
-              type="submit"
-              style={{
-                width: "100%",
-                minHeight: 44,
-                borderRadius: 16,
-                border: "1px solid rgba(7,141,160,0.24)",
-                background: "linear-gradient(135deg, #078da0, #0f766e)",
-                color: "#ffffff",
-                fontSize: 13.4,
-                fontWeight: 950,
-                cursor: "pointer",
-                boxShadow: "0 14px 28px rgba(7,141,160,0.22)",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <span aria-hidden="true">🧭</span>
-              Submit Registration
-              <span aria-hidden="true">→</span>
-            </button>
-          </form>
-        ) : null}
-      </div>
-    </Section>
-  );
-}
-
-export default async function TravelerTripDetailPage({ params, searchParams }: TripPageProps) {
+export default async function TravelerTripDetailPage({ params }: TripPageProps) {
   const { tripId } = await params;
-  const resolvedSearchParams = await searchParams;
-  const submitted = resolvedSearchParams?.submitted === "1";
-  const submitError = resolvedSearchParams?.submitError ? decodeURIComponent(resolvedSearchParams.submitError) : undefined;
   const user = await getCurrentUser();
 
   if (!user) {
@@ -832,9 +689,6 @@ export default async function TravelerTripDetailPage({ params, searchParams }: T
   const manifestTheme = statusTheme(trip?.manifestReadiness?.isManifestListed ? "LISTED" : "NOT LISTED");
   const bookingCurrency = trip?.currentBooking?.currencyCode || "PHP";
   const currentBookingFxDisplaySnapshot = trip?.currentBooking?.fxDisplaySnapshot ?? null;
-  const canSubmitRegistration =
-    String(trip?.tripStatus || "").toUpperCase() === "DRAFT" &&
-    String(trip?.registrationStatus || "").toUpperCase() === "INCOMPLETE";
 
   return (
     <main
@@ -955,13 +809,6 @@ export default async function TravelerTripDetailPage({ params, searchParams }: T
               <KeyValue label={t(dictionary, "tripDetail.coreStatus.pass", "Pass")} value={normalizeStatus(trip.pass?.passStatus || notIssuedLabel)} tone={passTheme} />
             </div>
           </Section>
-
-          <SubmitRegistrationPanel
-            tripId={trip.id}
-            canSubmit={canSubmitRegistration}
-            submitted={submitted}
-            submitError={submitError}
-          />
 
           <Section title={t(dictionary, "tripDetail.details.title", "Trip Details")} icon={<Icon kind="calendar" />} tone="blue">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
