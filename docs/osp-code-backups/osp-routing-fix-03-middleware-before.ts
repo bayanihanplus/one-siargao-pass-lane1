@@ -82,25 +82,25 @@ export function middleware(req: NextRequest) {
   // Role-aware route map
   if (pathname.startsWith("/operator")) {
     if (!isOperatorRole(role) && !isAdminRole(role)) {
-      return redirectToLogin(req);
+      return redirectToHome(req);
     }
   }
 
   if (pathname.startsWith("/admin")) {
     if (!isAdminRole(role)) {
-      return redirectToLogin(req);
+      return redirectToHome(req);
     }
   }
 
   if (pathname.startsWith("/dev")) {
     if (!isAdminRole(role)) {
-      return redirectToLogin(req);
+      return redirectToHome(req);
     }
   }
 
   if (pathname.startsWith("/traveler")) {
     if (!isTravelerRole(role)) {
-      return redirectToLogin(req);
+      return redirectToHome(req);
     }
   }
 
