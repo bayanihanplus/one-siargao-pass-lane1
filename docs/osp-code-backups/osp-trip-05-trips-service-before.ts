@@ -1,8 +1,8 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { AddTripMemberDto } from './dto/add-trip-member.dto';
-import { ClearanceStatus, RegistrationStatus, TripStatus } from '@prisma/client';
+import { ClearanceStatus } from '@prisma/client';
 import { FxService } from '../fx/fx.service';
 
 @Injectable()
@@ -44,57 +44,6 @@ export class TripsService {
             registrationReference: `REG-DRAFT-${Date.now()}`,
             registrationChannel: 'app',
             registrationCompletedAt: null,
-          },
-        },
-      },
-      include: { registration: true },
-    });
-  }
-
-  async submitRegistration(userId: string, tripId: string) {
-    const trip = await this.prisma.trip.findFirst({
-      where: { id: tripId, travelerUserId: userId },
-      include: { registration: true },
-    });
-
-    if (!trip) {
-      throw new NotFoundException('Trip not found');
-    }
-
-    if (trip.tripStatus === TripStatus.CANCELLED) {
-      throw new BadRequestException('Cancelled trips cannot be submitted for registration');
-    }
-
-    if (trip.registrationStatus === RegistrationStatus.SUBMITTED || trip.registrationStatus === RegistrationStatus.VERIFIED) {
-      throw new ConflictException('Trip registration is already submitted');
-    }
-
-    if (trip.registrationStatus === RegistrationStatus.REJECTED) {
-      throw new BadRequestException('Rejected trip registration requires a dedicated resubmission flow');
-    }
-
-    if (!trip.arrivalDate || !trip.departureDate) {
-      throw new BadRequestException('Arrival and departure dates are required before submitting registration');
-    }
-
-    const now = new Date();
-
-    return this.prisma.trip.update({
-      where: { id: trip.id },
-      data: {
-        tripStatus: TripStatus.REGISTERED,
-        registrationStatus: RegistrationStatus.SUBMITTED,
-        clearanceStatus: ClearanceStatus.PENDING,
-        registration: {
-          upsert: {
-            create: {
-              registrationReference: `REG-${Date.now()}`,
-              registrationChannel: 'app',
-              registrationCompletedAt: now,
-            },
-            update: {
-              registrationCompletedAt: now,
-            },
           },
         },
       },

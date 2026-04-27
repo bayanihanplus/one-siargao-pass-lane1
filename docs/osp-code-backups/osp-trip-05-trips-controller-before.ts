@@ -28,12 +28,6 @@ export class TripsController {
   }
 
   @UseGuards(DevAuthGuard)
-  @Post(':tripId/submit-registration')
-  submitRegistration(@CurrentUserId() userId: string, @Param('tripId') tripId: string) {
-    return this.tripsService.submitRegistration(userId, tripId);
-  }
-
-  @UseGuards(DevAuthGuard)
   @Post(':tripId/members')
   addMember(
     @CurrentUserId() userId: string,
