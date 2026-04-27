@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { AddTripMemberDto } from './dto/add-trip-member.dto';
-import { ClearanceStatus } from '@prisma/client';
+import { ClearanceStatus, RegistrationStatus, TripStatus } from '@prisma/client';
 import { FxService } from '../fx/fx.service';
 
 @Injectable()
@@ -38,12 +38,14 @@ export class TripsService {
         departureDate: new Date(dto.departureDate),
         originLocation: dto.originLocation,
         declaredAccommodationName: dto.declaredAccommodationName,
+        tripStatus: TripStatus.REGISTERED,
+        registrationStatus: RegistrationStatus.SUBMITTED,
         clearanceStatus: ClearanceStatus.PENDING,
         registration: {
           create: {
-            registrationReference: `REG-DRAFT-${Date.now()}`,
+            registrationReference: `REG-${Date.now()}`,
             registrationChannel: 'app',
-            registrationCompletedAt: null,
+            registrationCompletedAt: new Date(),
           },
         },
       },

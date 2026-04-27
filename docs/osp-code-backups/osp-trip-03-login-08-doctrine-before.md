@@ -161,13 +161,12 @@ Optional trip fields:
 Current backend behavior:
 
 - creates Trip
-- creates TripRegistration shell
-- keeps tripStatus = DRAFT
-- keeps registrationStatus = INCOMPLETE
+- creates TripRegistration
+- sets tripStatus = REGISTERED
+- sets registrationStatus = SUBMITTED
 - sets clearanceStatus = PENDING
-- keeps TripRegistration.registrationCompletedAt = null
 
-This backend behavior preserves the compliance distinction between creating a trip draft and explicitly submitting a registration.
+This backend behavior is accepted for now but may need a future semantics audit because it submits registration immediately.
 
 After successful trip creation, redirect is locked as:
 
@@ -282,7 +281,7 @@ The following are explicitly deferred:
 3. Auto-login after registration
 4. Email verification
 5. Mobile verification
-6. Explicit trip registration submit endpoint
+6. Trip draft semantics
 7. Trip registration review workflow
 8. Pass issuance changes
 9. QR issuance changes
