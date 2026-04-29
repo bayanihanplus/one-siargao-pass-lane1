@@ -1,14 +1,15 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getApiBaseUrl } from "../../../src/lib/server-auth";
+import { getApiBaseUrl, getAuthCookieName } from "../../../src/lib/server-auth";
 
 /*
  * OSP-LOGIN-03 LOCK:
  * /traveler/register creates a traveler account using existing POST /auth/register.
- * It does not create a Trip.
- * It does not issue OSP Pass.
- * It does not issue QR.
+ * It creates traveler access using POST /auth/register.
+ * Backend registration now bootstraps a DB-backed starter Trip, OspPass, and QrCredential.
+ * It does not mark clearance, payment, manifest, or operational verification as complete.
  * It does not implement Google/Apple OAuth.
- * Successful registration redirects to /login?mode=returning&registered=1&next=/traveler/trips/new.
+ * Successful registration stores the auth cookie and redirects to the OSP Main Landing Page (/).
  */
 
 async function registerTravelerAction(formData: FormData) {
@@ -58,12 +59,21 @@ async function registerTravelerAction(formData: FormData) {
     json = await res.json();
   } catch {}
 
-  if (!res.ok) {
+  if (!res.ok || !json?.accessToken) {
     const message = encodeURIComponent(json?.message || json?.error || `Registration failed: HTTP ${res.status}`);
     redirect(`/traveler/register?error=register-failed&message=${message}`);
   }
 
-  redirect("/login?mode=returning&registered=1&next=/traveler/trips/new");
+  const cookieStore = await cookies();
+  cookieStore.set(getAuthCookieName(), json.accessToken, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: false,
+    path: "/",
+    maxAge: 60 * 60 * 24,
+  });
+
+  redirect("/");
 }
 
 function getErrorMessage(error?: string, message?: string) {
@@ -405,10 +415,10 @@ export default async function TravelerRegisterPage({
         >
           <Pill tone="blue">Boundary</Pill>
           <h2 style={{ margin: "8px 0 0", fontSize: 18, lineHeight: 1.1, fontWeight: 950 }}>
-            This does not create a trip yet.
+            This creates your traveler account, starter OSP Pass, and QR identity.
           </h2>
           <p style={{ margin: "8px 0 0", fontSize: 12.5, lineHeight: 1.42, color: "rgba(15,23,42,0.66)", fontWeight: 720 }}>
-            After registration, sign in and continue to the guided trip registration lane. OSP Pass / QR remains eligibility-based.
+            After registration, your DB-backed OSP Pass and QR identity will appear on the main OSP landing page. Clearance, trip details, and operational verification remain separate.
           </p>
           <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             <ActionLink href="/login?mode=returning" icon="🧭" variant="secondary">

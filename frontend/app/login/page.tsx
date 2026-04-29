@@ -575,7 +575,7 @@ export default async function LoginPage({
           }}
         >
           <EntryLink
-            href="/traveler/start"
+            href="/traveler/register"
             icon="▣"
             title="Create My OSP Pass"
             body="New to One Siargao Pass? Start with traveler access for your trip, pass, and QR readiness."
@@ -791,7 +791,7 @@ export default async function LoginPage({
                   autoComplete="current-password"
                 />
 
-                <PrimaryButton>{mode === "returning" ? "Continue My Trip" : "Continue to OSP"}</PrimaryButton>
+                <PrimaryButton>{mode === "returning" ? "Continue My Trip" : "Create My Account"}</PrimaryButton>
               </form>
             </>
           )}
@@ -892,13 +892,13 @@ export default async function LoginPage({
               gap: 7,
             }}
           >
-            <SecondaryLink href="/traveler/start" icon="▣">
+            <SecondaryLink href="/traveler/register" icon="▣">
               Start
             </SecondaryLink>
             <SecondaryLink href="/login?mode=returning" icon="🧭">
               Return
             </SecondaryLink>
-            <SecondaryLink href="/traveler/start" icon="🗺️">
+            <SecondaryLink href="/traveler/register" icon="🗺️">
               Map
             </SecondaryLink>
           </div>

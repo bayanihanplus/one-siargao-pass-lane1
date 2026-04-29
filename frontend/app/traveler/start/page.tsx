@@ -8,17 +8,17 @@
 const startSteps = [
   {
     icon: "▣",
-    title: "Create traveler access",
-    body: "Start with an account so your trip, pass, and QR readiness can stay connected.",
+    title: "Create traveler account",
+    body: "Enter your details on the next page so your traveler profile can be created.",
   },
   {
     icon: "🧭",
-    title: "Add your trip details",
+    title: "Add trip details later",
     body: "Arrival, departure, accommodation, and trip context come next in the guided traveler flow.",
   },
   {
     icon: "◈",
-    title: "Open your OSP Pass when ready",
+    title: "Open your OSP Pass when eligible",
     body: "Your OSP Pass / QR appears only when your trip record is ready.",
   },
 ];
@@ -185,18 +185,18 @@ export default function TravelerStartPage() {
               One Siargao Pass
             </div>
             <h1 style={{ margin: "7px 0 0", fontSize: 31, lineHeight: 1, letterSpacing: "-0.045em", fontWeight: 950 }}>
-              Start your OSP Pass
+              Create your OSP account
             </h1>
             <p style={{ margin: "10px 0 0", color: "#fef9c3", fontSize: 15.8, lineHeight: 1.22, fontWeight: 950 }}>
-              Prepare your traveler access before your trip continues.
+              Create your traveler account first. Your OSP Pass setup continues after your account is ready.
             </p>
             <p style={{ margin: "10px 0 0", color: "rgba(255,255,255,0.84)", fontSize: 12.8, lineHeight: 1.42, fontWeight: 700 }}>
-              This starts the first-time traveler path. It does not issue a pass or QR yet.
+              This creates your traveler access first. Pass and QR readiness remain DB-backed and eligibility-based.
             </p>
           </div>
 
           <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <MiniButton href="/traveler/register" icon="🧭">Create trip</MiniButton>
+            <MiniButton href="/traveler/register" icon="🧭">Create my account</MiniButton>
             <MiniButton href="/login?mode=returning" icon="🗺️" variant="secondary">Preview map</MiniButton>
           </div>
         </header>
@@ -213,7 +213,7 @@ export default function TravelerStartPage() {
         >
           <Pill>What happens next</Pill>
           <h2 style={{ margin: "8px 0 0", fontSize: 20, lineHeight: 1.1, fontWeight: 950 }}>
-            Start simple. Continue when your trip details are ready.
+            Create your account first. Continue when your trip details are ready.
           </h2>
 
           <div style={{ marginTop: 12, display: "grid", gap: 9 }}>
@@ -284,13 +284,13 @@ export default function TravelerStartPage() {
             Readiness note
           </div>
           <h2 style={{ margin: "5px 0 0", fontSize: 18, lineHeight: 1.1, fontWeight: 950, color: "#10234a" }}>
-            Pass and QR are not instant.
+            Pass and QR stay DB-backed.
           </h2>
           <p style={{ margin: "8px 0 0", fontSize: 12.5, lineHeight: 1.42, color: "rgba(15,23,42,0.66)", fontWeight: 720 }}>
             OSP Pass / QR access depends on your trip record. Continue to sign in first, then complete the traveler path when registration is enabled.
           </p>
           <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <MiniButton href="/traveler/register" icon="▣">Create account</MiniButton>
+            <MiniButton href="/traveler/register" icon="▣">Create my account</MiniButton>
             <MiniButton href="/login?mode=returning" icon="◈" variant="secondary">View pass</MiniButton>
           </div>
         </section>
