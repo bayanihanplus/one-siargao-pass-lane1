@@ -2130,7 +2130,7 @@ export default async function HomePage() {
                       color: "#ffffff",
                     }}
                   >
-                    Active Preview
+                    Start Here
                   </span>
 
                   <span
@@ -2168,9 +2168,9 @@ export default async function HomePage() {
                     color: "#ffffff",
                   }}
                 >
-                  Trip Active.
+                  Start Your
                   <br />
-                  Pass Ready.
+                  OSP Pass.
                 </h2>
 
                 <p
@@ -2183,7 +2183,7 @@ export default async function HomePage() {
                     color: "rgba(255,255,255,0.9)",
                   }}
                 >
-                  Start your official OSP traveler access, then complete your guided trip path when your travel details are ready.
+                  Create your official One Siargao Pass or continue an existing trip when you are ready.
                 </p>
 
                 <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
@@ -2204,11 +2204,11 @@ export default async function HomePage() {
                       boxShadow: "0 12px 24px rgba(36,191,209,0.24)",
                     }}
                   >
-                    Show My QR
+                    Create My OSP Pass
                   </a>
 
                   <a
-                    href="/traveler/start"
+                    href="/siargao-passport-map"
                     style={{
                       minHeight: 48,
                       borderRadius: 999,
@@ -2252,7 +2252,7 @@ export default async function HomePage() {
               </div>
 
               <h2 style={{ margin: "12px 0 18px", fontSize: 22, lineHeight: 1.1, color: "#19305a" }}>
-                Traveler One
+                New Traveler
               </h2>
 
               <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
@@ -2260,9 +2260,9 @@ export default async function HomePage() {
               </div>
 
               <div style={{ marginTop: 6, fontSize: 18, lineHeight: 1.1, fontWeight: 900, color: "#0f172a" }}>
-                OSP-ACTIVE-
+                OSP-READY-
                 <br />
-                1776950922313
+                START-HERE
               </div>
 
               <div style={{ marginTop: 18, fontSize: 13, fontWeight: 900, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
@@ -2270,13 +2270,13 @@ export default async function HomePage() {
               </div>
 
               <div style={{ marginTop: 6, fontSize: 15, fontWeight: 850, color: "#0f172a" }}>
-                May 10, 2026 – May 12, 2026
+                Created after trip setup
               </div>
             </div>
 
             <div style={{ minWidth: 128, textAlign: "center" }}>
               <div style={{ display: "inline-block", borderRadius: 999, padding: "8px 15px", background: "#16a34a", color: "#ffffff", fontSize: 13, fontWeight: 900 }}>
-                PASS ACTIVE
+                READY
               </div>
 
               <div style={{ marginTop: 18, borderRadius: 24, background: "#ffffff", border: "1px solid #dbe8ef", padding: 12 }}>
@@ -2307,10 +2307,10 @@ export default async function HomePage() {
 
         <section style={{ width: "100%", maxWidth: 430, margin: "0 auto 12px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
           {[
-            ["Clearance Status", "Approved", "#dcfce7", "#16a34a"],
-            ["Payment Status", "Ready", "#fef3c7", "#d97706"],
-            ["Pass Status", "Issued", "#cffafe", "#0891b2"],
-            ["Trip Dates", "May 10 – May 12", "#dbeafe", "#2563eb"],
+            ["Trip Setup", "Start", "#dcfce7", "#16a34a"],
+            ["Payment", "Later", "#fef3c7", "#d97706"],
+            ["Pass", "After setup", "#cffafe", "#0891b2"],
+            ["Travel Dates", "To be added", "#dbeafe", "#2563eb"],
           ].map(([label, value, bg, color]) => (
             <div key={label} style={{ borderRadius: 16, background: bg, border: "1px solid rgba(15,23,42,0.08)", padding: 10, minHeight: 76 }}>
               <div style={{ fontSize: 8.5, fontWeight: 900, color: "#64748b", textTransform: "uppercase" }}>{label}</div>
@@ -2335,7 +2335,7 @@ export default async function HomePage() {
             boxSizing: "border-box",
           }}
         >
-          Your pass, clearance, payment, and trip records stay connected to your One Siargao Pass profile.
+          Start your OSP access first, then your pass, trip records, payment status, and QR actions will unlock after setup.
         </section>
 
         <section style={{ width: "100%", maxWidth: 430, margin: "0 auto 14px" }}>
@@ -2347,7 +2347,7 @@ export default async function HomePage() {
             <TravelerJourneyCard
               title="Trips"
               subtitle="Plans & records"
-              href="/traveler/start"
+              href="/login?mode=returning"
               shellBg="#eff6ff"
               borderColor="#bfdbfe"
               chipBg="#dbeafe"
@@ -2379,7 +2379,7 @@ export default async function HomePage() {
             <TravelerJourneyCard
               title="Passport Map"
               subtitle="Trails & stamps"
-              href="/traveler/start"
+              href="/siargao-passport-map"
               shellBg="#ecfeff"
               borderColor="#a5f3fc"
               chipBg="#cffafe"
@@ -2395,7 +2395,7 @@ export default async function HomePage() {
             <TravelerJourneyCard
               title="Checkpoints"
               subtitle="QR & access state"
-              href="/traveler/start"
+              href="/login?mode=returning"
               shellBg="#f0fdf4"
               borderColor="#bbf7d0"
               chipBg="#dcfce7"
@@ -2436,7 +2436,7 @@ export default async function HomePage() {
             />
 
             <TravelerBottomNavLink
-              href="/traveler/start"
+              href="/login?mode=returning"
               label="Trips"
               icon={
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
