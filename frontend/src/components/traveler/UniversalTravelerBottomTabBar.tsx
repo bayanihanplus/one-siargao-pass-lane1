@@ -13,7 +13,7 @@ type TravelerTab = {
 const TRAVELER_TABS: TravelerTab[] = [
   { key: "home", label: "Home", href: "/", icon: "⌂", ariaLabel: "Open OSP home" },
   { key: "trails", label: "Trails", href: "/traveler/passport-trails", icon: "◇", ariaLabel: "Open Passport Trails" },
-  { key: "pass", label: "QR", href: "/traveler/pass", icon: "▦", ariaLabel: "Open OSP Pass and QR" },
+  { key: "pass", label: "QR", href: "/traveler/scan", icon: "▦", ariaLabel: "Open scanner camera" },
   { key: "explore", label: "Explore", href: "/traveler/partner-tours", icon: "✦", ariaLabel: "Open Siargao partner tours and local experiences" },
   { key: "profile", label: "Profile", href: "/traveler/settings", icon: "♙", ariaLabel: "Open traveler profile and settings" },
 ];
