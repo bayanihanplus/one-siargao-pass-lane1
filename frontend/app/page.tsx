@@ -2,6 +2,7 @@ import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../src/lib/se
 import { getPreferredTravelerTrip } from "../src/lib/travelerTripSelection";
 import { redirect } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
+import UniversalTravelerBottomTabBar from "../src/components/traveler/UniversalTravelerBottomTabBar";
 
 function Section(props: { title: string; children: any }) {
   return (
@@ -1886,7 +1887,7 @@ function TravelerShell(props: {
       <TravelerPassCard user={props.user} latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
       <TravelerCompactStatusRow latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
       <TravelerReassuranceAndJourney latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
-      <TravelerBottomNav dictionary={props.dictionary} rootPreview={isRootPreviewTrip(props.latestTravelerTrip)} />
+      <UniversalTravelerBottomTabBar activeTab="home" fixed />
     </div>
   );
 }

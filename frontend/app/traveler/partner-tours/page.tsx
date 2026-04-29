@@ -1,3 +1,4 @@
+import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
 const readinessStats = [
   { icon: "🧭", label: "Source", value: "Operator-led" },
   { icon: "🧑‍✈️", label: "Guide", value: "When required" },
@@ -569,6 +570,7 @@ export default function PartnerToursPage() {
           </div>
         </section>
       </div>
+      <UniversalTravelerBottomTabBar activeTab="explore" fixed />
     </main>
   );
 }
