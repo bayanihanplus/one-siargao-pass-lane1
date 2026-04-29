@@ -122,6 +122,15 @@ function t(dictionary: Record<string, string> | undefined | null, key: string, f
   return dictionary?.[key] || fallback;
 }
 
+
+function isRootPreviewTrip(trip: any) {
+  return trip?.id === "osp-root-preview-trip";
+}
+
+function rootPublicHref(trip: any, authenticatedHref: string, publicHref: string) {
+  return isRootPreviewTrip(trip) ? publicHref : authenticatedHref;
+}
+
 function getHomeHeroDictionaryBase(title: string) {
   if (title === "Trip Active. Pass Ready.") return "home.hero.active";
   if (title === "Trip On File. Registration Required.") return "home.hero.registrationRequired";
@@ -959,6 +968,7 @@ function TravelerShellFrame(props: {
   const assistantAriaLabel = t(props.dictionary, "home.header.assistant.ariaLabel", "Open OSP Travel Assistant");
   const notificationsAriaLabel = t(props.dictionary, "home.header.notifications.ariaLabel", "Notifications");
   const languageLabel = getLanguageHeaderLabel(props.preferredLanguage);
+  const rootPreview = isRootPreviewTrip(props.latestTravelerTrip);
 
   return (
     <header
@@ -1047,13 +1057,13 @@ function TravelerShellFrame(props: {
             flex: "0 0 auto",
           }}
         >
-          <HeaderControlButton label={languageLabel} ariaLabel={languageAriaLabel} href="/traveler/settings?panel=language" icon="language" />
-          <HeaderControlButton label="PHP" ariaLabel={currencyAriaLabel} href="/traveler/settings?panel=currency" icon="currency" />
-          <HeaderControlButton className="osp-phone-secondary-control" label="AI" ariaLabel={assistantAriaLabel} href="/traveler/settings?panel=assistant" icon="assistant" />
+          <HeaderControlButton label={languageLabel} ariaLabel={languageAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=language"} icon="language" />
+          <HeaderControlButton label="PHP" ariaLabel={currencyAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=currency"} icon="currency" />
+          <HeaderControlButton className="osp-phone-secondary-control" label="AI" ariaLabel={assistantAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=assistant"} icon="assistant" />
 
           <a
             className="osp-phone-hidden-notification"
-            href="/traveler/settings?panel=notifications"
+            href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=notifications"}
             aria-label={notificationsAriaLabel}
             style={{
               position: "relative",
@@ -1202,7 +1212,7 @@ function TravelerShellFrame(props: {
 
             <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
               <a
-                href="/traveler/pass"
+                href={rootPreview ? "/traveler/start" : "/traveler/pass"}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -1242,7 +1252,7 @@ function TravelerShellFrame(props: {
               </a>
 
               <a
-                href="/traveler/passport-map"
+                href={rootPreview ? "/traveler/start" : "/traveler/passport-map"}
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -1583,6 +1593,8 @@ function TravelerReassuranceAndJourney(props: {
   const checkpointsTitle = t(props.dictionary, "home.journey.checkpoints.title", "Checkpoints");
   const checkpointsSubtitle = t(props.dictionary, "home.journey.checkpoints.subtitle", "QR & access state");
 
+  const rootPreview = isRootPreviewTrip(props.latestTravelerTrip);
+
   return (
     <>
       <section
@@ -1640,7 +1652,7 @@ function TravelerReassuranceAndJourney(props: {
           }}
         >
           <TravelerJourneyCard
-            href="/traveler/trips"
+            href={rootPreview ? "/traveler/start" : "/traveler/trips"}
             title={tripsTitle}
             subtitle={tripsSubtitle}
             shellBg="#eff6ff"
@@ -1657,7 +1669,7 @@ function TravelerReassuranceAndJourney(props: {
           />
 
           <TravelerJourneyCard
-            href="/traveler/trips"
+            href={rootPreview ? "/traveler/start" : "/traveler/trips"}
             title={paymentsTitle}
             subtitle={paymentsSubtitle}
             shellBg="#fff8eb"
@@ -1673,7 +1685,7 @@ function TravelerReassuranceAndJourney(props: {
           />
 
           <TravelerJourneyCard
-            href="/traveler/passport-map"
+            href={rootPreview ? "/traveler/start" : "/traveler/passport-map"}
             title={passportMapTitle}
             subtitle={passportMapSubtitle}
             shellBg="#ecfeff"
@@ -1696,7 +1708,7 @@ function TravelerReassuranceAndJourney(props: {
           />
 
           <TravelerJourneyCard
-            href="/traveler/pass"
+            href={rootPreview ? "/traveler/start" : "/traveler/pass"}
             title={checkpointsTitle}
             subtitle={checkpointsSubtitle}
             shellBg="#eefdf3"
@@ -1718,12 +1730,14 @@ function TravelerReassuranceAndJourney(props: {
 
 function TravelerBottomNav(props: {
   dictionary: Record<string, string>;
+  rootPreview?: boolean;
 }) {
   const homeLabel = t(props.dictionary, "home.bottomNav.home", "Home");
   const tripsLabel = t(props.dictionary, "home.bottomNav.trips", "Trips");
   const paymentsLabel = t(props.dictionary, "home.bottomNav.payments", "Payments");
   const profileLabel = t(props.dictionary, "home.bottomNav.profile", "Profile");
   const openQrAriaLabel = t(props.dictionary, "home.pass.openQr.ariaLabel", "Open active pass QR");
+  const rootPreview = Boolean(props.rootPreview);
 
   return (
     <nav
@@ -1749,7 +1763,7 @@ function TravelerBottomNav(props: {
         />
 
         <TravelerBottomNavLink
-          href="/traveler/trips"
+          href={rootPreview ? "/traveler/start" : "/traveler/trips"}
           label={tripsLabel}
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
@@ -1760,7 +1774,7 @@ function TravelerBottomNav(props: {
         />
 
         <a
-          href="/traveler/pass"
+          href={rootPreview ? "/traveler/start" : "/traveler/pass"}
           style={{
             marginTop: -24,
             width: 66,
@@ -1786,7 +1800,7 @@ function TravelerBottomNav(props: {
         </a>
 
         <TravelerBottomNavLink
-          href="/traveler/trips"
+          href={rootPreview ? "/login?mode=returning" : "/traveler/trips"}
           label={paymentsLabel}
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
@@ -1797,7 +1811,7 @@ function TravelerBottomNav(props: {
         />
 
         <TravelerBottomNavLink
-          href="/traveler/pass"
+          href={rootPreview ? "/login?mode=returning" : "/traveler/pass"}
           label={profileLabel}
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
@@ -1872,7 +1886,7 @@ function TravelerShell(props: {
       <TravelerPassCard user={props.user} latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
       <TravelerCompactStatusRow latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
       <TravelerReassuranceAndJourney latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
-      <TravelerBottomNav dictionary={props.dictionary} />
+      <TravelerBottomNav dictionary={props.dictionary} rootPreview={isRootPreviewTrip(props.latestTravelerTrip)} />
     </div>
   );
 }
@@ -1896,20 +1910,590 @@ export default async function HomePage() {
 
   if (!user) {
     return (
-      <main style={{ width: "100%", maxWidth: 960, margin: "0 auto", padding: "8px 0 24px", boxSizing: "border-box" }}>
-        <h1 style={{ marginBottom: 8 }}>One Siargao Pass</h1>
-        <p style={{ marginTop: 0, marginBottom: 24 }}>
-          Role-aware landing flow is now active. Please log in to continue.
-        </p>
+      <main
+        style={{
+          width: "100%",
+          maxWidth: 960,
+          margin: "0 auto",
+          padding: "8px 0 24px",
+          boxSizing: "border-box",
+        }}
+      >
+        <header
+          style={{
+            width: "100%",
+            maxWidth: 430,
+            margin: "0 auto 14px",
+            overflow: "hidden",
+            marginBottom: 16,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 10,
+              marginBottom: 12,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+              <img
+                src="/osp/osp-official-logo.png"
+                alt="One Siargao Pass official logo"
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 16,
+                  objectFit: "cover",
+                  flex: "0 0 auto",
+                  boxShadow: "0 8px 18px rgba(15,23,42,0.08)",
+                  background: "#ffffff",
+                }}
+              />
 
-        <Section title="Get Started">
-          <LinkList
-            items={[
-              { href: "/login", label: "Login" },
-              { href: "/dev", label: "Open Dev Route Index" },
-            ]}
-          />
-        </Section>
+              <div style={{ minWidth: 0 }}>
+                <h1
+                  style={{
+                    margin: 0,
+                    fontSize: 18,
+                    fontWeight: 850,
+                    lineHeight: 0.98,
+                    letterSpacing: "-0.035em",
+                    color: "#19305a",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  One Siargao Pass
+                </h1>
+                <div
+                  style={{
+                    marginTop: 7,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 7,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: "#64748b",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  <span>Official Traveler Pass</span>
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" style={{ color: "#17b6c6", flex: "0 0 auto" }}>
+                    <path
+                      d="M12 3l7 3v5c0 4.5-3 8.1-7 10-4-1.9-7-5.5-7-10V6l7-3z"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M8.5 12.2l2.2 2.2 4.8-5"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                gap: 6,
+                flex: "0 0 auto",
+              }}
+            >
+              <HeaderControlButton
+                label="EN"
+                ariaLabel="Open language selector"
+                href="/login?mode=returning"
+                icon="language"
+              />
+
+              <HeaderControlButton
+                label="PHP"
+                ariaLabel="Open currency selector"
+                href="/login?mode=returning"
+                icon="currency"
+              />
+
+              <HeaderControlButton
+                className="osp-phone-secondary-control"
+                label="AI"
+                ariaLabel="Open OSP Travel Assistant"
+                href="/login?mode=returning"
+                icon="assistant"
+              />
+
+              <a
+                href="/login?mode=returning"
+                aria-label="Notifications"
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 999,
+                  border: "1px solid #dbe8ef",
+                  background: "#ffffff",
+                  color: "#19305a",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  boxShadow: "0 8px 18px rgba(15,23,42,0.045)",
+                  position: "relative",
+                  flex: "0 0 auto",
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
+                  <path
+                    d="M6.5 10.5a5.5 5.5 0 0 1 11 0v3.8l1.5 2.4H5l1.5-2.4v-3.8Z"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M10 19a2.2 2.2 0 0 0 4 0"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    right: 4,
+                    top: 4,
+                    width: 8,
+                    height: 8,
+                    borderRadius: 999,
+                    background: "#ff6b4a",
+                    border: "1px solid #ffffff",
+                  }}
+                />
+              </a>
+            </div>
+          </div>
+
+          <section
+            style={{
+              overflow: "hidden",
+              borderRadius: 28,
+              background: "#083d67",
+              boxShadow: "0 20px 60px rgba(8,61,103,0.22)",
+            }}
+          >
+            <div
+              style={{
+                position: "relative",
+                minHeight: 390,
+                overflow: "hidden",
+                padding: "20px 18px 18px",
+                color: "#ffffff",
+                backgroundImage:
+                  'linear-gradient(90deg, rgba(5,39,82,0.99) 0%, rgba(6,59,108,0.97) 33%, rgba(7,92,140,0.58) 53%, rgba(7,110,164,0.12) 69%), url("/osp/osp-hero-map.png")',
+                backgroundSize: "cover",
+                backgroundPosition: "60% center",
+                backgroundRepeat: "no-repeat",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background:
+                    "radial-gradient(circle at top right, rgba(255,255,255,0.12), transparent 24%), linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.06) 100%)",
+                }}
+              />
+
+              <div style={{ position: "relative", zIndex: 1, maxWidth: 252 }}>
+                <div
+                  style={{
+                    marginBottom: 12,
+                    display: "flex",
+                    flexWrap: "wrap",
+                    alignItems: "center",
+                    gap: 12,
+                  }}
+                >
+                  <span
+                    style={{
+                      borderRadius: 999,
+                      padding: "6px 14px",
+                      fontSize: 12,
+                      fontWeight: 850,
+                      background: "#14b8a6",
+                      color: "#ffffff",
+                    }}
+                  >
+                    Active Preview
+                  </span>
+
+                  <span
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      fontSize: 13,
+                      fontWeight: 750,
+                      color: "rgba(255,255,255,0.95)",
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" style={{ color: "#91f0cf" }}>
+                      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
+                      <path
+                        d="M8 12.3l2.5 2.5L16.5 9"
+                        stroke="currentColor"
+                        strokeWidth="2.2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    Verified Traveler
+                  </span>
+                </div>
+
+                <h2
+                  style={{
+                    margin: 0,
+                    whiteSpace: "normal",
+                    fontSize: 28,
+                    fontWeight: 720,
+                    lineHeight: 1.02,
+                    letterSpacing: "-0.035em",
+                    color: "#ffffff",
+                  }}
+                >
+                  Trip Active.
+                  <br />
+                  Pass Ready.
+                </h2>
+
+                <p
+                  style={{
+                    marginTop: 16,
+                    marginBottom: 0,
+                    whiteSpace: "normal",
+                    fontSize: 12.5,
+                    lineHeight: 1.42,
+                    color: "rgba(255,255,255,0.9)",
+                  }}
+                >
+                  Start your official OSP traveler access, then complete your guided trip path when your travel details are ready.
+                </p>
+
+                <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
+                  <a
+                    href="/traveler/start"
+                    style={{
+                      minHeight: 48,
+                      borderRadius: 999,
+                      padding: "0 18px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textDecoration: "none",
+                      background: "#24bfd1",
+                      color: "#ffffff",
+                      fontSize: 15,
+                      fontWeight: 850,
+                      boxShadow: "0 12px 24px rgba(36,191,209,0.24)",
+                    }}
+                  >
+                    Show My QR
+                  </a>
+
+                  <a
+                    href="/traveler/start"
+                    style={{
+                      minHeight: 48,
+                      borderRadius: 999,
+                      padding: "0 18px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      textDecoration: "none",
+                      background: "rgba(255,255,255,0.14)",
+                      color: "#ffffff",
+                      fontSize: 15,
+                      fontWeight: 850,
+                      border: "1px solid rgba(255,255,255,0.28)",
+                    }}
+                  >
+                    Open Passport Map
+                  </a>
+                </div>
+              </div>
+            </div>
+          </section>
+        </header>
+
+        <section
+          style={{
+            width: "100%",
+            maxWidth: 430,
+            margin: "0 auto 12px",
+            borderRadius: 26,
+            background: "#eef9ff",
+            border: "1px solid #cfe8f5",
+            boxShadow: "0 16px 36px rgba(15,23,42,0.08)",
+            padding: 18,
+            boxSizing: "border-box",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 14 }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.18em", color: "#7c96ad", textTransform: "uppercase" }}>
+                One Siargao Pass
+              </div>
+
+              <h2 style={{ margin: "12px 0 18px", fontSize: 22, lineHeight: 1.1, color: "#19305a" }}>
+                Traveler One
+              </h2>
+
+              <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
+                Pass Code
+              </div>
+
+              <div style={{ marginTop: 6, fontSize: 18, lineHeight: 1.1, fontWeight: 900, color: "#0f172a" }}>
+                OSP-ACTIVE-
+                <br />
+                1776950922313
+              </div>
+
+              <div style={{ marginTop: 18, fontSize: 13, fontWeight: 900, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
+                Valid Dates
+              </div>
+
+              <div style={{ marginTop: 6, fontSize: 15, fontWeight: 850, color: "#0f172a" }}>
+                May 10, 2026 – May 12, 2026
+              </div>
+            </div>
+
+            <div style={{ minWidth: 128, textAlign: "center" }}>
+              <div style={{ display: "inline-block", borderRadius: 999, padding: "8px 15px", background: "#16a34a", color: "#ffffff", fontSize: 13, fontWeight: 900 }}>
+                PASS ACTIVE
+              </div>
+
+              <div style={{ marginTop: 18, borderRadius: 24, background: "#ffffff", border: "1px solid #dbe8ef", padding: 12 }}>
+                <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
+                  Official Pass
+                </div>
+
+                <div
+                  style={{
+                    margin: "8px auto 0",
+                    width: 92,
+                    height: 92,
+                    borderRadius: 14,
+                    background: "repeating-linear-gradient(45deg, #0f172a 0 6px, #ffffff 6px 12px)",
+                    border: "8px solid #ffffff",
+                    boxShadow: "inset 0 0 0 1px #dbe8ef",
+                  }}
+                  aria-label="Preview QR pattern"
+                />
+
+                <div style={{ marginTop: 8, fontSize: 9, fontWeight: 900, letterSpacing: "0.18em", color: "#7c96ad", textTransform: "uppercase" }}>
+                  Scan to Verify
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section style={{ width: "100%", maxWidth: 430, margin: "0 auto 12px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+          {[
+            ["Clearance Status", "Approved", "#dcfce7", "#16a34a"],
+            ["Payment Status", "Ready", "#fef3c7", "#d97706"],
+            ["Pass Status", "Issued", "#cffafe", "#0891b2"],
+            ["Trip Dates", "May 10 – May 12", "#dbeafe", "#2563eb"],
+          ].map(([label, value, bg, color]) => (
+            <div key={label} style={{ borderRadius: 16, background: bg, border: "1px solid rgba(15,23,42,0.08)", padding: 10, minHeight: 76 }}>
+              <div style={{ fontSize: 8.5, fontWeight: 900, color: "#64748b", textTransform: "uppercase" }}>{label}</div>
+              <div style={{ marginTop: 5, fontSize: 12, fontWeight: 900, color }}>{value}</div>
+            </div>
+          ))}
+        </section>
+
+        <section
+          style={{
+            width: "100%",
+            maxWidth: 430,
+            margin: "0 auto 14px",
+            borderRadius: 18,
+            background: "#e0f2fe",
+            border: "1px solid #bae6fd",
+            padding: 14,
+            color: "#475569",
+            fontSize: 14,
+            lineHeight: 1.4,
+            fontWeight: 700,
+            boxSizing: "border-box",
+          }}
+        >
+          Your pass, clearance, payment, and trip records stay connected to your One Siargao Pass profile.
+        </section>
+
+        <section style={{ width: "100%", maxWidth: 430, margin: "0 auto 14px" }}>
+          <h2 style={{ margin: "0 0 10px", fontSize: 18, color: "#19305a" }}>
+            Continue Your Journey
+          </h2>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+            <TravelerJourneyCard
+              title="Trips"
+              subtitle="Plans & records"
+              href="/traveler/start"
+              shellBg="#eff6ff"
+              borderColor="#bfdbfe"
+              chipBg="#dbeafe"
+              accentColor="#2563eb"
+              icon={
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+                  <path d="M7 7h10M7 12h10M7 17h6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="1.8" />
+                </svg>
+              }
+            />
+
+            <TravelerJourneyCard
+              title="Payments"
+              subtitle="Status & receipts"
+              href="/login?mode=returning"
+              shellBg="#fff7ed"
+              borderColor="#fed7aa"
+              chipBg="#ffedd5"
+              accentColor="#ea580c"
+              icon={
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+                  <rect x="3" y="6" width="18" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.9" />
+                  <path d="M3 10h18M7 15h4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+                </svg>
+              }
+            />
+
+            <TravelerJourneyCard
+              title="Passport Map"
+              subtitle="Trails & stamps"
+              href="/traveler/start"
+              shellBg="#ecfeff"
+              borderColor="#a5f3fc"
+              chipBg="#cffafe"
+              accentColor="#0891b2"
+              icon={
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+                  <path d="M9 18l-5 2V6l5-2 6 2 5-2v14l-5 2-6-2Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+                  <path d="M9 4v14M15 6v14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              }
+            />
+
+            <TravelerJourneyCard
+              title="Checkpoints"
+              subtitle="QR & access state"
+              href="/traveler/start"
+              shellBg="#f0fdf4"
+              borderColor="#bbf7d0"
+              chipBg="#dcfce7"
+              accentColor="#16a34a"
+              icon={
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+                  <path d="M12 3l7 3v5c0 4.5-3 8.1-7 10-4-1.9-7-5.5-7-10V6l7-3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+                  <path d="M8.5 12.2l2.1 2.1 4.9-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              }
+            />
+          </div>
+        </section>
+
+        <nav
+          style={{
+            width: "100%",
+            maxWidth: 430,
+            margin: "0 auto",
+            border: "1px solid #dbe8ef",
+            borderRadius: 26,
+            background: "#ffffff",
+            padding: "10px 12px 12px",
+            boxShadow: "0 14px 36px rgba(15,23,42,0.08)",
+            boxSizing: "border-box",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "center" }}>
+            <TravelerBottomNavLink
+              href="/"
+              label="Home"
+              active
+              icon={
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+                  <path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-8.5Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
+                </svg>
+              }
+            />
+
+            <TravelerBottomNavLink
+              href="/traveler/start"
+              label="Trips"
+              icon={
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+                  <rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="1.9" />
+                  <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+                </svg>
+              }
+            />
+
+            <a
+              href="/traveler/start"
+              aria-label="Open OSP QR"
+              style={{
+                width: 66,
+                height: 66,
+                marginTop: -24,
+                borderRadius: 999,
+                background: "#24bfd1",
+                color: "#ffffff",
+                border: "6px solid #ffffff",
+                boxShadow: "0 12px 28px rgba(36,191,209,0.35)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textDecoration: "none",
+                flex: "0 0 auto",
+              }}
+            >
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true">
+                <path d="M4 4h6v6H4V4ZM14 4h6v6h-6V4ZM4 14h6v6H4v-6ZM14 14h2v2h-2v-2ZM18 14h2v6h-6v-2h4v-4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+              </svg>
+            </a>
+
+            <TravelerBottomNavLink
+              href="/login?mode=returning"
+              label="Payments"
+              icon={
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+                  <rect x="3" y="6" width="18" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.9" />
+                  <path d="M3 10h18M7 15h4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+                </svg>
+              }
+            />
+
+            <TravelerBottomNavLink
+              href="/login?mode=returning"
+              label="Profile"
+              icon={
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.9" />
+                  <path d="M5 20c1.2-3.5 3.5-5.2 7-5.2s5.8 1.7 7 5.2" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+                </svg>
+              }
+            />
+          </div>
+        </nav>
+
       </main>
     );
   }
