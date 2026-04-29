@@ -7,12 +7,10 @@ function decodeJwtPayload(token: string): any | null {
     const parts = token.split(".");
     if (parts.length !== 3) return null;
 
-    const payload = parts[1]
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
-
+    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
     const padded = payload + "=".repeat((4 - (payload.length % 4)) % 4);
     const json = Buffer.from(padded, "base64").toString("utf8");
+
     return JSON.parse(json);
   } catch {
     return null;
@@ -32,10 +30,6 @@ function redirectToLogin(req: NextRequest) {
   return NextResponse.redirect(loginUrl);
 }
 
-function redirectToHome(req: NextRequest) {
-  return NextResponse.redirect(new URL("/", req.url));
-}
-
 function isOperatorRole(role: string | null) {
   return ["OPERATOR_OWNER", "OPERATOR_MANAGER", "OPERATOR_STAFF"].includes(role || "");
 }
@@ -48,60 +42,99 @@ function isTravelerRole(role: string | null) {
   return role === "TRAVELER";
 }
 
-export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+function isPublicRoute(pathname: string) {
+  // Runtime/static assets must never be auth-gated.
+  if (
+    pathname.startsWith("/_next") ||
+    pathname === "/favicon.ico" ||
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml"
+  ) {
+    return true;
+  }
 
-  // Public routes
-  // Traveler onboarding must remain public so first-time users can start and register.
+  // Public OSP landing + authentication entry/exit.
   if (
     pathname === "/" ||
     pathname === "/login" ||
-    pathname === "/logout" ||
-    pathname === "/traveler/start" ||
-    pathname === "/traveler/register" ||
-    pathname.startsWith("/_next") ||
-    pathname === "/favicon.ico"
+    pathname === "/logout"
   ) {
+    return true;
+  }
+
+  // Public traveler onboarding / OSP Pass creation entry.
+  if (
+    pathname === "/traveler/start" ||
+    pathname === "/traveler/register"
+  ) {
+    return true;
+  }
+
+  // Approved public SPM discovery/commercial routes.
+  // These are NOT private traveler account surfaces.
+  if (
+    pathname === "/siargao-passport-map" ||
+    pathname === "/traveler/passport-map" ||
+    pathname === "/traveler/passport-trails" ||
+    pathname.startsWith("/traveler/passport-trails/") ||
+    pathname === "/traveler/partner-tours"
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  if (isPublicRoute(pathname)) {
     return NextResponse.next();
   }
 
   const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
   const role = getRoleFromToken(token);
 
-  // Protected routes require session
+  // Operator workspace: operator roles or admin only.
+  if (pathname === "/operator" || pathname.startsWith("/operator/")) {
+    if (!token || (!isOperatorRole(role) && !isAdminRole(role))) {
+      return redirectToLogin(req);
+    }
+
+    return NextResponse.next();
+  }
+
+  // Admin and dev routes: admin only.
   if (
-    pathname.startsWith("/operator") ||
-    pathname.startsWith("/admin") ||
-    pathname.startsWith("/traveler")
+    pathname === "/admin" ||
+    pathname.startsWith("/admin/") ||
+    pathname === "/dev" ||
+    pathname.startsWith("/dev/")
   ) {
-    if (!token) {
+    if (!token || !isAdminRole(role)) {
       return redirectToLogin(req);
     }
+
+    return NextResponse.next();
   }
 
-  // Role-aware route map
-  if (pathname.startsWith("/operator")) {
-    if (!isOperatorRole(role) && !isAdminRole(role)) {
+  // LGU console: admin only for now until LGU-specific roles are formally implemented.
+  if (pathname === "/lgu" || pathname.startsWith("/lgu/")) {
+    if (!token || !isAdminRole(role)) {
       return redirectToLogin(req);
     }
+
+    return NextResponse.next();
   }
 
-  if (pathname.startsWith("/admin")) {
-    if (!isAdminRole(role)) {
+  // Private traveler account routes only.
+  // Public traveler discovery routes are already allowed above.
+  if (pathname === "/traveler" || pathname.startsWith("/traveler/")) {
+    if (!token || !isTravelerRole(role)) {
       return redirectToLogin(req);
     }
-  }
 
-  if (pathname.startsWith("/dev")) {
-    if (!isAdminRole(role)) {
-      return redirectToLogin(req);
-    }
-  }
-
-  if (pathname.startsWith("/traveler")) {
-    if (!isTravelerRole(role)) {
-      return redirectToLogin(req);
-    }
+    return NextResponse.next();
   }
 
   return NextResponse.next();
@@ -111,9 +144,12 @@ export const config = {
   matcher: [
     "/",
     "/login",
-    "/dev/:path*",
+    "/logout",
+    "/siargao-passport-map",
+    "/traveler/:path*",
     "/operator/:path*",
     "/admin/:path*",
-    "/traveler/:path*",
+    "/dev/:path*",
+    "/lgu/:path*",
   ],
 };

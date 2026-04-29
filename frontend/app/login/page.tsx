@@ -898,7 +898,7 @@ export default async function LoginPage({
             <SecondaryLink href="/login?mode=returning" icon="🧭">
               Return
             </SecondaryLink>
-            <SecondaryLink href="/traveler/passport-map" icon="🗺️">
+            <SecondaryLink href="/traveler/start" icon="🗺️">
               Map
             </SecondaryLink>
           </div>
