@@ -94,7 +94,488 @@ const officialTrails = [
   },
 ];
 
-export default function PassportTrailsCatalogPage() {
+
+function IslandHoppingRequestStartedPanel({
+  serviceId,
+  requestId,
+  paxCount,
+  requestedDate,
+  paymentIntentId,
+}: {
+  serviceId?: string
+  requestId?: string
+  paxCount?: string
+  requestedDate?: string
+  paymentIntentId?: string
+}) {
+  const normalizedServiceId = serviceId ? decodeURIComponent(serviceId) : ""
+  const cleanRequestId = requestId ? decodeURIComponent(requestId) : "Request started"
+  const paxLabel = paxCount ? `${paxCount} traveler${paxCount === "1" ? "" : "s"}` : "Traveler details pending"
+  const dateLabel = requestedDate ? decodeURIComponent(requestedDate) : "Travel date to be confirmed"
+
+  const serviceTitle =
+    normalizedServiceId.includes("tri-island-joiner") || normalizedServiceId.includes("island-hopping")
+      ? "Siargao Partner Tour — Tri-Island Joiner"
+      : "Siargao Partner Tour"
+
+  const serviceRoute =
+    normalizedServiceId.includes("tri-island-joiner") || normalizedServiceId.includes("island-hopping")
+      ? "Guyam • Daku • Naked Island"
+      : "Verified Siargao experience"
+
+  const cleanPaymentIntentId = paymentIntentId ? decodeURIComponent(paymentIntentId) : ""
+  const continueHref = cleanPaymentIntentId
+    ? `/traveler/payments/${encodeURIComponent(cleanPaymentIntentId)}`
+    : `/traveler/passport-trails?intent=island-hopping-request&serviceId=${encodeURIComponent(
+        normalizedServiceId || "spm-package:tri-island-joiner"
+      )}&requestId=${encodeURIComponent(cleanRequestId)}`
+
+  return (
+    <section
+      aria-label="Island Hopping request started"
+      style={{
+        width: "100%",
+        maxWidth: 430,
+        margin: "0 auto",
+        padding: "4px 0 18px",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          borderRadius: 30,
+          overflow: "hidden",
+          background:
+            "linear-gradient(150deg, #043447 0%, #066f81 46%, #0b9aa5 100%)",
+          color: "#ffffff",
+          boxShadow: "0 24px 60px rgba(6,63,86,0.24)",
+          border: "1px solid rgba(255,255,255,0.24)",
+          position: "relative",
+        }}
+      >
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "radial-gradient(circle at top right, rgba(255,255,255,0.30), transparent 34%), radial-gradient(circle at bottom left, rgba(250,204,21,0.28), transparent 28%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div style={{ position: "relative", padding: "18px 16px 16px" }}>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 7,
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.24)",
+              border: "1px solid rgba(255,255,255,0.34)",
+              padding: "7px 10px",
+              fontSize: 10,
+              fontWeight: 900,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+            }}
+          >
+            🏝️ Request Started
+          </div>
+
+          <h1
+            style={{
+              margin: "15px 0 0",
+              fontSize: 28,
+              lineHeight: 0.98,
+              letterSpacing: "-0.065em",
+              fontWeight: 950,
+              color: "#ffffff",
+              WebkitTextFillColor: "#ffffff",
+              textShadow: "0 4px 22px rgba(0,18,42,0.72), 0 1px 3px rgba(0,18,42,0.58)",
+            }}
+          >
+            Your Island Hopping request is now open.
+          </h1>
+
+          <p
+            style={{
+              margin: "11px 0 0",
+              fontSize: 13,
+              lineHeight: 1.48,
+              fontWeight: 680,
+              color: "rgba(255,255,255,0.96)",
+            }}
+          >
+            Complete the next details so OSP can connect your request to your Pass,
+            QR identity, manifest, and trip readiness steps.
+          </p>
+
+          <div
+            style={{
+              marginTop: 15,
+              borderRadius: 24,
+              background: "rgba(255,255,255,0.985)",
+              color: "#12314a",
+              padding: 13,
+              boxShadow: "0 18px 42px rgba(6,63,86,0.18)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+                gap: 10,
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: 9.5,
+                    fontWeight: 900,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "#078da0",
+                  }}
+                >
+                  Selected experience
+                </div>
+                <h2
+                  style={{
+                    margin: "5px 0 0",
+                    fontSize: 19,
+                    lineHeight: 1.05,
+                    fontWeight: 900,
+                    letterSpacing: "-0.045em",
+                    color: "#10253f",
+                  }}
+                >
+                  {serviceTitle}
+                </h2>
+                <p
+                  style={{
+                    margin: "5px 0 0",
+                    fontSize: 12,
+                    lineHeight: 1.35,
+                    color: "#557086",
+                    fontWeight: 750,
+                  }}
+                >
+                  {serviceRoute}
+                </p>
+              </div>
+
+              <div
+                style={{
+                  flex: "0 0 auto",
+                  borderRadius: 999,
+                  background: "#ecfeff",
+                  border: "1px solid #bae6fd",
+                  color: "#067889",
+                  padding: "7px 9px",
+                  fontSize: 10,
+                  fontWeight: 900,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                OSP-linked
+              </div>
+            </div>
+
+            <div
+              style={{
+                marginTop: 12,
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 8,
+              }}
+            >
+              <div
+                style={{
+                  borderRadius: 18,
+                  background: "#f4fbfb",
+                  border: "1px solid #d8f2f5",
+                  padding: 10,
+                }}
+              >
+                <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: "#078da0" }}>
+                  Travelers
+                </div>
+                <div style={{ marginTop: 4, fontSize: 12.5, fontWeight: 900, color: "#10253f" }}>
+                  {paxLabel}
+                </div>
+              </div>
+
+              <div
+                style={{
+                  borderRadius: 18,
+                  background: "#f4fbfb",
+                  border: "1px solid #d8f2f5",
+                  padding: 10,
+                }}
+              >
+                <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: "#078da0" }}>
+                  Date
+                </div>
+                <div style={{ marginTop: 4, fontSize: 12.5, fontWeight: 900, color: "#10253f" }}>
+                  {dateLabel}
+                </div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                marginTop: 10,
+                borderRadius: 18,
+                background: "#fff7ed",
+                border: "1px solid #fed7aa",
+                padding: 10,
+              }}
+            >
+              <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: "#c2410c" }}>
+                Request reference
+              </div>
+              <div
+                style={{
+                  marginTop: 4,
+                  fontSize: 12,
+                  lineHeight: 1.35,
+                  fontWeight: 850,
+                  color: "#7c2d12",
+                  wordBreak: "break-word",
+                }}
+              >
+                {cleanRequestId}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          marginTop: 12,
+          display: "grid",
+          gap: 9,
+        }}
+      >
+        <a
+          href={continueHref}
+          aria-label="Continue Island Hopping request"
+          style={{
+            minHeight: 52,
+            borderRadius: 20,
+            background: "linear-gradient(135deg, #045f70 0%, #067889 52%, #089fa5 100%)",
+            color: "#ffffff",
+            textDecoration: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            padding: "0 16px",
+            fontSize: 14,
+            fontWeight: 950,
+            boxShadow: "0 18px 38px rgba(4,95,112,0.30)",
+          }}
+        >
+          Continue Request
+        </a>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 9,
+          }}
+        >
+          <a
+            href="/traveler/pass"
+            aria-label="Open My OSP Pass"
+            style={{
+              minHeight: 48,
+              borderRadius: 18,
+              background: "linear-gradient(135deg, #ffffff 0%, #f1fbfc 100%)",
+              color: "#045f70",
+              border: "1px solid #a9dfe7",
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              padding: "0 12px",
+              fontSize: 12.5,
+              fontWeight: 900,
+              boxShadow: "0 12px 28px rgba(8,61,103,0.09)",
+            }}
+          >
+            Open My Pass
+          </a>
+
+          <a
+            href="/traveler/passport-map"
+            aria-label="Open Passport Map"
+            style={{
+              minHeight: 48,
+              borderRadius: 18,
+              background: "linear-gradient(135deg, #ffffff 0%, #f1fbfc 100%)",
+              color: "#045f70",
+              border: "1px solid #a9dfe7",
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              padding: "0 12px",
+              fontSize: 12.5,
+              fontWeight: 900,
+              boxShadow: "0 12px 28px rgba(8,61,103,0.09)",
+            }}
+          >
+            Passport Map
+          </a>
+        </div>
+      </div>
+
+      <section
+        aria-label="What happens next"
+        style={{
+          marginTop: 13,
+          borderRadius: 24,
+          background: "linear-gradient(180deg, #ffffff 0%, #f7fcfc 100%)",
+          border: "1px solid #cbeef2",
+          padding: 13,
+          boxShadow: "0 16px 38px rgba(8,61,103,0.08)",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 9.5,
+            fontWeight: 900,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "#078da0",
+          }}
+        >
+          What happens next
+        </div>
+
+        <div style={{ marginTop: 11, display: "grid", gap: 9 }}>
+          {[
+            {
+              icon: "1",
+              title: "Complete request details",
+              body: "Confirm traveler count, preferred date, and required trip information.",
+            },
+            {
+              icon: "2",
+              title: "OSP checks trip readiness",
+              body: "Your Pass, QR identity, and Island Hopping requirements stay connected.",
+            },
+            {
+              icon: "3",
+              title: "Pay only when ready",
+              body: "Payment appears only after the request is ready for the next step.",
+            },
+          ].map((step) => (
+            <div
+              key={step.title}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "32px 1fr",
+                gap: 10,
+                alignItems: "start",
+                borderRadius: 18,
+                background: "#f2fbfc",
+                border: "1px solid #d7f1f4",
+                padding: 10,
+              }}
+            >
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 999,
+                  background: "#ecfeff",
+                  color: "#067889",
+                  border: "1px solid #bae6fd",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 12,
+                  fontWeight: 950,
+                }}
+              >
+                {step.icon}
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 900, color: "#10253f" }}>
+                  {step.title}
+                </div>
+                <p
+                  style={{
+                    margin: "3px 0 0",
+                    fontSize: 11.7,
+                    lineHeight: 1.38,
+                    color: "#5b7184",
+                    fontWeight: 680,
+                  }}
+                >
+                  {step.body}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <p
+        style={{
+          margin: "12px 4px 0",
+          fontSize: 11,
+          lineHeight: 1.42,
+          color: "#64748b",
+          textAlign: "center",
+          fontWeight: 650,
+        }}
+      >
+        This is not a confirmed booking yet. No payment or clearance approval has been created from this screen.
+      </p>
+    </section>
+  )
+}
+
+
+export default function PassportTrailsCatalogPage({
+  searchParams,
+}: {
+  searchParams?: {
+    intent?: string
+    serviceId?: string
+    requestId?: string
+    paxCount?: string
+    requestedDate?: string
+    paymentIntentId?: string
+  }
+}) {
+
+  const isIslandHoppingRequestIntent = searchParams?.intent === "island-hopping-request"
+
+  if (isIslandHoppingRequestIntent) {
+    return (
+      <main style={{ minHeight: "100vh", background: "linear-gradient(180deg, #eaf8f8 0%, #f7fcfc 46%, #ffffff 100%)", padding: "14px 14px 110px", boxSizing: "border-box" }}>
+        <IslandHoppingRequestStartedPanel
+          serviceId={searchParams?.serviceId}
+          requestId={searchParams?.requestId}
+          paxCount={searchParams?.paxCount}
+          requestedDate={searchParams?.requestedDate}
+          paymentIntentId={searchParams?.paymentIntentId}
+        />
+      </main>
+    )
+  }
+
+
   return (
     <main
       style={{

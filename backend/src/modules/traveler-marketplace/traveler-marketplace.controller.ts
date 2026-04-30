@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { TravelerMarketplaceService } from './traveler-marketplace.service';
+import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
+import { CurrentUserId } from '../auth/decorators/current-user-id.decorator';
 
 type CreateMarketplaceServiceRequestBody = {
   serviceId?: string;
@@ -31,8 +33,15 @@ export class TravelerMarketplaceController {
     });
   }
 
+  @UseGuards(DevAuthGuard)
   @Post('service-requests')
-  createServiceRequest(@Body() body: CreateMarketplaceServiceRequestBody) {
-    return this.travelerMarketplaceService.createServiceRequestIntent(body);
+  createServiceRequest(
+    @CurrentUserId() userId: string,
+    @Body() body: CreateMarketplaceServiceRequestBody,
+  ) {
+    return this.travelerMarketplaceService.createServiceRequestIntent({
+      ...body,
+      travelerId: userId,
+    });
   }
 }

@@ -1,5 +1,6 @@
 import { getApiBaseUrl, requireAccessToken } from "../../../../src/lib/server-auth";
 import KuyaTalaEntryButton from "../../../../src/traveler-assistant/KuyaTalaEntryButton";
+import { redirect } from "next/navigation";
 
 type TravelerDictionary = Record<string, string>;
 
@@ -48,9 +49,9 @@ const paymentDetailDictionaryFallback: TravelerDictionary = {
 
 async function getTravelerDictionary(languageCode?: string | null): Promise<TravelerDictionary> {
   try {
-    const res = await fetch(`${getApiBaseUrl()}/language-packs/${encodeURIComponent(languageCode || "en")}/dictionary?scope=traveler`, {
+    const res = await fetchWithTimeout(`${getApiBaseUrl()}/language-packs/${encodeURIComponent(languageCode || "en")}/dictionary?scope=traveler`, {
       cache: "no-store",
-    });
+    }, 5000);
 
     if (!res.ok) return paymentDetailDictionaryFallback;
 
@@ -72,11 +73,139 @@ function t(dictionary: TravelerDictionary, key: string, fallback: string) {
   return dictionary?.[key] || fallback;
 }
 
+async function fetchWithTimeout(input: RequestInfo | URL, init: RequestInit = {}, timeoutMs = 8000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(input, {
+      ...init,
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 type PaymentPageProps = {
   params: Promise<{
     intentId: string;
   }>;
 };
+
+async function confirmPaymentIntentAction(formData: FormData) {
+  "use server";
+
+  const intentId = String(formData.get("intentId") || "").trim();
+
+  if (!intentId) {
+    redirect("/traveler/trips");
+  }
+
+  const token = await requireAccessToken();
+  const baseUrl = getApiBaseUrl();
+
+  const res = await fetchWithTimeout(`${baseUrl}/payments/intents/${intentId}/confirm`, {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      providerReference: `SIMULATED-PAYMENT-${intentId}`,
+      paymentMethod: "SIMULATED",
+      notes: "Traveler clicked Pay via PayMongo / QR PH CTA from Payment Detail page.",
+    }),
+  }, 8000);
+
+  if (!res.ok) {
+    redirect(`/traveler/payments/${encodeURIComponent(intentId)}?payment=failed`);
+  }
+
+  redirect(`/traveler/payments/${encodeURIComponent(intentId)}?payment=confirmed`);
+}
+
+async function createPayMongoCheckoutAction(formData: FormData) {
+  "use server";
+
+  const intentId = String(formData.get("intentId") || "").trim();
+  const amountPhp = Number(formData.get("amountPhp") || 0);
+  const intentReference = String(formData.get("intentReference") || intentId).trim();
+
+  if (!intentId || !Number.isFinite(amountPhp) || amountPhp <= 0) {
+    redirect("/traveler/trips");
+  }
+
+  const secretKey =
+    process.env.PAYMONGO_TEST_SECRET_KEY ||
+    process.env.PAYMONGO_SECRET_KEY ||
+    process.env.PAYMONGO_SK_TEST;
+
+  if (!secretKey) {
+    redirect(`/traveler/payments/${encodeURIComponent(intentId)}?payment=paymongo-key-missing`);
+  }
+
+  const appBaseUrl =
+    process.env.NEXT_PUBLIC_APP_BASE_URL ||
+    process.env.APP_BASE_URL ||
+    "http://localhost:3000";
+
+  const amountCentavos = Math.round(amountPhp * 100);
+  const auth = Buffer.from(`${secretKey}:`).toString("base64");
+
+  const res = await fetchWithTimeout("https://api.paymongo.com/v1/checkout_sessions", {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${auth}`,
+    },
+    body: JSON.stringify({
+      data: {
+        attributes: {
+          billing: {
+            name: "One Siargao Pass Traveler",
+            email: "sales@leadwork.online",
+          },
+          description: `One Siargao Pass Payment ${intentReference}`,
+          line_items: [
+            {
+              currency: "PHP",
+              amount: amountCentavos,
+              name: "One Siargao Pass Island Hopping Request",
+              quantity: 1,
+            },
+          ],
+          payment_method_types: ["qrph"],
+          send_email_receipt: false,
+          show_description: true,
+          show_line_items: true,
+          success_url: `${appBaseUrl}/traveler/payments/${encodeURIComponent(intentId)}?payment=paymongo-success`,
+          cancel_url: `${appBaseUrl}/traveler/payments/${encodeURIComponent(intentId)}?payment=paymongo-cancelled`,
+          metadata: {
+            osp_payment_intent_id: intentId,
+            osp_intent_reference: intentReference,
+            integration_mode: "paymongo_sandbox_checkout_qrph",
+          },
+        },
+      },
+    }),
+  }, 12000);
+
+  let payload: any = null;
+  try {
+    payload = await res.json();
+  } catch {}
+
+  const checkoutUrl = payload?.data?.attributes?.checkout_url;
+
+  if (!res.ok || !checkoutUrl) {
+    redirect(`/traveler/payments/${encodeURIComponent(intentId)}?payment=paymongo-checkout-failed`);
+  }
+
+  redirect(checkoutUrl);
+}
 
 async function getPaymentIntent(intentId: string) {
   const baseUrl = getApiBaseUrl();
@@ -84,13 +213,13 @@ async function getPaymentIntent(intentId: string) {
   try {
     const token = await requireAccessToken();
 
-    const res = await fetch(`${baseUrl}/payments/intents/${intentId}`, {
+    const res = await fetchWithTimeout(`${baseUrl}/payments/intents/${intentId}`, {
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-    });
+    }, 8000);
 
     if (!res.ok) {
       return {
@@ -103,7 +232,7 @@ async function getPaymentIntent(intentId: string) {
     return { intent, error: null };
   } catch (error: any) {
     return {
-      error: error?.message || "Unknown payment intent load failure",
+      error: error?.name === "AbortError" ? "Payment detail request timed out. The payment record exists, but the detail API did not respond in time." : error?.message || "Unknown payment intent load failure",
       intent: null,
     };
   }
@@ -132,6 +261,31 @@ function formatFxDisplayAmount(snapshot: any) {
 function formatFxRate(snapshot: any) {
   if (!snapshot?.fxRate || !snapshot?.sourceCurrencyCode || !snapshot?.displayCurrencyCode) return "—";
   return `1 ${snapshot.sourceCurrencyCode} = ${snapshot.fxRate} ${snapshot.displayCurrencyCode}`;
+}
+
+function getPayMongoGatewayConfig() {
+  const secretKey =
+    process.env.PAYMONGO_TEST_SECRET_KEY ||
+    process.env.PAYMONGO_SECRET_KEY ||
+    process.env.PAYMONGO_SK_TEST ||
+    "";
+
+  const appBaseUrl =
+    process.env.NEXT_PUBLIC_APP_BASE_URL ||
+    process.env.APP_BASE_URL ||
+    "http://localhost:3000";
+
+  const mode = secretKey.includes("_test_") || secretKey.startsWith("sk_test")
+    ? "SANDBOX"
+    : secretKey
+      ? "PRODUCTION"
+      : "NOT_CONFIGURED";
+
+  return {
+    hasSecretKey: Boolean(secretKey),
+    appBaseUrl,
+    mode,
+  };
 }
 
 function formatDateTime(value: any) {
@@ -446,9 +600,6 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
   const dictionary = await getTravelerDictionary("en");
 
   const backToTripsLabel = t(dictionary, "paymentDetail.nav.backToTrips", "Back to Trips");
-  const navHomeLabel = t(dictionary, "paymentDetail.nav.home", "Home");
-  const navMyTripsLabel = t(dictionary, "paymentDetail.nav.myTrips", "My Trips");
-  const navLogoutLabel = t(dictionary, "paymentDetail.nav.logout", "Logout");
   const headerEyebrow = t(dictionary, "paymentDetail.header.eyebrow", "Payment Record");
   const headerTitle = t(dictionary, "paymentDetail.title", "Payment Detail");
   const headerBody = t(dictionary, "paymentDetail.header.body", "Review payment state, booking linkage, and receipt information.");
@@ -460,6 +611,7 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
   const paidAmount = intent?.paymentState?.paidAmountPhp;
   const unpaidAmount = intent?.paymentState?.unpaidAmountPhp;
   const fxDisplaySnapshot = intent?.fxDisplaySnapshot ?? null;
+  const payMongoGateway = getPayMongoGatewayConfig();
 
   const statusIcon =
     String(status).toUpperCase().includes("PAID") || String(status).toUpperCase().includes("CONFIRMED") ? (
@@ -516,11 +668,63 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
         </p>
       </header>
 
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
-        <AppLink href="/" label={navHomeLabel} icon={<Icon kind="home" />} />
-        <AppLink href="/traveler/trips" label={navMyTripsLabel} icon={<Icon kind="trips" />} />
-        <AppLink href="/logout" label={navLogoutLabel} icon={<Icon kind="logout" />} />
-      </div>
+      {intent ? (
+        <section
+          aria-label="Payment gateway readiness"
+          style={{
+            margin: "0 0 12px",
+            borderRadius: 18,
+            border: payMongoGateway.hasSecretKey ? "1px solid rgba(22,163,74,0.20)" : "1px solid rgba(217,119,6,0.24)",
+            background: payMongoGateway.hasSecretKey ? "rgba(240,253,244,0.92)" : "rgba(255,251,235,0.92)",
+            padding: 12,
+            color: "#19305a",
+          }}
+        >
+          <div style={{ fontSize: 10.5, fontWeight: 950, letterSpacing: "0.12em", textTransform: "uppercase", color: payMongoGateway.hasSecretKey ? "#15803d" : "#b45309" }}>
+            Payment Gateway
+          </div>
+          <div style={{ marginTop: 4, fontSize: 13.5, fontWeight: 900, lineHeight: 1.35 }}>
+            {payMongoGateway.hasSecretKey
+              ? `PayMongo ${payMongoGateway.mode} checkout is configured.`
+              : "PayMongo sandbox key is not configured yet."}
+          </div>
+          {!payMongoGateway.hasSecretKey ? (
+            <div style={{ marginTop: 5, fontSize: 12.2, fontWeight: 750, color: "#92400e", lineHeight: 1.35 }}>
+              Add PAYMONGO_TEST_SECRET_KEY and NEXT_PUBLIC_APP_BASE_URL on VPS before this button can redirect to PayMongo checkout.
+            </div>
+          ) : null}
+        </section>
+      ) : null}
+
+      {intent && !String(status).toUpperCase().includes("PAID") ? (
+        <form action={createPayMongoCheckoutAction} style={{ margin: "0 0 16px", display: "grid" }}>
+          <input type="hidden" name="intentId" value={intent.id} />
+          <input type="hidden" name="amountPhp" value={String(intent.amountPhp || 0)} />
+          <input type="hidden" name="intentReference" value={intent.intentReference || intent.id} />
+          <button
+            type="submit"
+            style={{
+              minHeight: 58,
+              width: "100%",
+              borderRadius: 20,
+              border: "1px solid rgba(7,141,160,0.28)",
+              background: "linear-gradient(135deg, #034e5d 0%, #067889 50%, #089fa5 100%)",
+              color: "#ffffff",
+              fontSize: 15,
+              fontWeight: 950,
+              cursor: payMongoGateway.hasSecretKey ? "pointer" : "not-allowed",
+              opacity: payMongoGateway.hasSecretKey ? 1 : 0.62,
+              boxShadow: "0 18px 38px rgba(6,120,137,0.28)",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            Pay with PayMongo QR PH — {formatMoney(intent.amountPhp, currency)}
+          </button>
+        </form>
+      ) : null}
 
       {error ? (
         <Section title={t(dictionary, "paymentDetail.loadError.title", "Load Error")} icon={<Icon kind="alert" />} tone="red">
@@ -656,8 +860,30 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
 
           <Section title={t(dictionary, "paymentDetail.actions.title", "Next Actions")} icon={<Icon kind="shield" />} tone="default">
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <AppLink href="/traveler/trips" label="My Trips" icon={<Icon kind="trips" />} primary tone="teal" />
-              <AppLink href="/" label="Home" icon={<Icon kind="home" />} />
+{intent && !String(status).toUpperCase().includes("PAID") ? (
+                <form action={createPayMongoCheckoutAction} style={{ width: "100%", margin: "0", display: "grid" }}>
+                  <input type="hidden" name="intentId" value={intent.id} />
+                  <input type="hidden" name="amountPhp" value={String(intent.amountPhp || 0)} />
+                  <input type="hidden" name="intentReference" value={intent.intentReference || intent.id} />
+                  <button
+                    type="submit"
+                    style={{
+                      minHeight: 56,
+                      width: "100%",
+                      borderRadius: 18,
+                      border: "1px solid rgba(7,141,160,0.24)",
+                      background: "linear-gradient(135deg, #045f70 0%, #067889 52%, #089fa5 100%)",
+                      color: "#ffffff",
+                      fontSize: 14,
+                      fontWeight: 950,
+                      cursor: "pointer",
+                      boxShadow: "0 16px 34px rgba(6,120,137,0.24)",
+                    }}
+                  >
+                    Pay with PayMongo QR PH — {formatMoney(intent.amountPhp, currency)}
+                  </button>
+                </form>
+              ) : null}
             </div>
 
             <p style={{ margin: "12px 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45, fontWeight: 650 }}>

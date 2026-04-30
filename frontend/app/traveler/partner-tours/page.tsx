@@ -1,3 +1,5 @@
+import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
+import { redirect } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 type MarketplaceService = {
@@ -150,6 +152,56 @@ type MarketplacePayload = {
 };
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+
+async function startPartnerTourPaymentRequest(formData: FormData) {
+  "use server";
+
+  const token = await requireAccessToken();
+  const baseUrl = getApiBaseUrl();
+
+  const serviceId = String(formData.get("serviceId") || "");
+  const paxCount = Number(formData.get("paxCount") || 2);
+  const requestedDate = String(formData.get("requestedDate") || "2026-05-01");
+
+  if (!serviceId) {
+    redirect("/traveler/partner-tours");
+  }
+
+  const res = await fetch(`${baseUrl}/traveler/marketplace/service-requests`, {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      serviceId,
+      paxCount,
+      requestedDate,
+      notes: "Traveler initiated payment flow from Partner Tours",
+      ctaMode: "START_ISLAND_HOPPING_REQUEST",
+    }),
+  });
+
+  if (!res.ok) {
+    redirect("/traveler/partner-tours?paymentRequest=failed");
+  }
+
+  const payload = await res.json();
+  const nextUrl = payload?.workflow?.nextUrl;
+
+  if (payload?.workflow?.paymentReady === true && payload?.workflow?.paymentIntentId && nextUrl) {
+    redirect(nextUrl);
+  }
+
+  redirect(
+    `/traveler/passport-trails?intent=island-hopping-request&serviceId=${encodeURIComponent(
+      serviceId
+    )}&requestId=${encodeURIComponent(payload?.requestId || "REQUEST_STARTED")}`
+  );
+}
+
+
 
 async function getMarketplaceServices(): Promise<MarketplacePayload> {
   try {
@@ -660,19 +712,29 @@ function ServiceCard(props: { service: MarketplaceService }) {
             {getCtaMicrocopy(service)}
           </p>
 
-          <a
-            href={
-              service.booking?.ctaMode === "START_ISLAND_HOPPING_REQUEST"
-                ? `/traveler/passport-trails/${service.slug}`
-                : service.booking?.ctaMode === "ADD_TO_TRAIL"
+          {service.booking?.ctaMode === "START_ISLAND_HOPPING_REQUEST" ? (
+            <form action={startPartnerTourPaymentRequest} style={{ margin: 0 }}>
+              <input type="hidden" name="serviceId" value={service.id} />
+              <input type="hidden" name="paxCount" value="2" />
+              <input type="hidden" name="requestedDate" value="2026-05-01" />
+              <button type="submit" style={{ ...getPrimaryCtaStyle(service), width: "100%", border: 0, cursor: "pointer" }}>
+                <span>🏝️</span>
+                <span>Continue to Payment</span>
+              </button>
+            </form>
+          ) : (
+            <a
+              href={
+                service.booking?.ctaMode === "ADD_TO_TRAIL"
                   ? `/traveler/passport-trails/${service.slug}`
                   : `/traveler/settings?panel=assistant&topic=${encodeURIComponent(service.title)}`
-            }
-            style={getPrimaryCtaStyle(service)}
-          >
-            <span>{service.booking?.ctaMode === "START_ISLAND_HOPPING_REQUEST" ? "🏝️" : "✨"}</span>
-            <span>{getCtaLabel(service)}</span>
-          </a>
+              }
+              style={getPrimaryCtaStyle(service)}
+            >
+              <span>✨</span>
+              <span>{getCtaLabel(service)}</span>
+            </a>
+          )}
 
           <div style={{ marginTop: 8, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             <a

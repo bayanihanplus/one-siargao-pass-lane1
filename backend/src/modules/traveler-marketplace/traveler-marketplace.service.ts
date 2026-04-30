@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
+import { Prisma } from '@prisma/client';
 
 type MarketplaceQuery = {
   category?: string;
@@ -30,6 +31,19 @@ type MarketplaceCtaMode =
 @Injectable()
 export class TravelerMarketplaceService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private parseDisplayPricePhp(value: unknown) {
+    const text = String(value ?? '');
+    const match = text.replace(/,/g, '').match(/(\d+(?:\.\d+)?)/);
+
+    if (!match) return null;
+
+    const amount = Number(match[1]);
+
+    if (!Number.isFinite(amount) || amount <= 0) return null;
+
+    return amount;
+  }
 
   private normalizeText(value: unknown) {
     return String(value ?? '').trim();
@@ -795,32 +809,199 @@ export class TravelerMarketplaceService {
     const requiresClearance = service.governance?.requiresClearance === true;
     const requiresPayment = ['START_ISLAND_HOPPING_REQUEST', 'REQUEST_AVAILABILITY'].includes(ctaMode);
     const requestSeed = [
+      Date.now(),
+      Math.random().toString(36).slice(2, 10),
       service.sourceType,
       service.sourceId,
       input?.travelerId || 'traveler',
       input?.tripId || 'trip',
-      Date.now(),
     ]
       .filter(Boolean)
       .join(':');
 
     const requestId = `MSR-${Buffer.from(requestSeed).toString('hex').slice(0, 18).toUpperCase()}`;
 
-    const nextAction = requiresClearance
-      ? 'COMPLETE_REGULATED_ISLAND_HOPPING_REQUEST'
-      : requiresPayment
-        ? 'COMPLETE_SERVICE_AVAILABILITY_REQUEST'
-        : 'CONTINUE_TRAIL_PLANNING';
+    const unitPricePhp = this.parseDisplayPricePhp(service.price?.displayPrice);
+    const pricingReady = service.price?.pricingReady === true;
+    const currencyCode = service.price?.currencyCode || 'PHP';
 
-    const nextUrl = requiresClearance
-      ? `/traveler/passport-trails?intent=island-hopping-request&serviceId=${encodeURIComponent(service.id)}&requestId=${encodeURIComponent(requestId)}`
-      : `/traveler/settings?panel=assistant&topic=${encodeURIComponent(service.title)}&requestId=${encodeURIComponent(requestId)}`;
+    if (requiresPayment && (!pricingReady || !unitPricePhp)) {
+      const nextAction = requiresClearance
+        ? 'COMPLETE_REGULATED_ISLAND_HOPPING_REQUEST'
+        : 'COMPLETE_SERVICE_AVAILABILITY_REQUEST';
+
+      const nextUrl = requiresClearance
+        ? `/traveler/passport-trails?intent=island-hopping-request&serviceId=${encodeURIComponent(service.id)}&requestId=${encodeURIComponent(requestId)}`
+        : `/traveler/settings?panel=assistant&topic=${encodeURIComponent(service.title)}&requestId=${encodeURIComponent(requestId)}`;
+
+      return {
+        ok: true,
+        mode: 'MARKETPLACE_SERVICE_REQUEST_INTENT',
+        requestId,
+        requestStatus: 'INTENT_CREATED_PAYMENT_NOT_READY',
+        createdAt: new Date().toISOString(),
+        service: {
+          id: service.id,
+          sourceType: service.sourceType,
+          sourceId: service.sourceId,
+          title: service.title,
+          category: service.category,
+          price: service.price,
+          booking: service.booking,
+          governance: {
+            requiresClearance,
+            regulatedActivityType: service.governance?.regulatedActivityType || null,
+            qrValidationRequired: service.governance?.qrValidationRequired === true,
+            passportTrailEligible: service.governance?.passportTrailEligible === true,
+            stampEligible: service.governance?.stampEligible === true,
+          },
+          operator: {
+            displayName: service.operator?.displayName || null,
+            dotAccreditation: service.operator?.dotAccreditation || null,
+          },
+        },
+        travelerContext: {
+          travelerId: input?.travelerId || null,
+          tripId: input?.tripId || null,
+          passId: input?.passId || null,
+          requestedDate: input?.requestedDate || null,
+          paxCount,
+          notes: input?.notes || null,
+        },
+        workflow: {
+          ctaMode,
+          requiresClearance,
+          requiresPayment,
+          paymentReady: false,
+          paymentIntentId: null,
+          bookingExecutionIncluded: false,
+          paymentExecutionIncluded: false,
+          clearanceApprovalIncluded: false,
+          nextAction,
+          nextUrl,
+        },
+        guardrails: {
+          noFakeBookingCreated: true,
+          noFakePaymentCreated: true,
+          noFakeClearanceApproval: true,
+          operatorAssignmentDeferred: true,
+          manifestClearanceDeferredUntilRequestCompletion: requiresClearance,
+        },
+      };
+    }
+
+    const requestedQuantity = Math.max(1, Number(paxCount || 1));
+    const bookingTotalPhp = unitPricePhp ? unitPricePhp * requestedQuantity : null;
+
+    const createdPayment = requiresPayment && bookingTotalPhp
+      ? await this.prisma.$transaction(async (tx) => {
+          const booking = await tx.booking.create({
+            data: {
+              primaryTravelerUserId: input?.travelerId || null,
+              bookingReference: `OSP-${requestId}`,
+              bookingSource: 'OSP',
+              bookingStatus: 'PENDING',
+              bookingTotalPhp: new Prisma.Decimal(bookingTotalPhp),
+              currencyCode,
+              items: {
+                create: [
+                  {
+                    itemType: service.category || 'MARKETPLACE_SERVICE_REQUEST',
+                    quantity: requestedQuantity,
+                    unitPricePhp: new Prisma.Decimal(unitPricePhp as number),
+                  },
+                ],
+              },
+            },
+          });
+
+          if (input?.tripId) {
+            await tx.bookingLink.create({
+              data: {
+                bookingId: booking.id,
+                tripId: input.tripId,
+                linkedByUserId: input?.travelerId || null,
+                linkMethod: 'MARKETPLACE_SERVICE_REQUEST',
+                verificationState: 'REQUEST_INTENT',
+              },
+            });
+          }
+
+          const intent = await tx.paymentIntent.create({
+            data: {
+              bookingId: booking.id,
+              intentReference: `PAY-${requestId}`,
+              amountPhp: new Prisma.Decimal(bookingTotalPhp),
+              currencyCode,
+              status: 'PENDING',
+              provider: 'SIMULATED',
+              createdByUserId: input?.travelerId || null,
+            },
+          });
+
+          await tx.paymentStateRecord.upsert({
+            where: { bookingId: booking.id },
+            create: {
+              bookingId: booking.id,
+              state: 'UNPAID',
+              paidAmountPhp: new Prisma.Decimal(0),
+              unpaidAmountPhp: new Prisma.Decimal(bookingTotalPhp),
+              lastPaymentIntentId: intent.id,
+              stateUpdatedAt: new Date(),
+            },
+            update: {
+              state: 'UNPAID',
+              unpaidAmountPhp: new Prisma.Decimal(bookingTotalPhp),
+              lastPaymentIntentId: intent.id,
+              stateUpdatedAt: new Date(),
+            },
+          });
+
+          await tx.paymentEventLedger.create({
+            data: {
+              bookingId: booking.id,
+              paymentIntentId: intent.id,
+              eventType: 'PAYMENT_INTENT_CREATED',
+              eventKey: `marketplace:intent:create:${requestId}`,
+              source: 'MARKETPLACE_SERVICE_REQUEST',
+              payloadJson: {
+                requestId,
+                serviceId: service.id,
+                serviceTitle: service.title,
+                paxCount: requestedQuantity,
+                requestedDate: input?.requestedDate || null,
+                requiresClearance,
+                clearanceApprovalIncluded: false,
+              },
+            },
+          });
+
+          return {
+            booking,
+            intent,
+          };
+        })
+      : null;
+
+    const nextAction = createdPayment
+      ? 'CONTINUE_TO_PAYMENT'
+      : requiresClearance
+        ? 'COMPLETE_REGULATED_ISLAND_HOPPING_REQUEST'
+        : requiresPayment
+          ? 'COMPLETE_SERVICE_AVAILABILITY_REQUEST'
+          : 'CONTINUE_TRAIL_PLANNING';
+
+    const nextUrl = createdPayment
+      ? `/traveler/payments/${createdPayment.intent.id}`
+      : requiresClearance
+        ? `/traveler/passport-trails?intent=island-hopping-request&serviceId=${encodeURIComponent(service.id)}&requestId=${encodeURIComponent(requestId)}`
+        : `/traveler/settings?panel=assistant&topic=${encodeURIComponent(service.title)}&requestId=${encodeURIComponent(requestId)}`;
 
     return {
       ok: true,
       mode: 'MARKETPLACE_SERVICE_REQUEST_INTENT',
       requestId,
-      requestStatus: 'INTENT_CREATED',
+      requestStatus: createdPayment ? 'PAYMENT_INTENT_CREATED' : 'INTENT_CREATED',
       createdAt: new Date().toISOString(),
       service: {
         id: service.id,
@@ -854,10 +1035,11 @@ export class TravelerMarketplaceService {
         ctaMode,
         requiresClearance,
         requiresPayment,
-        paymentReady: false,
-        paymentIntentId: null,
-        bookingExecutionIncluded: false,
-        paymentExecutionIncluded: false,
+        paymentReady: Boolean(createdPayment?.intent?.id),
+        paymentIntentId: createdPayment?.intent?.id || null,
+        bookingId: createdPayment?.booking?.id || null,
+        bookingExecutionIncluded: Boolean(createdPayment?.booking?.id),
+        paymentExecutionIncluded: Boolean(createdPayment?.intent?.id),
         clearanceApprovalIncluded: false,
         nextAction,
         nextUrl,
@@ -866,6 +1048,8 @@ export class TravelerMarketplaceService {
         noFakeBookingCreated: true,
         noFakePaymentCreated: true,
         noFakeClearanceApproval: true,
+        realBookingCreated: Boolean(createdPayment?.booking?.id),
+        realPaymentIntentCreated: Boolean(createdPayment?.intent?.id),
         operatorAssignmentDeferred: true,
         manifestClearanceDeferredUntilRequestCompletion: requiresClearance,
       },
