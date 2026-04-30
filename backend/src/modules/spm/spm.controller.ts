@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { SpmService } from './spm.service';
 import { DevAuthGuard } from '../auth/guards/dev-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -41,6 +41,27 @@ export class SpmController {
   @Get('passport-trail-packages')
   listPassportTrailPackagesForTraveler(@CurrentUserId() userId: string) {
     return this.spmService.listPassportTrailPackagesForTraveler(userId);
+  }
+
+  @Roles('TRAVELER')
+  @Get('diy-trail-builder/templates')
+  listDiyTrailBuilderTemplatesForTraveler(@CurrentUserId() userId: string) {
+    return this.spmService.listDiyTrailBuilderTemplatesForTraveler(userId);
+  }
+
+  @Roles('TRAVELER')
+  @Post('diy-trail-builder/request')
+  createDiyTrailBuilderRequest(@CurrentUserId() userId: string, @Body() body: any) {
+    return this.spmService.createDiyTrailBuilderRequest(userId, body);
+  }
+
+  @Roles('TRAVELER')
+  @Post('diy-trail-builder/request/:trailBookingId/payment-intent')
+  createDiyTrailBuilderPaymentIntent(
+    @CurrentUserId() userId: string,
+    @Param('trailBookingId') trailBookingId: string,
+  ) {
+    return this.spmService.createDiyTrailBuilderPaymentIntent(userId, trailBookingId);
   }
 
   @Roles('TRAVELER')

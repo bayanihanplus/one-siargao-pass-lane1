@@ -1602,7 +1602,6 @@ enum SpmBookabilityStatus {
   DISABLED_PENDING_APPROVAL
 }
 
-
 enum SpmMarketplaceMediaType {
   HERO
   BANNER
@@ -1681,24 +1680,29 @@ model SpmTrailPackage {
 }
 
 model SpmTrailPackageNode {
-  id              String   @id @default(cuid())
-  trailPackageId  String
-  trailNodeId     String
-  isRequired      Boolean  @default(false)
-  isOptional      Boolean  @default(false)
-  isConditional   Boolean  @default(false)
-  isStampEligible Boolean  @default(true)
-  sortOrder       Int      @default(0)
-  conditionNote   String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                       String   @id @default(cuid())
+  trailPackageId           String
+  trailNodeId              String
+  isRequired               Boolean  @default(false)
+  isOptional               Boolean  @default(false)
+  isConditional            Boolean  @default(false)
+  isStampEligible          Boolean  @default(true)
+  sortOrder                Int      @default(0)
+  conditionNote            String?
+  supportRequirement       String?
+  routeRoleExplanation     String?
+  fulfillmentExplanation   String?
+  paymentImpactExplanation String?
+  confirmationRequirement  String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
 
   @@unique([trailPackageId, trailNodeId])
   @@index([trailPackageId])
   @@index([trailNodeId])
+  @@index([supportRequirement])
   @@map("spm_trail_package_nodes")
 }
-
 
 model SpmMarketplaceMedia {
   id                   String                    @id @default(cuid())

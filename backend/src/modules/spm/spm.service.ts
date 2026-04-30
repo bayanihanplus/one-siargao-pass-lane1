@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../database/prisma.service';
 import { OperatorContext } from '../auth/types/operator-context.type';
 
@@ -717,6 +718,840 @@ export class SpmService {
     };
   }
 
+  async listDiyTrailBuilderTemplatesForTraveler(travelerUserId: string) {
+    const packages = await this.prisma.spmTrailPackage.findMany({
+      where: {
+        approvalStatus: 'APPROVED',
+        distributionEnabled: true,
+        bookabilityStatus: {
+          in: ['REQUEST_TO_CONFIRM', 'INSTANT_BOOK', 'SAVE_ONLY'],
+        },
+      },
+      orderBy: [
+        { productType: 'asc' },
+        { code: 'asc' },
+      ],
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        publicLabel: true,
+        description: true,
+        shortDescription: true,
+        travelerFacingName: true,
+        productType: true,
+        curationSource: true,
+        fulfillmentPartnerType: true,
+        bookabilityStatus: true,
+        stampEnabled: true,
+        guideRequirement: true,
+        difficultyLevel: true,
+        defaultStartTime: true,
+        defaultEndTime: true,
+        durationMinutes: true,
+        pickupPolicyText: true,
+        inclusionsText: true,
+        weatherPolicyText: true,
+        requiresOperatorApproval: true,
+        requiresPriceBeforePublish: true,
+        instantCheckoutAllowed: true,
+        trailFamilyId: true,
+      },
+    });
+
+    const packageIds = packages.map((item) => item.id);
+
+    const [packageNodes, pricingRules, families] = await Promise.all([
+      this.prisma.spmTrailPackageNode.findMany({
+        where: { trailPackageId: { in: packageIds } },
+        orderBy: [
+          { trailPackageId: 'asc' },
+          { sortOrder: 'asc' },
+        ],
+        select: {
+          id: true,
+          trailPackageId: true,
+          trailNodeId: true,
+          isRequired: true,
+          isOptional: true,
+          isConditional: true,
+          isStampEligible: true,
+          sortOrder: true,
+          conditionNote: true,
+          supportRequirement: true,
+          routeRoleExplanation: true,
+          fulfillmentExplanation: true,
+          paymentImpactExplanation: true,
+          confirmationRequirement: true,
+        },
+      }),
+      this.prisma.spmPricingRule.findMany({
+        where: { trailPackageId: { in: packageIds } },
+        orderBy: [
+          { approvalStatus: 'asc' },
+          { operatorUserId: 'desc' },
+        ],
+        select: {
+          trailPackageId: true,
+          operatorUserId: true,
+          partnerId: true,
+          pricingMode: true,
+          currencyCode: true,
+          basePrice: true,
+          priceRangeMin: true,
+          priceRangeMax: true,
+          packageFlatRate: true,
+          fillableRequired: true,
+          requestToConfirmRequired: true,
+          instantCheckoutAllowed: true,
+          approvalStatus: true,
+        },
+      }),
+      this.prisma.spmTrailFamily.findMany({
+        where: { id: { in: packages.map((item) => item.trailFamilyId) } },
+        select: {
+          id: true,
+          code: true,
+          name: true,
+          publicLabel: true,
+        },
+      }),
+    ]);
+
+    const linkedNodeIds = packageNodes.map((link) => link.trailNodeId).filter(Boolean);
+
+    const nodes = linkedNodeIds.length
+      ? await this.prisma.spmTrailNode.findMany({
+          where: { id: { in: linkedNodeIds } },
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            description: true,
+            nodeType: true,
+            requirementType: true,
+            approvalStatus: true,
+            isOfficialNode: true,
+            isCandidateNode: true,
+            isConditionalNode: true,
+            stampEligible: true,
+            bookingRequired: true,
+            operatorRequired: true,
+            guideRequirement: true,
+            safetyControlled: true,
+          },
+        })
+      : [];
+
+    const familyById = new Map(families.map((family) => [family.id, family]));
+    const nodeById = new Map(nodes.map((node) => [node.id, node]));
+
+    const nodesByPackage = new Map<string, typeof packageNodes>();
+    for (const link of packageNodes) {
+      nodesByPackage.set(link.trailPackageId, [
+        ...(nodesByPackage.get(link.trailPackageId) ?? []),
+        link,
+      ]);
+    }
+
+    const pricingByPackage = new Map<string, any>();
+    for (const rule of pricingRules) {
+      if (!rule.trailPackageId) continue;
+
+      const current = pricingByPackage.get(rule.trailPackageId);
+      const isApprovedOperatorRule = Boolean(rule.operatorUserId) && rule.approvalStatus === 'APPROVED';
+
+      if (!current || isApprovedOperatorRule) {
+        pricingByPackage.set(rule.trailPackageId, rule);
+      }
+    }
+
+    const templates = packages.map((item) => {
+      const family = familyById.get(item.trailFamilyId) ?? null;
+      const pricing = pricingByPackage.get(item.id) ?? null;
+      const linkedNodes = nodesByPackage.get(item.id) ?? [];
+      const requiredCount = linkedNodes.filter((link) => link.isRequired).length;
+      const optionalCount = linkedNodes.filter((link) => link.isOptional).length;
+      const stampEligibleCount = linkedNodes.filter((link) => link.isStampEligible).length;
+
+      const paymentReadiness =
+        pricing?.instantCheckoutAllowed && item.instantCheckoutAllowed
+          ? 'PAYMENT_READY_AFTER_SELECTION'
+          : 'PAYMENT_READY_AFTER_REQUEST_CONFIRMATION';
+
+      return {
+        packageId: item.id,
+        packageCode: item.code,
+        packageSlug: String(item.code).toLowerCase().replaceAll('_', '-'),
+        packageName: item.travelerFacingName ?? item.publicLabel ?? item.name,
+        internalName: item.name,
+        publicLabel: item.publicLabel,
+        description: item.description,
+        shortDescription: item.shortDescription,
+        productType: item.productType,
+        curationSource: item.curationSource,
+        fulfillmentPartnerType: item.fulfillmentPartnerType,
+        bookabilityStatus: item.bookabilityStatus,
+        guideRequirement: item.guideRequirement,
+        difficultyLevel: item.difficultyLevel,
+        defaultStartTime: item.defaultStartTime,
+        defaultEndTime: item.defaultEndTime,
+        durationMinutes: item.durationMinutes,
+        pickupPolicyText: item.pickupPolicyText,
+        inclusionsText: item.inclusionsText,
+        weatherPolicyText: item.weatherPolicyText,
+        requiresOperatorApproval: item.requiresOperatorApproval,
+        requiresPriceBeforePublish: item.requiresPriceBeforePublish,
+        instantCheckoutAllowed: item.instantCheckoutAllowed,
+        stampEnabled: item.stampEnabled,
+        trailFamily: family
+          ? {
+              trailFamilyId: family.id,
+              trailCode: family.code,
+              trailName: family.publicLabel ?? family.name,
+            }
+          : null,
+        counts: {
+          requiredStopCount: requiredCount,
+          optionalStopCount: optionalCount,
+          stampEligibleStopCount: stampEligibleCount,
+          totalStopCount: linkedNodes.length,
+        },
+        pricing: pricing
+          ? {
+              pricingMode: pricing.pricingMode,
+              currencyCode: pricing.currencyCode,
+              basePrice: pricing.basePrice,
+              priceRangeMin: pricing.priceRangeMin,
+              priceRangeMax: pricing.priceRangeMax,
+              packageFlatRate: pricing.packageFlatRate,
+              fillableRequired: pricing.fillableRequired,
+              requestToConfirmRequired: pricing.requestToConfirmRequired,
+              instantCheckoutAllowed: pricing.instantCheckoutAllowed,
+              approvalStatus: pricing.approvalStatus,
+            }
+          : null,
+        readiness: {
+          requestMode: 'SPM_CURATED_OPERATOR_LED',
+          paymentReadiness,
+          operatorNotificationSupported: true,
+          operatorAssignmentStatus: 'AFTER_CONFIRMATION',
+          paymentExecutionIncluded: false,
+          bookingExecutionIncluded: false,
+          qrValidationReadiness: item.stampEnabled ? 'REVIEW_AFTER_ROUTE_CONFIRMATION' : 'NOT_STAMP_ENABLED',
+          passportTrailRetentionSupported: item.stampEnabled,
+        },
+        stops: linkedNodes.map((link) => {
+          const node = nodeById.get(link.trailNodeId) ?? null;
+          const fallbackSupport =
+            link.supportRequirement ??
+            (node?.operatorRequired
+              ? 'OPERATOR_SUPPORT_REQUIRED'
+              : node?.bookingRequired
+                ? 'BOOKING_REQUIRED'
+                : 'ROUTE_CONTEXT_STOP');
+
+          return {
+            packageNodeId: link.id,
+            trailNodeId: link.trailNodeId,
+            sortOrder: link.sortOrder,
+            isRequired: link.isRequired,
+            isOptional: link.isOptional,
+            isConditional: link.isConditional,
+            isStampEligible: link.isStampEligible,
+            conditionNote: link.conditionNote,
+            supportRequirement: fallbackSupport,
+            insight: {
+              routeRoleExplanation:
+                link.routeRoleExplanation ??
+                (link.isRequired
+                  ? 'This is a core stop. It keeps the selected SPM route coherent and should usually stay included.'
+                  : 'This is an optional stop. It can be added when timing, pace, and operator availability allow it.'),
+              fulfillmentExplanation:
+                link.fulfillmentExplanation ??
+                (node?.operatorRequired
+                  ? 'This stop requires operator or guide support before it can be confirmed.'
+                  : 'This stop supports the route experience and is reviewed before confirmation.'),
+              paymentImpactExplanation:
+                link.paymentImpactExplanation ??
+                'Final timing, operator support, and price are reviewed before payment execution.',
+              confirmationRequirement:
+                link.confirmationRequirement ??
+                'Route confirmation is required before payment execution, operator assignment, QR validation, or Passport Trail retention.',
+            },
+            node: node
+              ? {
+                  nodeId: node.id,
+                  nodeCode: node.code,
+                  nodeName: node.name,
+                  description: node.description,
+                  nodeType: node.nodeType,
+                  requirementType: node.requirementType,
+                  approvalStatus: node.approvalStatus,
+                  isOfficialNode: node.isOfficialNode,
+                  isCandidateNode: node.isCandidateNode,
+                  isConditionalNode: node.isConditionalNode,
+                  stampEligible: node.stampEligible,
+                  bookingRequired: node.bookingRequired,
+                  operatorRequired: node.operatorRequired,
+                  guideRequirement: node.guideRequirement,
+                  safetyControlled: node.safetyControlled,
+                }
+              : null,
+          };
+        }),
+      };
+    });
+
+    return {
+      ok: true,
+      data: {
+        templates,
+      },
+      dataIntegrity: {
+        backendTemplateSource: 'SPM_TRAIL_PACKAGE',
+        backendStopInsightSource: 'SPM_TRAIL_PACKAGE_NODE',
+        packageCatalogIncluded: true,
+        linkedStopsIncluded: true,
+        stopInsightsIncluded: true,
+        pricingIncluded: true,
+        checkoutIncluded: false,
+        bookingExecutionIncluded: false,
+        paymentExecutionIncluded: false,
+        operatorNotificationExecutionIncluded: false,
+        frontendHardcodedFallbackStillAllowed: true,
+      },
+    };
+  }
+
+  async createDiyTrailBuilderRequest(travelerUserId: string, body: any) {
+    const packageCode = String(body?.packageCode ?? '').trim().toUpperCase();
+
+    if (!packageCode) {
+      return {
+        ok: false,
+        error: 'DIY_PACKAGE_CODE_REQUIRED',
+        data: null,
+      };
+    }
+
+    const paxCount = Math.max(1, Number(body?.paxCount ?? 1) || 1);
+    const requestedDate = body?.requestedDate ? new Date(body.requestedDate) : null;
+    const selectedTrailNodeIds = Array.isArray(body?.selectedTrailNodeIds)
+      ? body.selectedTrailNodeIds.filter(Boolean).map(String)
+      : [];
+
+    const packageRow = await this.prisma.spmTrailPackage.findFirst({
+      where: {
+        code: packageCode,
+        approvalStatus: 'APPROVED',
+        distributionEnabled: true,
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        publicLabel: true,
+        travelerFacingName: true,
+        trailFamilyId: true,
+        stampEnabled: true,
+        instantCheckoutAllowed: true,
+        bookabilityStatus: true,
+      },
+    });
+
+    if (!packageRow) {
+      return {
+        ok: false,
+        error: 'DIY_PACKAGE_NOT_AVAILABLE',
+        data: { packageCode },
+      };
+    }
+
+    const latestTrip = await this.prisma.trip.findFirst({
+      where: { travelerUserId },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true },
+    });
+
+    if (!latestTrip?.id) {
+      return {
+        ok: false,
+        error: 'TRAVELER_TRIP_REQUIRED_BEFORE_DIY_REQUEST',
+        data: {
+          packageCode,
+          nextStep: '/traveler/trips/new',
+        },
+      };
+    }
+
+    const packageNodes = await this.prisma.spmTrailPackageNode.findMany({
+      where: { trailPackageId: packageRow.id },
+      orderBy: { sortOrder: 'asc' },
+      select: {
+        trailNodeId: true,
+        isRequired: true,
+        isOptional: true,
+        isConditional: true,
+        supportRequirement: true,
+      },
+    });
+
+    const allowedNodeIds = new Set(packageNodes.map((node) => node.trailNodeId));
+    const requiredNodeIds = packageNodes.filter((node) => node.isRequired).map((node) => node.trailNodeId);
+
+    const selectedSet = new Set<string>([
+      ...requiredNodeIds,
+      ...selectedTrailNodeIds.filter((nodeId: string) => allowedNodeIds.has(nodeId)),
+    ]);
+
+    const selectedNodes = packageNodes.filter((node) => selectedSet.has(node.trailNodeId));
+
+    const operatorPricing = await this.prisma.spmPricingRule.findFirst({
+      where: {
+        trailPackageId: packageRow.id,
+        approvalStatus: 'APPROVED',
+        operatorUserId: { not: null },
+      },
+      orderBy: { updatedAt: 'desc' },
+      select: { id: true, operatorUserId: true },
+    });
+
+    const targetNotificationUserId = operatorPricing?.operatorUserId ?? null;
+
+    const now = new Date();
+    const selectedStopSnapshot = selectedNodes.map((node) => ({
+      trailNodeId: node.trailNodeId,
+      isRequired: node.isRequired,
+      isOptional: node.isOptional,
+      isConditional: node.isConditional,
+      supportRequirement: node.supportRequirement,
+    }));
+
+    const created = await this.prisma.$transaction(async (tx) => {
+      const booking = await tx.spmTrailBooking.create({
+        data: {
+          tripId: latestTrip.id,
+          travelerUserId,
+          trailPackageId: packageRow.id,
+          trailFamilyId: packageRow.trailFamilyId,
+          operatorUserId: operatorPricing?.operatorUserId ?? null,
+          distributionChannel: 'SPM',
+          bookingSourceReference: JSON.stringify({
+            source: 'DIY_TRAIL_BUILDER',
+            packageCode: packageRow.code,
+            packageName: packageRow.travelerFacingName ?? packageRow.publicLabel ?? packageRow.name,
+            selectedTrailNodeIds: Array.from(selectedSet),
+            selectedStopSnapshot,
+            pace: body?.pace ?? null,
+            supportPreference: body?.supportPreference ?? null,
+            requestedDate: body?.requestedDate ?? null,
+            paymentReadiness: 'PAYMENT_READY_AFTER_REQUEST_CONFIRMATION',
+            operatorNotificationTarget: operatorPricing?.operatorUserId ? 'OPERATOR' : 'NONE',
+          }),
+          bookingStatus: operatorPricing?.operatorUserId ? 'PENDING_OPERATOR_CONFIRMATION' : 'REQUESTED',
+          requestedDate: requestedDate && !Number.isNaN(requestedDate.getTime()) ? requestedDate : null,
+          paxCount,
+          qrValidationRequired: true,
+          stampEnabled: packageRow.stampEnabled,
+        },
+      });
+
+      const notification = targetNotificationUserId
+        ? await tx.notification.create({
+            data: {
+              userId: targetNotificationUserId,
+              notificationType: 'DIY_TRAIL_REQUEST_OPERATOR_REVIEW',
+              title: 'New DIY Trail Request',
+              body: `${packageRow.travelerFacingName ?? packageRow.publicLabel ?? packageRow.name} request created for ${paxCount} pax. Review route, operator handling, and payment readiness.`,
+            },
+          })
+        : null;
+
+      return { booking, notification };
+    });
+
+    return {
+      ok: true,
+      data: {
+        trailBookingId: created.booking.id,
+        bookingStatus: created.booking.bookingStatus,
+        packageId: packageRow.id,
+        packageCode: packageRow.code,
+        packageName: packageRow.travelerFacingName ?? packageRow.publicLabel ?? packageRow.name,
+        selectedTrailNodeIds: Array.from(selectedSet),
+        paxCount,
+        requestedDate: created.booking.requestedDate,
+        operatorUserId: created.booking.operatorUserId,
+        notificationCreated: Boolean(created.notification?.id),
+        notificationType: created.notification?.notificationType ?? null,
+        paymentReadiness: 'PAYMENT_READY_AFTER_REQUEST_CONFIRMATION',
+        paymentExecutionIncluded: false,
+        operatorAssignmentStatus: created.booking.operatorUserId
+          ? 'PENDING_OPERATOR_CONFIRMATION'
+          : 'PENDING_OPERATOR_ASSIGNMENT',
+        operatorNotificationPendingReason: created.booking.operatorUserId
+          ? null
+          : 'NO_OPERATOR_TARGET_ASSIGNED_YET',
+        nextStep: {
+          paymentIntentReady: false,
+          paymentIntentEndpoint: null,
+          recommendedFrontendRoute: '/traveler/passport-trails/diy-trail-builder/summary',
+        },
+      },
+      dataIntegrity: {
+        bookingExecutionIncluded: true,
+        paymentExecutionIncluded: false,
+        operatorNotificationExecutionIncluded: Boolean(created.notification?.id),
+        fakeOperatorAssignmentUsed: false,
+        qrValidationExecuted: false,
+        passportStampExecuted: false,
+      },
+    };
+  }
+
+  async createDiyTrailBuilderPaymentIntent(travelerUserId: string, trailBookingId: string) {
+    if (!trailBookingId) {
+      return {
+        ok: false,
+        error: 'TRAIL_BOOKING_ID_REQUIRED',
+        data: null,
+      };
+    }
+
+    const trailBooking = await this.prisma.spmTrailBooking.findFirst({
+      where: {
+        id: trailBookingId,
+        travelerUserId,
+      },
+      select: {
+        id: true,
+        tripId: true,
+        travelerUserId: true,
+        trailPackageId: true,
+        trailFamilyId: true,
+        bookingStatus: true,
+        paxCount: true,
+        paymentStateId: true,
+        bookingSourceReference: true,
+      },
+    });
+
+    if (!trailBooking) {
+      return {
+        ok: false,
+        error: 'TRAIL_BOOKING_NOT_FOUND',
+        data: null,
+      };
+    }
+
+    if (!trailBooking.trailPackageId) {
+      return {
+        ok: false,
+        error: 'TRAIL_PACKAGE_REQUIRED_FOR_PAYMENT',
+        data: { trailBookingId },
+      };
+    }
+
+    const packageRow = await this.prisma.spmTrailPackage.findUnique({
+      where: { id: trailBooking.trailPackageId },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        publicLabel: true,
+        travelerFacingName: true,
+        bookabilityStatus: true,
+        instantCheckoutAllowed: true,
+      },
+    });
+
+    if (!packageRow) {
+      return {
+        ok: false,
+        error: 'TRAIL_PACKAGE_NOT_FOUND',
+        data: { trailBookingId },
+      };
+    }
+
+    const pricingRule = await this.prisma.spmPricingRule.findFirst({
+      where: {
+        trailPackageId: trailBooking.trailPackageId,
+        approvalStatus: 'APPROVED',
+      },
+      orderBy: [
+        { operatorUserId: 'desc' },
+        { updatedAt: 'desc' },
+      ],
+      select: {
+        id: true,
+        pricingMode: true,
+        currencyCode: true,
+        basePrice: true,
+        packageFlatRate: true,
+        priceRangeMin: true,
+        priceRangeMax: true,
+        requestToConfirmRequired: true,
+        instantCheckoutAllowed: true,
+      },
+    });
+
+    if (!pricingRule) {
+      return {
+        ok: false,
+        error: 'PRICING_RULE_REQUIRED_BEFORE_PAYMENT',
+        data: {
+          trailBookingId,
+          packageCode: packageRow.code,
+          paymentReadiness: 'PRICE_REQUIRED_BEFORE_GATEWAY',
+        },
+      };
+    }
+
+    const unitPrice = pricingRule.basePrice ?? null;
+    const packageFlatRate = pricingRule.packageFlatRate ?? null;
+    const paxCount = Math.max(1, trailBooking.paxCount || 1);
+
+    const amountPhp = packageFlatRate
+      ? new Prisma.Decimal(packageFlatRate)
+      : unitPrice
+        ? new Prisma.Decimal(unitPrice).mul(paxCount)
+        : null;
+
+    if (!amountPhp || amountPhp.lte(0)) {
+      return {
+        ok: false,
+        error: 'PAYMENT_PRICE_REQUIRED_BEFORE_GATEWAY',
+        data: {
+          trailBookingId,
+          packageCode: packageRow.code,
+          pricingMode: pricingRule.pricingMode,
+          paymentReadiness: 'REQUEST_CONFIRMATION_REQUIRED_BEFORE_PAYMENT',
+          paymentExecutionIncluded: false,
+        },
+      };
+    }
+
+    const existingSnapshot = await this.prisma.spmTrailPricingSnapshot.findUnique({
+      where: { trailBookingId: trailBooking.id },
+      select: { id: true, snapshotJson: true },
+    });
+
+    const existingPaymentIntentId =
+      existingSnapshot?.snapshotJson &&
+      typeof existingSnapshot.snapshotJson === 'object' &&
+      !Array.isArray(existingSnapshot.snapshotJson)
+        ? (existingSnapshot.snapshotJson as any).paymentIntentId
+        : null;
+
+    if (existingPaymentIntentId) {
+      const existingIntent = await this.prisma.paymentIntent.findUnique({
+        where: { id: String(existingPaymentIntentId) },
+        select: {
+          id: true,
+          bookingId: true,
+          intentReference: true,
+          amountPhp: true,
+          currencyCode: true,
+          status: true,
+          provider: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      if (existingIntent) {
+        return {
+          ok: true,
+          data: {
+            trailBookingId: trailBooking.id,
+            bookingId: existingIntent.bookingId,
+            paymentIntentId: existingIntent.id,
+            intentReference: existingIntent.intentReference,
+            amountPhp: existingIntent.amountPhp,
+            currencyCode: existingIntent.currencyCode,
+            status: existingIntent.status,
+            provider: existingIntent.provider,
+            paymentExecutionIncluded: true,
+            paymentPageUrl: `/traveler/payments/${existingIntent.id}`,
+            reusedExistingIntent: true,
+          },
+          dataIntegrity: {
+            bookingBridgeCreated: false,
+            paymentIntentCreated: false,
+            existingPaymentIntentReused: true,
+            trailBookingLinked: true,
+            fakePaymentUsed: false,
+          },
+        };
+      }
+    }
+
+    const requestRef = `DIY-${Date.now()}`;
+    const currencyCode = pricingRule.currencyCode ?? 'PHP';
+
+    const created = await this.prisma.$transaction(async (tx) => {
+      const booking = await tx.booking.create({
+        data: {
+          primaryTravelerUserId: travelerUserId,
+          bookingReference: `OSP-${requestRef}`,
+          bookingSource: 'OSP',
+          bookingStatus: 'PENDING',
+          bookingTotalPhp: amountPhp,
+          currencyCode,
+          items: {
+            create: [
+              {
+                itemType: 'SPM_DIY_PASSPORT_TRAIL',
+                quantity: paxCount,
+                unitPricePhp: packageFlatRate ? amountPhp : new Prisma.Decimal(unitPrice ?? 0),
+              },
+            ],
+          },
+        },
+      });
+
+      await tx.bookingLink.create({
+        data: {
+          bookingId: booking.id,
+          tripId: trailBooking.tripId,
+          linkedByUserId: travelerUserId,
+          linkMethod: 'SPM_DIY_TRAIL_PAYMENT_HANDOFF',
+          verificationState: 'PAYMENT_INTENT_READY',
+        },
+      });
+
+      const intent = await tx.paymentIntent.create({
+        data: {
+          bookingId: booking.id,
+          intentReference: `PAY-${requestRef}`,
+          amountPhp,
+          currencyCode,
+          status: 'PENDING',
+          provider: 'SIMULATED',
+          createdByUserId: travelerUserId,
+        },
+      });
+
+      const state = await tx.paymentStateRecord.upsert({
+        where: { bookingId: booking.id },
+        create: {
+          bookingId: booking.id,
+          state: 'UNPAID',
+          paidAmountPhp: new Prisma.Decimal(0),
+          unpaidAmountPhp: amountPhp,
+          lastPaymentIntentId: intent.id,
+          stateUpdatedAt: new Date(),
+        },
+        update: {
+          state: 'UNPAID',
+          unpaidAmountPhp: amountPhp,
+          lastPaymentIntentId: intent.id,
+          stateUpdatedAt: new Date(),
+        },
+      });
+
+      await tx.paymentEventLedger.create({
+        data: {
+          bookingId: booking.id,
+          paymentIntentId: intent.id,
+          eventType: 'PAYMENT_INTENT_CREATED',
+          eventKey: `spm:diy-trail:intent:create:${trailBooking.id}:${Date.now()}`,
+          source: 'SPM_DIY_TRAIL_REQUEST',
+          payloadJson: {
+            trailBookingId: trailBooking.id,
+            packageId: packageRow.id,
+            packageCode: packageRow.code,
+            packageName: packageRow.travelerFacingName ?? packageRow.publicLabel ?? packageRow.name,
+            paxCount,
+            pricingRuleId: pricingRule.id,
+            paymentExecutionIncluded: true,
+            qrValidationExecuted: false,
+            passportStampExecuted: false,
+          },
+        },
+      });
+
+      await tx.spmTrailPricingSnapshot.upsert({
+        where: { trailBookingId: trailBooking.id },
+        create: {
+          trailBookingId: trailBooking.id,
+          pricingRuleId: pricingRule.id,
+          currencyCode,
+          baseSupplyAmount: amountPhp,
+          travelerTotalAmount: amountPhp,
+          operatorPayoutAmount: amountPhp,
+          snapshotJson: {
+            bookingId: booking.id,
+            paymentStateId: state.id,
+            paymentIntentId: intent.id,
+            intentReference: intent.intentReference,
+            pricingMode: pricingRule.pricingMode,
+            packageCode: packageRow.code,
+            paxCount,
+            source: 'SPM_DIY_TRAIL_PAYMENT_HANDOFF',
+          },
+        },
+        update: {
+          pricingRuleId: pricingRule.id,
+          currencyCode,
+          baseSupplyAmount: amountPhp,
+          travelerTotalAmount: amountPhp,
+          operatorPayoutAmount: amountPhp,
+          snapshotJson: {
+            bookingId: booking.id,
+            paymentStateId: state.id,
+            paymentIntentId: intent.id,
+            intentReference: intent.intentReference,
+            pricingMode: pricingRule.pricingMode,
+            packageCode: packageRow.code,
+            paxCount,
+            source: 'SPM_DIY_TRAIL_PAYMENT_HANDOFF',
+          },
+        },
+      });
+
+      await tx.spmTrailBooking.update({
+        where: { id: trailBooking.id },
+        data: {
+          bookingStatus: 'PAYMENT_PENDING',
+          paymentStateId: state.id,
+        },
+      });
+
+      return { booking, intent, state };
+    });
+
+    return {
+      ok: true,
+      data: {
+        trailBookingId: trailBooking.id,
+        bookingId: created.booking.id,
+        paymentStateId: created.state.id,
+        paymentIntentId: created.intent.id,
+        intentReference: created.intent.intentReference,
+        amountPhp: created.intent.amountPhp,
+        currencyCode: created.intent.currencyCode,
+        status: created.intent.status,
+        provider: created.intent.provider,
+        paymentExecutionIncluded: true,
+        paymentPageUrl: `/traveler/payments/${created.intent.id}`,
+        nextAction: 'CONTINUE_TO_PAYMENT',
+      },
+      dataIntegrity: {
+        bookingBridgeCreated: true,
+        bookingLinkCreated: true,
+        paymentIntentCreated: true,
+        paymentStateCreated: true,
+        trailPricingSnapshotCreated: true,
+        trailBookingLinked: true,
+        fakePaymentUsed: false,
+        qrValidationExecuted: false,
+        passportStampExecuted: false,
+      },
+    };
+  }
+
   async getPassportTrailPackageDetail(packageCode: string, travelerUserId: string) {
     const normalizedCode = packageCode.toUpperCase().replaceAll('-', '_');
 
@@ -791,6 +1626,11 @@ export class SpmService {
           isStampEligible: true,
           sortOrder: true,
           conditionNote: true,
+          supportRequirement: true,
+          routeRoleExplanation: true,
+          fulfillmentExplanation: true,
+          paymentImpactExplanation: true,
+          confirmationRequirement: true,
         },
       }),
       this.prisma.spmPricingRule.findMany({
@@ -997,6 +1837,13 @@ export class SpmService {
             isConditional: link.isConditional,
             isStampEligible: link.isStampEligible,
             conditionNote: link.conditionNote,
+            supportRequirement: link.supportRequirement,
+            insight: {
+              routeRoleExplanation: link.routeRoleExplanation,
+              fulfillmentExplanation: link.fulfillmentExplanation,
+              paymentImpactExplanation: link.paymentImpactExplanation,
+              confirmationRequirement: link.confirmationRequirement,
+            },
             stampState: {
               isStamped: Boolean(stamp),
               stampId: stamp?.id ?? null,

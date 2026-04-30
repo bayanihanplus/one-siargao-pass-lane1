@@ -788,11 +788,11 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
           <div style={{ marginTop: 4, fontSize: 13.5, fontWeight: 900, lineHeight: 1.35 }}>
             {payMongoGateway.hasSecretKey
               ? `PayMongo ${payMongoGateway.mode} checkout is configured.`
-              : "PayMongo sandbox key is not configured yet."}
+              : "Payment gateway is not configured yet."}
           </div>
           {!payMongoGateway.hasSecretKey ? (
             <div style={{ marginTop: 5, fontSize: 12.2, fontWeight: 750, color: "#92400e", lineHeight: 1.35 }}>
-              Add PAYMONGO_TEST_SECRET_KEY and NEXT_PUBLIC_APP_BASE_URL on VPS before this button can redirect to PayMongo checkout.
+              Add PAYMONGO_TEST_SECRET_KEY and APP_BASE_URL / NEXT_PUBLIC_APP_BASE_URL before this button can redirect to PayMongo checkout. Until then, this record remains a simulated local payment intent.
             </div>
           ) : null}
         </section>
@@ -844,7 +844,7 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
               gap: 8,
             }}
           >
-            Pay with PayMongo QR PH — {formatMoney(intent.amountPhp, currency)}
+            {payMongoGateway.hasSecretKey ? `Pay with PayMongo QR PH — ${formatMoney(intent.amountPhp, currency)}` : `Payment provider not configured — ${formatMoney(intent.amountPhp, currency)}`}
           </button>
         </form>
       ) : null}
@@ -1003,7 +1003,7 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
                       boxShadow: "0 16px 34px rgba(6,120,137,0.24)",
                     }}
                   >
-                    Pay with PayMongo QR PH — {formatMoney(intent.amountPhp, currency)}
+                    {payMongoGateway.hasSecretKey ? `Pay with PayMongo QR PH — ${formatMoney(intent.amountPhp, currency)}` : `Payment provider not configured — ${formatMoney(intent.amountPhp, currency)}`}
                   </button>
                 </form>
               ) : null}
