@@ -1,0 +1,35 @@
+import { OspPublicPageShell, PublicCardGrid, PublicSection } from "../../src/components/public/OspPublicPageShell";
+
+export default function GovernmentPage() {
+  return (
+    <OspPublicPageShell
+      eyebrow="LGU / DOT"
+      title="Governed tourism visibility for authorized stakeholders."
+      subtitle="One Siargao Pass supports role-scoped visibility for tourism movement, manifest-linked activity, safety broadcasts, compliance events, and destination-level reporting."
+      primaryCta={{ label: "Open LGU Console", href: "/lgu" }}
+      secondaryCta={{ label: "View Data Governance", href: "/data-governance" }}
+    >
+      <PublicSection
+        title="Visibility with governance boundaries."
+        body="OSP supports safer tourism operations while respecting role scope, data minimization, and institutional access boundaries."
+      >
+        <PublicCardGrid
+          cards={[
+            {
+              title: "Movement visibility",
+              body: "Ingress, egress, and checkpoint activity can support destination-level operational awareness.",
+            },
+            {
+              title: "Manifest-linked activity",
+              body: "Regulated or inter-island activity can connect to manifest and clearance workflows where required.",
+            },
+            {
+              title: "Safety broadcasts",
+              body: "Authorized stakeholders can support official safety messaging through governed channels.",
+            },
+          ]}
+        />
+      </PublicSection>
+    </OspPublicPageShell>
+  );
+}

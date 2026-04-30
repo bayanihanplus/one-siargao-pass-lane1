@@ -1,0 +1,174 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import CommandCenterShell from "../../../src/components/intelligence/CommandCenterShell";
+import { SIARGAO_MUNICIPALITIES } from "../../../src/lib/siargaoMunicipalities";
+import { OSP_EVENT_MODES } from "../../../src/lib/ospEventModes";
+
+function getApiBaseUrl() {
+  const explicit = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
+  return "http://localhost:8001/api/v1";
+}
+
+function BarChart({ title, distribution }: { title: string; distribution?: any }) {
+  const rows = distribution?.rows || [];
+  const max = Math.max(...rows.map((row: any) => row.value), 1);
+
+  return (
+    <section className="osp-command-panel">
+      <div className="osp-command-chart-head">
+        <h4>{title}</h4>
+        <span>Source: {distribution?.table || "build target"}</span>
+      </div>
+      {rows.length === 0 ? (
+        <div className="osp-command-empty-state">
+          No rows available yet. This metric is wired, but the source table or status column needs more data.
+        </div>
+      ) : (
+        rows.map((row: any) => (
+          <div className="osp-command-bar-row" key={row.label}>
+            <span>{row.label}</span>
+            <div className="osp-command-bar-track">
+              <div
+                className="osp-command-bar-fill"
+                style={{ width: `${Math.max(4, Math.round((row.value / max) * 100))}%` }}
+              />
+            </div>
+            <strong>{row.value}</strong>
+          </div>
+        ))
+      )}
+    </section>
+  );
+}
+
+export default function LguIntelligencePage() {
+  const apiBaseUrl = useMemo(() => getApiBaseUrl(), []);
+  const [municipality, setMunicipality] = useState("ALL_SIARGAO");
+  const [eventMode, setEventMode] = useState("NORMAL");
+  const [data, setData] = useState<any>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await fetch(
+          `${apiBaseUrl}/lgu/intelligence/overview?municipality=${municipality}&eventMode=${eventMode}`,
+          { cache: "no-store" }
+        );
+        const json = await response.json();
+        if (!response.ok || !json?.ok) {
+          setError(json?.message || "Unable to load LGU command center.");
+          return;
+        }
+        setData(json);
+        setError("");
+      } catch {
+        setError("Unable to reach the OSP API. Please make sure the backend is running and try again.");
+      }
+    }
+    loadData();
+  }, [apiBaseUrl, municipality, eventMode]);
+
+  const navItems = [
+    { label: "Overview", active: true },
+    { label: "Movement Intelligence" },
+    { label: "Compliance Intelligence" },
+    { label: "Operator Participation" },
+    { label: "Partner Readiness" },
+    { label: "Passport Trails" },
+    { label: "Safety & Events" },
+    { label: "Municipality View" },
+    { label: "Governance Boundary" },
+  ];
+
+  return (
+    <CommandCenterShell
+      productName="LGU Tourism Coordination Center"
+      productSubtitle="Role-scoped tourism operations, compliance coordination, and destination insights for Siargao LGU stakeholders."
+      navItems={navItems}
+      municipality={municipality}
+      municipalities={[...SIARGAO_MUNICIPALITIES]}
+      onMunicipalityChange={setMunicipality}
+      eventMode={eventMode}
+      eventModes={[...OSP_EVENT_MODES]}
+      onEventModeChange={setEventMode}
+    >
+      {error ? <div className="osp-command-alert">{error}</div> : null}
+      {!data ? (
+        <div className="osp-command-panel">Loading coordination center...</div>
+      ) : (
+        <>
+          <section className="osp-command-executive-grid">
+            {(data.executiveSummaryPanels || []).map((panel: any) => (
+              <article className="osp-command-executive-card" key={panel.label}>
+                <p>{panel.label}</p>
+                <strong>{panel.value}</strong>
+                <span>{panel.helper}</span>
+                <small>{panel.priority} · {panel.visibility}</small>
+              </article>
+            ))}
+          </section>
+
+          <section className="osp-command-card-grid">
+            {(data.summaryCards || []).map((card: any) => (
+              <article className="osp-command-card" key={card.label}>
+                <p>{card.label}</p>
+                <strong>{card.value}</strong>
+                <span>{card.helper}</span>
+                <small>{card.source}</small>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">System Gauges</h3>
+          <section className="osp-command-gauge-grid">
+            {(data.gauges || []).map((gauge: any) => (
+              <article className="osp-command-panel osp-command-gauge" key={gauge.label}>
+                <div className="osp-command-gauge-ring" style={{ ["--gauge-value" as any]: gauge.value }}>
+                  <div className="osp-command-gauge-inner">{gauge.value}%</div>
+                </div>
+                <h4>{gauge.label}</h4>
+                <span>{gauge.status}</span>
+                <p>{gauge.interpretation}</p>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Distribution Graphs</h3>
+          <section className="osp-command-chart-grid">
+            <BarChart title="QR Event Distribution" distribution={data.distributions?.qrEvents} />
+            <BarChart title="Partner Status Distribution" distribution={data.distributions?.partnerStatus} />
+            <BarChart title="Partner Type Distribution" distribution={data.distributions?.partnerType} />
+            <BarChart title="Audit Event Distribution" distribution={data.distributions?.auditEvents} />
+          </section>
+
+          <h3 className="osp-command-section-title">Inter-Layer Coordination Matrix</h3>
+          <section className="osp-command-table">
+            {(data.intelligenceLayers || []).map((layer: any) => (
+              <div className="osp-command-table-row" key={layer.layer}>
+                <div>
+                  <strong>{layer.layer}</strong>
+                  <span>{layer.spineStatus}</span>
+                </div>
+                <div>{layer.records}</div>
+                <div>{(layer.parameters || []).join(" · ")}</div>
+                <div>{layer.lguOutput}</div>
+              </div>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Governance Boundary</h3>
+          <section className="osp-command-panel">
+            <div className="osp-command-pill-grid">
+              {(data.governanceBoundaries || []).map((item: string) => (
+                <div className="osp-command-pill" key={item}>{item}</div>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+    </CommandCenterShell>
+  );
+}

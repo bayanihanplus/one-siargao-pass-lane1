@@ -1,0 +1,53 @@
+import { OspPublicPageShell, PublicCardGrid, PublicSection } from "../../src/components/public/OspPublicPageShell";
+import { PublicMediaBanner, PublicStaticBanner } from "../../src/components/public/PublicMediaBlocks";
+
+export default function TravelersPage() {
+  return (
+    <OspPublicPageShell
+      eyebrow="For Travelers"
+      title="Your Siargao journey starts with One Siargao Pass."
+      subtitle="Create your traveler pass, keep your QR ready, open the Siargao Passport Map, and access verified island experiences through one connected platform."
+      primaryCta={{ label: "Create OSP Pass", href: "/traveler/start" }}
+      secondaryCta={{ label: "Explore Passport Map", href: "/siargao-passport-map" }}
+    >
+      <PublicStaticBanner
+        eyebrow="Traveler Readiness"
+        title="Traveler readiness starts before arrival."
+        body="OSP gives travelers a clearer entry into pass creation, QR readiness, trip continuity, and Passport Map discovery before they rely on island services."
+        variant="traveler"
+        badge="Traveler"
+        points={["Create Pass", "QR Ready", "Open Map", "Continue Journey"]}
+      />
+
+      <PublicMediaBanner
+        eyebrow="Traveler Journey"
+        title="Pass, QR, trips, and Passport Map in one connected flow."
+        body="Travelers should understand the journey before entering the mobile app. The public page explains readiness, discovery, and verified access without exposing internal controls."
+        variant="traveler"
+        items={["Create OSP Pass", "Keep QR Ready", "Open Passport Map", "Follow Passport Trails"]}
+      />
+
+      <PublicSection
+        title="Travel with a clearer digital journey."
+        body="One Siargao Pass connects your traveler record, QR identity, trip details, Passport Trails, and eligible verified island experiences in one organized flow."
+      >
+        <PublicCardGrid
+          cards={[
+            {
+              title: "Create your pass",
+              body: "Start with your traveler record and prepare your QR identity before using OSP-enabled services.",
+            },
+            {
+              title: "Open the Passport Map",
+              body: "Discover Passport Trails, verified stops, partner tours, and island journey paths.",
+            },
+            {
+              title: "Use verified flows",
+              body: "Some services may require booking, payment, operator confirmation, or manifest validation where applicable.",
+            },
+          ]}
+        />
+      </PublicSection>
+    </OspPublicPageShell>
+  );
+}

@@ -1,0 +1,172 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+
+type PublicCta = {
+  label: string;
+  href: string;
+  variant?: "primary" | "secondary";
+};
+
+type PublicCard = {
+  title: string;
+  body: string;
+  href?: string;
+  eyebrow?: string;
+};
+
+type OspPublicPageShellProps = {
+  eyebrow?: string;
+  title: string;
+  subtitle: string;
+  primaryCta?: PublicCta;
+  secondaryCta?: PublicCta;
+  children?: ReactNode;
+};
+
+export function OspPublicPageShell(props: OspPublicPageShellProps) {
+  return (
+    <main className="min-h-screen bg-[#f6f1e8] text-slate-950">
+      <header className="border-b border-amber-900/10 bg-[#fffaf0]/90">
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4">
+          <Link href="/" className="text-sm font-black tracking-[0.22em] text-emerald-950">
+            ONE SIARGAO PASS
+          </Link>
+          <nav className="hidden items-center gap-5 text-xs font-bold uppercase tracking-[0.18em] text-slate-700 md:flex">
+            <Link href="/travelers">Travelers</Link>
+            <Link href="/passport-trails">Passport Trails</Link>
+            <Link href="/operators">Operators</Link>
+            <Link href="/ota">OTA / API</Link>
+            <Link href="/government">Government</Link>
+            <Link href="/support">Support</Link>
+          </nav>
+          <Link
+            href="/traveler/start"
+            className="rounded-full bg-emerald-950 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-amber-100 shadow-sm"
+          >
+            Create Pass
+          </Link>
+        </div>
+      </header>
+
+      <section className="mx-auto w-full max-w-6xl px-5 py-14 md:py-20">
+        {props.eyebrow ? (
+          <p className="mb-4 text-xs font-black uppercase tracking-[0.28em] text-emerald-800">
+            {props.eyebrow}
+          </p>
+        ) : null}
+
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <div>
+            <h1 className="max-w-4xl text-4xl font-black leading-[0.95] tracking-[-0.06em] text-emerald-950 md:text-6xl">
+              {props.title}
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-700 md:text-lg">
+              {props.subtitle}
+            </p>
+          </div>
+
+          <div className="rounded-[2rem] border border-amber-900/10 bg-white/70 p-5 shadow-sm">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-amber-800">
+              Platform Line
+            </p>
+            <p className="mt-3 text-2xl font-black tracking-[-0.04em] text-emerald-950">
+              Powering the Digital Island.
+            </p>
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              One governed platform for traveler access, QR identity, verified island experiences, partner distribution, and compliance-ready tourism operations.
+            </p>
+          </div>
+        </div>
+
+        {(props.primaryCta || props.secondaryCta) ? (
+          <div className="mt-8 flex flex-wrap gap-3">
+            {props.primaryCta ? <PublicButton {...props.primaryCta} variant="primary" /> : null}
+            {props.secondaryCta ? <PublicButton {...props.secondaryCta} variant="secondary" /> : null}
+          </div>
+        ) : null}
+      </section>
+
+      {props.children}
+
+      <footer className="mt-12 border-t border-amber-900/10 bg-emerald-950 px-5 py-10 text-amber-50">
+        <div className="mx-auto grid w-full max-w-6xl gap-6 md:grid-cols-[1fr_1.2fr]">
+          <div>
+            <p className="text-sm font-black tracking-[0.22em]">ONE SIARGAO PASS</p>
+            <p className="mt-3 text-sm text-amber-100/80">Powering the Digital Island.</p>
+          </div>
+          <div className="grid gap-3 text-sm text-amber-100/80 sm:grid-cols-3">
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+            <Link href="/data-governance">Data Governance</Link>
+            <Link href="/api-terms">API Terms</Link>
+            <Link href="/operator-terms">Operator Terms</Link>
+            <Link href="/ota-terms">OTA Terms</Link>
+          </div>
+        </div>
+      </footer>
+    </main>
+  );
+}
+
+export function PublicButton(props: PublicCta) {
+  const variant = props.variant || "primary";
+  const className =
+    variant === "primary"
+      ? "rounded-full bg-emerald-950 px-5 py-3 text-sm font-black text-amber-100 shadow-sm"
+      : "rounded-full border border-emerald-950/20 bg-white/70 px-5 py-3 text-sm font-black text-emerald-950 shadow-sm";
+
+  return (
+    <Link href={props.href} className={className}>
+      {props.label}
+    </Link>
+  );
+}
+
+export function PublicSection(props: {
+  eyebrow?: string;
+  title: string;
+  body?: string;
+  children?: ReactNode;
+}) {
+  return (
+    <section className="mx-auto w-full max-w-6xl px-5 py-10">
+      {props.eyebrow ? (
+        <p className="mb-3 text-xs font-black uppercase tracking-[0.24em] text-emerald-800">
+          {props.eyebrow}
+        </p>
+      ) : null}
+      <h2 className="max-w-3xl text-3xl font-black tracking-[-0.05em] text-emerald-950 md:text-4xl">
+        {props.title}
+      </h2>
+      {props.body ? (
+        <p className="mt-4 max-w-3xl text-base leading-7 text-slate-700">
+          {props.body}
+        </p>
+      ) : null}
+      {props.children ? <div className="mt-6">{props.children}</div> : null}
+    </section>
+  );
+}
+
+export function PublicCardGrid(props: { cards: PublicCard[] }) {
+  return (
+    <div className="grid gap-4 md:grid-cols-3">
+      {props.cards.map((card) => (
+        <article key={card.title} className="rounded-[1.5rem] border border-amber-900/10 bg-white/75 p-5 shadow-sm">
+          {card.eyebrow ? (
+            <p className="mb-2 text-[10px] font-black uppercase tracking-[0.22em] text-amber-800">
+              {card.eyebrow}
+            </p>
+          ) : null}
+          <h3 className="text-lg font-black tracking-[-0.03em] text-emerald-950">{card.title}</h3>
+          <p className="mt-3 text-sm leading-6 text-slate-650">{card.body}</p>
+          {card.href ? (
+            <Link href={card.href} className="mt-4 inline-flex text-sm font-black text-emerald-900">
+              Learn more →
+            </Link>
+          ) : null}
+        </article>
+      ))}
+    </div>
+  );
+}

@@ -1,0 +1,95 @@
+"use client";
+
+import Link from "next/link";
+import { ReactNode } from "react";
+
+type NavItem = {
+  label: string;
+  href?: string;
+  active?: boolean;
+};
+
+type MunicipalityOption = {
+  value: string;
+  label: string;
+};
+
+type Props = {
+  productName: string;
+  productSubtitle: string;
+  navItems: NavItem[];
+  municipality: string;
+  municipalities: MunicipalityOption[];
+  onMunicipalityChange: (value: string) => void;
+  children: ReactNode;
+};
+
+export default function CommandCenterShell({
+  productName,
+  productSubtitle,
+  navItems,
+  municipality,
+  municipalities,
+  onMunicipalityChange,
+  children,
+}: Props) {
+  return (
+    <main className="osp-command-root">
+      <aside className="osp-command-sidebar">
+        <div className="osp-command-brand">
+          <p className="osp-command-eyebrow">One Siargao Pass</p>
+          <h1>{productName}</h1>
+          <p>{productSubtitle}</p>
+        </div>
+
+        <nav className="osp-command-nav">
+          {navItems.map((item) =>
+            item.href ? (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`osp-command-nav-item ${item.active ? "is-active" : ""}`}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <div
+                key={item.label}
+                className={`osp-command-nav-item ${item.active ? "is-active" : ""}`}
+              >
+                {item.label}
+              </div>
+            ),
+          )}
+        </nav>
+      </aside>
+
+      <section className="osp-command-main">
+        <header className="osp-command-topbar">
+          <div>
+            <p className="osp-command-topbar-eyebrow">Municipality View</p>
+            <h2>{productName}</h2>
+          </div>
+
+          <div className="osp-command-filters">
+            <label className="osp-command-filter">
+              <span>Municipality</span>
+              <select
+                value={municipality}
+                onChange={(e) => onMunicipalityChange(e.target.value)}
+              >
+                {municipalities.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </header>
+
+        <div className="osp-command-content">{children}</div>
+      </section>
+    </main>
+  );
+}

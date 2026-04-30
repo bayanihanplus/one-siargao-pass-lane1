@@ -1,0 +1,298 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../database/prisma.service';
+
+type CountResult = {
+  table: string | null;
+  count: number;
+};
+
+type GroupResult = {
+  label: string;
+  value: number;
+};
+
+function numberFromRow(value: any): number {
+  if (typeof value === 'bigint') return Number(value);
+  if (typeof value === 'number') return value;
+  if (typeof value === 'string') return Number(value) || 0;
+  return 0;
+}
+
+@Injectable()
+export class LguIntelligenceService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  private async tableExists(tableName: string): Promise<boolean> {
+    const rows = await this.prisma.$queryRawUnsafe<any[]>(
+      `
+      SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+        AND table_name = $1
+      ) AS exists
+      `,
+      tableName,
+    );
+
+    return Boolean(rows?.[0]?.exists);
+  }
+
+  private async firstExistingTable(candidates: string[]): Promise<string | null> {
+    for (const table of candidates) {
+      if (await this.tableExists(table)) return table;
+    }
+    return null;
+  }
+
+  private async countFromCandidates(candidates: string[], whereClause = ''): Promise<CountResult> {
+    const table = await this.firstExistingTable(candidates);
+    if (!table) return { table: null, count: 0 };
+
+    const rows = await this.prisma.$queryRawUnsafe<any[]>(
+      `SELECT COUNT(*)::int AS count FROM "${table}" ${whereClause}`,
+    );
+
+    return {
+      table,
+      count: numberFromRow(rows?.[0]?.count),
+    };
+  }
+
+  private async groupByColumn(candidates: string[], column: string): Promise<{ table: string | null; rows: GroupResult[] }> {
+    const table = await this.firstExistingTable(candidates);
+    if (!table) return { table: null, rows: [] };
+
+    const columnRows = await this.prisma.$queryRawUnsafe<any[]>(
+      `
+      SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+        AND table_name = $1
+        AND column_name = $2
+      ) AS exists
+      `,
+      table,
+      column,
+    );
+
+    if (!Boolean(columnRows?.[0]?.exists)) {
+      return { table, rows: [] };
+    }
+
+    const rows = await this.prisma.$queryRawUnsafe<any[]>(
+      `
+      SELECT COALESCE("${column}"::text, 'UNKNOWN') AS label, COUNT(*)::int AS value
+      FROM "${table}"
+      GROUP BY COALESCE("${column}"::text, 'UNKNOWN')
+      ORDER BY value DESC
+      LIMIT 12
+      `,
+    );
+
+    return {
+      table,
+      rows: rows.map((row: any) => ({
+        label: String(row.label || 'UNKNOWN'),
+        value: numberFromRow(row.value),
+      })),
+    };
+  }
+
+  private percent(numerator: number, denominator: number): number {
+    if (!denominator || denominator <= 0) return 0;
+    return Math.max(0, Math.min(100, Math.round((numerator / denominator) * 100)));
+  }
+
+  async getOverview() {
+    const partnerTotal = await this.countFromCandidates(['PartnerAccount']);
+    const partnerApproved = await this.countFromCandidates(['PartnerAccount'], `WHERE "status"::text = 'APPROVED'`);
+    const partnerPending = await this.countFromCandidates(['PartnerAccount'], `WHERE "status"::text = 'PENDING_REVIEW'`);
+    const partnerAudit = await this.countFromCandidates(['PartnerApiAuditLog']);
+    const partnerTokens = await this.countFromCandidates(['PartnerApiToken']);
+
+    const trips = await this.countFromCandidates(['Trip', 'TravelerTrip']);
+    const ospPasses = await this.countFromCandidates(['OspPass', 'OSPpass', 'Pass']);
+    const qrCredentials = await this.countFromCandidates(['QrCredential', 'QRCredential']);
+    const qrEvents = await this.countFromCandidates(['OspQrEvent', 'QrEvent']);
+    const manifests = await this.countFromCandidates(['Manifest', 'OspManifest', 'TripManifest']);
+    const manifestMembers = await this.countFromCandidates(['ManifestMember', 'OspManifestMember']);
+    const checkpoints = await this.countFromCandidates(['OspCheckpoint', 'Checkpoint']);
+    const movements = await this.countFromCandidates(['InterIslandMovement', 'OspInterIslandMovement']);
+    const stamps = await this.countFromCandidates(['SpmTravelerStamp']);
+    const trailProgress = await this.countFromCandidates(['SpmTravelerTrailProgress']);
+
+    const partnerStatusDistribution = await this.groupByColumn(['PartnerAccount'], 'status');
+    const partnerTypeDistribution = await this.groupByColumn(['PartnerAccount'], 'partnerType');
+    const auditEventDistribution = await this.groupByColumn(['PartnerApiAuditLog'], 'eventType');
+    const qrEventDistribution = await this.groupByColumn(['OspQrEvent', 'QrEvent'], 'eventType');
+    const manifestStatusDistribution = await this.groupByColumn(['Manifest', 'OspManifest', 'TripManifest'], 'status');
+
+    const activeTables = [
+      partnerTotal,
+      partnerAudit,
+      partnerTokens,
+      trips,
+      ospPasses,
+      qrCredentials,
+      qrEvents,
+      manifests,
+      manifestMembers,
+      checkpoints,
+      movements,
+      stamps,
+      trailProgress,
+    ].filter((entry) => entry.table);
+
+    const partnerReadiness = this.percent(partnerApproved.count, partnerTotal.count);
+    const auditCoverage = this.percent(partnerAudit.count, Math.max(partnerTotal.count, 1));
+    const qrSpinePresence = qrEvents.count > 0 || qrCredentials.count > 0 || ospPasses.count > 0 ? 100 : 0;
+    const manifestSpinePresence = manifests.table ? this.percent(manifests.count, Math.max(manifests.count + partnerPending.count, 1)) : 0;
+    const tokenBoundaryScore = partnerTokens.count === 0 ? 100 : 0;
+
+    const summaryCards = [
+      {
+        label: 'Partner Applications',
+        value: partnerTotal.count,
+        helper: `${partnerApproved.count} approved · ${partnerPending.count} pending review`,
+        source: partnerTotal.table || 'PartnerAccount not found',
+      },
+      {
+        label: 'Partner Audit Events',
+        value: partnerAudit.count,
+        helper: 'Public intake and admin review events',
+        source: partnerAudit.table || 'PartnerApiAuditLog not found',
+      },
+      {
+        label: 'OSP Pass / QR Spine',
+        value: ospPasses.count + qrCredentials.count + qrEvents.count,
+        helper: `${ospPasses.count} passes · ${qrCredentials.count} credentials · ${qrEvents.count} QR events`,
+        source: [ospPasses.table, qrCredentials.table, qrEvents.table].filter(Boolean).join(', ') || 'QR spine tables not found',
+      },
+      {
+        label: 'Manifest / Movement Spine',
+        value: manifests.count + movements.count + manifestMembers.count,
+        helper: `${manifests.count} manifests · ${movements.count} movements · ${manifestMembers.count} members`,
+        source: [manifests.table, movements.table, manifestMembers.table].filter(Boolean).join(', ') || 'Manifest/movement tables not found',
+      },
+    ];
+
+    const gauges = [
+      {
+        label: 'Partner Readiness',
+        value: partnerReadiness,
+        numerator: partnerApproved.count,
+        denominator: partnerTotal.count,
+        interpretation: 'Approved partner coverage over all partner applications.',
+        status: partnerReadiness >= 70 ? 'STRONG' : partnerReadiness > 0 ? 'BUILDING' : 'NEEDS DATA',
+      },
+      {
+        label: 'Audit Coverage',
+        value: auditCoverage,
+        numerator: partnerAudit.count,
+        denominator: Math.max(partnerTotal.count, 1),
+        interpretation: 'Audit log presence compared with partner records.',
+        status: auditCoverage >= 100 ? 'ACTIVE' : auditCoverage > 0 ? 'PARTIAL' : 'NEEDS DATA',
+      },
+      {
+        label: 'QR Identity Spine',
+        value: qrSpinePresence,
+        numerator: ospPasses.count + qrCredentials.count + qrEvents.count,
+        denominator: 1,
+        interpretation: 'Presence of pass, QR credential, or QR event records.',
+        status: qrSpinePresence ? 'ACTIVE SPINE' : 'NEEDS WIRING',
+      },
+      {
+        label: 'Manifest / Movement Spine',
+        value: manifestSpinePresence,
+        numerator: manifests.count + movements.count + manifestMembers.count,
+        denominator: Math.max(manifests.count + movements.count + manifestMembers.count + 1, 1),
+        interpretation: 'Presence of manifest, member, and movement records for compliance intelligence.',
+        status: manifests.table || movements.table ? 'ACTIVE SPINE' : 'BUILD TARGET',
+      },
+      {
+        label: 'Token Boundary',
+        value: tokenBoundaryScore,
+        numerator: partnerTokens.count,
+        denominator: partnerTotal.count,
+        interpretation: 'Public partner requests must not create API tokens automatically.',
+        status: tokenBoundaryScore === 100 ? 'SAFE' : 'BREACH',
+      },
+    ];
+
+    const intelligenceLayers = [
+      {
+        layer: 'Traveler Layer',
+        spineStatus: trips.table || ospPasses.table ? 'Active spine detected' : 'Build target',
+        records: trips.count + ospPasses.count,
+        parameters: ['trip windows', 'origin/location', 'pass readiness', 'traveler movement context'],
+        lguOutput: 'arrival readiness, visitor movement bands, support context',
+      },
+      {
+        layer: 'QR / Checkpoint Layer',
+        spineStatus: qrEvents.table || qrCredentials.table ? 'Active spine detected' : 'Build target',
+        records: qrEvents.count + qrCredentials.count + checkpoints.count,
+        parameters: ['QR status', 'scan type', 'checkpoint', 'actor role', 'scan outcome'],
+        lguOutput: 'movement verification, checkpoint load, anomaly detection',
+      },
+      {
+        layer: 'Operator / Manifest Layer',
+        spineStatus: manifests.table ? 'Active spine detected' : 'Build target',
+        records: manifests.count + manifestMembers.count + movements.count,
+        parameters: ['operator', 'pax count', 'manifest status', 'route', 'approval result', 'exceptions'],
+        lguOutput: 'clearance queue, compliance backlog, regulated movement status',
+      },
+      {
+        layer: 'Partner / OTA Layer',
+        spineStatus: partnerTotal.table ? 'Active spine detected' : 'Governance-gated',
+        records: partnerTotal.count + partnerAudit.count,
+        parameters: ['partner type', 'review status', 'audit outcome', 'future booking-to-pass intake'],
+        lguOutput: 'pre-arrival readiness, partner governance, integration quality',
+      },
+      {
+        layer: 'Passport Trails Layer',
+        spineStatus: stamps.table || trailProgress.table ? 'Active spine detected' : 'Build target',
+        records: stamps.count + trailProgress.count,
+        parameters: ['trail family', 'verified stops', 'completion band', 'experience category'],
+        lguOutput: 'tourism dispersal, experience participation, site pressure',
+      },
+      {
+        layer: 'Event-Wide Layer',
+        spineStatus: 'Build target',
+        records: qrEvents.count + manifests.count + trips.count,
+        parameters: ['event period', 'affected zones', 'active travelers', 'operator count', 'exception count'],
+        lguOutput: 'surge planning, safety response, public advisory strategy',
+      },
+    ];
+
+    return {
+      ok: true,
+      generatedAt: new Date().toISOString(),
+      dataStatus: {
+        activeTableCount: activeTables.length,
+        activeTables: activeTables.map((entry) => entry.table),
+        mode: 'DB_BACKED_FOUNDATION',
+        warning:
+          'This endpoint uses real database aggregation where OSP tables exist. Missing tables are surfaced as build targets, not hidden.',
+      },
+      summaryCards,
+      gauges,
+      distributions: {
+        partnerStatus: partnerStatusDistribution,
+        partnerType: partnerTypeDistribution,
+        auditEvents: auditEventDistribution,
+        qrEvents: qrEventDistribution,
+        manifestStatus: manifestStatusDistribution,
+      },
+      intelligenceLayers,
+      governanceBoundaries: [
+        'LGU intelligence is role-scoped.',
+        'Raw OTA commercial data is not exposed.',
+        'Operator financial data is not exposed.',
+        'Unrestricted traveler personal data is not exposed.',
+        'Every intelligence signal must preserve auditability and purpose limitation.',
+      ],
+    };
+  }
+}

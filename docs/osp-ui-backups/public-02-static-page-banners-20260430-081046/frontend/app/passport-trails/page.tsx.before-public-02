@@ -1,0 +1,44 @@
+import { OspPublicPageShell, PublicCardGrid, PublicSection } from "../../src/components/public/OspPublicPageShell";
+import { PublicMediaBanner } from "../../src/components/public/PublicMediaBlocks";
+
+export default function PassportTrailsPublicPage() {
+  return (
+    <OspPublicPageShell
+      eyebrow="Passport Trails"
+      title="Follow the trails. Build the journey."
+      subtitle="Choose a Siargao Partner Tour, book a Passport Trails™ Curated Tour, or build your own Passport Trail — all supported by One Siargao Pass and fulfilled by approved local partners where service is required."
+      primaryCta={{ label: "View Traveler Trails", href: "/traveler/passport-trails" }}
+      secondaryCta={{ label: "Open Passport Map", href: "/siargao-passport-map" }}
+    >
+      <PublicMediaBanner
+        eyebrow="Destination Discovery"
+        title="Structured trails for discovery, verified stops, and local experiences."
+        body="Passport Trails turns Siargao discovery into a clearer journey across partner tours, curated routes, and traveler-built trail planning."
+        variant="trails"
+        items={["Partner Tours", "Curated Trails", "DIY Trail Builder", "Passport Map"]}
+      />
+
+      <PublicSection
+        title="Three traveler-facing trail modes."
+        body="Passport Trails keeps traveler discovery clear while preserving operator fulfillment, booking truth, and QR-backed validation."
+      >
+        <PublicCardGrid
+          cards={[
+            {
+              title: "Siargao Partner Tour",
+              body: "Operated by approved local partners, with Passport stamps available where configured.",
+            },
+            {
+              title: "Passport Trails™ Curated Tour",
+              body: "Curated trail experiences fulfilled by approved local partners, with verified Passport stamp logic.",
+            },
+            {
+              title: "Build Your Own Passport Trail",
+              body: "Traveler-planned routes supported by OSP and approved partners where service is required.",
+            },
+          ]}
+        />
+      </PublicSection>
+    </OspPublicPageShell>
+  );
+}

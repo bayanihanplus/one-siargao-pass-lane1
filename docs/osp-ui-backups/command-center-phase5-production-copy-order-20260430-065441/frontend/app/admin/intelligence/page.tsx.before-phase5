@@ -1,0 +1,253 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import CommandCenterShell from "../../../src/components/intelligence/CommandCenterShell";
+import { SIARGAO_MUNICIPALITIES } from "../../../src/lib/siargaoMunicipalities";
+import { OSP_EVENT_MODES } from "../../../src/lib/ospEventModes";
+
+function getApiBaseUrl() {
+  const explicit = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
+  return "http://localhost:8001/api/v1";
+}
+
+function defaultEndDate() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function defaultStartDate() {
+  const date = new Date();
+  date.setDate(date.getDate() - 30);
+  return date.toISOString().slice(0, 10);
+}
+
+function humanize(value: string | number | undefined | null) {
+  if (value === null || value === undefined) return "Not Available";
+  return String(value)
+    .replace(/^osp_/i, "")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function friendlySource(value: string | undefined | null) {
+  if (!value) return "Source not active yet";
+
+  const map: Record<string, string> = {
+    partner_accounts: "Partner Records",
+    partner_api_audit_logs: "Partner Review Logs",
+    partner_api_tokens: "Partner Token Governance",
+    osp_qr_events: "QR Event Records",
+    inter_island_movements: "Inter-Island Movement Records",
+    spm_traveler_stamps: "Passport Trail Stamp Records",
+    spm_traveler_trail_progress: "Passport Trail Progress Records",
+    OspPass: "OSP Pass Records",
+    QrCredential: "QR Credential Records",
+    Manifest: "Manifest Records",
+    ManifestMember: "Manifest Member Records",
+    Trip: "Trip Records",
+  };
+
+  return value
+    .split(",")
+    .map((item) => map[item.trim()] || humanize(item.trim()))
+    .join(", ");
+}
+
+export default function AdminIntelligencePage() {
+  const apiBaseUrl = useMemo(() => getApiBaseUrl(), []);
+  const [municipality, setMunicipality] = useState("ALL_SIARGAO");
+  const [eventMode, setEventMode] = useState("NORMAL");
+  const [startDate, setStartDate] = useState(defaultStartDate());
+  const [endDate, setEndDate] = useState(defaultEndDate());
+  const [data, setData] = useState<any>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await fetch(
+          `${apiBaseUrl}/admin/intelligence/overview?municipality=${municipality}&eventMode=${eventMode}&startDate=${startDate}&endDate=${endDate}`,
+          { cache: "no-store" }
+        );
+
+        const json = await response.json();
+
+        if (!response.ok || !json?.ok) {
+          setError(json?.message || "Unable to load Super Admin command center.");
+          return;
+        }
+
+        setData(json);
+        setError("");
+      } catch {
+        setError("Unable to reach the OSP API. Please make sure the backend is running and try again.");
+      }
+    }
+
+    loadData();
+  }, [apiBaseUrl, municipality, eventMode, startDate, endDate]);
+
+  const navItems = [
+    { label: "Overview", active: true },
+    { label: "Movement Intelligence" },
+    { label: "Compliance Intelligence" },
+    { label: "Operator + Partner Intelligence" },
+    { label: "Marketplace + Commercial Intelligence" },
+    { label: "Traveler Intelligence" },
+    { label: "Passport Trails Intelligence" },
+    { label: "Safety + Event Intelligence" },
+    { label: "System + Audit Intelligence" },
+    { label: "Municipality View" },
+    { label: "Governance Controls" },
+  ];
+
+  return (
+    <CommandCenterShell
+      productName="Super Admin Intelligence Command Center"
+      productSubtitle="Full platform operating intelligence for running the OSP ecosystem."
+      navItems={navItems}
+      municipality={municipality}
+      municipalities={[...SIARGAO_MUNICIPALITIES]}
+      onMunicipalityChange={setMunicipality}
+      eventMode={eventMode}
+      eventModes={[...OSP_EVENT_MODES]}
+      onEventModeChange={setEventMode}
+      startDate={startDate}
+      endDate={endDate}
+      onStartDateChange={setStartDate}
+      onEndDateChange={setEndDate}
+    >
+      {error ? <div className="osp-command-alert">{error}</div> : null}
+
+      {!data ? (
+        <div className="osp-command-panel">Loading command center...</div>
+      ) : (
+        <>
+          <section className="osp-command-card-grid">
+            {(data.summaryCards || []).map((card: any) => (
+              <article className="osp-command-card" key={card.label}>
+                <p>{card.label}</p>
+                <strong>{card.value}</strong>
+                <span>{card.helper}</span>
+                <small>Admin View · {humanize(card.dataClass || "OPERATIONAL")}</small>
+              </article>
+            ))}
+
+            {(data.adminPanels || []).map((card: any) => (
+              <article className="osp-command-card" key={card.label}>
+                <p>{card.label}</p>
+                <strong>{card.value}</strong>
+                <span>{card.helper}</span>
+                <small>{humanize(card.visibility)} · {humanize(card.dataClass)}</small>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">System Gauges</h3>
+          <section className="osp-command-gauge-grid">
+            {(data.gauges || []).map((gauge: any) => (
+              <article className="osp-command-panel osp-command-gauge" key={gauge.label}>
+                <div className="osp-command-gauge-ring" style={{ ["--gauge-value" as any]: gauge.value }}>
+                  <div className="osp-command-gauge-inner">{gauge.value}%</div>
+                </div>
+                <h4>{gauge.label}</h4>
+                <span>{humanize(gauge.status)}</span>
+                <p>{gauge.interpretation}</p>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Date-Scoped Operating Counts</h3>
+          {(data.dateRangeOperationalSummary || []).length ? (
+            <section className="osp-command-date-grid">
+              {(data.dateRangeOperationalSummary || []).map((item: any) => (
+                <article className="osp-command-date-card" key={item.label}>
+                  <p>{item.label}</p>
+                  <strong>{item.value}</strong>
+                  <span>{item.helper}</span>
+                  <small>{humanize(item.visibility)} · {humanize(item.dataClass)}</small>
+                </article>
+              ))}
+            </section>
+          ) : (
+            <section className="osp-command-panel">
+              <div className="osp-command-empty-state">
+                Date-scoped operating counts are not available from the current API response. This section is wired and waiting for source alignment.
+              </div>
+            </section>
+          )}
+
+          <h3 className="osp-command-section-title">Admin Operational Queues</h3>
+          <section className="osp-command-queue-grid">
+            {(data.adminOperationalQueues || []).map((queue: any) => (
+              <article className="osp-command-queue-card" key={queue.queue}>
+                <div>
+                  <p>{queue.queue}</p>
+                  <strong>Review</strong>
+                </div>
+                <span>{humanize(queue.visibility || "ADMIN_ONLY")}</span>
+                <small>Super Admin Restricted</small>
+                <em>{queue.action}</em>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Municipality Breakdown Readiness</h3>
+          {(data.municipalityBreakdowns || []).length ? (
+            <section className="osp-command-muni-grid">
+              {(data.municipalityBreakdowns || []).map((item: any) => (
+                <article className="osp-command-muni-card" key={item.label}>
+                  <div>
+                    <p>{item.label}</p>
+                    <strong>{item.rows?.length || 0}</strong>
+                  </div>
+                  <span>{humanize(item.status)}</span>
+                  <small>Source: {friendlySource(item.table)} · Column: {humanize(item.column)}</small>
+                  {item.rows?.length ? (
+                    <div className="osp-command-mini-bars">
+                      {item.rows.map((row: any) => (
+                        <div className="osp-command-mini-bar" key={row.label}>
+                          <span>{humanize(row.label)}</span>
+                          <strong>{row.value}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <em>Municipality-specific field is not yet normalized for this source.</em>
+                  )}
+                </article>
+              ))}
+            </section>
+          ) : (
+            <section className="osp-command-panel">
+              <div className="osp-command-empty-state">
+                Municipality breakdown readiness is not available from the current API response.
+              </div>
+            </section>
+          )}
+
+          <h3 className="osp-command-section-title">Admin Intelligence Sections</h3>
+          <section className="osp-command-table">
+            {(data.adminSections || []).map((section: any) => (
+              <div className="osp-command-table-row" key={section.name}>
+                <div><strong>{section.name}</strong></div>
+                <div>{humanize(section.visibility)}</div>
+                <div>Expanded Super Admin scope</div>
+                <div>Reserved for full platform operations and governance.</div>
+              </div>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Governance Boundary</h3>
+          <section className="osp-command-panel">
+            <div className="osp-command-pill-grid">
+              {(data.governanceBoundaries || []).map((item: string) => (
+                <div className="osp-command-pill" key={item}>{item}</div>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+    </CommandCenterShell>
+  );
+}

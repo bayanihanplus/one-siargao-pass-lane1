@@ -1,5 +1,7 @@
 import { SpmThreeJourneyScanQrPanel } from "../../../src/spm/scan/SpmScanQrCta";
 import KuyaTalaEntryButton from "../../../src/traveler-assistant/KuyaTalaEntryButton";
+import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
+import PassportMapShortcut from "../../../src/components/traveler/PassportMapShortcut";
 const partnerTours = [
   {
     title: "Island Hopping Trail",
@@ -105,7 +107,18 @@ export default function PassportTrailsCatalogPage() {
         boxSizing: "border-box",
       }}
     >
-      <KuyaTalaEntryButton topic="trail" title="Ask Kuya Tala™ about Passport Trails" note="Get guided help choosing trails, understanding QR/stamp logic, and planning your next Siargao move." />
+            <section
+        aria-label="Passport Trails top shortcuts"
+        style={{
+          maxWidth: 560,
+          margin: "0 auto 14px",
+          padding: "0 14px",
+          boxSizing: "border-box",
+        }}
+      >
+        <PassportMapShortcut compact title="Open the Passport Map" body="See where Passport Trails connect across Siargao and continue your journey from the map." />
+              <KuyaTalaEntryButton topic="trail" title="Ask Kuya Tala™ about Passport Trails" note="Get guided help choosing trails, understanding QR/stamp logic, and planning your next Siargao move." />
+      </section>
       <div style={{ width: "100%", maxWidth: 430, margin: "0 auto" }}>
         <header
           style={{
@@ -439,6 +452,8 @@ export default function PassportTrailsCatalogPage() {
           </a>
         </section>
       </div>
+      <div aria-hidden="true" style={{ height: 118 }} />
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }

@@ -1,0 +1,35 @@
+import { OspPublicPageShell, PublicCardGrid, PublicSection } from "../../src/components/public/OspPublicPageShell";
+
+export default function OperatorsPage() {
+  return (
+    <OspPublicPageShell
+      eyebrow="For Local Operators"
+      title="Bring your local experiences into the One Siargao Pass ecosystem."
+      subtitle="Approved operators can activate Passport-enabled services, validate guests through QR workflows, manage operational records, and improve visibility for verified experiences."
+      primaryCta={{ label: "Request Operator Access", href: "/ota" }}
+      secondaryCta={{ label: "Operator Login", href: "/operator" }}
+    >
+      <PublicSection
+        title="Built for governed local participation."
+        body="OSP is designed to support local operators without turning the platform into an uncontrolled listing board."
+      >
+        <PublicCardGrid
+          cards={[
+            {
+              title: "Verified services",
+              body: "Connect approved experiences to Passport Trails, partner tours, and OSP-enabled traveler flows.",
+            },
+            {
+              title: "QR validation",
+              body: "Validate traveler participation through governed QR-backed access and event records.",
+            },
+            {
+              title: "Operational records",
+              body: "Support manifests, scans, acknowledgements, and records where required by the service type.",
+            },
+          ]}
+        />
+      </PublicSection>
+    </OspPublicPageShell>
+  );
+}

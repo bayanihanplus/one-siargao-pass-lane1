@@ -4,6 +4,7 @@ import { CreateTripDto } from './dto/create-trip.dto';
 import { AddTripMemberDto } from './dto/add-trip-member.dto';
 import { ClearanceStatus, RegistrationStatus, TripStatus } from '@prisma/client';
 import { FxService } from '../fx/fx.service';
+import { ensureOspPassForTrip } from '../passes/osp-pass-bootstrap';
 
 @Injectable()
 export class TripsService {
@@ -30,24 +31,43 @@ export class TripsService {
   }
 
   async create(userId: string, dto: CreateTripDto) {
-    return this.prisma.trip.create({
-      data: {
-        travelerUserId: userId,
-        tripTitle: dto.tripTitle,
-        arrivalDate: new Date(dto.arrivalDate),
-        departureDate: new Date(dto.departureDate),
-        originLocation: dto.originLocation,
-        declaredAccommodationName: dto.declaredAccommodationName,
-        clearanceStatus: ClearanceStatus.PENDING,
-        registration: {
-          create: {
-            registrationReference: `REG-DRAFT-${Date.now()}`,
-            registrationChannel: 'app',
-            registrationCompletedAt: null,
+    return this.prisma.$transaction(async (tx) => {
+      const trip = await tx.trip.create({
+        data: {
+          travelerUserId: userId,
+          tripTitle: dto.tripTitle,
+          arrivalDate: new Date(dto.arrivalDate),
+          departureDate: new Date(dto.departureDate),
+          originLocation: dto.originLocation,
+          declaredAccommodationName: dto.declaredAccommodationName,
+          clearanceStatus: ClearanceStatus.PENDING,
+          registration: {
+            create: {
+              registrationReference: `REG-DRAFT-${Date.now()}`,
+              registrationChannel: 'app',
+              registrationCompletedAt: null,
+            },
           },
         },
-      },
-      include: { registration: true },
+        include: { registration: true },
+      });
+
+      const pass = await ensureOspPassForTrip(tx as any, {
+        tripId: trip.id,
+        travelerUserId: userId,
+        expiresAt: new Date(new Date(dto.departureDate).getTime() + 1000 * 60 * 60 * 24),
+        source: 'api_trip_create',
+        metadataJson: {
+          tripTitle: dto.tripTitle ?? null,
+          originLocation: dto.originLocation ?? null,
+          declaredAccommodationName: dto.declaredAccommodationName ?? null,
+        },
+      });
+
+      return {
+        ...trip,
+        pass,
+      };
     });
   }
 

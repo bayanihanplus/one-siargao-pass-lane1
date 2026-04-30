@@ -1,0 +1,235 @@
+"use client";
+
+import { FormEvent, useMemo, useState } from "react";
+
+type SubmitState =
+  | { status: "idle"; message: "" }
+  | { status: "submitting"; message: "Submitting partner request..." }
+  | { status: "success"; message: string; applicationId?: string }
+  | { status: "error"; message: string };
+
+const partnerTypes = [
+  { value: "OTA", label: "OTA / Online Travel Agency" },
+  { value: "INTERNATIONAL_OTA", label: "International OTA" },
+  { value: "TRAVEL_AGENCY", label: "Travel Agency" },
+  { value: "HOTEL_DESK", label: "Hotel / Front Desk" },
+  { value: "OPERATOR", label: "Local Operator" },
+  { value: "AFFILIATE", label: "Affiliate / Distribution Partner" },
+];
+
+function getApiBaseUrl() {
+  const explicit = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
+  return "http://localhost:8001/api/v1";
+}
+
+export default function OtaPartnerRequestForm() {
+  const apiBaseUrl = useMemo(() => getApiBaseUrl(), []);
+  const [state, setState] = useState<SubmitState>({ status: "idle", message: "" });
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const payload = {
+      partnerName: String(formData.get("partnerName") || "").trim(),
+      partnerType: String(formData.get("partnerType") || "TRAVEL_AGENCY").trim(),
+      contactEmail: String(formData.get("contactEmail") || "").trim(),
+      contactMobile: String(formData.get("contactMobile") || "").trim(),
+      companyName: String(formData.get("companyName") || "").trim(),
+      websiteUrl: String(formData.get("websiteUrl") || "").trim(),
+      countryCode: String(formData.get("countryCode") || "").trim(),
+      notes: String(formData.get("notes") || "").trim(),
+    };
+
+    if (!payload.partnerName || !payload.contactEmail) {
+      setState({
+        status: "error",
+        message: "Please provide your organization name and contact email.",
+      });
+      return;
+    }
+
+    setState({ status: "submitting", message: "Submitting partner request..." });
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/partners/apply`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data?.ok) {
+        setState({
+          status: "error",
+          message:
+            data?.message ||
+            data?.error?.message ||
+            "Partner request could not be submitted. Please check the details and try again.",
+        });
+        return;
+      }
+
+      form.reset();
+
+      setState({
+        status: "success",
+        message:
+          data?.data?.message ||
+          "Partner request received. The OSP team will review the request before any API or partner access is activated.",
+        applicationId: data?.data?.id,
+      });
+    } catch {
+      setState({
+        status: "error",
+        message:
+          "Unable to reach the OSP API. Please make sure the backend is running and try again.",
+      });
+    }
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="rounded-[2rem] border border-emerald-950/10 bg-white/85 p-5 shadow-sm shadow-emerald-950/5 md:p-6"
+    >
+      <div className="grid gap-4 md:grid-cols-2">
+        <label className="block">
+          <span className="text-xs font-black uppercase tracking-[0.16em] text-emerald-900">
+            Organization / Partner Name
+          </span>
+          <input
+            name="partnerName"
+            required
+            placeholder="Example: Siargao Travel Desk"
+            className="mt-2 w-full rounded-2xl border border-emerald-950/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-700"
+          />
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-black uppercase tracking-[0.16em] text-emerald-900">
+            Partner Type
+          </span>
+          <select
+            name="partnerType"
+            defaultValue="TRAVEL_AGENCY"
+            className="mt-2 w-full rounded-2xl border border-emerald-950/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-700"
+          >
+            {partnerTypes.map((type) => (
+              <option key={type.value} value={type.value}>
+                {type.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-black uppercase tracking-[0.16em] text-emerald-900">
+            Contact Email
+          </span>
+          <input
+            name="contactEmail"
+            type="email"
+            required
+            placeholder="partner@example.com"
+            className="mt-2 w-full rounded-2xl border border-emerald-950/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-700"
+          />
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-black uppercase tracking-[0.16em] text-emerald-900">
+            Contact Mobile
+          </span>
+          <input
+            name="contactMobile"
+            placeholder="+63..."
+            className="mt-2 w-full rounded-2xl border border-emerald-950/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-700"
+          />
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-black uppercase tracking-[0.16em] text-emerald-900">
+            Company Name
+          </span>
+          <input
+            name="companyName"
+            placeholder="Registered company or operating name"
+            className="mt-2 w-full rounded-2xl border border-emerald-950/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-700"
+          />
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-black uppercase tracking-[0.16em] text-emerald-900">
+            Website / Booking Page
+          </span>
+          <input
+            name="websiteUrl"
+            placeholder="https://..."
+            className="mt-2 w-full rounded-2xl border border-emerald-950/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-700"
+          />
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-black uppercase tracking-[0.16em] text-emerald-900">
+            Country
+          </span>
+          <input
+            name="countryCode"
+            placeholder="PH"
+            maxLength={2}
+            className="mt-2 w-full rounded-2xl border border-emerald-950/15 bg-white px-4 py-3 text-sm uppercase text-slate-900 outline-none focus:border-emerald-700"
+          />
+        </label>
+
+        <label className="block md:col-span-2">
+          <span className="text-xs font-black uppercase tracking-[0.16em] text-emerald-900">
+            Booking / Integration Use Case
+          </span>
+          <textarea
+            name="notes"
+            rows={5}
+            placeholder="Tell us how your team plans to connect bookings, travelers, operator services, or API workflows into One Siargao Pass."
+            className="mt-2 w-full rounded-2xl border border-emerald-950/15 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-emerald-700"
+          />
+        </label>
+      </div>
+
+      <div className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm leading-6 text-slate-700">
+        Partner access is reviewed before activation. API tokens, sandbox access, and production booking-to-pass workflows are not issued automatically from this form.
+      </div>
+
+      {state.status !== "idle" ? (
+        <div
+          className={
+            state.status === "success"
+              ? "mt-4 rounded-2xl border border-emerald-800/20 bg-emerald-50 p-4 text-sm font-semibold leading-6 text-emerald-950"
+              : state.status === "error"
+                ? "mt-4 rounded-2xl border border-red-800/20 bg-red-50 p-4 text-sm font-semibold leading-6 text-red-900"
+                : "mt-4 rounded-2xl border border-amber-800/20 bg-amber-50 p-4 text-sm font-semibold leading-6 text-amber-900"
+          }
+        >
+          <p>{state.message}</p>
+          {state.status === "success" && state.applicationId ? (
+            <p className="mt-2 text-xs font-black uppercase tracking-[0.12em]">
+              Application ID: {state.applicationId}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
+      <button
+        type="submit"
+        disabled={state.status === "submitting"}
+        className="mt-5 w-full rounded-full bg-emerald-950 px-6 py-4 text-sm font-black uppercase tracking-[0.16em] text-amber-100 shadow-sm disabled:cursor-not-allowed disabled:opacity-60 md:w-auto"
+      >
+        {state.status === "submitting" ? "Submitting..." : "Submit Partner Request"}
+      </button>
+    </form>
+  );
+}

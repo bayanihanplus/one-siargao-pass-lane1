@@ -1,0 +1,45 @@
+import { OspPublicPageShell, PublicCardGrid, PublicSection } from "../../src/components/public/OspPublicPageShell";
+
+export default function OtaPage() {
+  return (
+    <OspPublicPageShell
+      eyebrow="OTA / API Partners"
+      title="Connect confirmed bookings to One Siargao Pass."
+      subtitle="Approved OTA, travel agency, hotel desk, and booking partners can connect traveler booking records into OSP pass and QR workflows through governed partner access."
+      primaryCta={{ label: "Request Partner Access", href: "/ota#partner-request" }}
+      secondaryCta={{ label: "View Developer Overview", href: "/developers" }}
+    >
+      <PublicSection
+        title="Partner access is reviewed before activation."
+        body="OSP partner access is governed. Booking partners may request access, but QR/pass workflows remain OSP-issued and OSP-controlled."
+      >
+        <PublicCardGrid
+          cards={[
+            {
+              title: "Pre-arrival readiness",
+              body: "Connect traveler booking references to OSP pass workflows before arrival where approved.",
+            },
+            {
+              title: "External booking reference",
+              body: "Preserve OTA or agency booking context without creating a separate identity authority.",
+            },
+            {
+              title: "Governed QR status",
+              body: "Partners can support OSP-issued pass and QR readiness through approved workflows only.",
+            },
+          ]}
+        />
+      </PublicSection>
+
+      <PublicSection
+        eyebrow="Partner Request"
+        title="Request access"
+        body="Partner review is required before API access, sandbox workflows, token issuance, or production booking-to-pass integration."
+      >
+        <div id="partner-request" className="rounded-[1.5rem] border border-amber-900/10 bg-white/80 p-5 text-sm leading-6 text-slate-700">
+          Send your organization name, partner type, contact email, country, and booking use case to the OSP team for review. API token creation is not exposed publicly.
+        </div>
+      </PublicSection>
+    </OspPublicPageShell>
+  );
+}

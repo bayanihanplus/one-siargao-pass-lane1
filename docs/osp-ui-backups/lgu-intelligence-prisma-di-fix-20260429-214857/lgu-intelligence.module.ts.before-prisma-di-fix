@@ -1,0 +1,9 @@
+import { Module } from '@nestjs/common';
+import { LguIntelligenceController } from './lgu-intelligence.controller';
+import { LguIntelligenceService } from './lgu-intelligence.service';
+
+@Module({
+  controllers: [LguIntelligenceController],
+  providers: [LguIntelligenceService],
+})
+export class LguIntelligenceModule {}

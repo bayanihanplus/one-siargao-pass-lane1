@@ -1,0 +1,12 @@
+import { Controller, Get, Query } from '@nestjs/common';
+import { LguIntelligenceService } from './lgu-intelligence.service';
+
+@Controller('lgu/intelligence')
+export class LguIntelligenceController {
+  constructor(private readonly lguIntelligenceService: LguIntelligenceService) {}
+
+  @Get('overview')
+  getOverview(@Query('municipality') municipality?: string) {
+    return this.lguIntelligenceService.getOverview(municipality);
+  }
+}

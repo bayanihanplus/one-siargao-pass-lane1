@@ -1,0 +1,729 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../database/prisma.service';
+import { normalizeMunicipality } from '../intelligence/municipalities';
+import { normalizeEventMode } from '../intelligence/event-modes';
+
+type CountResult = {
+  table: string | null;
+  count: number;
+};
+
+type GroupResult = {
+  label: string;
+  value: number;
+};
+
+function numberFromRow(value: any): number {
+  if (typeof value === 'bigint') return Number(value);
+  if (typeof value === 'number') return value;
+  if (typeof value === 'string') return Number(value) || 0;
+  return 0;
+}
+
+@Injectable()
+export class LguIntelligenceService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  private normalizeDateRange(startDate?: string, endDate?: string) {
+    const today = new Date();
+    const fallbackEnd = today.toISOString().slice(0, 10);
+    const fallbackStartDate = new Date(today);
+    fallbackStartDate.setDate(today.getDate() - 30);
+    const fallbackStart = fallbackStartDate.toISOString().slice(0, 10);
+
+    const safeDate = (value: string | undefined, fallback: string) => {
+      if (!value) return fallback;
+      const parsed = new Date(value);
+      if (Number.isNaN(parsed.getTime())) return fallback;
+      return parsed.toISOString().slice(0, 10);
+    };
+
+    return {
+      startDate: safeDate(startDate, fallbackStart),
+      endDate: safeDate(endDate, fallbackEnd),
+    };
+  }
+
+  private buildResponseMeta(scope: 'LGU_SAFE' | 'ADMIN_FULL', municipality?: string, eventMode?: string, startDate?: string, endDate?: string) {
+    const resolvedMunicipality = normalizeMunicipality(municipality);
+    const resolvedEventMode = normalizeEventMode(eventMode);
+    const resolvedDateRange = this.normalizeDateRange(startDate, endDate);
+
+    return {
+      scope,
+      municipality: resolvedMunicipality,
+      municipalityMode: resolvedMunicipality === 'ALL_SIARGAO' ? 'ISLAND_WIDE' : 'MUNICIPALITY_FILTERED',
+      eventMode: resolvedEventMode,
+      dateRange: resolvedDateRange,
+      classification: {
+        LGU_SAFE: 'Aggregated operational intelligence only.',
+        ADMIN_FULL: 'Expanded platform operating intelligence for Super Admin.',
+      }[scope],
+    };
+  }
+
+  private withGovernanceMeta(item: any, visibility: 'LGU_SAFE' | 'ADMIN_ONLY' | 'GOVERNANCE_GATED', dataClass: 'AGGREGATED' | 'OPERATIONAL' | 'COMMERCIAL' | 'PERSONAL' | 'SECURITY') {
+    return {
+      ...item,
+      visibility,
+      dataClass,
+    };
+  }
+
+  private async tableExists(tableName: string): Promise<boolean> {
+    const rows = await this.prisma.$queryRawUnsafe<any[]>(
+      `
+      SELECT EXISTS (
+        SELECT 1
+        FROM information_schema.tables
+        WHERE table_schema = 'public'
+        AND table_name = $1
+      ) AS exists
+      `,
+      tableName,
+    );
+
+    return Boolean(rows?.[0]?.exists);
+  }
+
+  private expandTableCandidates(candidates: string[]): string[] {
+    const variants = new Set<string>();
+
+    for (const candidate of candidates) {
+      variants.add(candidate);
+      variants.add(candidate.toLowerCase());
+
+      const snake = candidate
+        .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+        .replace(/-/g, '_')
+        .toLowerCase();
+
+      variants.add(snake);
+      variants.add(`${snake}s`);
+
+      if (candidate === 'PartnerAccount') {
+        variants.add('partner_account');
+        variants.add('partner_accounts');
+      }
+
+      if (candidate === 'PartnerApiAuditLog') {
+        variants.add('partner_api_audit_log');
+        variants.add('partner_api_audit_logs');
+        variants.add('partner_api_audit');
+        variants.add('partner_api_audits');
+      }
+
+      if (candidate === 'PartnerApiToken') {
+        variants.add('partner_api_token');
+        variants.add('partner_api_tokens');
+      }
+    }
+
+    return [...variants];
+  }
+
+  private async firstExistingTable(candidates: string[]): Promise<string | null> {
+    for (const table of this.expandTableCandidates(candidates)) {
+      if (await this.tableExists(table)) return table;
+    }
+    return null;
+  }
+
+  private async countFromCandidates(candidates: string[], whereClause = ''): Promise<CountResult> {
+    const table = await this.firstExistingTable(candidates);
+    if (!table) return { table: null, count: 0 };
+
+    const rows = await this.prisma.$queryRawUnsafe<any[]>(
+      `SELECT COUNT(*)::int AS count FROM "${table}" ${whereClause}`,
+    );
+
+    return {
+      table,
+      count: numberFromRow(rows?.[0]?.count),
+    };
+  }
+
+  private expandColumnCandidates(column: string | string[]): string[] {
+    const source = Array.isArray(column) ? column : [column];
+    const variants = new Set<string>();
+
+    for (const candidate of source) {
+      variants.add(candidate);
+      variants.add(candidate.toLowerCase());
+
+      const snake = candidate
+        .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+        .replace(/-/g, '_')
+        .toLowerCase();
+
+      variants.add(snake);
+    }
+
+    return [...variants];
+  }
+
+  private async firstExistingColumn(table: string, column: string | string[]): Promise<string | null> {
+    for (const candidate of this.expandColumnCandidates(column)) {
+      const columnRows = await this.prisma.$queryRawUnsafe<any[]>(
+        `
+        SELECT EXISTS (
+          SELECT 1
+          FROM information_schema.columns
+          WHERE table_schema = 'public'
+          AND table_name = $1
+          AND column_name = $2
+        ) AS exists
+        `,
+        table,
+        candidate,
+      );
+
+      if (Boolean(columnRows?.[0]?.exists)) {
+        return candidate;
+      }
+    }
+
+    return null;
+  }
+
+  private async groupByColumn(candidates: string[], column: string | string[]): Promise<{ table: string | null; column: string | null; rows: GroupResult[] }> {
+    const table = await this.firstExistingTable(candidates);
+    if (!table) return { table: null, column: null, rows: [] };
+
+    const resolvedColumn = await this.firstExistingColumn(table, column);
+
+    if (!resolvedColumn) {
+      return { table, column: null, rows: [] };
+    }
+
+    const rows = await this.prisma.$queryRawUnsafe<any[]>(
+      `
+      SELECT COALESCE("${resolvedColumn}"::text, 'UNKNOWN') AS label, COUNT(*)::int AS value
+      FROM "${table}"
+      GROUP BY COALESCE("${resolvedColumn}"::text, 'UNKNOWN')
+      ORDER BY value DESC
+      LIMIT 12
+      `,
+    );
+
+    return {
+      table,
+      column: resolvedColumn,
+      rows: rows.map((row: any) => ({
+        label: String(row.label || 'UNKNOWN'),
+        value: numberFromRow(row.value),
+      })),
+    };
+  }
+
+  private async countWithinDateRange(
+    candidates: string[],
+    startDate?: string,
+    endDate?: string,
+    preferredDateColumns: string[] = ['createdAt', 'created_at', 'updatedAt', 'updated_at', 'timestamp', 'scannedAt', 'scanned_at', 'occurredAt', 'occurred_at'],
+  ): Promise<{ table: string | null; column: string | null; count: number }> {
+    const table = await this.firstExistingTable(candidates);
+    if (!table) return { table: null, column: null, count: 0 };
+
+    const dateColumn = await this.firstExistingColumn(table, preferredDateColumns);
+    if (!dateColumn) return { table, column: null, count: 0 };
+
+    const range = this.normalizeDateRange(startDate, endDate);
+
+    const rows = await this.prisma.$queryRawUnsafe<any[]>(
+      `
+      SELECT COUNT(*)::int AS count
+      FROM "${table}"
+      WHERE "${dateColumn}" >= $1::timestamptz
+      AND "${dateColumn}" < ($2::date + interval '1 day')
+      `,
+      range.startDate,
+      range.endDate,
+    );
+
+    return {
+      table,
+      column: dateColumn,
+      count: numberFromRow(rows?.[0]?.count),
+    };
+  }
+
+  private async municipalityBreakdown(
+    label: string,
+    candidates: string[],
+  ): Promise<{ label: string; table: string | null; column: string | null; rows: GroupResult[]; status: string }> {
+    const result = await this.groupByColumn(candidates, [
+      'municipality',
+      'municipalityCode',
+      'municipality_code',
+      'town',
+      'city',
+      'locationMunicipality',
+      'location_municipality',
+      'destinationMunicipality',
+      'destination_municipality',
+    ]);
+
+    return {
+      label,
+      table: result.table,
+      column: result.column,
+      rows: result.rows,
+      status: result.rows.length > 0 ? 'ACTIVE_BREAKDOWN' : result.table ? 'TABLE_ACTIVE_COLUMN_BUILD_TARGET' : 'SOURCE_BUILD_TARGET',
+    };
+  }
+
+  private percent(numerator: number, denominator: number): number {
+    if (!denominator || denominator <= 0) return 0;
+    return Math.max(0, Math.min(100, Math.round((numerator / denominator) * 100)));
+  }
+
+  async getOverview(municipality?: string, eventMode?: string, startDate?: string, endDate?: string) {
+    const resolvedRange = this.normalizeDateRange(startDate, endDate);
+    const partnerTotal = await this.countFromCandidates(['PartnerAccount', 'partner_accounts', 'partner_account']);
+    const partnerApproved = await this.countFromCandidates(['PartnerAccount', 'partner_accounts', 'partner_account'], `WHERE "status"::text = 'APPROVED'`);
+    const partnerPending = await this.countFromCandidates(['PartnerAccount', 'partner_accounts', 'partner_account'], `WHERE "status"::text = 'PENDING_REVIEW'`);
+    const partnerAudit = await this.countFromCandidates(['PartnerApiAuditLog', 'partner_api_audit_logs', 'partner_api_audit_log']);
+    const partnerTokens = await this.countFromCandidates(['PartnerApiToken', 'partner_api_tokens', 'partner_api_token']);
+
+    const trips = await this.countFromCandidates(['Trip', 'TravelerTrip']);
+    const ospPasses = await this.countFromCandidates(['OspPass', 'OSPpass', 'Pass']);
+    const qrCredentials = await this.countFromCandidates(['QrCredential', 'QRCredential']);
+    const qrEvents = await this.countFromCandidates(['OspQrEvent', 'QrEvent']);
+    const manifests = await this.countFromCandidates(['Manifest', 'OspManifest', 'TripManifest']);
+    const manifestMembers = await this.countFromCandidates(['ManifestMember', 'OspManifestMember']);
+    const checkpoints = await this.countFromCandidates(['OspCheckpoint', 'Checkpoint']);
+    const movements = await this.countFromCandidates(['InterIslandMovement', 'OspInterIslandMovement']);
+    const stamps = await this.countFromCandidates(['SpmTravelerStamp']);
+    const trailProgress = await this.countFromCandidates(['SpmTravelerTrailProgress']);
+
+    const partnerStatusDistribution = await this.groupByColumn(['PartnerAccount', 'partner_accounts', 'partner_account'], ['status']);
+    const partnerTypeDistribution = await this.groupByColumn(['PartnerAccount', 'partner_accounts', 'partner_account'], ['partnerType', 'partner_type']);
+    const auditEventDistribution = await this.groupByColumn(['PartnerApiAuditLog', 'partner_api_audit_logs', 'partner_api_audit_log'], ['eventType', 'event_type']);
+    const qrEventDistribution = await this.groupByColumn(['OspQrEvent', 'QrEvent'], ['eventType', 'event_type']);
+    const manifestStatusDistribution = await this.groupByColumn(['Manifest', 'OspManifest', 'TripManifest'], 'status');
+
+    const dateScopedPartnerApplications = await this.countWithinDateRange(
+      ['PartnerAccount', 'partner_accounts', 'partner_account'],
+      resolvedRange.startDate,
+      resolvedRange.endDate,
+    );
+
+    const dateScopedPartnerAuditEvents = await this.countWithinDateRange(
+      ['PartnerApiAuditLog', 'partner_api_audit_logs', 'partner_api_audit_log'],
+      resolvedRange.startDate,
+      resolvedRange.endDate,
+    );
+
+    const dateScopedQrEvents = await this.countWithinDateRange(
+      ['OspQrEvent', 'osp_qr_events', 'QrEvent'],
+      resolvedRange.startDate,
+      resolvedRange.endDate,
+      ['createdAt', 'created_at', 'timestamp', 'scannedAt', 'scanned_at', 'occurredAt', 'occurred_at'],
+    );
+
+    const dateScopedManifests = await this.countWithinDateRange(
+      ['Manifest', 'OspManifest', 'TripManifest'],
+      resolvedRange.startDate,
+      resolvedRange.endDate,
+    );
+
+    const dateScopedMovements = await this.countWithinDateRange(
+      ['InterIslandMovement', 'inter_island_movements', 'OspInterIslandMovement'],
+      resolvedRange.startDate,
+      resolvedRange.endDate,
+    );
+
+    const dateScopedPassportTrailActivity = await this.countWithinDateRange(
+      ['SpmTravelerStamp', 'spm_traveler_stamps'],
+      resolvedRange.startDate,
+      resolvedRange.endDate,
+    );
+
+    const municipalityBreakdowns = [
+      await this.municipalityBreakdown('Trip Municipality Breakdown', ['Trip', 'TravelerTrip']),
+      await this.municipalityBreakdown('Manifest Municipality Breakdown', ['Manifest', 'OspManifest', 'TripManifest']),
+      await this.municipalityBreakdown('QR Event Municipality Breakdown', ['OspQrEvent', 'osp_qr_events', 'QrEvent']),
+      await this.municipalityBreakdown('Partner Municipality Breakdown', ['PartnerAccount', 'partner_accounts', 'partner_account']),
+      await this.municipalityBreakdown('Passport Trails Municipality Breakdown', ['SpmTravelerStamp', 'spm_traveler_stamps']),
+    ];
+
+
+    const activeTables = [
+      partnerTotal,
+      partnerAudit,
+      partnerTokens,
+      trips,
+      ospPasses,
+      qrCredentials,
+      qrEvents,
+      manifests,
+      manifestMembers,
+      checkpoints,
+      movements,
+      stamps,
+      trailProgress,
+    ].filter((entry) => entry.table);
+
+    const partnerReadiness = this.percent(partnerApproved.count, partnerTotal.count);
+    const auditCoverage = this.percent(partnerAudit.count, Math.max(partnerTotal.count, 1));
+    const qrSpinePresence = qrEvents.count > 0 || qrCredentials.count > 0 || ospPasses.count > 0 ? 100 : 0;
+    const manifestSpinePresence = manifests.table ? this.percent(manifests.count, Math.max(manifests.count + partnerPending.count, 1)) : 0;
+    const tokenBoundaryScore = partnerTokens.count === 0 ? 100 : 0;
+
+    const summaryCards = [
+      {
+        label: 'Partner Applications',
+        value: partnerTotal.count,
+        helper: `${partnerApproved.count} approved · ${partnerPending.count} pending review`,
+        source: partnerTotal.table || 'PartnerAccount not found',
+      },
+      {
+        label: 'Partner Audit Events',
+        value: partnerAudit.count,
+        helper: 'Public intake and admin review events',
+        source: partnerAudit.table || 'PartnerApiAuditLog not found',
+      },
+      {
+        label: 'OSP Pass / QR Spine',
+        value: ospPasses.count + qrCredentials.count + qrEvents.count,
+        helper: `${ospPasses.count} passes · ${qrCredentials.count} credentials · ${qrEvents.count} QR events`,
+        source: [ospPasses.table, qrCredentials.table, qrEvents.table].filter(Boolean).join(', ') || 'QR spine tables not found',
+      },
+      {
+        label: 'Manifest / Movement Spine',
+        value: manifests.count + movements.count + manifestMembers.count,
+        helper: `${manifests.count} manifests · ${movements.count} movements · ${manifestMembers.count} members`,
+        source: [manifests.table, movements.table, manifestMembers.table].filter(Boolean).join(', ') || 'Manifest/movement tables not found',
+      },
+    ];
+
+    const gauges = [
+      {
+        label: 'Partner Readiness',
+        value: partnerReadiness,
+        numerator: partnerApproved.count,
+        denominator: partnerTotal.count,
+        interpretation: 'Approved partner coverage over all partner applications.',
+        status: partnerReadiness >= 70 ? 'STRONG' : partnerReadiness > 0 ? 'BUILDING' : 'NEEDS DATA',
+      },
+      {
+        label: 'Audit Coverage',
+        value: auditCoverage,
+        numerator: partnerAudit.count,
+        denominator: Math.max(partnerTotal.count, 1),
+        interpretation: 'Audit log presence compared with partner records.',
+        status: auditCoverage >= 100 ? 'ACTIVE' : auditCoverage > 0 ? 'PARTIAL' : 'NEEDS DATA',
+      },
+      {
+        label: 'QR Identity Spine',
+        value: qrSpinePresence,
+        numerator: ospPasses.count + qrCredentials.count + qrEvents.count,
+        denominator: 1,
+        interpretation: 'Presence of pass, QR credential, or QR event records.',
+        status: qrSpinePresence ? 'ACTIVE SPINE' : 'NEEDS WIRING',
+      },
+      {
+        label: 'Manifest / Movement Spine',
+        value: manifestSpinePresence,
+        numerator: manifests.count + movements.count + manifestMembers.count,
+        denominator: Math.max(manifests.count + movements.count + manifestMembers.count + 1, 1),
+        interpretation: 'Presence of manifest, member, and movement records for compliance intelligence.',
+        status: manifests.table || movements.table ? 'ACTIVE SPINE' : 'BUILD TARGET',
+      },
+      {
+        label: 'Token Boundary',
+        value: tokenBoundaryScore,
+        numerator: partnerTokens.count,
+        denominator: partnerTotal.count,
+        interpretation: 'Public partner requests must not create API tokens automatically.',
+        status: tokenBoundaryScore === 100 ? 'SAFE' : 'BREACH',
+      },
+    ];
+
+    const intelligenceLayers = [
+      {
+        layer: 'Traveler Layer',
+        spineStatus: trips.table || ospPasses.table ? 'Active spine detected' : 'Build target',
+        records: trips.count + ospPasses.count,
+        parameters: ['trip windows', 'origin/location', 'pass readiness', 'traveler movement context'],
+        lguOutput: 'arrival readiness, visitor movement bands, support context',
+      },
+      {
+        layer: 'QR / Checkpoint Layer',
+        spineStatus: qrEvents.table || qrCredentials.table ? 'Active spine detected' : 'Build target',
+        records: qrEvents.count + qrCredentials.count + checkpoints.count,
+        parameters: ['QR status', 'scan type', 'checkpoint', 'actor role', 'scan outcome'],
+        lguOutput: 'movement verification, checkpoint load, anomaly detection',
+      },
+      {
+        layer: 'Operator / Manifest Layer',
+        spineStatus: manifests.table ? 'Active spine detected' : 'Build target',
+        records: manifests.count + manifestMembers.count + movements.count,
+        parameters: ['operator', 'pax count', 'manifest status', 'route', 'approval result', 'exceptions'],
+        lguOutput: 'clearance queue, compliance backlog, regulated movement status',
+      },
+      {
+        layer: 'Partner / OTA Layer',
+        spineStatus: partnerTotal.table ? 'Active spine detected' : 'Governance-gated',
+        records: partnerTotal.count + partnerAudit.count,
+        parameters: ['partner type', 'review status', 'audit outcome', 'future booking-to-pass intake'],
+        lguOutput: 'pre-arrival readiness, partner governance, integration quality',
+      },
+      {
+        layer: 'Passport Trails Layer',
+        spineStatus: stamps.table || trailProgress.table ? 'Active spine detected' : 'Build target',
+        records: stamps.count + trailProgress.count,
+        parameters: ['trail family', 'verified stops', 'completion band', 'experience category'],
+        lguOutput: 'tourism dispersal, experience participation, site pressure',
+      },
+      {
+        layer: 'Event-Wide Layer',
+        spineStatus: 'Build target',
+        records: qrEvents.count + manifests.count + trips.count,
+        parameters: ['event period', 'affected zones', 'active travelers', 'operator count', 'exception count'],
+        lguOutput: 'surge planning, safety response, public advisory strategy',
+      },
+    ];
+
+    return {
+      ok: true,
+      generatedAt: new Date().toISOString(),
+      dataStatus: {
+        activeTableCount: activeTables.length,
+        activeTables: activeTables.map((entry) => entry.table),
+        mode: 'DB_BACKED_FOUNDATION',
+        warning:
+          'This endpoint uses real database aggregation where OSP tables exist. Missing tables are surfaced as build targets, not hidden.',
+      },
+
+      executiveSummaryPanels: [
+        this.withGovernanceMeta({
+          label: 'Today\'s Operating Picture',
+          value: summaryCards.reduce((total: number, card: any) => total + Number(card.value || 0), 0),
+          helper: 'Combined visible operating records from available LGU-safe layers.',
+          priority: 'HIGH',
+        }, 'LGU_SAFE', 'AGGREGATED'),
+        this.withGovernanceMeta({
+          label: 'Compliance Pressure',
+          value: manifests.count + movements.count,
+          helper: 'Manifest and movement records available for compliance coordination.',
+          priority: manifests.count + movements.count > 0 ? 'ACTIVE' : 'BUILD_TARGET',
+        }, 'LGU_SAFE', 'OPERATIONAL'),
+        this.withGovernanceMeta({
+          label: 'Movement Pressure',
+          value: qrEvents.count + qrCredentials.count,
+          helper: 'QR and checkpoint-linked movement signals currently detected.',
+          priority: qrEvents.count + qrCredentials.count > 0 ? 'ACTIVE' : 'BUILD_TARGET',
+        }, 'LGU_SAFE', 'AGGREGATED'),
+        this.withGovernanceMeta({
+          label: 'Action Required',
+          value: partnerPending.count,
+          helper: 'Pending partner reviews and visible coordination items needing staff attention.',
+          priority: partnerPending.count > 0 ? 'REVIEW' : 'CLEAR',
+        }, 'LGU_SAFE', 'OPERATIONAL'),
+      ],
+      eventWideFilters: [
+        { value: 'NORMAL', label: 'Normal Operations' },
+        { value: 'PEAK_SEASON', label: 'Peak Season' },
+        { value: 'WEATHER_DISRUPTION', label: 'Weather Disruption' },
+        { value: 'SAFETY_ADVISORY', label: 'Safety Advisory' },
+        { value: 'OFFICIAL_EVENT', label: 'Official Event' },
+      ],
+
+      dateRangeOperationalSummary: [
+        this.withGovernanceMeta({
+          label: 'Partner Applications in Range',
+          value: dateScopedPartnerApplications.count,
+          helper: `Source: ${dateScopedPartnerApplications.table || 'build target'} · Date column: ${dateScopedPartnerApplications.column || 'not detected'}`,
+        }, 'LGU_SAFE', 'AGGREGATED'),
+        this.withGovernanceMeta({
+          label: 'Partner Audit Events in Range',
+          value: dateScopedPartnerAuditEvents.count,
+          helper: `Source: ${dateScopedPartnerAuditEvents.table || 'build target'} · Date column: ${dateScopedPartnerAuditEvents.column || 'not detected'}`,
+        }, 'LGU_SAFE', 'OPERATIONAL'),
+        this.withGovernanceMeta({
+          label: 'QR Events in Range',
+          value: dateScopedQrEvents.count,
+          helper: `Source: ${dateScopedQrEvents.table || 'build target'} · Date column: ${dateScopedQrEvents.column || 'not detected'}`,
+        }, 'LGU_SAFE', 'AGGREGATED'),
+        this.withGovernanceMeta({
+          label: 'Manifests in Range',
+          value: dateScopedManifests.count,
+          helper: `Source: ${dateScopedManifests.table || 'build target'} · Date column: ${dateScopedManifests.column || 'not detected'}`,
+        }, 'LGU_SAFE', 'OPERATIONAL'),
+        this.withGovernanceMeta({
+          label: 'Inter-Island Movements in Range',
+          value: dateScopedMovements.count,
+          helper: `Source: ${dateScopedMovements.table || 'build target'} · Date column: ${dateScopedMovements.column || 'not detected'}`,
+        }, 'LGU_SAFE', 'OPERATIONAL'),
+        this.withGovernanceMeta({
+          label: 'Passport Trail Activity in Range',
+          value: dateScopedPassportTrailActivity.count,
+          helper: `Source: ${dateScopedPassportTrailActivity.table || 'build target'} · Date column: ${dateScopedPassportTrailActivity.column || 'not detected'}`,
+        }, 'LGU_SAFE', 'AGGREGATED'),
+      ],
+      municipalityBreakdowns,
+      eventWideSummary: [
+        this.withGovernanceMeta({
+          label: 'Event Mode',
+          value: this.buildResponseMeta('LGU_SAFE', municipality, eventMode, startDate, endDate).eventMode,
+          helper: 'Current operating mode for destination coordination.',
+        }, 'LGU_SAFE', 'OPERATIONAL'),
+        this.withGovernanceMeta({
+          label: 'Date Range',
+          value: `${this.buildResponseMeta('LGU_SAFE', municipality, eventMode, startDate, endDate).dateRange.startDate} → ${this.buildResponseMeta('LGU_SAFE', municipality, eventMode, startDate, endDate).dateRange.endDate}`,
+          helper: 'Filter window prepared for event-wide operational reporting.',
+        }, 'LGU_SAFE', 'AGGREGATED'),
+        this.withGovernanceMeta({
+          label: 'Municipality Scope',
+          value: this.buildResponseMeta('LGU_SAFE', municipality, eventMode, startDate, endDate).municipality,
+          helper: 'Municipality-aware view. Current aggregation is island-wide until municipal data fields are fully normalized.',
+        }, 'LGU_SAFE', 'AGGREGATED'),
+      ],
+      operationalQueues: [
+        this.withGovernanceMeta({
+          queue: 'Pending Partner Review',
+          count: partnerPending.count,
+          severity: partnerPending.count > 0 ? 'REVIEW_REQUIRED' : 'CLEAR',
+          ownerSurface: 'LGU / Admin Coordination',
+          action: partnerPending.count > 0 ? 'Review pending partner applications for readiness and governance.' : 'No pending partner review items.',
+        }, 'LGU_SAFE', 'OPERATIONAL'),
+        this.withGovernanceMeta({
+          queue: 'Manifest Coordination',
+          count: manifests.count,
+          severity: manifests.count > 0 ? 'ACTIVE' : 'BUILD_TARGET',
+          ownerSurface: 'LGU Compliance',
+          action: manifests.count > 0 ? 'Monitor manifest volume, review status, and regulated movement readiness.' : 'Manifest queue requires deeper status wiring.',
+        }, 'LGU_SAFE', 'OPERATIONAL'),
+        this.withGovernanceMeta({
+          queue: 'QR / Checkpoint Activity',
+          count: qrEvents.count,
+          severity: qrEvents.count > 0 ? 'ACTIVE' : 'BUILD_TARGET',
+          ownerSurface: 'LGU Movement Monitoring',
+          action: qrEvents.count > 0 ? 'Monitor QR event distribution, checkpoint load, and movement patterns.' : 'QR event stream needs more live activity.',
+        }, 'LGU_SAFE', 'AGGREGATED'),
+        this.withGovernanceMeta({
+          queue: 'Event-Wide Coordination',
+          count: trips.count + qrEvents.count + manifests.count,
+          severity: trips.count + qrEvents.count + manifests.count > 0 ? 'ACTIVE' : 'BUILD_TARGET',
+          ownerSurface: 'LGU Tourism Coordination',
+          action: 'Use event mode, date range, and municipality scope to coordinate peak periods, safety events, and official activities.',
+        }, 'LGU_SAFE', 'AGGREGATED'),
+        this.withGovernanceMeta({
+          queue: 'Data Gaps / Build Targets',
+          count: Math.max(0, 13 - (activeTables?.length || 0)),
+          severity: 'BUILD_TARGET',
+          ownerSurface: 'OSP Platform Team',
+          action: 'Continue wiring municipality-native aggregation, event-window filtering, and operational exception queues.',
+        }, 'LGU_SAFE', 'AGGREGATED'),
+      ],
+      summaryCards,
+      gauges,
+      distributions: {
+        partnerStatus: partnerStatusDistribution,
+        partnerType: partnerTypeDistribution,
+        auditEvents: auditEventDistribution,
+        qrEvents: qrEventDistribution,
+        manifestStatus: manifestStatusDistribution,
+      },
+      intelligenceLayers,
+      governanceBoundaries: [
+        'LGU intelligence is role-scoped.',
+        'Raw OTA commercial data is not exposed.',
+        'Operator financial data is not exposed.',
+        'Unrestricted traveler personal data is not exposed.',
+        'Every intelligence signal must preserve auditability and purpose limitation.',
+      ],
+    };
+  }
+
+  async getAdminOverview(municipality?: string, eventMode?: string, startDate?: string, endDate?: string) {
+    const base = await this.getOverview(municipality, eventMode, startDate, endDate);
+
+    const adminDateRangeOperationalSummary = base.dateRangeOperationalSummary || [];
+    const adminMunicipalityBreakdowns = base.municipalityBreakdowns || [];
+
+    const adminPanels = [
+      this.withGovernanceMeta({
+        label: 'Partner Tokens Governance',
+        value: base.summaryCards?.find((card: any) => card.label === 'Partner Audit Events')?.value || 0,
+        helper: 'Token governance remains admin-controlled. No token secrets exposed in summary.',
+      }, 'ADMIN_ONLY', 'SECURITY'),
+      this.withGovernanceMeta({
+        label: 'Platform Governance Status',
+        value: base.dataStatus?.activeTableCount || 0,
+        helper: 'Active intelligence tables currently wired into the platform.',
+      }, 'ADMIN_ONLY', 'OPERATIONAL'),
+      this.withGovernanceMeta({
+        label: 'Commercial Visibility',
+        value: 1,
+        helper: 'Commercial and platform-level intelligence is reserved for Super Admin.',
+      }, 'ADMIN_ONLY', 'COMMERCIAL'),
+    ];
+
+    const adminSections = [
+      {
+        name: 'Movement Intelligence',
+        visibility: 'ADMIN_ONLY',
+      },
+      {
+        name: 'Compliance Intelligence',
+        visibility: 'ADMIN_ONLY',
+      },
+      {
+        name: 'Operator + Partner Intelligence',
+        visibility: 'ADMIN_ONLY',
+      },
+      {
+        name: 'Marketplace + Commercial Intelligence',
+        visibility: 'ADMIN_ONLY',
+      },
+      {
+        name: 'Traveler Intelligence',
+        visibility: 'ADMIN_ONLY',
+      },
+      {
+        name: 'System + Audit Intelligence',
+        visibility: 'ADMIN_ONLY',
+      },
+    ];
+
+    return {
+      ...base,
+      meta: this.buildResponseMeta('ADMIN_FULL', municipality, eventMode, startDate, endDate),
+      adminPanels,
+      dateRangeOperationalSummary: adminDateRangeOperationalSummary,
+      municipalityBreakdowns: adminMunicipalityBreakdowns,
+      adminOperationalQueues: [
+        {
+          queue: 'Partner / OTA Governance',
+          visibility: 'ADMIN_ONLY',
+          action: 'Review partner approval state, audit outcomes, and future token governance.',
+        },
+        {
+          queue: 'Platform Data Integrity',
+          visibility: 'ADMIN_ONLY',
+          action: 'Monitor active tables, missing source coverage, stale records, and integration gaps.',
+        },
+        {
+          queue: 'Commercial / Marketplace Oversight',
+          visibility: 'ADMIN_ONLY',
+          action: 'Reserved for commercial performance, marketplace exposure, and protected platform economics.',
+        },
+        {
+          queue: 'Security / Token Boundary',
+          visibility: 'ADMIN_ONLY',
+          action: 'Ensure no public partner request creates token access without approval and guard policy.',
+        },
+      ],
+      adminSections,
+      governanceBoundaries: [
+        ...base.governanceBoundaries,
+        'Super Admin may access deeper operational and commercial intelligence under audit.',
+        'Sensitive access must remain logged and governed.',
+      ],
+    };
+  }
+
+}

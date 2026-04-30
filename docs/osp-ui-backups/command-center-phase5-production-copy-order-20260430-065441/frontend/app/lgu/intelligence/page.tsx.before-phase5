@@ -1,0 +1,292 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import CommandCenterShell from "../../../src/components/intelligence/CommandCenterShell";
+import { SIARGAO_MUNICIPALITIES } from "../../../src/lib/siargaoMunicipalities";
+import { OSP_EVENT_MODES } from "../../../src/lib/ospEventModes";
+
+function getApiBaseUrl() {
+  const explicit = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
+  return "http://localhost:8001/api/v1";
+}
+
+function defaultEndDate() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function defaultStartDate() {
+  const date = new Date();
+  date.setDate(date.getDate() - 30);
+  return date.toISOString().slice(0, 10);
+}
+
+function humanize(value: string | number | undefined | null) {
+  if (value === null || value === undefined) return "Not Available";
+  return String(value)
+    .replace(/^osp_/i, "")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function friendlySource(value: string | undefined | null) {
+  if (!value) return "Source not active yet";
+
+  const map: Record<string, string> = {
+    partner_accounts: "Partner Records",
+    partner_api_audit_logs: "Partner Review Logs",
+    partner_api_tokens: "Partner Token Governance",
+    osp_qr_events: "QR Event Records",
+    inter_island_movements: "Inter-Island Movement Records",
+    spm_traveler_stamps: "Passport Trail Stamp Records",
+    spm_traveler_trail_progress: "Passport Trail Progress Records",
+    OspPass: "OSP Pass Records",
+    QrCredential: "QR Credential Records",
+    Manifest: "Manifest Records",
+    ManifestMember: "Manifest Member Records",
+    Trip: "Trip Records",
+  };
+
+  return value
+    .split(",")
+    .map((item) => map[item.trim()] || humanize(item.trim()))
+    .join(", ");
+}
+
+function BarChart({ title, distribution }: { title: string; distribution?: any }) {
+  const rows = distribution?.rows || [];
+  const max = Math.max(...rows.map((row: any) => row.value), 1);
+
+  return (
+    <section className="osp-command-panel">
+      <div className="osp-command-chart-head">
+        <h4>{title}</h4>
+        <span>{friendlySource(distribution?.table)}</span>
+      </div>
+      {rows.length === 0 ? (
+        <div className="osp-command-empty-state">
+          No active rows yet. This source is tracked, but the needed status or category field is still a build target.
+        </div>
+      ) : (
+        rows.map((row: any) => (
+          <div className="osp-command-bar-row" key={row.label}>
+            <span>{humanize(row.label)}</span>
+            <div className="osp-command-bar-track">
+              <div
+                className="osp-command-bar-fill"
+                style={{ width: `${Math.max(4, Math.round((row.value / max) * 100))}%` }}
+              />
+            </div>
+            <strong>{row.value}</strong>
+          </div>
+        ))
+      )}
+    </section>
+  );
+}
+
+function MetricGrid({ items }: { items: any[] }) {
+  return (
+    <section className="osp-command-card-grid">
+      {items.map((card: any) => (
+        <article className="osp-command-card" key={card.label}>
+          <p>{card.label}</p>
+          <strong>{card.value}</strong>
+          <span>{card.helper}</span>
+          <small>{friendlySource(card.source)}</small>
+        </article>
+      ))}
+    </section>
+  );
+}
+
+export default function LguIntelligencePage() {
+  const apiBaseUrl = useMemo(() => getApiBaseUrl(), []);
+  const [municipality, setMunicipality] = useState("ALL_SIARGAO");
+  const [eventMode, setEventMode] = useState("NORMAL");
+  const [startDate, setStartDate] = useState(defaultStartDate());
+  const [endDate, setEndDate] = useState(defaultEndDate());
+  const [data, setData] = useState<any>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await fetch(
+          `${apiBaseUrl}/lgu/intelligence/overview?municipality=${municipality}&eventMode=${eventMode}&startDate=${startDate}&endDate=${endDate}`,
+          { cache: "no-store" }
+        );
+        const json = await response.json();
+        if (!response.ok || !json?.ok) {
+          setError(json?.message || "Unable to load LGU Tourism Coordination Center.");
+          return;
+        }
+        setData(json);
+        setError("");
+      } catch {
+        setError("Unable to reach the OSP API. Please make sure the backend is running and try again.");
+      }
+    }
+    loadData();
+  }, [apiBaseUrl, municipality, eventMode, startDate, endDate]);
+
+  const navItems = [
+    { label: "Overview", active: true },
+    { label: "Movement View" },
+    { label: "Compliance Coordination" },
+    { label: "Operator Participation" },
+    { label: "Partner Readiness" },
+    { label: "Passport Trails" },
+    { label: "Safety & Events" },
+    { label: "Municipality View" },
+    { label: "Governance Boundary" },
+  ];
+
+  return (
+    <CommandCenterShell
+      productName="LGU Tourism Coordination Center"
+      productSubtitle="Role-scoped tourism operations, compliance coordination, and destination insights for Siargao LGU stakeholders."
+      navItems={navItems}
+      municipality={municipality}
+      municipalities={[...SIARGAO_MUNICIPALITIES]}
+      onMunicipalityChange={setMunicipality}
+      eventMode={eventMode}
+      eventModes={[...OSP_EVENT_MODES]}
+      onEventModeChange={setEventMode}
+      startDate={startDate}
+      endDate={endDate}
+      onStartDateChange={setStartDate}
+      onEndDateChange={setEndDate}
+    >
+      {error ? <div className="osp-command-alert">{error}</div> : null}
+      {!data ? (
+        <div className="osp-command-panel">Loading coordination center...</div>
+      ) : (
+        <>
+          <section className="osp-command-executive-grid">
+            {(data.executiveSummaryPanels || []).map((panel: any) => (
+              <article className="osp-command-executive-card" key={panel.label}>
+                <p>{panel.label}</p>
+                <strong>{panel.value}</strong>
+                <span>{panel.helper}</span>
+                <small>{humanize(panel.priority)} · LGU Safe</small>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Date-Scoped Operating Counts</h3>
+          <section className="osp-command-date-grid">
+            {(data.dateRangeOperationalSummary || []).map((item: any) => (
+              <article className="osp-command-date-card" key={item.label}>
+                <p>{item.label}</p>
+                <strong>{item.value}</strong>
+                <span>{item.helper}</span>
+                <small>{humanize(item.visibility)} · {humanize(item.dataClass)}</small>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Event-Wide Operating Summary</h3>
+          <section className="osp-command-event-grid">
+            {(data.eventWideSummary || []).map((item: any) => (
+              <article className="osp-command-event-card" key={item.label}>
+                <p>{item.label}</p>
+                <strong>{humanize(item.value)}</strong>
+                <span>{item.helper}</span>
+              </article>
+            ))}
+          </section>
+
+          <MetricGrid items={data.summaryCards || []} />
+
+          <h3 className="osp-command-section-title">System Gauges</h3>
+          <section className="osp-command-gauge-grid">
+            {(data.gauges || []).map((gauge: any) => (
+              <article className="osp-command-panel osp-command-gauge" key={gauge.label}>
+                <div className="osp-command-gauge-ring" style={{ ["--gauge-value" as any]: gauge.value }}>
+                  <div className="osp-command-gauge-inner">{gauge.value}%</div>
+                </div>
+                <h4>{gauge.label}</h4>
+                <span>{humanize(gauge.status)}</span>
+                <p>{gauge.interpretation}</p>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Distribution Graphs</h3>
+          <section className="osp-command-chart-grid">
+            <BarChart title="QR Event Distribution" distribution={data.distributions?.qrEvents} />
+            <BarChart title="Partner Status Distribution" distribution={data.distributions?.partnerStatus} />
+            <BarChart title="Partner Type Distribution" distribution={data.distributions?.partnerType} />
+            <BarChart title="Audit Event Distribution" distribution={data.distributions?.auditEvents} />
+          </section>
+
+          <h3 className="osp-command-section-title">Municipality Breakdown Readiness</h3>
+          <section className="osp-command-muni-grid">
+            {(data.municipalityBreakdowns || []).map((item: any) => (
+              <article className="osp-command-muni-card" key={item.label}>
+                <div>
+                  <p>{item.label}</p>
+                  <strong>{item.rows?.length || 0}</strong>
+                </div>
+                <span>{humanize(item.status)}</span>
+                <small>Source: {friendlySource(item.table)} · Column: {humanize(item.column)}</small>
+                {item.rows?.length ? (
+                  <div className="osp-command-mini-bars">
+                    {item.rows.map((row: any) => (
+                      <div className="osp-command-mini-bar" key={row.label}>
+                        <span>{humanize(row.label)}</span>
+                        <strong>{row.value}</strong>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <em>Municipality-specific field is not yet normalized for this source.</em>
+                )}
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Operational Queues</h3>
+          <section className="osp-command-queue-grid">
+            {(data.operationalQueues || []).map((queue: any) => (
+              <article className="osp-command-queue-card" key={queue.queue}>
+                <div>
+                  <p>{queue.queue}</p>
+                  <strong>{queue.count}</strong>
+                </div>
+                <span>{humanize(queue.severity)}</span>
+                <small>{queue.ownerSurface}</small>
+                <em>{queue.action}</em>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Inter-Layer Coordination Matrix</h3>
+          <section className="osp-command-table">
+            {(data.intelligenceLayers || []).map((layer: any) => (
+              <div className="osp-command-table-row" key={layer.layer}>
+                <div>
+                  <strong>{layer.layer}</strong>
+                  <span>{layer.spineStatus}</span>
+                </div>
+                <div>{layer.records}</div>
+                <div>{(layer.parameters || []).join(" · ")}</div>
+                <div>{layer.lguOutput}</div>
+              </div>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Governance Boundary</h3>
+          <section className="osp-command-panel">
+            <div className="osp-command-pill-grid">
+              {(data.governanceBoundaries || []).map((item: string) => (
+                <div className="osp-command-pill" key={item}>{item}</div>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+    </CommandCenterShell>
+  );
+}

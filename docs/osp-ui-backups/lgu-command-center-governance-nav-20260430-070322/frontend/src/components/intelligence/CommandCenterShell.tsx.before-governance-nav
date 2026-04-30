@@ -1,0 +1,150 @@
+"use client";
+
+import Link from "next/link";
+import { ReactNode } from "react";
+
+type NavItem = {
+  label: string;
+  href?: string;
+  active?: boolean;
+};
+
+type Option = {
+  value: string;
+  label: string;
+};
+
+type Props = {
+  productName: string;
+  productSubtitle: string;
+  navItems: NavItem[];
+  municipality: string;
+  municipalities: Option[];
+  onMunicipalityChange: (value: string) => void;
+  eventMode?: string;
+  eventModes?: Option[];
+  onEventModeChange?: (value: string) => void;
+  startDate?: string;
+  endDate?: string;
+  onStartDateChange?: (value: string) => void;
+  onEndDateChange?: (value: string) => void;
+  children: ReactNode;
+};
+
+export default function CommandCenterShell({
+  productName,
+  productSubtitle,
+  navItems,
+  municipality,
+  municipalities,
+  onMunicipalityChange,
+  eventMode,
+  eventModes,
+  onEventModeChange,
+  startDate,
+  endDate,
+  onStartDateChange,
+  onEndDateChange,
+  children,
+}: Props) {
+  return (
+    <main className="osp-command-root">
+      <aside className="osp-command-sidebar">
+        <div className="osp-command-brand">
+          <p className="osp-command-eyebrow">One Siargao Pass</p>
+          <h1>{productName}</h1>
+          <p>{productSubtitle}</p>
+        </div>
+
+        <nav className="osp-command-nav">
+          {navItems.map((item) =>
+            item.href ? (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`osp-command-nav-item ${item.active ? "is-active" : ""}`}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <div
+                key={item.label}
+                className={`osp-command-nav-item ${item.active ? "is-active" : ""}`}
+              >
+                {item.label}
+              </div>
+            ),
+          )}
+        </nav>
+      </aside>
+
+      <section className="osp-command-main">
+        <header className="osp-command-topbar">
+          <div>
+            <p className="osp-command-topbar-eyebrow">Operations View</p>
+            <h2>{productName}</h2>
+            <p className="osp-command-topbar-copy">
+              Municipality-aware operating picture with governed summaries, gauges, charts, and action signals.
+            </p>
+          </div>
+
+          <div className="osp-command-filters">
+            <label className="osp-command-filter">
+              <span>Municipality</span>
+              <select
+                value={municipality}
+                onChange={(e) => onMunicipalityChange(e.target.value)}
+              >
+                {municipalities.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            {eventModes && eventMode && onEventModeChange ? (
+              <label className="osp-command-filter">
+                <span>Event Mode</span>
+                <select
+                  value={eventMode}
+                  onChange={(e) => onEventModeChange(e.target.value)}
+                >
+                  {eventModes.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+
+            {startDate && onStartDateChange ? (
+              <label className="osp-command-filter">
+                <span>Start Date</span>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => onStartDateChange(e.target.value)}
+                />
+              </label>
+            ) : null}
+
+            {endDate && onEndDateChange ? (
+              <label className="osp-command-filter">
+                <span>End Date</span>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => onEndDateChange(e.target.value)}
+                />
+              </label>
+            ) : null}
+          </div>
+        </header>
+
+        <div className="osp-command-content">{children}</div>
+      </section>
+    </main>
+  );
+}

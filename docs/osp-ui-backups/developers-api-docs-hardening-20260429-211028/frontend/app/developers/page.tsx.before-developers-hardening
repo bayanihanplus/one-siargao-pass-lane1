@@ -1,0 +1,35 @@
+import { OspPublicPageShell, PublicCardGrid, PublicSection } from "../../src/components/public/OspPublicPageShell";
+
+export default function DevelopersPage() {
+  return (
+    <OspPublicPageShell
+      eyebrow="Developers"
+      title="Build with the One Siargao Pass API."
+      subtitle="Approved partners can use OSP APIs to connect booking references, traveler records, pass status, QR readiness, and governed webhook workflows."
+      primaryCta={{ label: "Request API Access", href: "/ota#partner-request" }}
+      secondaryCta={{ label: "Read API Terms", href: "/api-terms" }}
+    >
+      <PublicSection
+        title="Designed for approved partner integrations."
+        body="The OSP API layer supports booking-to-pass workflows without allowing partners to become independent QR authorities."
+      >
+        <PublicCardGrid
+          cards={[
+            {
+              title: "Partner identity",
+              body: "Every integration is attached to an approved partner account and scoped access policy.",
+            },
+            {
+              title: "Booking-to-pass intake",
+              body: "Approved partners can connect confirmed booking references into OSP-managed pass workflows.",
+            },
+            {
+              title: "Audit-ready events",
+              body: "Partner API activity is logged for governance, troubleshooting, and compliance review.",
+            },
+          ]}
+        />
+      </PublicSection>
+    </OspPublicPageShell>
+  );
+}

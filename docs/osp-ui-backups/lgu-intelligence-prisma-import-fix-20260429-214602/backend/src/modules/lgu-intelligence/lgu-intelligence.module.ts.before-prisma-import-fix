@@ -1,0 +1,11 @@
+import { Module } from '@nestjs/common';
+import { PrismaModule } from '../../prisma/prisma.module';
+import { LguIntelligenceController } from './lgu-intelligence.controller';
+import { LguIntelligenceService } from './lgu-intelligence.service';
+
+@Module({
+  imports: [PrismaModule],
+  controllers: [LguIntelligenceController],
+  providers: [LguIntelligenceService],
+})
+export class LguIntelligenceModule {}

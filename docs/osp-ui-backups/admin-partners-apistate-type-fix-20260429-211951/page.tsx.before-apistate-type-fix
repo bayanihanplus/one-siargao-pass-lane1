@@ -1,0 +1,270 @@
+"use client";
+
+import Link from "next/link";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+type PartnerAccount = {
+  id: string;
+  partnerName: string;
+  partnerType: string;
+  status: string;
+  contactEmail?: string | null;
+  contactMobile?: string | null;
+  companyName?: string | null;
+  websiteUrl?: string | null;
+  countryCode?: string | null;
+  approvedAt?: string | null;
+  suspendedAt?: string | null;
+  rejectedAt?: string | null;
+  archivedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type ApiState =
+  | { status: "idle"; message: "" }
+  | { status: "loading"; message: "Loading partner applications..." }
+  | { status: "success"; message: string }
+  | { status: "error"; message: string };
+
+const statuses = [
+  { value: "", label: "All statuses" },
+  { value: "PENDING_REVIEW", label: "Pending review" },
+  { value: "APPROVED", label: "Approved" },
+  { value: "SUSPENDED", label: "Suspended" },
+  { value: "REJECTED", label: "Rejected" },
+];
+
+function getApiBaseUrl() {
+  const explicit = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
+  return "http://localhost:8001/api/v1";
+}
+
+function statusClass(status: string) {
+  const normalized = status.toLowerCase();
+  if (normalized.includes("approved")) return "osp-admin-status osp-admin-status-approved";
+  if (normalized.includes("suspend")) return "osp-admin-status osp-admin-status-suspended";
+  if (normalized.includes("reject")) return "osp-admin-status osp-admin-status-rejected";
+  return "osp-admin-status osp-admin-status-pending";
+}
+
+export default function AdminPartnersPage() {
+  const apiBaseUrl = useMemo(() => getApiBaseUrl(), []);
+  const [statusFilter, setStatusFilter] = useState("PENDING_REVIEW");
+  const [partners, setPartners] = useState<PartnerAccount[]>([]);
+  const [state, setState] = useState<ApiState>({ status: "idle", message: "" });
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  const loadPartners = useCallback(async () => {
+    setState({ status: "loading", message: "Loading partner applications..." });
+
+    const url = new URL(`${apiBaseUrl}/partners/admin/applications`);
+    if (statusFilter) url.searchParams.set("status", statusFilter);
+
+    try {
+      const response = await fetch(url.toString(), {
+        headers: {
+          "x-dev-role": "ADMIN",
+        },
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data?.ok) {
+        setState({
+          status: "error",
+          message: data?.message || data?.error?.message || "Unable to load partner applications.",
+        });
+        return;
+      }
+
+      setPartners(data.data || []);
+      setState({
+        status: "success",
+        message: `Loaded ${(data.data || []).length} partner application${(data.data || []).length === 1 ? "" : "s"}.`,
+      });
+    } catch {
+      setState({
+        status: "error",
+        message: "Unable to reach the OSP API. Make sure the backend is running.",
+      });
+    }
+  }, [apiBaseUrl, statusFilter]);
+
+  useEffect(() => {
+    loadPartners();
+  }, [loadPartners]);
+
+  async function runAction(partnerId: string, action: "approve" | "suspend" | "reject") {
+    setBusyId(partnerId);
+    setState({ status: "loading", message: `Submitting ${action} action...` });
+
+    try {
+      const response = await fetch(`${apiBaseUrl}/partners/admin/applications/${partnerId}/${action}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-dev-role": "ADMIN",
+        },
+        body: JSON.stringify({
+          actorUserId: "dev-admin",
+          reason: `ADMIN_PARTNER_${action.toUpperCase()}_FROM_DEV_SURFACE`,
+          notes: `Partner ${action} action submitted from /admin/partners development review surface.`,
+        }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data?.ok) {
+        setState({
+          status: "error",
+          message: data?.message || data?.error?.message || `Unable to ${action} partner application.`,
+        });
+        return;
+      }
+
+      setState({ status: "success", message: `Partner application ${action}d.` });
+      await loadPartners();
+    } catch {
+      setState({
+        status: "error",
+        message: "Unable to reach the OSP API. Make sure the backend is running.",
+      });
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  return (
+    <main className="osp-admin-root">
+      <header className="osp-admin-header">
+        <div className="osp-admin-header-inner">
+          <div>
+            <p className="osp-admin-brand">One Siargao Pass Admin</p>
+            <p className="osp-admin-subtitle">Partner application review surface</p>
+          </div>
+          <div className="osp-admin-header-actions">
+            <Link className="osp-admin-link" href="/ota">
+              Public OTA Page
+            </Link>
+            <Link className="osp-admin-link" href="/developers">
+              Developers Page
+            </Link>
+            <Link className="osp-admin-link" href="/">
+              Public Gateway
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <section className="osp-admin-main">
+        <div className="osp-admin-title-row">
+          <div>
+            <p className="osp-admin-eyebrow">Partner Governance</p>
+            <h1 className="osp-admin-title">Partner application review.</h1>
+            <p className="osp-admin-body">
+              Review partner requests submitted from the public OTA/API page. This is an internal development review surface using the guarded partner admin endpoints.
+            </p>
+          </div>
+
+          <div className="osp-admin-control-card">
+            <label htmlFor="statusFilter">Status filter</label>
+            <select
+              id="statusFilter"
+              className="osp-admin-select"
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+            >
+              {statuses.map((status) => (
+                <option key={status.value || "ALL"} value={status.value}>
+                  {status.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {state.status !== "idle" ? (
+          <div className={state.status === "error" ? "osp-admin-alert osp-admin-alert-error" : "osp-admin-alert osp-admin-alert-success"}>
+            {state.message}
+          </div>
+        ) : null}
+
+        <div className="osp-admin-table-wrap">
+          <table className="osp-admin-table">
+            <thead>
+              <tr>
+                <th>Partner</th>
+                <th>Contact</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Submitted</th>
+                <th>Review Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {partners.length === 0 ? (
+                <tr>
+                  <td colSpan={6}>
+                    <div className="osp-admin-muted">No partner applications found for this filter.</div>
+                  </td>
+                </tr>
+              ) : (
+                partners.map((partner) => (
+                  <tr key={partner.id}>
+                    <td>
+                      <div className="osp-admin-name">{partner.partnerName}</div>
+                      <div className="osp-admin-muted">{partner.companyName || "No company name provided"}</div>
+                      {partner.websiteUrl ? <div className="osp-admin-muted">{partner.websiteUrl}</div> : null}
+                    </td>
+                    <td>
+                      <div>{partner.contactEmail || "No email"}</div>
+                      <div className="osp-admin-muted">{partner.contactMobile || "No mobile"}</div>
+                      <div className="osp-admin-muted">{partner.countryCode || "No country"}</div>
+                    </td>
+                    <td>
+                      <div>{partner.partnerType}</div>
+                    </td>
+                    <td>
+                      <span className={statusClass(partner.status)}>{partner.status}</span>
+                    </td>
+                    <td>
+                      <div>{new Date(partner.createdAt).toLocaleString()}</div>
+                      <div className="osp-admin-muted">ID: {partner.id}</div>
+                    </td>
+                    <td>
+                      <div className="osp-admin-actions">
+                        <button
+                          className="osp-admin-button osp-admin-button-approve"
+                          disabled={busyId === partner.id}
+                          onClick={() => runAction(partner.id, "approve")}
+                        >
+                          Approve
+                        </button>
+                        <button
+                          className="osp-admin-button osp-admin-button-suspend"
+                          disabled={busyId === partner.id}
+                          onClick={() => runAction(partner.id, "suspend")}
+                        >
+                          Suspend
+                        </button>
+                        <button
+                          className="osp-admin-button osp-admin-button-reject"
+                          disabled={busyId === partner.id}
+                          onClick={() => runAction(partner.id, "reject")}
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  );
+}

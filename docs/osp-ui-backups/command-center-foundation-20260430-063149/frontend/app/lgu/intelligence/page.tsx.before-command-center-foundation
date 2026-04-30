@@ -1,0 +1,211 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+
+type SummaryCard = {
+  label: string;
+  value: number;
+  helper: string;
+  source: string;
+};
+
+type Gauge = {
+  label: string;
+  value: number;
+  numerator: number;
+  denominator: number;
+  interpretation: string;
+  status: string;
+};
+
+type DistributionRows = {
+  table: string | null;
+  rows: { label: string; value: number }[];
+};
+
+type IntelligenceLayer = {
+  layer: string;
+  spineStatus: string;
+  records: number;
+  parameters: string[];
+  lguOutput: string;
+};
+
+type Overview = {
+  ok: boolean;
+  generatedAt: string;
+  dataStatus: {
+    activeTableCount: number;
+    activeTables: string[];
+    mode: string;
+    warning: string;
+  };
+  summaryCards: SummaryCard[];
+  gauges: Gauge[];
+  distributions: {
+    partnerStatus: DistributionRows;
+    partnerType: DistributionRows;
+    auditEvents: DistributionRows;
+    qrEvents: DistributionRows;
+    manifestStatus: DistributionRows;
+  };
+  intelligenceLayers: IntelligenceLayer[];
+  governanceBoundaries: string[];
+};
+
+function getApiBaseUrl() {
+  const explicit = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
+  return "http://localhost:8001/api/v1";
+}
+
+function BarChart(props: { title: string; distribution?: DistributionRows }) {
+  const rows = props.distribution?.rows || [];
+  const max = Math.max(...rows.map((row) => row.value), 1);
+
+  return (
+    <section className="osp-lgu-panel">
+      <h2 className="osp-lgu-chart-title">{props.title}</h2>
+      {rows.length === 0 ? (
+        <p className="osp-lgu-summary-helper">No distribution data available yet.</p>
+      ) : (
+        rows.map((row) => (
+          <div className="osp-lgu-bar-row" key={row.label}>
+            <div className="osp-lgu-bar-label">{row.label}</div>
+            <div className="osp-lgu-bar-track">
+              <div
+                className="osp-lgu-bar-fill"
+                style={{ width: `${Math.max(4, Math.round((row.value / max) * 100))}%` }}
+              />
+            </div>
+            <div className="osp-lgu-bar-value">{row.value}</div>
+          </div>
+        ))
+      )}
+      <div className="osp-lgu-source">Source: {props.distribution?.table || "table not available"}</div>
+    </section>
+  );
+}
+
+export default function LguIntelligenceDashboardPage() {
+  const apiBaseUrl = useMemo(() => getApiBaseUrl(), []);
+  const [overview, setOverview] = useState<Overview | null>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function loadOverview() {
+      try {
+        const response = await fetch(`${apiBaseUrl}/lgu/intelligence/overview`);
+        const data = await response.json();
+
+        if (!response.ok || !data?.ok) {
+          setError(data?.message || "Unable to load LGU intelligence overview.");
+          return;
+        }
+
+        setOverview(data);
+      } catch {
+        setError("Unable to reach OSP API. Make sure the backend is running.");
+      }
+    }
+
+    loadOverview();
+  }, [apiBaseUrl]);
+
+  return (
+    <main className="osp-lgu-dashboard-root">
+      <header className="osp-lgu-dashboard-header">
+        <div className="osp-lgu-dashboard-header-inner">
+          <div>
+            <p className="osp-lgu-dashboard-eyebrow">DOT / LGU Intelligence</p>
+            <h1 className="osp-lgu-dashboard-title">Siargao destination operating picture.</h1>
+            <p className="osp-lgu-dashboard-subtitle">
+              Real DB-backed intelligence foundation for compliance, partner readiness, QR spine activity, manifest readiness, event-wide monitoring, and governance boundaries.
+            </p>
+          </div>
+          <div className="osp-lgu-dashboard-actions">
+            <Link className="osp-lgu-dashboard-link" href="/government">Government Page</Link>
+            <Link className="osp-lgu-dashboard-link" href="/lgu">LGU Console</Link>
+            <Link className="osp-lgu-dashboard-link" href="/data-governance">Data Governance</Link>
+          </div>
+        </div>
+      </header>
+
+      <section className="osp-lgu-dashboard-main">
+        {error ? (
+          <div className="osp-admin-alert osp-admin-alert-error">{error}</div>
+        ) : null}
+
+        {!overview ? (
+          <div className="osp-lgu-panel">Loading LGU intelligence overview...</div>
+        ) : (
+          <>
+            <section className="osp-lgu-summary-grid">
+              {overview.summaryCards.map((card) => (
+                <article className="osp-lgu-summary-card" key={card.label}>
+                  <p className="osp-lgu-summary-label">{card.label}</p>
+                  <p className="osp-lgu-summary-value">{card.value}</p>
+                  <p className="osp-lgu-summary-helper">{card.helper}</p>
+                  <div className="osp-lgu-source">Source: {card.source}</div>
+                </article>
+              ))}
+            </section>
+
+            <h2 className="osp-lgu-section-title">Operational Gauges</h2>
+            <section className="osp-lgu-gauge-grid">
+              {overview.gauges.map((gauge) => (
+                <article className="osp-lgu-panel osp-lgu-gauge" key={gauge.label}>
+                  <div className="osp-lgu-gauge-ring" style={{ ["--gauge-value" as any]: gauge.value }}>
+                    <div className="osp-lgu-gauge-inner">{gauge.value}%</div>
+                  </div>
+                  <p className="osp-lgu-gauge-label">{gauge.label}</p>
+                  <span className="osp-lgu-gauge-status">{gauge.status}</span>
+                  <p className="osp-lgu-gauge-body">{gauge.interpretation}</p>
+                </article>
+              ))}
+            </section>
+
+            <h2 className="osp-lgu-section-title">Distribution Charts</h2>
+            <section className="osp-lgu-chart-grid">
+              <BarChart title="Partner Status Distribution" distribution={overview.distributions.partnerStatus} />
+              <BarChart title="Partner Type Distribution" distribution={overview.distributions.partnerType} />
+              <BarChart title="Audit Event Distribution" distribution={overview.distributions.auditEvents} />
+              <BarChart title="QR Event Distribution" distribution={overview.distributions.qrEvents} />
+              <BarChart title="Manifest Status Distribution" distribution={overview.distributions.manifestStatus} />
+            </section>
+
+            <h2 className="osp-lgu-section-title">Inter-Layer Intelligence Matrix</h2>
+            <section className="osp-lgu-layer-table">
+              {overview.intelligenceLayers.map((layer) => (
+                <div className="osp-lgu-layer-row" key={layer.layer}>
+                  <div className="osp-lgu-layer-name">{layer.layer}</div>
+                  <div><span className="osp-lgu-layer-status">{layer.spineStatus}</span></div>
+                  <div className="osp-lgu-layer-records">{layer.records}</div>
+                  <div className="osp-lgu-layer-text">{layer.parameters.join(" · ")}</div>
+                  <div className="osp-lgu-layer-text">{layer.lguOutput}</div>
+                </div>
+              ))}
+            </section>
+
+            <h2 className="osp-lgu-section-title">Data Governance Boundary</h2>
+            <section className="osp-lgu-panel">
+              <p className="osp-lgu-summary-helper">{overview.dataStatus.warning}</p>
+              <div className="osp-lgu-boundary-list">
+                {overview.governanceBoundaries.map((boundary) => (
+                  <div className="osp-lgu-boundary-pill" key={boundary}>{boundary}</div>
+                ))}
+              </div>
+              <div className="osp-lgu-source">
+                Active DB tables detected: {overview.dataStatus.activeTables.length ? overview.dataStatus.activeTables.join(", ") : "none"}
+              </div>
+              <div className="osp-lgu-source">
+                Generated at: {new Date(overview.generatedAt).toLocaleString()}
+              </div>
+            </section>
+          </>
+        )}
+      </section>
+    </main>
+  );
+}

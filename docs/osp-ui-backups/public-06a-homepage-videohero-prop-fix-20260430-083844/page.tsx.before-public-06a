@@ -1,0 +1,137 @@
+import {
+  OspPublicPageShell,
+  PublicButton,
+  PublicCardGrid,
+  PublicSection,
+} from "../src/components/public/OspPublicPageShell";
+import {
+  PublicStaticBanner,
+  PublicVideoHero,
+} from "../src/components/public/PublicMediaBlocks";
+
+export default function HomePage() {
+  return (
+    <OspPublicPageShell
+      eyebrow="One Siargao Pass"
+      title="Powering the Digital Island."
+      subtitle="A governed digital gateway for traveler readiness, QR-backed journeys, Passport Trails, approved partner access, and responsible destination coordination across Siargao."
+      primaryCta={{ label: "Start Traveler Journey", href: "/traveler/start" }}
+      secondaryCta={{ label: "Explore Stakeholder Paths", href: "#stakeholder-pathways" }}
+    >
+      <PublicVideoHero
+        eyebrow="OSP Destination Layer"
+        title="Island journeys, pass readiness, partner coordination, and governed visibility."
+        body="One Siargao Pass connects public website discovery, traveler app actions, local operator participation, partner/API access, and authorized government coordination into one governed ecosystem."
+        items={[
+          "Traveler pass and QR readiness",
+          "Passport Trails and local discovery",
+          "Operator and partner participation",
+          "Protected LGU coordination access",
+        ]}
+      />
+
+      <PublicStaticBanner
+        eyebrow="Destination Operating Layer"
+        title="One platform, separated access paths."
+        body="The public website explains and routes the ecosystem. Protected dashboards, operational controls, API credentials, and LGU coordination data remain inside authorized surfaces."
+        variant="home"
+        badge="OSP"
+        points={[
+          "Public Website",
+          "Traveler App",
+          "Operator Access",
+          "Partner/API Review",
+          "LGU Coordination",
+        ]}
+      />
+
+      <section id="stakeholder-pathways" className="osp-public-section osp-home-routing-section">
+        <p className="osp-public-eyebrow">Website Gateway</p>
+        <h2>Route every user to the correct OSP surface.</h2>
+        <p className="osp-public-section-lead">
+          OSP is not one generic dashboard. Travelers, operators, partners,
+          government stakeholders, developers, and support users each need their
+          own governed path.
+        </p>
+
+        <div className="osp-home-pathway-grid">
+          <a href="/travelers" className="osp-home-pathway-card">
+            <span>Traveler Access</span>
+            <strong>Travelers</strong>
+            <p>Create a pass, manage QR readiness, continue trips, and explore Passport Trails.</p>
+          </a>
+
+          <a href="/passport-trails" className="osp-home-pathway-card">
+            <span>Discovery Layer</span>
+            <strong>Passport Trails</strong>
+            <p>Explore verified stops, partner tours, curated routes, and journey continuity.</p>
+          </a>
+
+          <a href="/operators" className="osp-home-pathway-card">
+            <span>Supply Layer</span>
+            <strong>Operators</strong>
+            <p>Understand how local operators participate in structured services and records.</p>
+          </a>
+
+          <a href="/ota" className="osp-home-pathway-card">
+            <span>Distribution Layer</span>
+            <strong>API Partners</strong>
+            <p>Request reviewed partner access for approved booking-to-pass workflows.</p>
+          </a>
+
+          <a href="/government" className="osp-home-pathway-card">
+            <span>Coordination Layer</span>
+            <strong>LGU / DOT</strong>
+            <p>Learn how public-sector stakeholders can request protected coordination access.</p>
+          </a>
+
+          <a href="/support" className="osp-home-pathway-card">
+            <span>Help Layer</span>
+            <strong>Support</strong>
+            <p>Find the right support path for traveler, operator, partner, and account concerns.</p>
+          </a>
+        </div>
+      </section>
+
+      <PublicSection
+        eyebrow="System Purpose"
+        title="OSP is built to connect movement, access, and coordination — without mixing permissions."
+        body="The public website is the front door. The traveler app handles pass and trip actions. Operators, partners, and LGU users access protected workflows only when authorized."
+      >
+        <PublicCardGrid
+          cards={[
+            {
+              title: "Traveler readiness",
+              body: "Help visitors prepare their OSP pass, QR access, trip records, and Passport Trails journey.",
+            },
+            {
+              title: "Local operator participation",
+              body: "Support structured operator visibility, service participation, and compliant activity workflows.",
+            },
+            {
+              title: "Partner and API governance",
+              body: "Allow booking partners to request access without exposing API tokens or QR authority publicly.",
+            },
+          ]}
+        />
+      </PublicSection>
+
+      <section className="osp-public-section osp-home-authority-band">
+        <div>
+          <p className="osp-public-eyebrow">Public Website Role</p>
+          <h2>Website outside. App and protected consoles inside.</h2>
+          <p>
+            This homepage should explain the ecosystem, build trust, and route
+            users clearly. It should not expose protected operational dashboards,
+            raw intelligence, API credentials, or internal controls.
+          </p>
+        </div>
+
+        <div className="osp-home-authority-actions">
+          <PublicButton label="Create OSP Pass" href="/traveler/start" />
+          <PublicButton label="View Government Page" href="/government" variant="light" />
+        </div>
+      </section>
+    </OspPublicPageShell>
+  );
+}

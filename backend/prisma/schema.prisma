@@ -1821,3 +1821,234 @@ model SpmTrailPricingSnapshot {
   @@index([pricingRuleId])
   @@map("spm_trail_pricing_snapshots")
 }
+
+// ============================================================
+// OSP MASTER WEBSITE — OTA/API PARTNER FOUNDATION
+// ------------------------------------------------------------
+// Doctrine:
+// - OTA / Travel & Tours / hotel desks / API partners are
+//   distribution and provisioning partners only.
+// - OSP remains the QR/pass lifecycle authority.
+// - API tokens are scoped, auditable, revocable, and partner-owned.
+// - OTA trip intake must snapshot request/response behavior.
+// - Public website must not expose token creation until this layer
+//   is guarded by backend policy.
+// ============================================================
+
+enum PartnerAccountType {
+  OTA
+  INTERNATIONAL_OTA
+  TRAVEL_AGENCY
+  HOTEL_DESK
+  OPERATOR
+  AFFILIATE
+  GOVERNMENT_PARTNER
+  INTERNAL
+}
+
+enum PartnerAccountStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  SUSPENDED
+  REJECTED
+  ARCHIVED
+}
+
+enum PartnerApiEnvironment {
+  SANDBOX
+  PRODUCTION
+}
+
+enum PartnerApiTokenStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+  ROTATED
+  SUSPENDED
+}
+
+enum OtaTripIntakeStatus {
+  RECEIVED
+  ACCEPTED
+  CREATED
+  MATCHED_EXISTING
+  REJECTED
+  FAILED
+  DUPLICATE
+  MANUAL_REVIEW
+}
+
+enum OtaWebhookEventStatus {
+  RECEIVED
+  PROCESSED
+  FAILED
+  IGNORED
+  RETRY_PENDING
+}
+
+enum PartnerApiAuditEventType {
+  TOKEN_CREATED
+  TOKEN_ROTATED
+  TOKEN_REVOKED
+  TOKEN_USED
+  TOKEN_DENIED
+  PARTNER_APPROVED
+  PARTNER_SUSPENDED
+  TRIP_INTAKE_RECEIVED
+  TRIP_INTAKE_ACCEPTED
+  TRIP_INTAKE_REJECTED
+  WEBHOOK_RECEIVED
+  WEBHOOK_PROCESSED
+  WEBHOOK_FAILED
+  QR_ISSUANCE_REQUESTED
+  QR_STATUS_LOOKUP
+}
+
+model PartnerAccount {
+  id               String               @id @default(cuid())
+  partnerName      String
+  partnerType      PartnerAccountType
+  status           PartnerAccountStatus @default(PENDING_REVIEW)
+  contactEmail     String?
+  contactMobile    String?
+  companyName      String?
+  websiteUrl       String?
+  countryCode      String?
+  notes            String?
+  approvedAt       DateTime?
+  approvedByUserId String?
+  suspendedAt      DateTime?
+  rejectedAt       DateTime?
+  archivedAt       DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  apiTokens     PartnerApiToken[]
+  intakeEvents  OtaTripIntakeEvent[]
+  webhookEvents OtaWebhookEvent[]
+  auditLogs     PartnerApiAuditLog[]
+
+  @@index([partnerType])
+  @@index([status])
+  @@index([contactEmail])
+  @@map("partner_accounts")
+}
+
+model PartnerApiToken {
+  id               String                @id @default(cuid())
+  partnerAccountId String
+  tokenHash        String
+  tokenPrefix      String
+  environment      PartnerApiEnvironment @default(SANDBOX)
+  scopes           String[]              @default([])
+  status           PartnerApiTokenStatus @default(ACTIVE)
+  label            String?
+  lastUsedAt       DateTime?
+  expiresAt        DateTime?
+  createdByUserId  String?
+  revokedByUserId  String?
+  revokedAt        DateTime?
+  rotationSourceId String?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  partnerAccount PartnerAccount @relation(fields: [partnerAccountId], references: [id], onDelete: Cascade)
+
+  @@unique([tokenHash])
+  @@index([partnerAccountId])
+  @@index([tokenPrefix])
+  @@index([environment])
+  @@index([status])
+  @@map("partner_api_tokens")
+}
+
+model OtaTripIntakeEvent {
+  id                        String              @id @default(cuid())
+  partnerAccountId          String
+  externalBookingReference  String
+  externalTravelerReference String?
+  requestPayloadSnapshot    Json
+  responsePayloadSnapshot   Json?
+  status                    OtaTripIntakeStatus @default(RECEIVED)
+  errorCode                 String?
+  errorMessage              String?
+  createdTravelerUserId     String?
+  createdTripId             String?
+  createdBookingId          String?
+  createdPassId             String?
+  createdQrCredentialId     String?
+  matchedExistingTripId     String?
+  idempotencyKey            String?
+  receivedAt                DateTime            @default(now())
+  processedAt               DateTime?
+  createdAt                 DateTime            @default(now())
+  updatedAt                 DateTime            @updatedAt
+
+  partnerAccount PartnerAccount @relation(fields: [partnerAccountId], references: [id], onDelete: Cascade)
+
+  @@unique([partnerAccountId, externalBookingReference])
+  @@index([partnerAccountId])
+  @@index([externalBookingReference])
+  @@index([externalTravelerReference])
+  @@index([status])
+  @@index([createdTripId])
+  @@index([createdBookingId])
+  @@index([createdPassId])
+  @@index([createdQrCredentialId])
+  @@map("ota_trip_intake_events")
+}
+
+model OtaWebhookEvent {
+  id                      String                @id @default(cuid())
+  partnerAccountId        String
+  externalEventId         String?
+  eventType               String
+  requestPayloadSnapshot  Json
+  responsePayloadSnapshot Json?
+  status                  OtaWebhookEventStatus @default(RECEIVED)
+  errorCode               String?
+  errorMessage            String?
+  processedAt             DateTime?
+  receivedAt              DateTime              @default(now())
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+
+  partnerAccount PartnerAccount @relation(fields: [partnerAccountId], references: [id], onDelete: Cascade)
+
+  @@index([partnerAccountId])
+  @@index([externalEventId])
+  @@index([eventType])
+  @@index([status])
+  @@map("ota_webhook_events")
+}
+
+model PartnerApiAuditLog {
+  id               String                   @id @default(cuid())
+  partnerAccountId String?
+  apiTokenId       String?
+  actorUserId      String?
+  eventType        PartnerApiAuditEventType
+  endpoint         String?
+  method           String?
+  environment      PartnerApiEnvironment?
+  requestId        String?
+  ipAddress        String?
+  userAgent        String?
+  outcome          String?
+  reasonCode       String?
+  beforeJson       Json?
+  afterJson        Json?
+  metadataJson     Json?
+  createdAt        DateTime                 @default(now())
+
+  partnerAccount PartnerAccount? @relation(fields: [partnerAccountId], references: [id], onDelete: SetNull)
+
+  @@index([partnerAccountId])
+  @@index([apiTokenId])
+  @@index([actorUserId])
+  @@index([eventType])
+  @@index([environment])
+  @@index([createdAt])
+  @@map("partner_api_audit_logs")
+}

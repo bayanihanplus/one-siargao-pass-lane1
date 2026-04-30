@@ -1,0 +1,329 @@
+import {
+  OspPublicPageShell,
+  PublicButton,
+  PublicCardGrid,
+  PublicSection,
+} from "../../src/components/public/OspPublicPageShell";
+import LguIntelligencePreview from "../../src/components/public/LguIntelligencePreview";
+
+const visibilityCards = [
+  {
+    title: "Compliance visibility",
+    body: "Manifest-linked reviews, checkpoint events, operator submissions, QR events, and exception records can support safer destination operations where those workflows are required.",
+  },
+  {
+    title: "Destination Intelligence Layer",
+    body: "Aggregated tourism movement, demand, activity, exception, and operator participation signals can help DOT/LGU understand what is happening across the destination.",
+  },
+  {
+    title: "Event-wide coordination",
+    body: "OSP can support island-wide, event-wide, and multi-operator visibility for approved programs, peak periods, safety events, and regulated movement flows.",
+  },
+];
+
+const capabilityGauges = [
+  {
+    title: "Traveler Arrival and Movement Gauge",
+    status: "Active Spine",
+    statusClass: "osp-gov-gauge-status-active",
+    body: "Measures arrival, onward movement, checkpoint interaction, pass readiness, and trip context from the traveler layer.",
+    sources: "OSP Pass, Trip, QR Credential, OspQrEvent, checkpoint records",
+    parameters: "arrival window, origin, route, pass status, QR scan count, checkpoint type, movement timestamp",
+    decisions: "arrival readiness, crowding visibility, route pressure, checkpoint planning, visitor movement summaries",
+  },
+  {
+    title: "Manifest and Regulated Activity Gauge",
+    status: "Active Spine",
+    statusClass: "osp-gov-gauge-status-active",
+    body: "Measures activities that require manifest submission, review, approval, denial, correction, or post-trip reconciliation.",
+    sources: "Manifest records, activity instances, operator submissions, approval queue, QR scan events",
+    parameters: "manifest status, pax count, operator, vessel/route where required, approval outcome, unresolved exceptions",
+    decisions: "clearance tracking, late submission monitoring, compliance backlog, operator follow-up, inter-island movement control",
+  },
+  {
+    title: "Operator Participation Gauge",
+    status: "Build Target",
+    statusClass: "osp-gov-gauge-status-target",
+    body: "Measures approved operator participation, activity readiness, compliance behavior, scan usage, and operational reliability across the ecosystem.",
+    sources: "Operator accounts, activity templates, guides, manifests, access scans, partner records",
+    parameters: "approved operators, active services, scan compliance, manifest accuracy, cancellation/exception signals",
+    decisions: "operator readiness, onboarding gaps, enforcement priority, service quality visibility, destination supply mapping",
+  },
+  {
+    title: "Inter-Operator Activity Gauge",
+    status: "Build Target",
+    statusClass: "osp-gov-gauge-status-target",
+    body: "Compares activity patterns across approved operators without exposing private commercial or financial data.",
+    sources: "Operator-scoped service activity, bookings, scans, manifest-linked records, package participation",
+    parameters: "activity volume bands, route/service category, exception rate, readiness state, participation consistency",
+    decisions: "supply coverage, operator reliability, regulated activity pressure, island-wide coordination",
+  },
+  {
+    title: "Event-Wide Intelligence Gauge",
+    status: "Build Target",
+    statusClass: "osp-gov-gauge-status-target",
+    body: "Aggregates movement and activity during peak events, weather disruption, safety events, holidays, surge periods, or LGU/DOT programs.",
+    sources: "Trip windows, QR events, checkpoints, safety broadcasts, manifests, service categories",
+    parameters: "event period, affected zones, active travelers, activity counts, exception counts, advisory reach",
+    decisions: "surge planning, safety response, crowd coordination, temporary controls, public advisory strategy",
+  },
+  {
+    title: "Checkpoint and QR Event Gauge",
+    status: "Active Spine",
+    statusClass: "osp-gov-gauge-status-active",
+    body: "Measures OSP QR interactions across traveler, operator, checkpoint, access, and movement contexts.",
+    sources: "OspQrEvent, QrCredential, OspPass, checkpoint records, operator access records",
+    parameters: "scan type, checkpoint, actor role, pass reference, trip reference, timestamp, outcome",
+    decisions: "movement verification, access validation, audit trail, anomaly detection, checkpoint load visibility",
+  },
+  {
+    title: "Compliance Exception Gauge",
+    status: "Active Spine",
+    statusClass: "osp-gov-gauge-status-active",
+    body: "Measures missing, overdue, denied, unresolved, duplicate, or suspicious operational records that need human attention.",
+    sources: "Manifest exceptions, compliance audits, QR event mismatches, payment/readiness records",
+    parameters: "exception type, severity, operator, route, activity, age, resolution status, responsible surface",
+    decisions: "follow-up priority, enforcement queue, staff workload, operational risk visibility",
+  },
+  {
+    title: "Demand and Destination Planning Gauge",
+    status: "Build Target",
+    statusClass: "osp-gov-gauge-status-target",
+    body: "Measures demand patterns by time, zone, activity type, service type, and traveler intent without leaking individual commercial records.",
+    sources: "Trips, Passport Trails interest, booking references, package categories, public search/discovery signals",
+    parameters: "period, destination area, activity family, service type, demand band, conversion state",
+    decisions: "tourism planning, infrastructure needs, staffing, route pressure, product development, LGU/DOT reporting",
+  },
+  {
+    title: "Safety and Disruption Gauge",
+    status: "Build Target",
+    statusClass: "osp-gov-gauge-status-target",
+    body: "Measures the effect of advisories, disruptions, cancellations, reroutes, emergency notices, and safety broadcasts.",
+    sources: "Official safety broadcasts, trip windows, affected checkpoints, manifests, QR scans, route exceptions",
+    parameters: "advisory type, affected zone, active travelers, impacted manifests, broadcast status, response window",
+    decisions: "safety coordination, emergency awareness, affected traveler estimate, operator communication, disruption reporting",
+  },
+  {
+    title: "Partner / OTA Intake Gauge",
+    status: "Governance-Gated",
+    statusClass: "osp-gov-gauge-status-gated",
+    body: "Measures approved partner contribution to pre-arrival pass creation and booking-linked traveler readiness without giving LGU raw OTA commercial data.",
+    sources: "PartnerAccount, PartnerApiAuditLog, future approved booking-to-pass intake, OSP pass readiness",
+    parameters: "partner type, reviewed status, intake count, readiness outcome, audit result, integration status",
+    decisions: "partner readiness, pre-arrival compliance, OTA contribution quality, integration governance",
+  },
+  {
+    title: "Passport Trails and Experience Gauge",
+    status: "Build Target",
+    statusClass: "osp-gov-gauge-status-target",
+    body: "Measures structured tourism participation across Passport Trails, verified stops, partner tours, and destination experience categories.",
+    sources: "Passport Trails, SpmTravelerStamp, SpmTravelerTrailProgress, partner tours, package categories",
+    parameters: "trail family, verified stops, completion band, operator/service participation, zone/category",
+    decisions: "tourism dispersal, product planning, cultural/nature site pressure, experience development",
+  },
+  {
+    title: "Financial Readiness Boundary Gauge",
+    status: "Governance-Gated",
+    statusClass: "osp-gov-gauge-status-gated",
+    body: "Measures only clearance-relevant payment readiness or settlement state where operationally required, not operator financial exposure.",
+    sources: "Payment intent/state, booking readiness, pass issuance, manifest clearance where applicable",
+    parameters: "paid/unpaid readiness, clearance blocker, refund/dispute flags where relevant, pass issuance state",
+    decisions: "boarding readiness, service eligibility, exception handling, no-show and clearance coordination",
+  },
+];
+
+const parameterRows = [
+  {
+    layer: "Traveler Layer",
+    data: "Traveler profile, pass, trip, QR credential, app actions",
+    parameters: "pass issued, trip dates, origin, movement window, QR state, language/currency preference",
+    output: "arrival readiness, visitor movement bands, pass adoption, traveler support context",
+  },
+  {
+    layer: "Operator Layer",
+    data: "Operator, activities, manifests, guides, access scans, records",
+    parameters: "operator status, active activity, pax count, manifest status, scan compliance, exceptions",
+    output: "operator readiness, service pressure, compliance follow-up, inter-operator coordination",
+  },
+  {
+    layer: "OTA / Partner Layer",
+    data: "Partner request, approval state, audit log, future booking-to-pass intake",
+    parameters: "partner type, reviewed status, intake count, readiness result, audit outcome",
+    output: "pre-arrival readiness, partner governance, integration quality, booking-channel contribution",
+  },
+  {
+    layer: "QR / Checkpoint Layer",
+    data: "OspQrEvent, QrCredential, checkpoint interactions, access outcomes",
+    parameters: "scan type, checkpoint, actor role, outcome, timestamp, linked trip/pass/activity",
+    output: "audit trail, movement verification, checkpoint load, anomaly flags",
+  },
+  {
+    layer: "Manifest / Compliance Layer",
+    data: "Manifest submission, approval queue, exception records, regulated activity records",
+    parameters: "status, route, operator, pax, approval result, exception type, resolution age",
+    output: "clearance queue, regulated movement status, compliance backlog, exception severity",
+  },
+  {
+    layer: "Event-Wide Layer",
+    data: "Peak periods, safety broadcasts, route disruptions, holiday/event windows, active trips",
+    parameters: "event period, impacted zones, active traveler bands, active operators, exception count",
+    output: "event operations, safety response, public advisory planning, DOT/LGU coordination",
+  },
+];
+
+export default function GovernmentPage() {
+  return (
+    <OspPublicPageShell
+      eyebrow="LGU / DOT / Government"
+      title="Compliance and intelligence for the digital island."
+      subtitle="One Siargao Pass is designed to give authorized DOT/LGU stakeholders role-scoped compliance visibility, destination intelligence, inter-operator signals, and event-wide operational awareness."
+      primaryCta={{ label: "Open LGU Console", href: "/lgu" }}
+      secondaryCta={{ label: "View Data Governance", href: "/data-governance" }}
+    >
+      <PublicSection
+        title="OSP was born for compliance plus intelligence."
+        body="The LGU layer is not a cosmetic dashboard. It is the institutional intelligence layer that connects traveler movement, operator activity, QR events, manifests, safety broadcasts, partner intake, and destination planning signals."
+      >
+        <div className="osp-gov-overview-grid">
+          <div>
+            <PublicCardGrid cards={visibilityCards} />
+
+            <div className="osp-gov-flow-panel" style={{ marginTop: "24px" }}>
+              <h3>Public-sector coordination must be inter-layer.</h3>
+              <p>
+                DOT/LGU does not only need isolated records. It needs governed intelligence across traveler, operator, partner, QR, manifest, checkpoint, safety, and event-wide layers.
+              </p>
+              <ul className="osp-gov-signal-list">
+                <li>
+                  <span className="osp-gov-signal-icon">1</span>
+                  <span>
+                    <span className="osp-gov-signal-title">Inter-layer intelligence</span>
+                    <span className="osp-gov-signal-body">Connect pass, trip, QR, manifest, operator, partner, payment-readiness, and safety context into one destination operating picture.</span>
+                  </span>
+                </li>
+                <li>
+                  <span className="osp-gov-signal-icon">2</span>
+                  <span>
+                    <span className="osp-gov-signal-title">Inter-operator intelligence</span>
+                    <span className="osp-gov-signal-body">Compare activity participation, readiness, exception rates, and regulated activity pressure across approved operators without exposing private financial data.</span>
+                  </span>
+                </li>
+                <li>
+                  <span className="osp-gov-signal-icon">3</span>
+                  <span>
+                    <span className="osp-gov-signal-title">Event-wide intelligence</span>
+                    <span className="osp-gov-signal-body">Support peak season, holidays, safety events, regulated movement, weather disruption, and public advisory coordination.</span>
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <aside className="osp-gov-boundary-card">
+            <h3>Intelligence must remain governed.</h3>
+            <p>
+              DOT/LGU intelligence is essential, but it must not become unrestricted access to traveler identities, partner commercial data, or operator financial information.
+            </p>
+            <ul className="osp-gov-boundary-list">
+              <li>Access must be role-scoped.</li>
+              <li>Signals should be aggregated where possible.</li>
+              <li>Commercial data must not leak across surfaces.</li>
+              <li>Traveler identity must remain protected.</li>
+              <li>Compliance records must remain traceable.</li>
+            </ul>
+            <div style={{ marginTop: "20px" }}>
+              <PublicButton label="Read Data Governance" href="/data-governance" variant="light" />
+            </div>
+          </aside>
+        </div>
+      </PublicSection>
+
+      <PublicSection
+        eyebrow="Live Intelligence"
+        title="DB-wired intelligence dashboard preview."
+        body="This section is wired to the LGU Intelligence API. It must show real system data where available, not generic placeholder copy."
+      >
+        <LguIntelligencePreview />
+      </PublicSection>
+
+      <PublicSection
+        eyebrow="Capability Gauge"
+        title="Full DOT/LGU intelligence capability gauge."
+      >
+        <div className="osp-gov-nuclear-band">
+          <h3>From fragmented tourism records to an island-wide operating picture.</h3>
+          <p>
+            This is the OSP intelligence contract: every major platform layer must eventually contribute governed signals to DOT/LGU visibility. Some gauges already have active data spines. Others are build targets or governance-gated capabilities that must not be falsely exposed before access policy and data controls are complete.
+          </p>
+
+          <div className="osp-gov-gauge-grid">
+            {capabilityGauges.map((gauge) => (
+              <article className="osp-gov-gauge-card" key={gauge.title}>
+                <div className="osp-gov-gauge-head">
+                  <h4 className="osp-gov-gauge-title">{gauge.title}</h4>
+                  <span className={`osp-gov-gauge-status ${gauge.statusClass}`}>{gauge.status}</span>
+                </div>
+                <p className="osp-gov-gauge-body">{gauge.body}</p>
+                <div className="osp-gov-gauge-meta">
+                  <div className="osp-gauge-meta-row">
+                    <span className="osp-gov-gauge-meta-label">Data Sources</span>
+                    <span className="osp-gov-gauge-meta-value">{gauge.sources}</span>
+                  </div>
+                  <div className="osp-gov-gauge-meta-row">
+                    <span className="osp-gov-gauge-meta-label">Parameters</span>
+                    <span className="osp-gov-gauge-meta-value">{gauge.parameters}</span>
+                  </div>
+                  <div className="osp-gov-gauge-meta-row">
+                    <span className="osp-gov-gauge-meta-label">Decision Support</span>
+                    <span className="osp-gov-gauge-meta-value">{gauge.decisions}</span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="osp-gov-intelligence-boundary">
+            <strong>Hard boundary:</strong> Full intelligence does not mean unrestricted exposure. DOT/LGU should receive the right operating picture: compliance events, aggregated movement, activity signals, exception counts, readiness states, and role-scoped summaries. Raw OTA commercial records, operator financial data, and unrestricted traveler personal data remain outside the public-sector intelligence boundary.
+          </div>
+        </div>
+      </PublicSection>
+
+      <PublicSection
+        eyebrow="Inter-Layer Parameters"
+        title="The intelligence layer must connect platform layers, not isolated dashboards."
+        body="A real LGU intelligence system requires clear data lineage. These are the platform layers, input data, measurable parameters, and intelligence outputs OSP must preserve."
+      >
+        <div className="osp-gov-parameter-table">
+          {parameterRows.map((row) => (
+            <div className="osp-gov-parameter-row" key={row.layer}>
+              <div>
+                <span className="osp-gov-parameter-label">{row.layer}</span>
+              </div>
+              <div>
+                <span className="osp-gov-parameter-pill">Input Data</span>
+                <p className="osp-gov-parameter-value">{row.data}</p>
+              </div>
+              <div>
+                <span className="osp-gov-parameter-pill">Measured Parameters</span>
+                <p className="osp-gov-parameter-value">{row.parameters}</p>
+              </div>
+              <div>
+                <span className="osp-gov-parameter-pill">LGU Output</span>
+                <p className="osp-gov-parameter-value">{row.output}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </PublicSection>
+
+      <PublicSection
+        eyebrow="Moral Boundary"
+        title="Compliance without intelligence is incomplete."
+      >
+        <div className="osp-gov-wide-warning">
+          <strong>OSP should not become another passive records system.</strong> The platform must convert verified records into governed intelligence: what is moving, where pressure is building, which operators are active, which manifests need review, which exceptions are unresolved, which events are affecting operations, and what DOT/LGU can do next. That is the moral obligation of the platform.
+        </div>
+      </PublicSection>
+    </OspPublicPageShell>
+  );
+}

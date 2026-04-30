@@ -1,0 +1,101 @@
+import { OspPublicPageShell } from "../../src/components/public/OspPublicPageShell";
+
+export default function GovernmentPage() {
+  return (
+    <OspPublicPageShell
+      eyebrow="LGU / DOT / Government"
+      title="Governed coordination for a digital island."
+      subtitle="One Siargao Pass gives authorized public-sector stakeholders a responsible pathway for destination coordination, compliance visibility, and role-scoped access."
+      primaryCta={{
+        label: "See Government Use Cases",
+        href: "#government-use-cases",
+      }}
+      secondaryCta={{
+        label: "Request Authorized Access",
+        href: "#authorized-access",
+      }}
+    >
+      <section id="government-use-cases" className="osp-public-section osp-government-use-cases">
+        <p className="osp-public-eyebrow">Public-sector purpose</p>
+        <h2>Designed for coordination, not public exposure of operational intelligence.</h2>
+        <p className="osp-public-section-lead">
+          The Government page explains why OSP matters to LGU and DOT stakeholders.
+          Live dashboards, operational queues, and intervention controls remain inside
+          the protected LGU Tourism Coordination Center.
+        </p>
+
+        <div className="osp-public-card-grid three">
+          <article className="osp-public-card">
+            <h3>Compliance readiness</h3>
+            <p>
+              Supports structured destination workflows around movement, manifests,
+              QR readiness, operator participation, and regulated activity coordination.
+            </p>
+          </article>
+
+          <article className="osp-public-card">
+            <h3>Destination coordination</h3>
+            <p>
+              Helps authorized stakeholders coordinate during normal operations,
+              peak periods, official events, advisories, and disruption windows.
+            </p>
+          </article>
+
+          <article className="osp-public-card">
+            <h3>Responsible access</h3>
+            <p>
+              Protected dashboards and decision controls require login, role scope,
+              and audit-aware workflows before operational data is shown.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section className="osp-public-section osp-government-boundary">
+        <p className="osp-public-eyebrow">Correct separation</p>
+        <h2>Public website outside. Protected LGU console inside.</h2>
+
+        <div className="osp-government-boundary-grid">
+          <article>
+            <h3>Public website</h3>
+            <p>
+              Explains OSP, public-sector value, stakeholder pathways, and responsible
+              data use without exposing operational dashboards.
+            </p>
+          </article>
+
+          <article>
+            <h3>LGU Tourism Coordination Center</h3>
+            <p>
+              Houses authorized destination signals, coordination queues, date filters,
+              municipality views, and coordination intelligence for authorized users.
+            </p>
+          </article>
+
+          <article>
+            <h3>Super Admin</h3>
+            <p>
+              Handles platform-wide governance, system operations, API controls,
+              commercial configuration, and restricted administrative oversight.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="authorized-access" className="osp-public-section osp-government-cta">
+        <div>
+          <p className="osp-public-eyebrow">Authorized access</p>
+          <h2>Authorized LGU access is protected.</h2>
+          <p>
+            Approved users should use the protected LGU console to review operating
+            signals, action queues, and coordination data.
+          </p>
+        </div>
+
+        <a href="/lgu/intelligence" className="osp-public-primary-button">
+          Request Authorized Access
+        </a>
+      </section>
+    </OspPublicPageShell>
+  );
+}

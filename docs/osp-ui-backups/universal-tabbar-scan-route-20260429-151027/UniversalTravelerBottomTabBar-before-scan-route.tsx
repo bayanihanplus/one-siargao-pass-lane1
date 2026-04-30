@@ -1,0 +1,125 @@
+import React from "react";
+
+type TravelerTabKey = "home" | "trails" | "pass" | "explore" | "profile";
+
+type TravelerTab = {
+  key: TravelerTabKey;
+  label: string;
+  href: string;
+  icon: string;
+  ariaLabel: string;
+};
+
+const TRAVELER_TABS: TravelerTab[] = [
+  { key: "home", label: "Home", href: "/", icon: "⌂", ariaLabel: "Open OSP home" },
+  { key: "trails", label: "Trails", href: "/traveler/passport-trails", icon: "◇", ariaLabel: "Open Passport Trails" },
+  { key: "pass", label: "QR", href: "/traveler/pass", icon: "▦", ariaLabel: "Open OSP Pass and QR" },
+  { key: "explore", label: "Explore", href: "/traveler/partner-tours", icon: "✦", ariaLabel: "Open Siargao partner tours and local experiences" },
+  { key: "profile", label: "Profile", href: "/traveler/settings", icon: "♙", ariaLabel: "Open traveler profile and settings" },
+];
+
+export default function UniversalTravelerBottomTabBar(props: {
+  activeTab?: TravelerTabKey;
+  fixed?: boolean;
+}) {
+  const positionStyle: React.CSSProperties = props.fixed
+    ? {
+        position: "fixed",
+        left: "50%",
+        bottom: 12,
+        transform: "translateX(-50%)",
+        zIndex: 50,
+        width: "min(404px, calc(100vw - 34px))",
+      }
+    : {
+        position: "relative",
+        width: "100%",
+      };
+
+  return React.createElement(
+    "nav",
+    {
+      "aria-label": "Universal traveler bottom navigation",
+      style: {
+        ...positionStyle,
+        borderRadius: 22,
+        padding: "6px 8px",
+        background: "rgba(255,255,255,0.96)",
+        border: "1px solid rgba(203,213,225,0.95)",
+        boxShadow: "0 14px 34px rgba(15,23,42,0.14)",
+        backdropFilter: "blur(18px)",
+        overflow: "hidden",
+      } satisfies React.CSSProperties,
+    },
+    React.createElement(
+      "div",
+      {
+        style: {
+          display: "grid",
+          gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
+          gap: 3,
+          alignItems: "center",
+        } satisfies React.CSSProperties,
+      },
+      TRAVELER_TABS.map((tab) => {
+        const active = props.activeTab === tab.key;
+        const isMainQr = tab.key === "pass";
+
+        return React.createElement(
+          "a",
+          {
+            key: tab.key,
+            href: tab.href,
+            "aria-label": tab.ariaLabel,
+            "aria-current": active ? "page" : undefined,
+            style: {
+              minHeight: isMainQr ? 54 : 48,
+              borderRadius: isMainQr ? 999 : 17,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 3,
+              textDecoration: "none",
+              background: isMainQr
+                ? "linear-gradient(135deg, #10b8b2 0%, #0794ad 100%)"
+                : active
+                  ? "rgba(20,184,166,0.12)"
+                  : "transparent",
+              color: isMainQr ? "#ffffff" : active ? "#0f766e" : "#475569",
+              border: isMainQr ? "3px solid rgba(255,255,255,0.98)" : "1px solid transparent",
+              boxShadow: isMainQr
+                ? "0 10px 24px rgba(8,145,178,0.25)"
+                : active
+                  ? "0 6px 14px rgba(20,184,166,0.10)"
+                  : "none",
+              fontSize: 10.5,
+              fontWeight: 900,
+              letterSpacing: "-0.02em",
+              WebkitTapHighlightColor: "transparent",
+              transform: isMainQr ? "translateY(-4px)" : "none",
+            } satisfies React.CSSProperties,
+          },
+          React.createElement(
+            "span",
+            {
+              "aria-hidden": "true",
+              style: {
+                width: isMainQr ? 24 : 18,
+                height: isMainQr ? 24 : 18,
+                borderRadius: isMainQr ? 9 : 999,
+                display: "grid",
+                placeItems: "center",
+                fontSize: isMainQr ? 21 : 17,
+                lineHeight: 1,
+                color: isMainQr ? "#ffffff" : active ? "#0f766e" : "#64748b",
+              } satisfies React.CSSProperties,
+            },
+            tab.icon,
+          ),
+          React.createElement("span", null, tab.label),
+        );
+      }),
+    ),
+  );
+}

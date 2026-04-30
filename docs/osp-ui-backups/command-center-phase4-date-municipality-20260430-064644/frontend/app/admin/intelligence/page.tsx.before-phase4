@@ -1,0 +1,161 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import CommandCenterShell from "../../../src/components/intelligence/CommandCenterShell";
+import { SIARGAO_MUNICIPALITIES } from "../../../src/lib/siargaoMunicipalities";
+import { OSP_EVENT_MODES } from "../../../src/lib/ospEventModes";
+
+function getApiBaseUrl() {
+  const explicit = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
+  return "http://localhost:8001/api/v1";
+}
+
+function defaultEndDate() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function defaultStartDate() {
+  const date = new Date();
+  date.setDate(date.getDate() - 30);
+  return date.toISOString().slice(0, 10);
+}
+
+export default function AdminIntelligencePage() {
+  const apiBaseUrl = useMemo(() => getApiBaseUrl(), []);
+  const [municipality, setMunicipality] = useState("ALL_SIARGAO");
+  const [eventMode, setEventMode] = useState("NORMAL");
+  const [startDate, setStartDate] = useState(defaultStartDate());
+  const [endDate, setEndDate] = useState(defaultEndDate());
+  const [data, setData] = useState<any>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await fetch(
+          `${apiBaseUrl}/admin/intelligence/overview?municipality=${municipality}&eventMode=${eventMode}&startDate=${startDate}&endDate=${endDate}`,
+          { cache: "no-store" }
+        );
+        const json = await response.json();
+        if (!response.ok || !json?.ok) {
+          setError(json?.message || "Unable to load Super Admin command center.");
+          return;
+        }
+        setData(json);
+        setError("");
+      } catch {
+        setError("Unable to reach the OSP API. Please make sure the backend is running and try again.");
+      }
+    }
+    loadData();
+  }, [apiBaseUrl, municipality, eventMode, startDate, endDate]);
+
+  const navItems = [
+    { label: "Overview", active: true },
+    { label: "Movement Intelligence" },
+    { label: "Compliance Intelligence" },
+    { label: "Operator + Partner Intelligence" },
+    { label: "Marketplace + Commercial Intelligence" },
+    { label: "Traveler Intelligence" },
+    { label: "Passport Trails Intelligence" },
+    { label: "Safety + Event Intelligence" },
+    { label: "System + Audit Intelligence" },
+    { label: "Municipality View" },
+    { label: "Governance Controls" },
+  ];
+
+  return (
+    <CommandCenterShell
+      productName="Super Admin Intelligence Command Center"
+      productSubtitle="Full platform operating intelligence for running the OSP ecosystem."
+      navItems={navItems}
+      municipality={municipality}
+      municipalities={[...SIARGAO_MUNICIPALITIES]}
+      onMunicipalityChange={setMunicipality}
+      eventMode={eventMode}
+      eventModes={[...OSP_EVENT_MODES]}
+      onEventModeChange={setEventMode}
+      startDate={startDate}
+      endDate={endDate}
+      onStartDateChange={setStartDate}
+      onEndDateChange={setEndDate}
+    >
+      {error ? <div className="osp-command-alert">{error}</div> : null}
+      {!data ? (
+        <div className="osp-command-panel">Loading command center...</div>
+      ) : (
+        <>
+          <section className="osp-command-card-grid">
+            {(data.summaryCards || []).map((card: any) => (
+              <article className="osp-command-card" key={card.label}>
+                <p>{card.label}</p>
+                <strong>{card.value}</strong>
+                <span>{card.helper}</span>
+                <small>{card.visibility || "ADMIN_ONLY"} · {card.dataClass || "OPERATIONAL"}</small>
+              </article>
+            ))}
+            {(data.adminPanels || []).map((card: any) => (
+              <article className="osp-command-card" key={card.label}>
+                <p>{card.label}</p>
+                <strong>{card.value}</strong>
+                <span>{card.helper}</span>
+                <small>{card.visibility} · {card.dataClass}</small>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">System Gauges</h3>
+          <section className="osp-command-gauge-grid">
+            {(data.gauges || []).map((gauge: any) => (
+              <article className="osp-command-panel osp-command-gauge" key={gauge.label}>
+                <div className="osp-command-gauge-ring" style={{ ["--gauge-value" as any]: gauge.value }}>
+                  <div className="osp-command-gauge-inner">{gauge.value}%</div>
+                </div>
+                <h4>{gauge.label}</h4>
+                <span>{gauge.status}</span>
+                <p>{gauge.interpretation}</p>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Admin Operational Queues</h3>
+          <section className="osp-command-queue-grid">
+            {(data.adminOperationalQueues || []).map((queue: any) => (
+              <article className="osp-command-queue-card" key={queue.queue}>
+                <div>
+                  <p>{queue.queue}</p>
+                  <strong>{queue.visibility}</strong>
+                </div>
+                <span>{queue.visibility}</span>
+                <small>Super Admin</small>
+                <em>{queue.action}</em>
+              </article>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Admin Intelligence Sections</h3>
+          <section className="osp-command-table">
+            {(data.adminSections || []).map((section: any) => (
+              <div className="osp-command-table-row" key={section.name}>
+                <div><strong>{section.name}</strong></div>
+                <div>{section.visibility}</div>
+                <div>Expanded Super Admin scope</div>
+                <div>Reserved for full platform operations and governance.</div>
+              </div>
+            ))}
+          </section>
+
+          <h3 className="osp-command-section-title">Governance Boundary</h3>
+          <section className="osp-command-panel">
+            <div className="osp-command-pill-grid">
+              {(data.governanceBoundaries || []).map((item: string) => (
+                <div className="osp-command-pill" key={item}>{item}</div>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+    </CommandCenterShell>
+  );
+}

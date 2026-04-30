@@ -1,0 +1,124 @@
+import Link from "next/link";
+import {
+  OspPublicPageShell,
+  PublicCardGrid,
+  PublicSection,
+  PublicTrustStrip,
+} from "../src/components/public/OspPublicPageShell";
+
+const roleCards = [
+  {
+    title: "Travelers",
+    body: "Create your OSP Pass, keep your QR ready, open the Passport Map, follow Passport Trails, and continue your Siargao journey through the traveler app.",
+    href: "/travelers",
+    eyebrow: "Traveler Access",
+  },
+  {
+    title: "Local Operators",
+    body: "Connect verified experiences, QR validation, service records, and eligible manifest workflows into one governed operating layer.",
+    href: "/operators",
+    eyebrow: "Supply Layer",
+  },
+  {
+    title: "OTA / API Partners",
+    body: "Connect confirmed booking records into OSP-managed pass and QR workflows through approved, scoped, and audited partner access.",
+    href: "/ota",
+    eyebrow: "Partner Distribution",
+  },
+  {
+    title: "LGU / DOT Stakeholders",
+    body: "Support governed visibility for tourism movement, manifest-linked activity, safety notices, and destination-level reporting.",
+    href: "/government",
+    eyebrow: "Institutional Layer",
+  },
+  {
+    title: "Developers",
+    body: "Review approved integration pathways for booking-to-pass intake, partner identity, QR readiness, and webhook workflows.",
+    href: "/developers",
+    eyebrow: "API Layer",
+  },
+  {
+    title: "Support",
+    body: "Find the right help path for traveler passes, QR access, operator onboarding, partner review, and account support.",
+    href: "/support",
+    eyebrow: "Help Desk",
+  },
+];
+
+const productCards = [
+  {
+    title: "OSP Pass + QR",
+    body: "A governed identity anchor connecting traveler records, trip context, QR-backed validation, and eligible ecosystem participation.",
+    href: "/osp-pass",
+  },
+  {
+    title: "Siargao Passport Map",
+    body: "A destination journey map for discovery, verified stops, trail progress, and island continuity.",
+    href: "/siargao-passport-map",
+  },
+  {
+    title: "Passport Trails",
+    body: "Structured Siargao trail products including partner tours, curated routes, and traveler-built trail planning.",
+    href: "/passport-trails",
+  },
+];
+
+export default function PublicOspGatewayPage() {
+  return (
+    <OspPublicPageShell
+      eyebrow="One Siargao Pass"
+      title="The digital gateway for Siargao’s island journey."
+      subtitle="One Siargao Pass connects traveler access, QR identity, verified experiences, Passport Trails, booking partners, local operators, and governed tourism visibility through one platform."
+      primaryCta={{ label: "Create OSP Pass", href: "/traveler/start" }}
+      secondaryCta={{ label: "Open Traveler App", href: "/traveler/home" }}
+    >
+      <PublicTrustStrip />
+
+      <PublicSection
+        eyebrow="Website Gateway"
+        title="Route every user to the correct OSP surface."
+        body="The public website explains the ecosystem and directs each user type into the correct interface. The traveler app remains mobile-first. Operators, partners, government stakeholders, and developers each follow their own governed access path."
+      >
+        <PublicCardGrid cards={roleCards} />
+      </PublicSection>
+
+      <section className="mx-auto w-full max-w-7xl px-5 py-8">
+        <div className="grid gap-4 rounded-[2rem] bg-emerald-950 p-6 text-amber-50 shadow-xl shadow-emerald-950/10 lg:grid-cols-[1.1fr_0.9fr] lg:p-8">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-amber-200">
+              Traveler App Separation
+            </p>
+            <h2 className="mt-4 text-3xl font-black tracking-[-0.05em] md:text-5xl">
+              Website outside. Mobile journey inside.
+            </h2>
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-amber-100/85 md:text-base">
+              The public website is for discovery, trust, explanation, and role routing. The traveler app is where pass, QR, trips, scan actions, Passport Map, Passport Trails, and settings live.
+            </p>
+          </div>
+          <div className="grid content-end gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <Link
+              href="/traveler/home"
+              className="rounded-full bg-amber-100 px-5 py-3 text-center text-sm font-black text-emerald-950 shadow-sm"
+            >
+              Open Traveler App
+            </Link>
+            <Link
+              href="/travelers"
+              className="rounded-full border border-amber-100/30 px-5 py-3 text-center text-sm font-black text-amber-50"
+            >
+              Learn How OSP Works
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <PublicSection
+        eyebrow="Core Products"
+        title="Built around identity, verification, and destination operations."
+        body="OSP is not a generic travel marketplace. It is a governed destination platform that connects access, experiences, partner distribution, compliance-aware movement, and tourism intelligence."
+      >
+        <PublicCardGrid cards={productCards} />
+      </PublicSection>
+    </OspPublicPageShell>
+  );
+}

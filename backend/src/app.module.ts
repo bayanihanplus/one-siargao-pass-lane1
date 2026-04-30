@@ -22,9 +22,14 @@ import { LanguagePacksModule } from './modules/language-packs/language-packs.mod
 import { FxModule } from './modules/fx/fx.module';
 import { AssistantModule } from './modules/assistant/assistant.module';
 import { OfficialSafetyBroadcastsModule } from './modules/official-safety-broadcasts/official-safety-broadcasts.module';
+import { PartnersModule } from './modules/partners/partners.module';
+import { LguIntelligenceModule } from './modules/lgu-intelligence/lgu-intelligence.module';
+import { AdminIntelligenceModule } from './modules/admin-intelligence/admin-intelligence.module';
 
 @Module({
   imports: [
+    AdminIntelligenceModule,
+    LguIntelligenceModule,
     OfficialSafetyBroadcastsModule,
     AssistantModule,
     ConfigModule.forRoot({ isGlobal: true }),
@@ -42,6 +47,7 @@ import { OfficialSafetyBroadcastsModule } from './modules/official-safety-broadc
     PaymentsModule,
     ValidationModule,
     OspQrModule,
+    PartnersModule,
     ManifestsModule,
     ManifestApprovalsModule,
     NotificationsModule,

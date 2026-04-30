@@ -1,0 +1,35 @@
+import { OspPublicPageShell, PublicCardGrid, PublicSection } from "../../src/components/public/OspPublicPageShell";
+
+export default function SupportPage() {
+  return (
+    <OspPublicPageShell
+      eyebrow="Support"
+      title="Need help with One Siargao Pass?"
+      subtitle="Get help with traveler passes, QR access, Passport Trails, operator onboarding, partner access, and account support."
+      primaryCta={{ label: "Traveler Login", href: "/login?mode=returning" }}
+      secondaryCta={{ label: "Create OSP Pass", href: "/traveler/start" }}
+    >
+      <PublicSection
+        title="Choose the right support path."
+        body="OSP support should guide each user type to the correct surface instead of mixing traveler, operator, partner, and LGU workflows."
+      >
+        <PublicCardGrid
+          cards={[
+            {
+              title: "Travelers",
+              body: "Help with pass creation, QR access, Passport Map, Passport Trails, and trip records.",
+            },
+            {
+              title: "Operators",
+              body: "Help with operator access, scans, service participation, manifests, and records.",
+            },
+            {
+              title: "Partners",
+              body: "Help with partner review, approved access, integration planning, and API documentation.",
+            },
+          ]}
+        />
+      </PublicSection>
+    </OspPublicPageShell>
+  );
+}
