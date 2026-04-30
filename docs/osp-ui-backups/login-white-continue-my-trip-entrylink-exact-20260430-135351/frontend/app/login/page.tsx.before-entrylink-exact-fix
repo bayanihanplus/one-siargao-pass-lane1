@@ -603,7 +603,7 @@ export default async function LoginPage({
             tone="traveler"
           />
           <EntryLink
-            href="/traveler/home"
+            href={`/login?mode=returning${nextPath ? `&next=${encodeURIComponent(nextPath)}` : ""}`}
             icon="🧭"
             title="Continue My Trip"
             body="Already have an account or trip record? Sign in and continue your Siargao journey."

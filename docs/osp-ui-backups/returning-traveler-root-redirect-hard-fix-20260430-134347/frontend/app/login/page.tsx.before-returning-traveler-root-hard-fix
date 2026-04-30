@@ -2,26 +2,6 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getApiBaseUrl, getAuthCookieName, getCurrentUser } from "../../src/lib/server-auth";
 
-
-function ospLoginNormalizeNext(value: string | null | undefined): string {
-  if (!value || value === "/" || value === "/login" || value.startsWith("/login?")) {
-    return "/traveler/home";
-  }
-
-  return value;
-}
-
-
-
-function normalizeTravelerReturnPath(value: string | null | undefined): string {
-  if (!value || value === "/" || value === "/login" || value.startsWith("/login?")) {
-    return "/traveler/home";
-  }
-
-  return value;
-}
-
-
 /*
  * OSP-LOGIN-01 LOCK:
  * /login is now the OSP Traveler Entry Gateway, not a generic dev login page.
@@ -603,7 +583,7 @@ export default async function LoginPage({
             tone="traveler"
           />
           <EntryLink
-            href="/traveler/home"
+            href={`/login?mode=returning${nextPath ? `&next=${encodeURIComponent(nextPath)}` : ""}`}
             icon="🧭"
             title="Continue My Trip"
             body="Already have an account or trip record? Sign in and continue your Siargao journey."

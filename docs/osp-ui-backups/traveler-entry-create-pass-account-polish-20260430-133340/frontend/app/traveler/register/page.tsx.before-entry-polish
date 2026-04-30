@@ -231,7 +231,7 @@ export default async function TravelerRegisterPage({
   const errorMessage = getErrorMessage(resolvedSearchParams?.error, resolvedSearchParams?.message);
 
   return (
-    <main data-osp-entry-page="true"
+    <main
       style={{
         minHeight: "100vh",
         background:

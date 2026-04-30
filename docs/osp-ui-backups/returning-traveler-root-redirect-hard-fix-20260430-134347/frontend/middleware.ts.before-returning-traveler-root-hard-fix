@@ -1,14 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-
-function ospNormalizeLoginNextPath(pathname: string | null | undefined): string {
-  if (!pathname || pathname === "/") return "/traveler/home";
-  if (pathname === "/login") return "/traveler/home";
-  if (pathname.startsWith("/login")) return "/traveler/home";
-  return pathname;
-}
-
-
 const AUTH_COOKIE_NAME = "osp_access_token";
 
 function decodeJwtPayload(token: string): any | null {
@@ -121,23 +112,6 @@ function isPublicRoute(pathname: string) {
 }
 
 export function middleware(req: NextRequest) {
-  // OSP_LOGIN_RETURNING_ROOT_NEXT_HARD_GUARD
-  // Normalize returning traveler root redirects before the login page renders.
-  const __ospLoginUrl = req.nextUrl.clone();
-  const __ospLoginPathname = __ospLoginUrl.pathname;
-  const __ospLoginMode = __ospLoginUrl.searchParams.get("mode");
-  const __ospLoginNext = __ospLoginUrl.searchParams.get("next");
-
-  if (
-    __ospLoginPathname === "/login" &&
-    __ospLoginMode === "returning" &&
-    (!__ospLoginNext || __ospLoginNext === "/" || __ospLoginNext === "/login")
-  ) {
-    __ospLoginUrl.searchParams.set("next", "/traveler/home");
-    return NextResponse.redirect(__ospLoginUrl);
-  }
-
-
   // OSP_OPERATOR_LOCAL_DEMO_BYPASS
   // Local presentation bypass only. Keeps OSP Shell, SPM, Traveler, LGU, Admin, and public routes untouched.
   // Purpose: allow /operator and /operator/* route rendering on localhost for Mayor/DOT-LGU demo.

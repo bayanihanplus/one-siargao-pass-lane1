@@ -114,7 +114,7 @@ function Pill(props: { children: string }) {
 
 export default function TravelerStartPage() {
   return (
-    <main data-osp-entry-page="true"
+    <main
       style={{
         minHeight: "100vh",
         background:
