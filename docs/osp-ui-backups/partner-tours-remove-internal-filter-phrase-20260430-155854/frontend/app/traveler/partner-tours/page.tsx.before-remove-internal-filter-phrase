@@ -211,29 +211,6 @@ function getCtaMicrocopy(service: MarketplaceService) {
   return "Review details before choosing your next Siargao experience.";
 }
 
-function getFeaturedFallbackImage(service: MarketplaceService) {
-  if (service.media?.heroImageUrl) return service.media.heroImageUrl;
-
-  if (service.category === "ISLAND_HOPPING") {
-    return "/spm/siargao-passport-map-placeholder.svg";
-  }
-
-  return null;
-}
-
-function getServiceVisualBackground(service: MarketplaceService) {
-  const image = getFeaturedFallbackImage(service);
-
-  if (image) {
-    return `linear-gradient(180deg, rgba(7,32,61,0.12), rgba(7,32,61,0.50)), url(${image}) center/cover`;
-  }
-
-  return (
-    service.media?.fallbackGradient ||
-    "radial-gradient(circle at 18% 0%, rgba(32,169,183,0.22), transparent 34%), radial-gradient(circle at 86% 14%, rgba(242,193,78,0.20), transparent 30%), linear-gradient(135deg, #e5f7f3, #f2f9fc)"
-  );
-}
-
 function getServiceIcon(service: MarketplaceService) {
   if (service.media?.icon) return service.media.icon;
   if (service.category === "ISLAND_HOPPING") return "🏝️";
@@ -281,9 +258,8 @@ function getPublicBadges(service: MarketplaceService) {
   return raw
     .filter((badge) => {
       const lower = badge.toLowerCase();
-      const normalized = lower.replace(/[^a-z]/g, "");
-      if (normalized.includes("rotationband")) return false;
-      if (normalized.includes("featuredeligible")) return false;
+      if (lower.includes("rotation band")) return false;
+      if (lower.includes("featured eligible")) return false;
       return true;
     })
     .map((badge) => {
@@ -414,7 +390,11 @@ function ServiceCard(props: { service: MarketplaceService }) {
         style={{
           minHeight: 148,
           padding: 16,
-          background: getServiceVisualBackground(service),
+          background:
+            service.media?.heroImageUrl
+              ? `linear-gradient(180deg, rgba(9,45,83,0.10), rgba(9,45,83,0.42)), url(${service.media.heroImageUrl}) center/cover`
+              : service.media?.fallbackGradient ||
+                "radial-gradient(circle at 18% 0%, rgba(32,169,183,0.22), transparent 34%), radial-gradient(circle at 86% 14%, rgba(242,193,78,0.20), transparent 30%), linear-gradient(135deg, #e5f7f3, #f2f9fc)",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -780,9 +760,6 @@ export default async function PartnerToursPage() {
                   letterSpacing: "-0.045em",
                   fontWeight: 950,
                   color: "#ffffff",
-                  WebkitTextFillColor: "#ffffff",
-                  textShadow: "0 4px 22px rgba(0,18,42,0.58), 0 1px 2px rgba(0,18,42,0.42)",
-                  opacity: 1,
                 }}
               >
                 Verified Siargao experiences, ready for your journey.

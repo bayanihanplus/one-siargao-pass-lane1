@@ -1,0 +1,20 @@
+import { Controller, Get, Query } from '@nestjs/common';
+import { TravelerMarketplaceService } from './traveler-marketplace.service';
+
+@Controller('traveler/marketplace')
+export class TravelerMarketplaceController {
+  constructor(private readonly travelerMarketplaceService: TravelerMarketplaceService) {}
+
+  @Get('services')
+  getServices(
+    @Query('category') category?: string,
+    @Query('mode') mode?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.travelerMarketplaceService.getServices({
+      category,
+      mode,
+      limit: limit ? Number(limit) : undefined,
+    });
+  }
+}

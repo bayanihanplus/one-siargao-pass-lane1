@@ -23,7 +23,6 @@ import { FxModule } from './modules/fx/fx.module';
 import { AssistantModule } from './modules/assistant/assistant.module';
 import { OfficialSafetyBroadcastsModule } from './modules/official-safety-broadcasts/official-safety-broadcasts.module';
 import { PartnersModule } from './modules/partners/partners.module';
-import { TravelerMarketplaceModule } from './modules/traveler-marketplace/traveler-marketplace.module';
 import { LguIntelligenceModule } from './modules/lgu-intelligence/lgu-intelligence.module';
 import { AdminIntelligenceModule } from './modules/admin-intelligence/admin-intelligence.module';
 
@@ -49,7 +48,6 @@ import { AdminIntelligenceModule } from './modules/admin-intelligence/admin-inte
     ValidationModule,
     OspQrModule,
     PartnersModule,
-    TravelerMarketplaceModule,
     ManifestsModule,
     ManifestApprovalsModule,
     NotificationsModule,

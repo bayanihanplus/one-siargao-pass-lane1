@@ -101,9 +101,6 @@ type MarketplaceService = {
   };
   availability?: {
     status?: string;
-    label?: string;
-    urgencyLabel?: string;
-    calendarStatus?: string;
     upcomingInstanceCount?: number | null;
     capacity?: number | null;
   };
@@ -211,29 +208,6 @@ function getCtaMicrocopy(service: MarketplaceService) {
   return "Review details before choosing your next Siargao experience.";
 }
 
-function getFeaturedFallbackImage(service: MarketplaceService) {
-  if (service.media?.heroImageUrl) return service.media.heroImageUrl;
-
-  if (service.category === "ISLAND_HOPPING") {
-    return "/spm/siargao-passport-map-placeholder.svg";
-  }
-
-  return null;
-}
-
-function getServiceVisualBackground(service: MarketplaceService) {
-  const image = getFeaturedFallbackImage(service);
-
-  if (image) {
-    return `linear-gradient(180deg, rgba(7,32,61,0.12), rgba(7,32,61,0.50)), url(${image}) center/cover`;
-  }
-
-  return (
-    service.media?.fallbackGradient ||
-    "radial-gradient(circle at 18% 0%, rgba(32,169,183,0.22), transparent 34%), radial-gradient(circle at 86% 14%, rgba(242,193,78,0.20), transparent 30%), linear-gradient(135deg, #e5f7f3, #f2f9fc)"
-  );
-}
-
 function getServiceIcon(service: MarketplaceService) {
   if (service.media?.icon) return service.media.icon;
   if (service.category === "ISLAND_HOPPING") return "🏝️";
@@ -247,61 +221,6 @@ function getServiceIcon(service: MarketplaceService) {
 
 function formatCategory(value?: string) {
   return String(value || "PARTNER_EXPERIENCE").replace(/_/g, " ");
-}
-
-function getPublicOperatorLabel(service: MarketplaceService) {
-  const displayName = service.operator?.displayName || "";
-
-  if (service.sourceType === "SPM_TRAIL_PACKAGE") {
-    return displayName.includes("DOT-accredited")
-      ? "DOT-accredited local partner"
-      : "Verified local partner";
-  }
-
-  return displayName || "Verified local operator";
-}
-
-function getPublicServiceFlowLabel(service: MarketplaceService) {
-  if (service.booking?.ctaMode === "START_ISLAND_HOPPING_REQUEST") return "Regulated request";
-  if (service.booking?.ctaMode === "REQUEST_AVAILABILITY") return "Availability request";
-  if (service.booking?.ctaMode === "ADD_TO_TRAIL") return "Trail planning";
-  return "Experience details";
-}
-
-function getPublicAvailabilityLabel(service: MarketplaceService) {
-  if (service.availability?.label) return service.availability.label;
-  if (service.availability?.status === "PACKAGE_VISIBLE") return "Request-ready";
-  if (service.availability?.status === "REQUEST_TO_CONFIRM") return "Request to confirm";
-  return "Request-ready";
-}
-
-function getPublicBadges(service: MarketplaceService) {
-  const raw = service.commercialBadges || service.badges || [];
-
-  return raw
-    .filter((badge) => {
-      const lower = badge.toLowerCase();
-      const normalized = lower.replace(/[^a-z]/g, "");
-      if (normalized.includes("rotationband")) return false;
-      if (normalized.includes("featuredeligible")) return false;
-      return true;
-    })
-    .map((badge) => {
-      if (badge === "Featured official experience") return "Featured verified experience";
-      if (badge === "Official OSP experience") return "Official OSP experience";
-      if (badge === "DOT-accredited partner required") return "DOT-accredited partner";
-      if (badge === "Regulated activity flow") return "Regulated request flow";
-      return badge;
-    })
-    .slice(0, 5);
-}
-
-function getPublicTrustSummary(service: MarketplaceService) {
-  if (service.governance?.requiresClearance) {
-    return "This island experience starts through a regulated request flow connected to your OSP Pass and QR identity.";
-  }
-
-  return "This experience is shown only after marketplace visibility and partner quality checks.";
 }
 
 function Badge(props: { children: string; tone?: "blue" | "gold" | "green" | "light" }) {
@@ -414,7 +333,11 @@ function ServiceCard(props: { service: MarketplaceService }) {
         style={{
           minHeight: 148,
           padding: 16,
-          background: getServiceVisualBackground(service),
+          background:
+            service.media?.heroImageUrl
+              ? `linear-gradient(180deg, rgba(9,45,83,0.10), rgba(9,45,83,0.42)), url(${service.media.heroImageUrl}) center/cover`
+              : service.media?.fallbackGradient ||
+                "radial-gradient(circle at 18% 0%, rgba(32,169,183,0.22), transparent 34%), radial-gradient(circle at 86% 14%, rgba(242,193,78,0.20), transparent 30%), linear-gradient(135deg, #e5f7f3, #f2f9fc)",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -485,7 +408,7 @@ function ServiceCard(props: { service: MarketplaceService }) {
         </p>
 
         <div style={{ marginTop: 12, display: "flex", flexWrap: "wrap", gap: 7 }}>
-          {getPublicBadges(service).map((badge) => (
+          {(service.commercialBadges || service.badges || []).slice(0, 5).map((badge) => (
             <Badge key={badge} tone={badge.toLowerCase().includes("pricing") || badge.toLowerCase().includes("regulated") ? "gold" : "blue"}>
               {badge}
             </Badge>
@@ -502,7 +425,7 @@ function ServiceCard(props: { service: MarketplaceService }) {
         >
           <div style={miniSignalStyle}>
             <span style={miniSignalLabelStyle}>Availability</span>
-            <strong style={miniSignalValueStyle}>{getPublicAvailabilityLabel(service)}</strong>
+            <strong style={miniSignalValueStyle}>{service.availability?.label || service.availability?.status || "Request"}</strong>
           </div>
           <div style={miniSignalStyle}>
             <span style={miniSignalLabelStyle}>Reviews</span>
@@ -525,12 +448,14 @@ function ServiceCard(props: { service: MarketplaceService }) {
           }}
         >
           <div style={miniSignalStyle}>
-            <span style={miniSignalLabelStyle}>Partner</span>
-            <strong style={miniSignalValueStyle}>{getPublicOperatorLabel(service)}</strong>
+            <span style={miniSignalLabelStyle}>Readiness</span>
+            <strong style={miniSignalValueStyle}>{service.exposure?.readinessScore ?? "—"}/100</strong>
           </div>
           <div style={miniSignalStyle}>
-            <span style={miniSignalLabelStyle}>Request</span>
-            <strong style={miniSignalValueStyle}>{getPublicServiceFlowLabel(service)}</strong>
+            <span style={miniSignalLabelStyle}>Rotation</span>
+            <strong style={miniSignalValueStyle}>
+              {service.exposure?.placementTier?.replace(/_/g, " ") || "Verified"}
+            </strong>
           </div>
         </div>
 
@@ -630,10 +555,10 @@ function ServiceCard(props: { service: MarketplaceService }) {
           </div>
           <p style={{ margin: "5px 0 0", fontSize: 12.3, lineHeight: 1.4, color: "rgba(16,35,63,0.72)", fontWeight: 750 }}>
             {service.sourceType === "SPM_TRAIL_PACKAGE"
-              ? "This request is fulfilled only through a DOT-accredited / approved local partner."
+              ? "Fulfillment must use a DOT-accredited / approved local partner."
               : service.operator?.dotAccreditation?.isAccredited
-                ? "Operator accreditation is verified for traveler exposure."
-                : "This operator will not appear publicly until accreditation is verified."}
+                ? `Operator accreditation verified${dotStatus ? `: ${dotStatus}` : "."}`
+                : "Not traveler-visible unless accreditation is verified."}
           </p>
         </div>
 
@@ -655,8 +580,6 @@ function ServiceCard(props: { service: MarketplaceService }) {
               fontWeight: 760,
             }}
           >
-            {getPublicTrustSummary(service)}
-            <br />
             {getCtaMicrocopy(service)}
           </p>
 
@@ -755,7 +678,7 @@ export default async function PartnerToursPage() {
               >
                 ←
               </a>
-              <Badge tone="light">Verified partner lane</Badge>
+              <Badge tone="light">DOT-accredited lane</Badge>
             </div>
 
             <div style={{ marginTop: 22 }}>
@@ -780,16 +703,13 @@ export default async function PartnerToursPage() {
                   letterSpacing: "-0.045em",
                   fontWeight: 950,
                   color: "#ffffff",
-                  WebkitTextFillColor: "#ffffff",
-                  textShadow: "0 4px 22px rgba(0,18,42,0.58), 0 1px 2px rgba(0,18,42,0.42)",
-                  opacity: 1,
                 }}
               >
-                Verified Siargao experiences, ready for your journey.
+                Choose official Siargao experiences.
               </h1>
 
               <p style={{ margin: "9px 0 0", color: "#fff1bf", fontSize: 16, fontWeight: 950 }}>
-                Choose trusted local experiences connected to your OSP Pass, QR identity, and Passport Trails.
+                Connected to your OSP Pass, QR identity, and Passport Trails.
               </p>
 
               <p
@@ -802,7 +722,7 @@ export default async function PartnerToursPage() {
                   maxWidth: 380,
                 }}
               >
-                Every visible experience must pass OSP partner standards before it appears for travelers.
+                Services shown here come from the OSP marketplace contract. Operator-led experiences must pass accreditation, quality, and governed exposure gates before traveler exposure.
               </p>
             </div>
 
@@ -891,13 +811,13 @@ export default async function PartnerToursPage() {
           }}
         >
           <div style={{ fontSize: 11, fontWeight: 950, letterSpacing: "0.12em", textTransform: "uppercase", color: "#137d82" }}>
-            Verified experience standard
+            Commercial boundary
           </div>
           <h2 style={{ margin: "5px 0 0", fontSize: 20, lineHeight: 1.1, fontWeight: 950, color: "#0b355f" }}>
-            Choose with confidence.
+            Verified services are now backend-wired.
           </h2>
           <p style={{ margin: "8px 0 0", fontSize: 12.5, lineHeight: 1.42, color: "rgba(16,35,63,0.70)", fontWeight: 700 }}>
-            Island Hopping starts through a regulated request flow. Partner experiences shown here are filtered for OSP readiness, DOT-accredited fulfillment, and traveler-safe presentation.
+            Choose experiences with confidence. Island Hopping starts a regulated request flow; operator-led services must pass accreditation, quality, and fair exposure gates before appearing here. Featured placement is governed; sponsored placement is not active yet.
           </p>
         </section>
 
@@ -938,11 +858,11 @@ export default async function PartnerToursPage() {
           }}
         >
           <div style={{ fontSize: 11, fontWeight: 950, letterSpacing: "0.12em", color: "#137d82", textTransform: "uppercase" }}>
-            Partner standard
+            Governance
           </div>
           <p style={{ margin: "7px 0 0", color: "rgba(16,35,63,0.70)", fontSize: 12.5, lineHeight: 1.45, fontWeight: 700 }}>
             {productionPolicy
-              ? "Only verified, traveler-safe experiences appear here. Island Hopping and regulated activities follow the proper OSP request, manifest, and clearance pathway."
+              ? "Traveler-visible services are filtered by public visibility, service quality, operator status, DOT/accreditation policy, and governed exposure logic. Sponsored placement is not active yet."
               : "Marketplace policy is loading from the backend contract."}
           </p>
         </section>

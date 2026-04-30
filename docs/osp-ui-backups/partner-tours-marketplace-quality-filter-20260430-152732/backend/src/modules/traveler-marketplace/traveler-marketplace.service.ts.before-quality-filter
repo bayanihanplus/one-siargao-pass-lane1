@@ -1,0 +1,535 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../database/prisma.service';
+
+type MarketplaceQuery = {
+  category?: string;
+  mode?: string;
+  limit?: number;
+};
+
+type MarketplaceCtaMode =
+  | 'VIEW_DETAILS'
+  | 'REQUEST_AVAILABILITY'
+  | 'ADD_TO_TRAIL'
+  | 'START_ISLAND_HOPPING_REQUEST'
+  | 'COMING_SOON';
+
+@Injectable()
+export class TravelerMarketplaceService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  private normalizeText(value: unknown) {
+    return String(value ?? '').trim();
+  }
+
+  private normalizeSlug(value: unknown) {
+    return this.normalizeText(value)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  private isIslandHoppingText(value: string) {
+    const lower = value.toLowerCase();
+
+    return (
+      lower.includes('island hopping') ||
+      lower.includes('island-hopping') ||
+      lower.includes('tri island') ||
+      lower.includes('tri-island') ||
+      lower.includes('naked island') ||
+      lower.includes('daku island') ||
+      lower.includes('guyam island') ||
+      lower.includes('sohoton') ||
+      lower.includes('bucas grande')
+    );
+  }
+
+  private isProductionSafeServiceText(value: string) {
+    const lower = value.toLowerCase();
+
+    const blockedTerms = [
+      'test',
+      'seed',
+      'seeded',
+      'dummy',
+      'sample',
+      'attack',
+      'cross operator',
+      'dev only',
+      'debug',
+      'mock',
+      'fake',
+    ];
+
+    return !blockedTerms.some((term) => lower.includes(term));
+  }
+
+  private isProductionSafeOperatorStatus(status: unknown) {
+    const normalized = String(status ?? '').trim().toUpperCase();
+
+    if (!normalized) return true;
+
+    return [
+      'APPROVED',
+      'VERIFIED',
+      'ACTIVE',
+      'OPERATOR_RECORD',
+      'PENDING_REVIEW',
+    ].includes(normalized);
+  }
+
+  private deriveCategory(text: string) {
+    const lower = text.toLowerCase();
+
+    if (this.isIslandHoppingText(lower)) return 'ISLAND_HOPPING';
+    if (lower.includes('surf')) return 'SURF';
+    if (lower.includes('land') || lower.includes('road') || lower.includes('van') || lower.includes('transport')) {
+      return 'LAND_TOUR';
+    }
+    if (lower.includes('trail') || lower.includes('passport')) return 'PASSPORT_TRAIL';
+    if (lower.includes('culture') || lower.includes('community')) return 'CULTURE';
+    if (lower.includes('sunset') || lower.includes('scenic')) return 'SCENIC';
+
+    return 'PARTNER_EXPERIENCE';
+  }
+
+  private deriveCtaMode(input: {
+    category: string;
+    requiresClearance: boolean;
+    hasApprovedPricing: boolean;
+    requestToConfirmRequired: boolean;
+    instantCheckoutAllowed: boolean;
+    hasScheduleOrCapacity: boolean;
+    isSpmPackage?: boolean;
+  }): MarketplaceCtaMode {
+    if (input.requiresClearance && input.category === 'ISLAND_HOPPING') {
+      return 'START_ISLAND_HOPPING_REQUEST';
+    }
+
+    if (input.isSpmPackage) {
+      return input.hasApprovedPricing ? 'ADD_TO_TRAIL' : 'VIEW_DETAILS';
+    }
+
+    if (input.instantCheckoutAllowed && input.hasApprovedPricing && input.hasScheduleOrCapacity) {
+      return 'REQUEST_AVAILABILITY';
+    }
+
+    if (input.requestToConfirmRequired || input.hasScheduleOrCapacity) {
+      return 'REQUEST_AVAILABILITY';
+    }
+
+    return 'VIEW_DETAILS';
+  }
+
+  private formatPrice(pricing: any) {
+    if (!pricing) {
+      return {
+        priceMode: 'NOT_PUBLISHED',
+        displayPrice: 'Pricing before confirmation',
+        currencyCode: 'PHP',
+        pricingReady: false,
+      };
+    }
+
+    const currencyCode = pricing.currencyCode || 'PHP';
+    const mode = pricing.pricingMode || 'REQUEST_TO_CONFIRM';
+
+    if (pricing.basePrice) {
+      return {
+        priceMode: mode,
+        displayPrice: `From ${currencyCode} ${Number(pricing.basePrice).toLocaleString('en-PH')}`,
+        currencyCode,
+        pricingReady: pricing.approvalStatus === 'APPROVED',
+      };
+    }
+
+    if (pricing.packageFlatRate) {
+      return {
+        priceMode: mode,
+        displayPrice: `${currencyCode} ${Number(pricing.packageFlatRate).toLocaleString('en-PH')} package`,
+        currencyCode,
+        pricingReady: pricing.approvalStatus === 'APPROVED',
+      };
+    }
+
+    if (pricing.priceRangeMin || pricing.priceRangeMax) {
+      const min = pricing.priceRangeMin ? Number(pricing.priceRangeMin).toLocaleString('en-PH') : null;
+      const max = pricing.priceRangeMax ? Number(pricing.priceRangeMax).toLocaleString('en-PH') : null;
+
+      return {
+        priceMode: mode,
+        displayPrice:
+          min && max
+            ? `${currencyCode} ${min}–${max}`
+            : min
+              ? `From ${currencyCode} ${min}`
+              : max
+                ? `Up to ${currencyCode} ${max}`
+                : 'Request price',
+        currencyCode,
+        pricingReady: pricing.approvalStatus === 'APPROVED',
+      };
+    }
+
+    return {
+      priceMode: mode,
+      displayPrice: pricing.requestToConfirmRequired ? 'Request to confirm' : 'Pricing before confirmation',
+      currencyCode,
+      pricingReady: pricing.approvalStatus === 'APPROVED',
+    };
+  }
+
+  async getServices(query: MarketplaceQuery) {
+    const limit = Math.min(Math.max(query.limit || 24, 1), 50);
+    const normalizedCategory = query.category ? String(query.category).toUpperCase() : 'ALL';
+
+    const [activityTemplates, spmPackages] = await Promise.all([
+      this.prisma.activityTemplate.findMany({
+        where: {
+          isPubliclyVisible: true,
+        },
+        orderBy: [{ createdAt: 'desc' }],
+        take: limit,
+        include: {
+          owner: {
+            include: {
+              operatorProfile: true,
+            },
+          },
+          instances: {
+            orderBy: [{ scheduledDate: 'asc' }],
+            take: 5,
+          },
+        },
+      }),
+      this.prisma.spmTrailPackage.findMany({
+        where: {
+          approvalStatus: 'APPROVED' as any,
+          distributionEnabled: true,
+        },
+        orderBy: [{ createdAt: 'desc' }],
+        take: limit,
+      }).catch(() => []),
+    ]);
+
+    const spmPackageIds = (spmPackages as any[]).map((item: any) => item.id).filter(Boolean);
+
+    const spmPricingRules = spmPackageIds.length
+      ? await this.prisma.spmPricingRule.findMany({
+          where: {
+            trailPackageId: { in: spmPackageIds },
+            approvalStatus: 'APPROVED' as any,
+          },
+          orderBy: [{ operatorUserId: 'desc' }, { updatedAt: 'desc' }],
+        }).catch(() => [])
+      : [];
+
+    const pricingRulesByPackage = new Map<string, any[]>();
+    for (const rule of spmPricingRules as any[]) {
+      if (!rule.trailPackageId) continue;
+      const existing = pricingRulesByPackage.get(rule.trailPackageId) || [];
+      existing.push(rule);
+      pricingRulesByPackage.set(rule.trailPackageId, existing);
+    }
+
+    const activityServices = activityTemplates
+      .filter((activity: any) => {
+        const sourceText = [
+          activity.title,
+          activity.description,
+          activity.meetingPointText,
+          activity.owner?.operatorProfile?.businessName,
+          activity.owner?.operatorProfile?.displayName,
+        ]
+          .filter(Boolean)
+          .join(' ');
+
+        return (
+          this.isProductionSafeServiceText(sourceText) &&
+          this.isProductionSafeOperatorStatus(activity.owner?.operatorProfile?.verificationStatus)
+        );
+      })
+      .map((activity: any) => {
+      const sourceText = [
+        activity.title,
+        activity.description,
+        activity.meetingPointText,
+        activity.owner?.operatorProfile?.businessName,
+        activity.owner?.operatorProfile?.displayName,
+      ]
+        .filter(Boolean)
+        .join(' ');
+
+      const category = this.deriveCategory(sourceText);
+      const requiresClearance = this.isIslandHoppingText(sourceText) || activity.requiresManifest === true;
+      const activeInstances = Array.isArray(activity.instances)
+        ? activity.instances.filter((instance: any) => String(instance.instanceStatus || '').toLowerCase() === 'scheduled')
+        : [];
+
+      const hasScheduleOrCapacity = activeInstances.length > 0;
+
+      const ctaMode = this.deriveCtaMode({
+        category,
+        requiresClearance,
+        hasApprovedPricing: false,
+        requestToConfirmRequired: true,
+        instantCheckoutAllowed: false,
+        hasScheduleOrCapacity,
+      });
+
+      return {
+        id: `activity:${activity.id}`,
+        sourceType: 'OPERATOR_ACTIVITY',
+        sourceId: activity.id,
+        title: activity.title,
+        slug: this.normalizeSlug(activity.title || activity.id),
+        shortDescription: activity.description || 'Operator-led experience listed from approved OSP activity records.',
+        category,
+        operator: {
+          operatorUserId: activity.ownerUserId,
+          displayName:
+            activity.owner?.operatorProfile?.displayName ||
+            activity.owner?.operatorProfile?.businessName ||
+            'OSP Partner Operator',
+          verificationStatus: activity.owner?.operatorProfile?.verificationStatus || 'OPERATOR_RECORD',
+        },
+        locationArea: activity.meetingPointText || 'Siargao',
+        media: {
+          heroImageUrl: null,
+          gallery: [],
+          mediaStatus: 'NOT_CONFIGURED',
+        },
+        content: {
+          inclusions: [],
+          exclusions: [],
+          cancellationPolicy: null,
+          publicServiceGalleryReady: false,
+        },
+        socialProof: {
+          ratingAverage: null,
+          reviewCount: 0,
+          featuredReviews: [],
+          status: 'NOT_CONNECTED',
+        },
+        taxonomy: {
+          serviceCategory: category,
+          serviceSubcategory: null,
+          commercialLane: 'PARTNER_OPERATOR_SERVICE',
+        },
+        moderation: {
+          exposureStatus: activity.isPubliclyVisible === true ? 'VISIBLE_SOURCE' : 'HIDDEN_SOURCE',
+          moderationStatus: 'SOURCE_VISIBLE',
+          marketplaceExposureToggleAvailable: false,
+          dedicatedModerationStateAvailable: false,
+        },
+        commercialBadges: [
+          'Operator-led',
+          activity.requiresGuide ? 'Guide may be required' : null,
+          activity.requiresManifest ? 'Manifest-aware' : null,
+          requiresClearance ? 'Regulated activity' : 'Request to confirm',
+        ].filter(Boolean),
+        price: {
+          priceMode: 'REQUEST_TO_CONFIRM',
+          displayPrice: 'Pricing before confirmation',
+          currencyCode: 'PHP',
+          pricingReady: false,
+        },
+        availability: {
+          status: hasScheduleOrCapacity ? 'SCHEDULE_AVAILABLE' : 'REQUEST_TO_CONFIRM',
+          upcomingInstanceCount: activeInstances.length,
+          capacity:
+            activeInstances.length > 0
+              ? activeInstances.reduce((sum: number, item: any) => sum + Number(item.capacity || 0), 0)
+              : null,
+        },
+        booking: {
+          ctaMode,
+          bookingMode: ctaMode === 'START_ISLAND_HOPPING_REQUEST' ? 'REGULATED_REQUEST' : 'REQUEST_TO_CONFIRM',
+          instantCheckoutAllowed: false,
+          paymentExecutionIncluded: false,
+        },
+        governance: {
+          marketplaceVisible: activity.isPubliclyVisible === true,
+          approvalStatus: 'SOURCE_VISIBLE',
+          requiresManifest: activity.requiresManifest === true,
+          requiresGuide: activity.requiresGuide === true,
+          requiresClearance,
+          regulatedActivityType: requiresClearance && category === 'ISLAND_HOPPING' ? 'ISLAND_HOPPING' : null,
+          qrValidationRequired: activity.requiresManifest === true,
+          stampEligible: false,
+          passportTrailEligible: false,
+        },
+        badges: [
+          'Operator-led',
+          activity.requiresGuide ? 'Guide may be required' : null,
+          activity.requiresManifest ? 'Manifest-aware' : null,
+          requiresClearance ? 'Regulated activity' : 'Request to confirm',
+        ].filter(Boolean),
+      };
+    });
+
+    const packageServices = (spmPackages as any[]).map((item: any) => {
+      const sourceText = [
+        item.name,
+        item.publicLabel,
+        item.description,
+        item.shortDescription,
+        item.code,
+        item.productType,
+        item.fulfillmentPartnerType,
+      ]
+        .filter(Boolean)
+        .join(' ');
+
+      const category = this.deriveCategory(sourceText);
+      const requiresClearance = this.isIslandHoppingText(sourceText);
+      const pricing = pricingRulesByPackage.get(item.id)?.[0] || null;
+      const price = this.formatPrice(pricing);
+
+      const ctaMode = this.deriveCtaMode({
+        category,
+        requiresClearance,
+        hasApprovedPricing: price.pricingReady,
+        requestToConfirmRequired: Boolean(pricing?.requestToConfirmRequired),
+        instantCheckoutAllowed: Boolean(pricing?.instantCheckoutAllowed),
+        hasScheduleOrCapacity: false,
+        isSpmPackage: true,
+      });
+
+      return {
+        id: `spm-package:${item.id}`,
+        sourceType: 'SPM_TRAIL_PACKAGE',
+        sourceId: item.id,
+        title: item.publicLabel || item.name,
+        slug: this.normalizeSlug(item.code || item.publicLabel || item.name || item.id),
+        shortDescription: item.shortDescription || item.description || 'Official Passport Trails package connected to OSP journey planning.',
+        category,
+        operator: {
+          operatorUserId: null,
+          displayName:
+            item.fulfillmentPartnerType === 'LOCAL_OPERATOR'
+              ? 'Approved local partner required'
+              : 'One Siargao Pass',
+          verificationStatus: item.fulfillmentPartnerType || 'OSP_CURATED',
+        },
+        locationArea: 'Siargao',
+        media: {
+          heroImageUrl: null,
+          gallery: [],
+          mediaStatus: 'NOT_CONFIGURED',
+        },
+        content: {
+          inclusions: [],
+          exclusions: [],
+          cancellationPolicy: null,
+          publicServiceGalleryReady: false,
+        },
+        socialProof: {
+          ratingAverage: null,
+          reviewCount: 0,
+          featuredReviews: [],
+          status: 'NOT_CONNECTED',
+        },
+        taxonomy: {
+          serviceCategory: category,
+          serviceSubcategory: item.productType || null,
+          commercialLane: 'OFFICIAL_PASSPORT_TRAIL_PACKAGE',
+        },
+        moderation: {
+          exposureStatus: item.distributionEnabled === true ? 'DISTRIBUTION_ENABLED' : 'DISTRIBUTION_DISABLED',
+          moderationStatus: item.approvalStatus || 'UNKNOWN',
+          marketplaceExposureToggleAvailable: true,
+          dedicatedModerationStateAvailable: false,
+        },
+        commercialBadges: [
+          'Official Trail',
+          item.fulfillmentPartnerType === 'LOCAL_OPERATOR' ? 'Local partner fulfilled' : 'OSP curated',
+          price.pricingReady ? 'Pricing reviewed' : 'Request to confirm',
+          requiresClearance ? 'Regulated activity' : 'Trail eligible',
+        ].filter(Boolean),
+        price,
+        availability: {
+          status: pricing?.requestToConfirmRequired ? 'REQUEST_TO_CONFIRM' : 'PACKAGE_VISIBLE',
+          upcomingInstanceCount: null,
+          capacity: null,
+        },
+        booking: {
+          ctaMode,
+          bookingMode:
+            ctaMode === 'START_ISLAND_HOPPING_REQUEST'
+              ? 'REGULATED_REQUEST'
+              : pricing?.requestToConfirmRequired
+                ? 'REQUEST_TO_CONFIRM'
+                : 'ADD_TO_TRAIL',
+          instantCheckoutAllowed: Boolean(pricing?.instantCheckoutAllowed),
+          paymentExecutionIncluded: false,
+        },
+        governance: {
+          marketplaceVisible: item.distributionEnabled === true,
+          approvalStatus: item.approvalStatus,
+          requiresManifest: requiresClearance,
+          requiresGuide: item.fulfillmentPartnerType === 'LOCAL_OPERATOR',
+          requiresClearance,
+          regulatedActivityType: requiresClearance && category === 'ISLAND_HOPPING' ? 'ISLAND_HOPPING' : null,
+          qrValidationRequired: true,
+          stampEligible: true,
+          passportTrailEligible: true,
+        },
+        badges: [
+          'Official Trail',
+          item.fulfillmentPartnerType === 'LOCAL_OPERATOR' ? 'Local partner fulfilled' : 'OSP curated',
+          price.pricingReady ? 'Pricing reviewed' : 'Request to confirm',
+          requiresClearance ? 'Regulated activity' : 'Trail eligible',
+        ].filter(Boolean),
+      };
+    });
+
+    const services = [...packageServices, ...activityServices]
+      .filter((service) => normalizedCategory === 'ALL' || service.category === normalizedCategory)
+      .slice(0, limit);
+
+    return {
+      ok: true,
+      mode: 'BACKEND_MARKETPLACE_CONTRACT',
+      generatedAt: new Date().toISOString(),
+      contract: {
+        endpoint: '/api/v1/traveler/marketplace/services',
+        bookingExecutionIncluded: false,
+        paymentExecutionIncluded: false,
+        frontendSourceOfTruthReady: true,
+        premiumFieldsIncluded: [
+          'media',
+          'content.inclusions',
+          'content.exclusions',
+          'content.cancellationPolicy',
+          'socialProof',
+          'taxonomy',
+          'commercialBadges',
+          'moderation',
+        ],
+        premiumFieldTruthStatus:
+          'PARTIAL_CONTRACT_ONLY: placeholders are returned safely where schema fields are not yet implemented.',
+        productionVisibilityPolicy: {
+          excludesTestSeedAttackDummyRecords: true,
+          requiresPublicVisibility: true,
+          activityVisibilitySource: 'ActivityTemplate.isPubliclyVisible + production text filter + operator status filter',
+          note: 'Production filter prevents known test/seed/cross-operator/debug records from reaching traveler marketplace payloads.',
+        },
+        note:
+          'This endpoint exposes DB-backed, traveler-safe marketplace service candidates. Booking/payment execution remains separate until explicit workflow wiring.',
+      },
+      filters: {
+        category: normalizedCategory,
+        mode: query.mode || 'DEFAULT',
+        limit,
+      },
+      counts: {
+        total: services.length,
+        spmPackages: packageServices.length,
+        operatorActivities: activityServices.length,
+      },
+      services,
+    };
+  }
+}
