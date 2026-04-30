@@ -11,7 +11,7 @@ type TravelerTab = {
 };
 
 const TRAVELER_TABS: TravelerTab[] = [
-  { key: "home", label: "Home", href: "/traveler/home", icon: "⌂", ariaLabel: "Open OSP traveler home" },
+  { key: "home", label: "Home", href: "/", icon: "⌂", ariaLabel: "Open OSP home" },
   { key: "trails", label: "Trails", href: "/traveler/passport-trails", icon: "◇", ariaLabel: "Open Passport Trails" },
   { key: "pass", label: "QR", href: "/traveler/scan", icon: "▦", ariaLabel: "Open scanner camera" },
   { key: "explore", label: "Explore", href: "/traveler/partner-tours", icon: "✦", ariaLabel: "Open Siargao partner tours and local experiences" },
@@ -22,19 +22,6 @@ export default function UniversalTravelerBottomTabBar(props: {
   activeTab?: TravelerTabKey;
   fixed?: boolean;
 }) {
-  const resolvedTabs = TRAVELER_TABS.map((tab) => {
-    if (tab.key !== "home") return tab;
-
-    return {
-      ...tab,
-      href: props.activeTab === "home" ? "/traveler/passport-map" : "/traveler/home",
-      ariaLabel:
-        props.activeTab === "home"
-          ? "Open Siargao Passport Map"
-          : "Open OSP traveler home",
-    };
-  });
-
   const positionStyle: React.CSSProperties = props.fixed
     ? {
         position: "fixed",
@@ -74,7 +61,7 @@ export default function UniversalTravelerBottomTabBar(props: {
           alignItems: "center",
         } satisfies React.CSSProperties,
       },
-      resolvedTabs.map((tab) => {
+      TRAVELER_TABS.map((tab) => {
         const active = props.activeTab === tab.key;
         const isMainQr = tab.key === "pass";
 

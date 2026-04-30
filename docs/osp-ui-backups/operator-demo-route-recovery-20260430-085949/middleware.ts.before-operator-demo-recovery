@@ -112,20 +112,6 @@ function isPublicRoute(pathname: string) {
 }
 
 export function middleware(req: NextRequest) {
-  // OSP_OPERATOR_LOCAL_DEMO_BYPASS
-  // Local presentation bypass only. Keeps OSP Shell, SPM, Traveler, LGU, Admin, and public routes untouched.
-  // Purpose: allow /operator and /operator/* route rendering on localhost for Mayor/DOT-LGU demo.
-  const __ospOperatorDemoPathname = req.nextUrl.pathname;
-  const __ospOperatorDemoHost = req.nextUrl.hostname;
-  const __ospOperatorDemoIsLocal =
-    __ospOperatorDemoHost === "localhost" || __ospOperatorDemoHost === "127.0.0.1";
-  const __ospOperatorDemoRoute =
-    __ospOperatorDemoPathname === "/operator" || __ospOperatorDemoPathname.startsWith("/operator/");
-  if (__ospOperatorDemoIsLocal && __ospOperatorDemoRoute) {
-    return NextResponse.next();
-  }
-
-
   const { pathname } = req.nextUrl;
 
   if (allowAdminPartnersDevBypass(pathname)) {

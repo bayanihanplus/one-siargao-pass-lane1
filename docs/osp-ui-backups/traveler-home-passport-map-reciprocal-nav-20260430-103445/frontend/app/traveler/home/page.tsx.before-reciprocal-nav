@@ -1760,7 +1760,7 @@ function TravelerBottomNav(props: {
     >
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
         <TravelerBottomNavLink
-          href="/traveler/passport-map"
+          href="/traveler/home"
           label={homeLabel}
           active
           icon={
@@ -2435,7 +2435,7 @@ export default async function TravelerHomePage() {
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "center" }}>
             <TravelerBottomNavLink
-              href="/traveler/passport-map"
+              href="/traveler/home"
               label="Home"
               active
               icon={
