@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { ConfirmPaymentIntentDto } from './dto/confirm-payment-intent.dto';
@@ -10,6 +10,17 @@ import { CurrentUserId } from '../auth/decorators/current-user-id.decorator';
 @Controller('payments')
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
+
+  @Post('webhooks/paymongo')
+  handlePayMongoWebhook(
+    @Headers('paymongo-signature') signatureHeader: string | undefined,
+    @Req() req: any,
+    @Body() body: any,
+  ) {
+    const rawBody = req?.rawBody?.toString?.('utf8');
+
+    return this.paymentsService.handlePayMongoWebhook(signatureHeader, rawBody, body);
+  }
 
   @UseGuards(DevAuthGuard)
   @Post('intents')

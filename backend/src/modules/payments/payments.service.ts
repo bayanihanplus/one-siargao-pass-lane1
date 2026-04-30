@@ -3,12 +3,14 @@ import {
   NotFoundException,
   BadRequestException,
   ConflictException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { CreatePaymentIntentDto } from './dto/create-payment-intent.dto';
 import { ConfirmPaymentIntentDto } from './dto/confirm-payment-intent.dto';
 import { Prisma } from '@prisma/client';
 import { FxService } from '../fx/fx.service';
+import { createHmac, timingSafeEqual } from 'crypto';
 
 @Injectable()
 export class PaymentsService {
@@ -32,6 +34,310 @@ export class PaymentsService {
       rateExpiresAt: snapshot.rateExpiresAt,
       createdAt: snapshot.createdAt,
     };
+  }
+
+  private parsePayMongoSignatureHeader(signatureHeader?: string) {
+    const parts: Record<string, string> = {};
+
+    for (const part of String(signatureHeader || '').split(',')) {
+      const [key, ...rest] = part.trim().split('=');
+      if (!key || rest.length === 0) continue;
+      parts[key] = rest.join('=');
+    }
+
+    return {
+      timestamp: parts.t,
+      testSignature: parts.te,
+      liveSignature: parts.li,
+    };
+  }
+
+  private safeCompare(a?: string, b?: string) {
+    if (!a || !b) return false;
+
+    const aBuffer = Buffer.from(a, 'hex');
+    const bBuffer = Buffer.from(b, 'hex');
+
+    if (aBuffer.length !== bBuffer.length) return false;
+
+    return timingSafeEqual(aBuffer, bBuffer);
+  }
+
+  private verifyPayMongoWebhookSignature(signatureHeader: string | undefined, rawBody: string | undefined) {
+    const webhookSecret = process.env.PAYMONGO_WEBHOOK_SECRET;
+
+    if (!webhookSecret) {
+      throw new BadRequestException('PayMongo webhook secret is not configured');
+    }
+
+    if (!signatureHeader || !rawBody) {
+      throw new UnauthorizedException('Missing PayMongo signature or raw body');
+    }
+
+    const parsed = this.parsePayMongoSignatureHeader(signatureHeader);
+
+    if (!parsed.timestamp) {
+      throw new UnauthorizedException('Invalid PayMongo signature header');
+    }
+
+    const timestampSeconds = Number(parsed.timestamp);
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const toleranceSeconds = Number(process.env.PAYMONGO_WEBHOOK_TOLERANCE_SECONDS || 300);
+
+    if (Number.isFinite(timestampSeconds) && Math.abs(nowSeconds - timestampSeconds) > toleranceSeconds) {
+      throw new UnauthorizedException('PayMongo webhook timestamp is outside tolerance');
+    }
+
+    const signedPayload = `${parsed.timestamp}.${rawBody}`;
+    const computed = createHmac('sha256', webhookSecret).update(signedPayload).digest('hex');
+
+    if (this.safeCompare(computed, parsed.testSignature) || this.safeCompare(computed, parsed.liveSignature)) {
+      return true;
+    }
+
+    throw new UnauthorizedException('Invalid PayMongo webhook signature');
+  }
+
+  private extractPayMongoOspPaymentIntentId(payload: any) {
+    const attributes = payload?.data?.attributes;
+    const dataAttributes = attributes?.data?.attributes;
+
+    return (
+      attributes?.data?.attributes?.metadata?.osp_payment_intent_id ||
+      dataAttributes?.metadata?.osp_payment_intent_id ||
+      dataAttributes?.payments?.[0]?.attributes?.metadata?.osp_payment_intent_id ||
+      attributes?.metadata?.osp_payment_intent_id ||
+      null
+    );
+  }
+
+  private extractPayMongoAmountCentavos(payload: any) {
+    const attributes = payload?.data?.attributes;
+    const dataAttributes = attributes?.data?.attributes;
+
+    const value =
+      dataAttributes?.payments?.[0]?.attributes?.amount ??
+      dataAttributes?.amount ??
+      attributes?.amount ??
+      null;
+
+    return value === null || value === undefined ? null : Number(value);
+  }
+
+  private getPayMongoProviderReference(payload: any) {
+    const attributes = payload?.data?.attributes;
+    const data = attributes?.data;
+
+    return (
+      data?.attributes?.payments?.[0]?.id ||
+      data?.id ||
+      payload?.data?.id ||
+      null
+    );
+  }
+
+  async handlePayMongoWebhook(signatureHeader: string | undefined, rawBody: string | undefined, payload: any) {
+    this.verifyPayMongoWebhookSignature(signatureHeader, rawBody);
+
+    const providerEventId = payload?.data?.id;
+    const providerEventType = payload?.data?.attributes?.type;
+
+    if (!providerEventId || !providerEventType) {
+      throw new BadRequestException('Invalid PayMongo webhook payload');
+    }
+
+    const supportedPaidEvents = ['checkout_session.payment.paid', 'payment.paid'];
+    const supportedFailedEvents = ['payment.failed', 'checkout_session.payment.failed'];
+
+    const isPaidEvent = supportedPaidEvents.includes(providerEventType);
+    const isFailedEvent = supportedFailedEvents.includes(providerEventType);
+
+    if (!isPaidEvent && !isFailedEvent) {
+      return {
+        received: true,
+        ignored: true,
+        providerEventId,
+        providerEventType,
+        reason: 'unsupported_event_type',
+      };
+    }
+
+    const paymentIntentId = this.extractPayMongoOspPaymentIntentId(payload);
+
+    if (!paymentIntentId) {
+      return {
+        received: true,
+        ignored: true,
+        providerEventId,
+        providerEventType,
+        reason: 'missing_osp_payment_intent_id',
+      };
+    }
+
+    const intent = await this.prisma.paymentIntent.findUnique({
+      where: { id: paymentIntentId },
+      include: { booking: { include: { paymentState: true } } },
+    });
+
+    if (!intent) {
+      return {
+        received: true,
+        ignored: true,
+        providerEventId,
+        providerEventType,
+        paymentIntentId,
+        reason: 'payment_intent_not_found',
+      };
+    }
+
+    const receivedEventKey = `paymongo:${providerEventId}:received`;
+    const providerReference = this.getPayMongoProviderReference(payload);
+    const amountCentavos = this.extractPayMongoAmountCentavos(payload);
+    const expectedCentavos = Math.round(Number(intent.amountPhp) * 100);
+
+    if (isPaidEvent && amountCentavos !== null && amountCentavos !== expectedCentavos) {
+      await this.prisma.paymentEventLedger.create({
+        data: {
+          bookingId: intent.bookingId,
+          paymentIntentId: intent.id,
+          eventType: 'PAYMENT_CONFIRMATION_RECEIVED',
+          eventKey: receivedEventKey,
+          source: 'PAYMONGO_WEBHOOK',
+          payloadJson: {
+            providerEventId,
+            providerEventType,
+            providerReference,
+            rejected: true,
+            reason: 'amount_mismatch',
+            expectedCentavos,
+            amountCentavos,
+          },
+        },
+      });
+
+      return {
+        received: true,
+        processed: false,
+        providerEventId,
+        providerEventType,
+        paymentIntentId,
+        reason: 'amount_mismatch',
+      };
+    }
+
+    try {
+      const result = await this.prisma.$transaction(async (tx) => {
+        await tx.paymentEventLedger.create({
+          data: {
+            bookingId: intent.bookingId,
+            paymentIntentId: intent.id,
+            eventType: 'PAYMENT_CONFIRMATION_RECEIVED',
+            eventKey: receivedEventKey,
+            source: 'PAYMONGO_WEBHOOK',
+            payloadJson: {
+              providerEventId,
+              providerEventType,
+              providerReference,
+              paymentIntentId: intent.id,
+              amountCentavos,
+              expectedCentavos,
+              livemode: payload?.data?.attributes?.livemode ?? null,
+            },
+          },
+        });
+
+        if (isFailedEvent) {
+          await tx.paymentIntent.update({
+            where: { id: intent.id },
+            data: {
+              status: 'FAILED',
+              provider: 'PAYMONGO',
+            },
+          });
+
+          return {
+            paymentIntentId: intent.id,
+            bookingId: intent.bookingId,
+            paymentStatus: 'FAILED',
+          };
+        }
+
+        await tx.paymentIntent.update({
+          where: { id: intent.id },
+          data: {
+            status: 'PAID',
+            provider: 'PAYMONGO',
+            confirmedAt: new Date(),
+          },
+        });
+
+        await tx.paymentStateRecord.upsert({
+          where: { bookingId: intent.bookingId },
+          create: {
+            bookingId: intent.bookingId,
+            state: 'PAID',
+            paidAmountPhp: intent.amountPhp,
+            unpaidAmountPhp: new Prisma.Decimal(0),
+            lastPaymentIntentId: intent.id,
+            stateUpdatedAt: new Date(),
+          },
+          update: {
+            state: 'PAID',
+            paidAmountPhp: intent.amountPhp,
+            unpaidAmountPhp: new Prisma.Decimal(0),
+            lastPaymentIntentId: intent.id,
+            stateUpdatedAt: new Date(),
+          },
+        });
+
+        await tx.paymentEventLedger.create({
+          data: {
+            bookingId: intent.bookingId,
+            paymentIntentId: intent.id,
+            eventType: 'PAYMENT_MARKED_PAID',
+            eventKey: `paymongo:${providerEventId}:paid`,
+            source: 'PAYMONGO_WEBHOOK',
+            payloadJson: {
+              providerEventId,
+              providerEventType,
+              providerReference,
+              paymentIntentId: intent.id,
+              bookingId: intent.bookingId,
+            },
+          },
+        });
+
+        return {
+          paymentIntentId: intent.id,
+          bookingId: intent.bookingId,
+          paymentStatus: 'PAID',
+        };
+      });
+
+      return {
+        received: true,
+        processed: true,
+        providerEventId,
+        providerEventType,
+        ...result,
+      };
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        return {
+          received: true,
+          processed: false,
+          idempotentReplay: true,
+          providerEventId,
+          providerEventType,
+          paymentIntentId: intent.id,
+        };
+      }
+
+      throw error;
+    }
   }
 
   async createIntent(userId: string | undefined, dto: CreatePaymentIntentDto) {
