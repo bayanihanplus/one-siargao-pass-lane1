@@ -89,53 +89,6 @@ async function getTravelerLatestTrip() {
   }
 }
 
-
-async function getTravelerHomeSummary() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
-
-  try {
-    const token = await requireAccessToken();
-
-    const res = await fetch(`${baseUrl}/trips/current/home-summary`, {
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!res.ok) {
-      return { summary: null, trip: null, error: `Failed to load traveler home summary: HTTP ${res.status}` };
-    }
-
-    const summary = await res.json();
-    const trip = summary?.latestTrip
-      ? {
-          ...summary.latestTrip,
-          pass: summary.passSummary
-            ? {
-                ...summary.passSummary,
-                qrCredential: summary.qrSummary,
-              }
-            : null,
-          currentPaymentState: summary.paymentSummary?.paymentState || null,
-          manifestReadiness: summary.manifestSummary || null,
-          travelerHomeSummary: summary,
-        }
-      : null;
-
-    return { summary, trip, error: null };
-  } catch (error: any) {
-    return {
-      summary: null,
-      trip: null,
-      error: error?.message || "Unknown traveler home summary load failure",
-    };
-  }
-}
-
-
 async function getTravelerDictionary(languageCode: string): Promise<Record<string, string>> {
   const fallback: Record<string, string> = {
     "home.hero.title": "Trip Active. Pass Ready.",
@@ -181,12 +134,6 @@ function rootPublicHref(trip: any, authenticatedHref: string, publicHref: string
 }
 
 function getHomeHeroDictionaryBase(title: string) {
-  if (title === "QR Identity Ready. Create Your Trip.") return "home.hero.qrIdentityReady";
-  if (title === "Pass Ready. Trip On File.") return "home.hero.passReadyTripOnFile";
-  if (title === "Island Trip Submitted. Review In Progress.") return "home.hero.islandReview";
-  if (title === "Island Trip Cleared. Pass Ready.") return "home.hero.islandCleared";
-  if (title === "Payment Pending. Pass Reserved.") return "home.hero.paymentPendingPassReserved";
-  if (title === "Finalizing Your Pass.") return "home.hero.finalizingPass";
   if (title === "Trip Active. Pass Ready.") return "home.hero.active";
   if (title === "Trip On File. Registration Required.") return "home.hero.registrationRequired";
   if (title === "Trip On File. Review Pending.") return "home.hero.reviewPending";
@@ -200,12 +147,6 @@ function formatHeroTitleFromDictionary(value: string) {
   const normalized = String(value || "").replace(/\\n/g, "\n").trim();
 
   const lockedHeroTitles: Record<string, string> = {
-    "QR Identity Ready. Create Your Trip.": "QR Identity Ready.\nCreate Your Trip.",
-    "Pass Ready. Trip On File.": "Pass Ready.\nTrip On File.",
-    "Island Trip Submitted. Review In Progress.": "Island Trip Submitted.\nReview In Progress.",
-    "Island Trip Cleared. Pass Ready.": "Island Trip Cleared.\nPass Ready.",
-    "Payment Pending. Pass Reserved.": "Payment Pending.\nPass Reserved.",
-    "Finalizing Your Pass.": "Finalizing\nYour Pass.",
     "Trip Active. Pass Ready.": "Trip Active.\nPass Ready.",
     "Trip On File. Registration Required.": "Trip On File.\nRegistration Required.",
     "Trip On File. Review Pending.": "Trip On File.\nReview Pending.",
@@ -302,98 +243,74 @@ function formatDate(value: any) {
 }
 
 function getHeroState(trip: any) {
-  const summary = trip?.travelerHomeSummary || null;
-  const clearanceLayer = summary?.clearanceLayer || null;
-  const passLayer = summary?.passLayer || null;
-  const identityLayer = summary?.identityLayer || null;
-
-  const requiresClearance = clearanceLayer?.requiresClearance === true;
-  const regulatedActivityType = clearanceLayer?.regulatedActivityType || null;
-
-  const passIssued = getTripPassIssued(trip) || Boolean(passLayer?.hasPass);
-  const passStatus = String(getTripPassStatusRaw(trip) || passLayer?.passStatus || "").toLowerCase();
-  const clearanceStatus = String(clearanceLayer?.clearanceStatus || trip?.clearanceStatus || "").toLowerCase();
+  const passIssued = getTripPassIssued(trip);
+  const passStatus = String(getTripPassStatusRaw(trip) || "").toLowerCase();
+  const clearanceStatus = String(trip?.clearanceStatus || "").toLowerCase();
   const paymentState = String(getTripPaymentStateRaw(trip) || "").toLowerCase();
   const hasTrip = Boolean(trip);
 
-  if (!hasTrip && identityLayer?.hasQrIdentity) {
-    return {
-      pill: "QR ACTIVE",
-      travelerLabel: "Traveler Identity",
-      title: "QR Identity Ready. Create Your Trip.",
-      body: "Your traveler QR is active. Add your trip dates or booking details to activate your OSP Pass and validity window.",
-      pillBg: "#0ea5b7",
-    };
-  }
-
-  if (hasTrip && !passIssued) {
-    return {
-      pill: "FINALIZING",
-      travelerLabel: "Traveler On File",
-      title: "Finalizing Your Pass.",
-      body: "Your trip is on file. We’re preparing your QR and pass details.",
-      pillBg: "#d89a20",
-    };
-  }
-
   if (
     hasTrip &&
     passIssued &&
-    requiresClearance &&
-    regulatedActivityType === "ISLAND_HOPPING" &&
-    clearanceStatus &&
-    clearanceStatus !== "approved"
+    (passStatus === "active" || passStatus === "issued" || passStatus === "valid") &&
+    clearanceStatus === "approved" &&
+    paymentState === "paid"
   ) {
     return {
-      pill: "REVIEW",
-      travelerLabel: "Island Hopping",
-      title: "Island Trip Submitted. Review In Progress.",
-      body: "Your island-hopping trip requires LGU clearance. Your OSP Pass and QR remain available while this regulated activity is reviewed.",
-      pillBg: "#6f62d8",
-    };
-  }
-
-  if (
-    hasTrip &&
-    passIssued &&
-    requiresClearance &&
-    regulatedActivityType === "ISLAND_HOPPING" &&
-    clearanceStatus === "approved"
-  ) {
-    return {
-      pill: "CLEARED",
-      travelerLabel: "Island Hopping",
-      title: "Island Trip Cleared. Pass Ready.",
-      body: "Your island-hopping clearance is approved. Keep your QR and pass ready for operator and checkpoint validation.",
+      pill: "ACTIVE",
+      travelerLabel: "Verified Traveler",
+      title: "Trip Active. Pass Ready.",
+      body: "Access your trip status, pass, clearance, and payment in one place.",
       pillBg: "#14a44d",
     };
   }
 
-  if (hasTrip && passIssued && paymentState && paymentState !== "paid") {
+  const registrationStatus = String(getTripRegistrationStatusRaw(trip) || "").toLowerCase();
+  if (hasTrip && !passIssued) {
+    if (!registrationStatus || registrationStatus === "incomplete" || registrationStatus === "rejected") {
+      return {
+        pill: "PENDING",
+        travelerLabel: "Traveler On File",
+        title: "Trip On File. Registration Required.",
+        body: "Complete your traveler trip registration first so your pass can move forward.",
+        pillBg: "#d89a20",
+      };
+    }
+
     return {
-      pill: "PAYMENT",
-      travelerLabel: "Payment Pending",
-      title: "Payment Pending. Pass Reserved.",
-      body: "Complete your payment to keep your booking and trip records updated.",
-      pillBg: "#0fa8c8",
+      pill: "PENDING",
+      travelerLabel: "Traveler On File",
+      title: "Trip Found. Pass Pending.",
+      body: "Your registration is on file. Keep checking your latest trip status as your pass moves forward.",
+      pillBg: "#d89a20",
     };
   }
 
-  if (hasTrip && passIssued) {
+  if (hasTrip && clearanceStatus && clearanceStatus !== "approved") {
     return {
-      pill: "PASS READY",
-      travelerLabel: "Traveler Access",
-      title: "Pass Ready. Trip On File.",
-      body: "Your OSP Pass is connected to your trip dates. Clearance is only required for regulated activities such as Island Hopping.",
-      pillBg: "#0ea5b7",
+      pill: "PENDING",
+      travelerLabel: "Traveler On File",
+      title: "Trip On File. Clearance Pending.",
+      body: "Your pass may be issued, but clearance is still under review before trip readiness is confirmed.",
+      pillBg: "#6f62d8",
+    };
+  }
+
+  if (hasTrip && paymentState && paymentState !== "paid") {
+    return {
+      pill: "PAYMENT",
+      travelerLabel: "Payment Pending",
+      title: "Trip On File. Payment Pending.",
+      body: "Access your trip status, pass, clearance, and payment in one place.",
+      pillBg: "#0fa8c8",
     };
   }
 
   return {
     pill: "START",
     travelerLabel: "Traveler Access",
-    title: "QR Identity Ready. Create Your Trip.",
-    body: "Your traveler profile is ready. Add your trip dates to generate your OSP Pass and validity window.",
+    title: "Start Your One Siargao Pass.",
+    body: "Access your trip status, pass, clearance, and payment in one place.",
     pillBg: "#64748b",
   };
 }
@@ -532,18 +449,7 @@ function RenderStackedHeroText(props: { text: string }) {
         .replace(/\\n/g, "\n")
         .split("\n")
         .map((line, index) => (
-          <span
-            key={`${line}-${index}`}
-            style={{
-              display: "block",
-              color: index === 0 ? "#ffffff" : "#fff1bf",
-              WebkitTextFillColor: index === 0 ? "#ffffff" : "#fff1bf",
-              textShadow:
-                "0 4px 18px rgba(0, 18, 42, 0.58), 0 1px 2px rgba(0, 18, 42, 0.42)",
-              opacity: 1,
-              mixBlendMode: "normal",
-            }}
-          >
+          <span key={`${line}-${index}`} style={{ display: "block" }}>
             {line}
           </span>
         ))}
@@ -2603,7 +2509,7 @@ export default async function TravelerHomePage() {
   }
 
   const travelerTripResult =
-    user.primaryRole === "TRAVELER" ? await getTravelerHomeSummary() : { trip: null, error: null, summary: null };
+    user.primaryRole === "TRAVELER" ? await getTravelerLatestTrip() : { trip: null, error: null };
 
   const latestTravelerTrip = travelerTripResult.trip;
 

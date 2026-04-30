@@ -42,11 +42,4 @@ export class TripsController {
   ) {
     return this.tripsService.addMember(userId, tripId, dto);
   }
-
-  @UseGuards(DevAuthGuard)
-  @Get('current/home-summary')
-  getCurrentTravelerHomeSummary(@CurrentUserId() userId: string) {
-    return this.tripsService.getTravelerHomeSummary(userId);
-  }
-
 }

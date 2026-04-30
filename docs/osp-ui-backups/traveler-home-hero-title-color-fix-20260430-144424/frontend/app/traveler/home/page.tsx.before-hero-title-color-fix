@@ -532,18 +532,7 @@ function RenderStackedHeroText(props: { text: string }) {
         .replace(/\\n/g, "\n")
         .split("\n")
         .map((line, index) => (
-          <span
-            key={`${line}-${index}`}
-            style={{
-              display: "block",
-              color: index === 0 ? "#ffffff" : "#fff1bf",
-              WebkitTextFillColor: index === 0 ? "#ffffff" : "#fff1bf",
-              textShadow:
-                "0 4px 18px rgba(0, 18, 42, 0.58), 0 1px 2px rgba(0, 18, 42, 0.42)",
-              opacity: 1,
-              mixBlendMode: "normal",
-            }}
-          >
+          <span key={`${line}-${index}`} style={{ display: "block" }}>
             {line}
           </span>
         ))}
