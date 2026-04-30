@@ -284,13 +284,31 @@ export class TravelerMarketplaceService {
                 };
 
     return {
+      // Marketplace media contract is intentionally exposed now so frontend/VPS
+      // can render governed service media as soon as operator/admin media wiring exists.
+      // Values remain null until approved media is configured. Do not fake operator images.
       heroImageUrl: null,
+      bannerUrl: null,
+      imageUrl: null,
+      thumbnailUrl: null,
       gallery: [],
       mediaStatus: 'NOT_CONFIGURED',
+      mediaSource: 'OPERATOR_MEDIA_NOT_CONFIGURED',
+      mediaApprovalStatus: 'PENDING_MEDIA_CONFIGURATION',
+      publicMediaReady: false,
+      approvedForMarketplaceDisplay: false,
       icon: palette.icon,
       imageIntent: palette.imageIntent,
       fallbackGradient: palette.gradient,
       visualTruth: 'FALLBACK_VISUAL_UNTIL_OPERATOR_MEDIA_CONFIGURED',
+      mediaGovernance: {
+        operatorUploadSupported: false,
+        adminApprovalRequired: true,
+        travelerSafeDisplayOnly: true,
+        canDisplayPublicly: false,
+        currentSource: 'FALLBACK_VISUAL',
+        note: 'Real operator/service banner fields are contract-ready but remain null until governed media upload/approval is implemented.',
+      },
     };
   }
 
@@ -1466,6 +1484,17 @@ export class TravelerMarketplaceService {
         frontendSourceOfTruthReady: true,
         premiumFieldsIncluded: [
           'media',
+          'media.heroImageUrl',
+          'media.bannerUrl',
+          'media.imageUrl',
+          'media.thumbnailUrl',
+          'media.gallery',
+          'media.mediaStatus',
+          'media.mediaSource',
+          'media.mediaApprovalStatus',
+          'media.publicMediaReady',
+          'media.approvedForMarketplaceDisplay',
+          'media.mediaGovernance',
           'media.icon',
           'media.fallbackGradient',
           'content.inclusions',

@@ -14,7 +14,7 @@ const TRAVELER_TABS: TravelerTab[] = [
   { key: "home", label: "Home", href: "/traveler/home", icon: "⌂", ariaLabel: "Open OSP traveler home" },
   { key: "trails", label: "Trails", href: "/traveler/passport-trails", icon: "◇", ariaLabel: "Open Passport Trails" },
   { key: "pass", label: "QR", href: "/traveler/scan", icon: "▦", ariaLabel: "Open scanner camera" },
-  { key: "explore", label: "Explore", href: "/traveler/partner-tours", icon: "✦", ariaLabel: "Open Siargao partner tours and local experiences" },
+  { key: "explore", label: "Explore", href: "/traveler/explore", icon: "✦", ariaLabel: "Open Explore Siargao discovery hub" },
   { key: "profile", label: "Profile", href: "/traveler/settings", icon: "♙", ariaLabel: "Open traveler profile and settings" },
 ];
 
