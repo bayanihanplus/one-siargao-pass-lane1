@@ -266,6 +266,28 @@ function formatFxRate(snapshot: any) {
   return `1 ${snapshot.sourceCurrencyCode} = ${snapshot.fxRate} ${snapshot.displayCurrencyCode}`;
 }
 
+function formatDate(value: any) {
+  if (!value) return "—";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+
+  return new Intl.DateTimeFormat("en-PH", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function isPaymentSettled(intent: any, status: string) {
+  const normalizedStatus = String(status || "").toUpperCase();
+  const normalizedState = String(intent?.paymentState?.state || "").toUpperCase();
+
+  return normalizedStatus === "PAID" || normalizedState === "PAID";
+}
+
 function getGatewayStatusMessage(paymentStatus?: string) {
   if (paymentStatus === "paymongo-key-missing") {
     return {
@@ -647,6 +669,7 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
   const intentFallback = t(dictionary, "paymentDetail.intentFallback", "Payment intent record");
 
   const status = intent?.status || intent?.paymentState?.state || t(dictionary, "paymentDetail.status.fallback", "Record");
+  const isPaidPayment = isPaymentSettled(intent, status);
   const theme = statusTheme(status, dictionary);
   const currency = intent?.currencyCode || "PHP";
   const paidAmount = intent?.paymentState?.paidAmountPhp;
@@ -709,9 +732,47 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
         </p>
       </header>
 
-      {intent ? (
+      {intent && isPaidPayment ? (
         <section
-          aria-label="Payment gateway readiness"
+          aria-label="Verified payment settlement"
+          style={{
+            margin: "0 0 14px",
+            borderRadius: 22,
+            border: "1px solid rgba(22,163,74,0.24)",
+            background: "linear-gradient(180deg, rgba(240,253,244,0.98) 0%, rgba(255,255,255,0.96) 100%)",
+            padding: 16,
+            color: "#19305a",
+            boxShadow: "0 16px 34px rgba(22,163,74,0.10)",
+          }}
+        >
+          <div style={{ fontSize: 10.5, fontWeight: 950, letterSpacing: "0.13em", textTransform: "uppercase", color: "#15803d" }}>
+            Payment Settled
+          </div>
+          <div style={{ marginTop: 6, fontSize: 19, lineHeight: 1.15, fontWeight: 950, color: "#14532d" }}>
+            Verified payment received through {intent.provider || "payment gateway"}.
+          </div>
+          <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13.5 }}>
+              <span style={{ color: "#64748b", fontWeight: 800 }}>Amount paid</span>
+              <strong style={{ color: "#14532d" }}>{formatMoney(intent.paymentState?.paidAmountPhp || intent.amountPhp, currency)}</strong>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13.5 }}>
+              <span style={{ color: "#64748b", fontWeight: 800 }}>Payment status</span>
+              <strong style={{ color: "#14532d" }}>{intent.paymentState?.state || intent.status}</strong>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13.5 }}>
+              <span style={{ color: "#64748b", fontWeight: 800 }}>Confirmed at</span>
+              <strong style={{ color: "#14532d", textAlign: "right" }}>{formatDate(intent.confirmedAt)}</strong>
+            </div>
+          </div>
+          <p style={{ margin: "12px 0 0", color: "#64748b", fontSize: 12.8, lineHeight: 1.45, fontWeight: 750 }}>
+            This confirms payment settlement only. Regulated activity clearance, manifest approval, and operational readiness remain separate OSP records.
+          </p>
+        </section>
+      ) : null}
+
+      {intent && !isPaidPayment ? (
+        <section aria-label="Payment gateway readiness"
           style={{
             margin: "0 0 12px",
             borderRadius: 18,
@@ -758,7 +819,7 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
         </section>
       ) : null}
 
-      {intent && !String(status).toUpperCase().includes("PAID") ? (
+      {intent && !isPaidPayment ? (
         <form action={createPayMongoCheckoutAction} style={{ margin: "0 0 16px", display: "grid" }}>
           <input type="hidden" name="intentId" value={intent.id} />
           <input type="hidden" name="amountPhp" value={String(intent.amountPhp || 0)} />
@@ -922,7 +983,7 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
 
           <Section title={t(dictionary, "paymentDetail.actions.title", "Next Actions")} icon={<Icon kind="shield" />} tone="default">
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-{intent && !String(status).toUpperCase().includes("PAID") ? (
+{intent && !isPaidPayment ? (
                 <form action={createPayMongoCheckoutAction} style={{ width: "100%", margin: "0", display: "grid" }}>
                   <input type="hidden" name="intentId" value={intent.id} />
                   <input type="hidden" name="amountPhp" value={String(intent.amountPhp || 0)} />
@@ -949,7 +1010,9 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
             </div>
 
             <p style={{ margin: "12px 0 0", color: "#64748b", fontSize: 13, lineHeight: 1.45, fontWeight: 650 }}>
-              {t(dictionary, "paymentDetail.actions.note", "Payments are linked to your OSP booking and pass status. Operational changes must come from verified backend records.")}
+              {isPaidPayment
+            ? "Your payment is settled. Keep this page as your payment record. Clearance and activity approvals remain separate from payment."
+            : t(dictionary, "paymentDetail.actions.note", "Payments are linked to your OSP booking and pass status. Operational changes must come from verified backend records.")}
             </p>
           </Section>
         </>
