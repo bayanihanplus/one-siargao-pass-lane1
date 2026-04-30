@@ -91,7 +91,7 @@ function getModeCopy(mode: EntryMode) {
         "Sign in to review your existing trip, OSP Pass / QR, payments, Passport Map progress, and traveler records.",
       formTitle: "Continue with existing account",
       formNote: "Use the email linked to your traveler record or OSP Pass.",
-      next: "/",
+      next: "/traveler/home",
     };
   }
 
@@ -466,7 +466,10 @@ export default async function LoginPage({
   const mode = normalizeMode(resolvedSearchParams?.mode);
   const copy = getModeCopy(mode);
   const requestedNextPath = resolvedSearchParams?.next || copy.next;
-  const nextPath = requestedNextPath || "/traveler/home";
+  const nextPath =
+    requestedNextPath && requestedNextPath !== "/" && requestedNextPath !== "/login"
+      ? requestedNextPath
+      : "/traveler/home";
   const providerStatus = resolvedSearchParams?.status === "coming-soon" ? "Easy Google / Apple access is not connected yet. Use email access for now." : null;
   const registeredStatus = resolvedSearchParams?.registered === "1" ? "Traveler account created. Sign in to continue your trip setup." : null;
 

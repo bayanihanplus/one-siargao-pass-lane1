@@ -152,7 +152,12 @@ async function createPayMongoCheckoutAction(formData: FormData) {
   const appBaseUrl =
     process.env.NEXT_PUBLIC_APP_BASE_URL ||
     process.env.APP_BASE_URL ||
-    "http://localhost:3000";
+    process.env.FRONTEND_BASE_URL ||
+    "";
+
+  if (appBaseUrl.length === 0) {
+    redirect(`/traveler/payments/${encodeURIComponent(intentId)}?payment=paymongo-base-url-missing`);
+  }
 
   const amountCentavos = Math.round(amountPhp * 100);
   const auth = Buffer.from(`${secretKey}:`).toString("base64");
@@ -297,6 +302,14 @@ function getGatewayStatusMessage(paymentStatus?: string) {
     };
   }
 
+  if (paymentStatus === "paymongo-base-url-missing") {
+    return {
+      tone: "amber",
+      title: "Payment redirect base URL is missing.",
+      body: "Checkout cannot open until APP_BASE_URL, FRONTEND_BASE_URL, or NEXT_PUBLIC_APP_BASE_URL is configured in the server environment.",
+    };
+  }
+
   if (paymentStatus === "paymongo-checkout-failed") {
     return {
       tone: "red",
@@ -334,7 +347,11 @@ function getPayMongoGatewayConfig() {
   const appBaseUrl =
     process.env.NEXT_PUBLIC_APP_BASE_URL ||
     process.env.APP_BASE_URL ||
-    "http://localhost:3000";
+    process.env.FRONTEND_BASE_URL ||
+    "";
+
+  const hasBaseUrl = Boolean(appBaseUrl);
+  const isReady = Boolean(secretKey && hasBaseUrl);
 
   const mode = secretKey.includes("_test_") || secretKey.startsWith("sk_test")
     ? "SANDBOX"
@@ -344,6 +361,8 @@ function getPayMongoGatewayConfig() {
 
   return {
     hasSecretKey: Boolean(secretKey),
+    hasBaseUrl,
+    isReady,
     appBaseUrl,
     mode,
   };
@@ -776,25 +795,25 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
           style={{
             margin: "0 0 12px",
             borderRadius: 18,
-            border: payMongoGateway.hasSecretKey ? "1px solid rgba(22,163,74,0.20)" : "1px solid rgba(217,119,6,0.24)",
-            background: payMongoGateway.hasSecretKey ? "rgba(240,253,244,0.92)" : "rgba(255,251,235,0.92)",
+            border: payMongoGateway.isReady ? "1px solid rgba(22,163,74,0.20)" : "1px solid rgba(217,119,6,0.24)",
+            background: payMongoGateway.isReady ? "rgba(240,253,244,0.92)" : "rgba(255,251,235,0.92)",
             padding: 12,
             color: "#19305a",
           }}
         >
-          <div style={{ fontSize: 10.5, fontWeight: 950, letterSpacing: "0.12em", textTransform: "uppercase", color: payMongoGateway.hasSecretKey ? "#15803d" : "#b45309" }}>
+          <div style={{ fontSize: 10.5, fontWeight: 950, letterSpacing: "0.12em", textTransform: "uppercase", color: payMongoGateway.isReady ? "#15803d" : "#b45309" }}>
             Payment Gateway
           </div>
           <div style={{ marginTop: 4, fontSize: 13.5, fontWeight: 900, lineHeight: 1.35 }}>
-            {payMongoGateway.hasSecretKey
+            {payMongoGateway.isReady
               ? `PayMongo ${payMongoGateway.mode} checkout is configured.`
               : "Payment gateway is not configured yet."}
           </div>
-          {!payMongoGateway.hasSecretKey ? (
+          {payMongoGateway.isReady ? null : (
             <div style={{ marginTop: 5, fontSize: 12.2, fontWeight: 750, color: "#92400e", lineHeight: 1.35 }}>
-              Add PAYMONGO_TEST_SECRET_KEY and APP_BASE_URL / NEXT_PUBLIC_APP_BASE_URL before this button can redirect to PayMongo checkout. Until then, this record remains a simulated local payment intent.
+              Add PAYMONGO_TEST_SECRET_KEY and APP_BASE_URL / FRONTEND_BASE_URL / NEXT_PUBLIC_APP_BASE_URL before this button can redirect to PayMongo checkout. Until then, this record remains a simulated local payment intent.
             </div>
-          ) : null}
+          )}
         </section>
       ) : null}
 
@@ -826,6 +845,8 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
           <input type="hidden" name="intentReference" value={intent.intentReference || intent.id} />
           <button
             type="submit"
+            disabled={payMongoGateway.isReady ? false : true}
+            aria-disabled={payMongoGateway.isReady ? false : true}
             style={{
               minHeight: 58,
               width: "100%",
@@ -835,8 +856,8 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
               color: "#ffffff",
               fontSize: 15,
               fontWeight: 950,
-              cursor: payMongoGateway.hasSecretKey ? "pointer" : "not-allowed",
-              opacity: payMongoGateway.hasSecretKey ? 1 : 0.62,
+              cursor: payMongoGateway.isReady ? "pointer" : "not-allowed",
+              opacity: payMongoGateway.isReady ? 1 : 0.62,
               boxShadow: "0 18px 38px rgba(6,120,137,0.28)",
               display: "inline-flex",
               alignItems: "center",
@@ -844,7 +865,7 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
               gap: 8,
             }}
           >
-            {payMongoGateway.hasSecretKey ? `Pay with PayMongo QR PH — ${formatMoney(intent.amountPhp, currency)}` : `Payment provider not configured — ${formatMoney(intent.amountPhp, currency)}`}
+            {payMongoGateway.isReady ? `Pay with PayMongo QR PH — ${formatMoney(intent.amountPhp, currency)}` : `Payment provider not configured — ${formatMoney(intent.amountPhp, currency)}`}
           </button>
         </form>
       ) : null}
@@ -990,6 +1011,8 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
                   <input type="hidden" name="intentReference" value={intent.intentReference || intent.id} />
                   <button
                     type="submit"
+                    disabled={payMongoGateway.isReady ? false : true}
+                    aria-disabled={payMongoGateway.isReady ? false : true}
                     style={{
                       minHeight: 56,
                       width: "100%",
@@ -999,11 +1022,12 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
                       color: "#ffffff",
                       fontSize: 14,
                       fontWeight: 950,
-                      cursor: "pointer",
+                      cursor: payMongoGateway.isReady ? "pointer" : "not-allowed",
+                      opacity: payMongoGateway.isReady ? 1 : 0.62,
                       boxShadow: "0 16px 34px rgba(6,120,137,0.24)",
                     }}
                   >
-                    {payMongoGateway.hasSecretKey ? `Pay with PayMongo QR PH — ${formatMoney(intent.amountPhp, currency)}` : `Payment provider not configured — ${formatMoney(intent.amountPhp, currency)}`}
+                    {payMongoGateway.isReady ? `Pay with PayMongo QR PH — ${formatMoney(intent.amountPhp, currency)}` : `Payment provider not configured — ${formatMoney(intent.amountPhp, currency)}`}
                   </button>
                 </form>
               ) : null}
