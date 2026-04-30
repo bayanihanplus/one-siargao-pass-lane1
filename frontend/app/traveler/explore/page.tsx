@@ -326,13 +326,14 @@ const categories = [
 function toneStyles(tone: ExploreLane["tone"]) {
   if (tone === "teal") {
     return {
-      background: "linear-gradient(135deg, rgba(6, 120, 137, 0.94), rgba(25, 170, 180, 0.92))",
-      border: "1px solid rgba(255,255,255,0.35)",
-      title: "#ffffff",
-      body: "rgba(255,255,255,0.88)",
-      eyebrow: "#dffaff",
-      ctaBg: "#ffffff",
-      ctaColor: "#076778",
+      background:
+        "radial-gradient(circle at 18% 0%, rgba(56, 189, 189, 0.10), transparent 34%), linear-gradient(135deg, #f4fffe, #eefbfc)",
+      border: "1px solid rgba(8, 145, 178, 0.13)",
+      title: "#225766",
+      body: "#5d7780",
+      eyebrow: "#5c99a4",
+      ctaBg: "#4aa8b3",
+      ctaColor: "#ffffff",
     };
   }
 

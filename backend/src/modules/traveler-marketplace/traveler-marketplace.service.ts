@@ -244,7 +244,7 @@ export class TravelerMarketplaceService {
     return 'PARTNER_EXPERIENCE';
   }
 
-  private getExperienceVisual(input: { category: string; sourceType: string; title: string }) {
+  private getExperienceVisual(input: { category: string; sourceType: string; title: string; mediaRows?: any[] }) {
     const category = String(input.category || '').toUpperCase();
 
     const palette =
@@ -283,31 +283,59 @@ export class TravelerMarketplaceService {
                     'radial-gradient(circle at 18% 0%, rgba(32,169,183,0.18), transparent 36%), radial-gradient(circle at 88% 18%, rgba(242,193,78,0.12), transparent 30%), linear-gradient(135deg, #f2f9fc, #e5f7f3)',
                 };
 
+    const mediaRows = Array.isArray(input.mediaRows)
+      ? input.mediaRows
+          .filter((row: any) => {
+            return (
+              row &&
+              row.mediaUrl &&
+              row.publicDisplayEnabled === true &&
+              String(row.approvalStatus || '').toUpperCase() === 'APPROVED'
+            );
+          })
+          .sort((a: any, b: any) => Number(a.sortOrder || 0) - Number(b.sortOrder || 0))
+      : [];
+
+    const byType = (type: string) =>
+      mediaRows.find((row: any) => String(row.mediaType || '').toUpperCase() === type)?.mediaUrl || null;
+
+    const heroImageUrl = byType('HERO');
+    const bannerUrl = byType('BANNER');
+    const thumbnailUrl = byType('THUMBNAIL');
+    const gallery = mediaRows
+      .filter((row: any) => String(row.mediaType || '').toUpperCase() === 'GALLERY')
+      .map((row: any) => row.mediaUrl)
+      .filter(Boolean);
+
+    const imageUrl = heroImageUrl || bannerUrl || thumbnailUrl || gallery[0] || null;
+    const publicMediaReady = Boolean(imageUrl || gallery.length);
+
     return {
-      // Marketplace media contract is intentionally exposed now so frontend/VPS
-      // can render governed service media as soon as operator/admin media wiring exists.
-      // Values remain null until approved media is configured. Do not fake operator images.
-      heroImageUrl: null,
-      bannerUrl: null,
-      imageUrl: null,
-      thumbnailUrl: null,
-      gallery: [],
-      mediaStatus: 'NOT_CONFIGURED',
-      mediaSource: 'OPERATOR_MEDIA_NOT_CONFIGURED',
-      mediaApprovalStatus: 'PENDING_MEDIA_CONFIGURATION',
-      publicMediaReady: false,
-      approvedForMarketplaceDisplay: false,
+      // Marketplace media contract is intentionally governed. Approved media rows
+      // can display publicly; pending/rejected/suspended rows remain hidden.
+      heroImageUrl,
+      bannerUrl,
+      imageUrl,
+      thumbnailUrl,
+      gallery,
+      mediaStatus: publicMediaReady ? 'APPROVED_MEDIA_READY' : 'NOT_CONFIGURED',
+      mediaSource: publicMediaReady ? 'SPM_MARKETPLACE_MEDIA' : 'OPERATOR_MEDIA_NOT_CONFIGURED',
+      mediaApprovalStatus: publicMediaReady ? 'APPROVED' : 'PENDING_MEDIA_CONFIGURATION',
+      publicMediaReady,
+      approvedForMarketplaceDisplay: publicMediaReady,
       icon: palette.icon,
       imageIntent: palette.imageIntent,
       fallbackGradient: palette.gradient,
-      visualTruth: 'FALLBACK_VISUAL_UNTIL_OPERATOR_MEDIA_CONFIGURED',
+      visualTruth: publicMediaReady ? 'APPROVED_MARKETPLACE_MEDIA' : 'FALLBACK_VISUAL_UNTIL_OPERATOR_MEDIA_CONFIGURED',
       mediaGovernance: {
-        operatorUploadSupported: false,
+        operatorUploadSupported: true,
         adminApprovalRequired: true,
         travelerSafeDisplayOnly: true,
-        canDisplayPublicly: false,
-        currentSource: 'FALLBACK_VISUAL',
-        note: 'Real operator/service banner fields are contract-ready but remain null until governed media upload/approval is implemented.',
+        canDisplayPublicly: publicMediaReady,
+        currentSource: publicMediaReady ? 'APPROVED_SPM_MARKETPLACE_MEDIA' : 'FALLBACK_VISUAL',
+        note: publicMediaReady
+          ? 'Approved governed marketplace media is displayed from spm_marketplace_media.'
+          : 'Real operator/service banner fields are contract-ready but remain null until governed media upload/approval is implemented.',
       },
     };
   }
@@ -1110,15 +1138,25 @@ export class TravelerMarketplaceService {
 
     const spmPackageIds = (spmPackages as any[]).map((item: any) => item.id).filter(Boolean);
 
-    const spmPricingRules = spmPackageIds.length
-      ? await this.prisma.spmPricingRule.findMany({
-          where: {
-            trailPackageId: { in: spmPackageIds },
-            approvalStatus: 'APPROVED' as any,
-          },
-          orderBy: [{ operatorUserId: 'desc' }, { updatedAt: 'desc' }],
-        }).catch(() => [])
-      : [];
+    const [spmPricingRules, spmMarketplaceMediaRows] = spmPackageIds.length
+      ? await Promise.all([
+          this.prisma.spmPricingRule.findMany({
+            where: {
+              trailPackageId: { in: spmPackageIds },
+              approvalStatus: 'APPROVED' as any,
+            },
+            orderBy: [{ operatorUserId: 'desc' }, { updatedAt: 'desc' }],
+          }).catch(() => []),
+          (this.prisma as any).spmMarketplaceMedia.findMany({
+            where: {
+              trailPackageId: { in: spmPackageIds },
+              approvalStatus: 'APPROVED' as any,
+              publicDisplayEnabled: true,
+            },
+            orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
+          }).catch(() => []),
+        ])
+      : [[], []];
 
     const pricingRulesByPackage = new Map<string, any[]>();
     for (const rule of spmPricingRules as any[]) {
@@ -1126,6 +1164,14 @@ export class TravelerMarketplaceService {
       const existing = pricingRulesByPackage.get(rule.trailPackageId) || [];
       existing.push(rule);
       pricingRulesByPackage.set(rule.trailPackageId, existing);
+    }
+
+    const marketplaceMediaByPackage = new Map<string, any[]>();
+    for (const media of spmMarketplaceMediaRows as any[]) {
+      if (!media.trailPackageId) continue;
+      const existing = marketplaceMediaByPackage.get(media.trailPackageId) || [];
+      existing.push(media);
+      marketplaceMediaByPackage.set(media.trailPackageId, existing);
     }
 
     const activityServices = activityTemplates
@@ -1210,7 +1256,7 @@ export class TravelerMarketplaceService {
         category,
         sourceText,
         pricingReady: false,
-        hasMedia: false,
+        hasMedia: Boolean(visual.publicMediaReady),
         hasInclusions: true,
         hasCancellationPolicy: true,
         availabilityStatus: availability.status,
@@ -1244,7 +1290,7 @@ export class TravelerMarketplaceService {
         media: visual,
         content: {
           ...content,
-          publicServiceGalleryReady: false,
+          publicServiceGalleryReady: Boolean(visual.publicMediaReady),
         },
         socialProof: trust.reviewSummary,
         taxonomy: {
@@ -1332,6 +1378,7 @@ export class TravelerMarketplaceService {
         category,
         sourceType: 'SPM_TRAIL_PACKAGE',
         title: item.publicLabel || item.name,
+        mediaRows: marketplaceMediaByPackage.get(item.id) || [],
       });
 
       const content = this.getExperienceInclusions({
@@ -1400,7 +1447,7 @@ export class TravelerMarketplaceService {
         media: visual,
         content: {
           ...content,
-          publicServiceGalleryReady: false,
+          publicServiceGalleryReady: Boolean(visual.publicMediaReady),
         },
         socialProof: trust.reviewSummary,
         taxonomy: {
