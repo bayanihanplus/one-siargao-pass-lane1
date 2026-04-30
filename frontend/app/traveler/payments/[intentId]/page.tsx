@@ -91,6 +91,9 @@ type PaymentPageProps = {
   params: Promise<{
     intentId: string;
   }>;
+  searchParams?: Promise<{
+    payment?: string;
+  }>;
 };
 
 async function confirmPaymentIntentAction(formData: FormData) {
@@ -261,6 +264,42 @@ function formatFxDisplayAmount(snapshot: any) {
 function formatFxRate(snapshot: any) {
   if (!snapshot?.fxRate || !snapshot?.sourceCurrencyCode || !snapshot?.displayCurrencyCode) return "—";
   return `1 ${snapshot.sourceCurrencyCode} = ${snapshot.fxRate} ${snapshot.displayCurrencyCode}`;
+}
+
+function getGatewayStatusMessage(paymentStatus?: string) {
+  if (paymentStatus === "paymongo-key-missing") {
+    return {
+      tone: "amber",
+      title: "PayMongo sandbox key is missing.",
+      body: "The payment record is ready, but checkout cannot open until PAYMONGO_TEST_SECRET_KEY is configured in the server environment.",
+    };
+  }
+
+  if (paymentStatus === "paymongo-checkout-failed") {
+    return {
+      tone: "red",
+      title: "PayMongo checkout could not be created.",
+      body: "The gateway rejected or did not return a checkout URL. Check the PayMongo sandbox key, QR PH availability, and payment_method_types.",
+    };
+  }
+
+  if (paymentStatus === "paymongo-cancelled") {
+    return {
+      tone: "amber",
+      title: "Checkout was cancelled.",
+      body: "No payment was marked as paid. You can try opening PayMongo QR PH checkout again.",
+    };
+  }
+
+  if (paymentStatus === "paymongo-success") {
+    return {
+      tone: "green",
+      title: "Returned from PayMongo checkout.",
+      body: "Payment confirmation still requires backend verification or webhook reconciliation before marking this record as settled.",
+    };
+  }
+
+  return null;
 }
 
 function getPayMongoGatewayConfig() {
@@ -594,8 +633,10 @@ function AppLink(props: { href: string; label: string; icon: any; primary?: bool
   );
 }
 
-export default async function TravelerPaymentIntentPage({ params }: PaymentPageProps) {
+export default async function TravelerPaymentIntentPage({ params, searchParams }: PaymentPageProps) {
   const { intentId } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const gatewayStatusMessage = getGatewayStatusMessage(resolvedSearchParams?.payment);
   const { intent, error } = await getPaymentIntent(intentId);
   const dictionary = await getTravelerDictionary("en");
 
@@ -693,6 +734,27 @@ export default async function TravelerPaymentIntentPage({ params }: PaymentPageP
               Add PAYMONGO_TEST_SECRET_KEY and NEXT_PUBLIC_APP_BASE_URL on VPS before this button can redirect to PayMongo checkout.
             </div>
           ) : null}
+        </section>
+      ) : null}
+
+      {gatewayStatusMessage ? (
+        <section
+          aria-label="Payment gateway status"
+          style={{
+            margin: "0 0 12px",
+            borderRadius: 18,
+            border: gatewayStatusMessage.tone === "red" ? "1px solid rgba(220,38,38,0.22)" : gatewayStatusMessage.tone === "green" ? "1px solid rgba(22,163,74,0.22)" : "1px solid rgba(217,119,6,0.24)",
+            background: gatewayStatusMessage.tone === "red" ? "rgba(254,242,242,0.94)" : gatewayStatusMessage.tone === "green" ? "rgba(240,253,244,0.94)" : "rgba(255,251,235,0.94)",
+            padding: 12,
+            color: "#19305a",
+          }}
+        >
+          <div style={{ fontSize: 13.5, fontWeight: 950, lineHeight: 1.35 }}>
+            {gatewayStatusMessage.title}
+          </div>
+          <div style={{ marginTop: 5, fontSize: 12.4, fontWeight: 750, color: "#64748b", lineHeight: 1.4 }}>
+            {gatewayStatusMessage.body}
+          </div>
         </section>
       ) : null}
 
