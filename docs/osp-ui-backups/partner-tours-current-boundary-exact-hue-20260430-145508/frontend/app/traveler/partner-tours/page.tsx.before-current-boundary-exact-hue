@@ -506,11 +506,10 @@ export default function PartnerToursPage() {
           style={{
             marginTop: 13,
             borderRadius: 28,
-            background:
-              "radial-gradient(circle at 14% 0%, rgba(32,169,183,0.16), transparent 34%), radial-gradient(circle at 92% 10%, rgba(242,193,78,0.12), transparent 30%), linear-gradient(135deg, rgba(242,249,252,0.98), rgba(229,247,243,0.96))",
-            color: "#10233f",
-            border: "1px solid rgba(47,127,178,0.18)",
-            boxShadow: "0 18px 44px rgba(19,79,127,0.10)",
+            background: "linear-gradient(145deg, rgba(15,23,42,0.96), rgba(16,35,74,0.96))",
+            color: "#ffffff",
+            border: "1px solid rgba(255,255,255,0.12)",
+            boxShadow: "0 24px 54px rgba(15,23,42,0.24)",
             padding: 16,
           }}
         >
@@ -520,15 +519,15 @@ export default function PartnerToursPage() {
               fontWeight: 950,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "#137d82",
+              color: "#67e8f9",
             }}
           >
             Current boundary
           </div>
-          <h2 style={{ margin: "5px 0 0", fontSize: 20, lineHeight: 1.1, fontWeight: 950, color: "#0b355f" }}>
+          <h2 style={{ margin: "5px 0 0", fontSize: 20, lineHeight: 1.1, fontWeight: 950 }}>
             This is not a live booking marketplace yet.
           </h2>
-          <p style={{ margin: "8px 0 0", fontSize: 12.5, lineHeight: 1.42, color: "rgba(16,35,63,0.70)", fontWeight: 700 }}>
+          <p style={{ margin: "8px 0 0", fontSize: 12.5, lineHeight: 1.42, color: "rgba(255,255,255,0.72)", fontWeight: 700 }}>
             Viewing or adding a partner tour to a route draft does not create booking, payment, operator assignment, guide assignment, manifest, QR validation, or Passport Stamp progress.
           </p>
 
