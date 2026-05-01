@@ -1138,7 +1138,7 @@ export class TravelerMarketplaceService {
 
     const spmPackageIds = (spmPackages as any[]).map((item: any) => item.id).filter(Boolean);
 
-    const [spmPricingRules, spmMarketplaceMediaRows] = spmPackageIds.length
+    const [spmPricingRules, spmMarketplaceMediaRows, spmMarketplaceExposureRows] = spmPackageIds.length
       ? await Promise.all([
           this.prisma.spmPricingRule.findMany({
             where: {
@@ -1155,8 +1155,19 @@ export class TravelerMarketplaceService {
             },
             orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
           }).catch(() => []),
+          (this.prisma as any).spmMarketplaceExposure.findMany({
+            where: {
+              trailPackageId: { in: spmPackageIds },
+              isVisible: true,
+              exposureStatus: { in: ['VISIBLE', 'ELIGIBLE'] },
+            },
+            orderBy: [
+              { finalExposureScore: 'desc' },
+              { updatedAt: 'desc' },
+            ],
+          }).catch(() => []),
         ])
-      : [[], []];
+      : [[], [], []];
 
     const pricingRulesByPackage = new Map<string, any[]>();
     for (const rule of spmPricingRules as any[]) {
@@ -1172,6 +1183,13 @@ export class TravelerMarketplaceService {
       const existing = marketplaceMediaByPackage.get(media.trailPackageId) || [];
       existing.push(media);
       marketplaceMediaByPackage.set(media.trailPackageId, existing);
+    }
+
+    const visibleExposureByPackage = new Map<string, any>();
+    for (const exposure of spmMarketplaceExposureRows as any[]) {
+      if (!exposure.trailPackageId) continue;
+      if (visibleExposureByPackage.has(exposure.trailPackageId)) continue;
+      visibleExposureByPackage.set(exposure.trailPackageId, exposure);
     }
 
     const activityServices = activityTemplates
@@ -1346,7 +1364,13 @@ export class TravelerMarketplaceService {
       };
     });
 
-    const packageServices = (spmPackages as any[]).map((item: any) => {
+    const packageServices = (spmPackages as any[])
+      .filter((item: any) => {
+        const visibleExposure = visibleExposureByPackage.get(item.id);
+        return Boolean(visibleExposure);
+      })
+      .map((item: any) => {
+      const visibleExposure = visibleExposureByPackage.get(item.id);
       const sourceText = [
         item.name,
         item.publicLabel,
@@ -1456,12 +1480,20 @@ export class TravelerMarketplaceService {
           commercialLane: 'OFFICIAL_PASSPORT_TRAIL_PACKAGE',
         },
         moderation: {
-          exposureStatus: item.distributionEnabled === true ? 'DISTRIBUTION_ENABLED' : 'DISTRIBUTION_DISABLED',
+          exposureStatus: visibleExposure?.exposureStatus || 'HIDDEN_BY_ADMIN_EXPOSURE_GATE',
           moderationStatus: item.approvalStatus || 'UNKNOWN',
           marketplaceExposureToggleAvailable: true,
-          dedicatedModerationStateAvailable: false,
+          dedicatedModerationStateAvailable: true,
         },
-        exposure: placement,
+        exposure: {
+          ...placement,
+          adminExposureId: visibleExposure?.id || null,
+          adminExposureStatus: visibleExposure?.exposureStatus || null,
+          adminExposureVisible: Boolean(visibleExposure?.isVisible),
+          readinessScore: visibleExposure?.readinessScore ?? placement.readinessScore ?? null,
+          finalExposureScore: visibleExposure?.finalExposureScore ?? placement.marketplaceScore ?? null,
+          placementTier: visibleExposure?.placementTier ?? placement.placementTier ?? null,
+        },
         commercialBadges: [
           ...trust.trustBadges,
           placement.featuredActive ? 'Featured official experience' : null,
@@ -1481,8 +1513,10 @@ export class TravelerMarketplaceService {
           paymentExecutionIncluded: false,
         },
         governance: {
-          marketplaceVisible: item.distributionEnabled === true,
+          marketplaceVisible: Boolean(visibleExposure?.isVisible),
           approvalStatus: item.approvalStatus,
+          marketplaceExposureId: visibleExposure?.id || null,
+          marketplaceExposureStatus: visibleExposure?.exposureStatus || 'HIDDEN_BY_ADMIN_EXPOSURE_GATE',
           requiresManifest: requiresClearance,
           requiresGuide: item.fulfillmentPartnerType === 'LOCAL_OPERATOR',
           requiresClearance,
@@ -1578,7 +1612,7 @@ export class TravelerMarketplaceService {
           activityVisibilitySource:
             'ActivityTemplate.isPubliclyVisible + production text filter + operator status filter + real service quality filter + DOT accreditation gate',
           note:
-            'Production filter prevents known test/seed/cross-operator/debug/junk/admin-raw/non-DOT-accredited operator records from reaching traveler marketplace payloads. Admin-curated supply should flow through approved SPM packages. Operator-led Partner Tours require DOT/accreditation readiness.',
+            'Production filter prevents known test/seed/cross-operator/debug/junk/admin-raw/non-DOT-accredited operator records from reaching traveler marketplace payloads. Admin-curated SPM package supply requires an explicit visible Admin Marketplace Exposure record before traveler rendering. Operator-led Partner Tours require DOT/accreditation readiness.',
         },
         marketplaceExposureDoctrine: {
           model:
@@ -1609,4 +1643,189 @@ export class TravelerMarketplaceService {
       services,
     };
   }
+
+  private getDiscoveryLaneShells() {
+    return [
+      {
+        laneKey: 'TOUR_OPERATORS',
+        title: 'Siargao Tour Operators',
+        body: 'Approved local tour operators for island hopping, land tours, culture routes, and custom Siargao experiences.',
+        href: '/traveler/explore/tours',
+        fallbackGradient: 'linear-gradient(135deg, #0e7490, #22d3ee)',
+        tone: 'ocean',
+        ctaLabel: 'Explore',
+        tags: ['Approved operators', 'Governed exposure'],
+      },
+      {
+        laneKey: 'RENTALS',
+        title: 'Rentals',
+        body: 'Scooters, motorbikes, cars, vans, surfboards, gear, and island equipment after provider readiness checks.',
+        href: '/traveler/explore/rentals',
+        fallbackGradient: 'linear-gradient(135deg, #d1fae5, #fef3c7)',
+        tone: 'trail',
+        ctaLabel: 'Explore',
+        tags: ['Deposit aware', 'Policy required'],
+      },
+      {
+        laneKey: 'SURF_SCHOOLS',
+        title: 'Surfing Schools',
+        body: 'Surf schools, instructors, beginner lessons, guided sessions, and board inclusion details when verified.',
+        href: '/traveler/explore/surf-schools',
+        fallbackGradient: 'linear-gradient(135deg, #bae6fd, #dbeafe)',
+        tone: 'surf',
+        ctaLabel: 'Explore',
+        tags: ['Instructor-ready', 'Safety notes'],
+      },
+      {
+        laneKey: 'FOOD_CULTURE',
+        title: 'Food & Culture',
+        body: 'Cafés, restaurants, local food, cultural spots, and curated island stops without becoming a noisy directory.',
+        href: '/traveler/explore/food-culture',
+        fallbackGradient: 'linear-gradient(135deg, #d1fae5, #fef3c7)',
+        tone: 'trail',
+        ctaLabel: 'Explore',
+        tags: ['Curated', 'Local discovery'],
+      },
+      {
+        laneKey: 'BEAUTY_HEALTH',
+        title: 'Beauty & Health',
+        body: 'Massage, salons, wellness, clinics, and traveler services only after stronger verification and clear presentation checks.',
+        href: '/traveler/explore/beauty-health',
+        fallbackGradient: 'linear-gradient(135deg, #0e7490, #22d3ee)',
+        tone: 'ocean',
+        ctaLabel: 'Explore',
+        tags: ['Verified services', 'Careful listing'],
+      },
+    ];
+  }
+
+  private getDiscoveryLaneKeyForService(service: any) {
+    const category = String(service?.category || '').toUpperCase();
+    const text = [
+      service?.title,
+      service?.shortDescription,
+      service?.category,
+      service?.operator?.displayName,
+      service?.locationArea,
+      ...(service?.badges || []),
+      ...(service?.commercialBadges || []),
+      ...(service?.tags || []),
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+
+    if (category === 'SURF' || /surf|surfing|board lesson|instructor/.test(text)) {
+      return 'SURF_SCHOOLS';
+    }
+
+    if (/rental|rentals|scooter|motorbike|motor bike|car rental|van rental|vehicle|surfboard|gear|equipment/.test(text)) {
+      return 'RENTALS';
+    }
+
+    if (/food|cafe|café|restaurant|coffee|culture|community|local food|scenic stop|heritage/.test(text)) {
+      return 'FOOD_CULTURE';
+    }
+
+    if (/beauty|health|wellness|massage|spa|salon|clinic|care|therapy/.test(text)) {
+      return 'BEAUTY_HEALTH';
+    }
+
+    if (
+      [
+        'ISLAND_HOPPING',
+        'LAND_TOUR',
+        'NORTH_SIARGAO',
+        'SCENIC_STOPS',
+        'CULTURE_COMMUNITY',
+        'TRANSPORT_SUPPORT',
+        'PRIVATE_CUSTOM',
+        'PASSPORT_TRAIL_SUPPORT',
+      ].includes(category) ||
+      /tour|operator|island hopping|land tour|north siargao|trail|guide|boat|transport|custom/.test(text)
+    ) {
+      return 'TOUR_OPERATORS';
+    }
+
+    return null;
+  }
+
+  private getDiscoveryLaneImage(service: any) {
+    const gallery = Array.isArray(service?.media?.gallery) ? service.media.gallery : [];
+
+    return (
+      service?.media?.heroImageUrl ||
+      service?.media?.imageUrl ||
+      service?.media?.thumbnailUrl ||
+      gallery[0] ||
+      null
+    );
+  }
+
+  async getDiscoveryLanes() {
+    const shells = this.getDiscoveryLaneShells();
+    const lanesByKey = new Map(
+      shells.map((shell) => [
+        shell.laneKey,
+        {
+          ...shell,
+          serviceCount: 0,
+          featuredImageUrl: null as string | null,
+          featuredServiceTitle: null as string | null,
+          readinessStatus: 'EMPTY',
+          source: 'FALLBACK_READY_CONTRACT',
+          mediaStatus: 'FALLBACK_VISUAL',
+        },
+      ]),
+    );
+
+    let services: any[] = [];
+
+    try {
+      const payload: any = await this.getServices({ limit: 50 });
+      services = Array.isArray(payload?.services) ? payload.services : [];
+    } catch {
+      services = [];
+    }
+
+    for (const service of services) {
+      const laneKey = this.getDiscoveryLaneKeyForService(service);
+      if (!laneKey || !lanesByKey.has(laneKey)) continue;
+
+      const lane = lanesByKey.get(laneKey) as any;
+      lane.serviceCount += 1;
+      lane.readinessStatus = 'LIVE';
+      lane.source = 'MARKETPLACE_EXPOSURE';
+      lane.mediaStatus = service?.media?.mediaStatus || service?.media?.visualTruth || lane.mediaStatus;
+
+      if (!lane.featuredImageUrl) {
+        lane.featuredImageUrl = this.getDiscoveryLaneImage(service);
+      }
+
+      if (!lane.featuredServiceTitle) {
+        lane.featuredServiceTitle = service?.title || null;
+      }
+
+      if (service?.media?.fallbackGradient) {
+        lane.fallbackGradient = service.media.fallbackGradient;
+      }
+    }
+
+    return {
+      ok: true,
+      mode: 'EXPLORE_DISCOVERY_LANES',
+      generatedAt: new Date().toISOString(),
+      contract: {
+        endpoint: '/traveler/marketplace/discovery-lanes',
+        laneSummaryOnly: true,
+        serviceListEndpoint: '/traveler/marketplace/services',
+        frontendTarget: 'Explore More ways to explore carousel',
+        operatorConsoleBacked: true,
+        fallbackShellsIncluded: true,
+        rawUnapprovedOperatorExposureAllowed: false,
+      },
+      lanes: Array.from(lanesByKey.values()),
+    };
+  }
+
 }

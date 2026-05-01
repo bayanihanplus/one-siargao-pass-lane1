@@ -33,6 +33,11 @@ export class TravelerMarketplaceController {
     });
   }
 
+  @Get('discovery-lanes')
+  getDiscoveryLanes() {
+    return this.travelerMarketplaceService.getDiscoveryLanes();
+  }
+
   @UseGuards(DevAuthGuard)
   @Post('service-requests')
   createServiceRequest(

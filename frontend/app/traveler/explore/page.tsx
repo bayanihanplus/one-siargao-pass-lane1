@@ -100,6 +100,61 @@ const API_BASE =
   process.env.API_BASE_URL ||
   "http://localhost:8001/api/v1";
 
+function normalizeDiscoveryLaneTone(value?: string): FeaturedService["tone"] {
+  if (value === "trail" || value === "surf" || value === "ocean") return value;
+  return "ocean";
+}
+
+function mapDiscoveryLaneToFeatured(lane: DiscoveryLane): FeaturedService {
+  const serviceCount = Number(lane.serviceCount || 0);
+  const live = serviceCount > 0 || lane.readinessStatus === "LIVE";
+
+  return {
+    category: lane.title,
+    title: lane.title,
+    body:
+      lane.body ||
+      "Operator-console backed discovery lane prepared for governed traveler marketplace exposure.",
+    price: live ? `${serviceCount} ready service${serviceCount === 1 ? "" : "s"}` : "Coming online",
+    href: lane.href,
+    tags: lane.tags && lane.tags.length ? lane.tags : live ? ["DB wired", "Marketplace backed"] : ["Lane ready", "Awaiting supply"],
+    tone: normalizeDiscoveryLaneTone(lane.tone),
+    sourceLabel: live ? "DB lane" : "Preview lane",
+    visualBackground: lane.fallbackGradient || undefined,
+    mediaUrl: lane.featuredImageUrl || null,
+    mediaTruth: lane.mediaStatus || lane.readinessStatus || undefined,
+    operatorLabel: live ? `${serviceCount} operator-backed service${serviceCount === 1 ? "" : "s"}` : "Operator lane ready",
+    availabilityLabel: live ? "Live supply" : "Awaiting approved supply",
+    urgencyLabel: lane.source || "MARKETPLACE_EXPOSURE_READY",
+    bookingModeLabel: live ? "Browse lane" : "Coming online",
+    pricingReady: false,
+    ctaLabel: lane.ctaLabel || "Explore",
+  };
+}
+
+async function getDiscoveryLaneServices(): Promise<FeaturedService[]> {
+  try {
+    const res = await fetch(`${API_BASE}/traveler/marketplace/discovery-lanes`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) return [];
+
+    const payload: DiscoveryLanesPayload = await res.json();
+    const lanes = Array.isArray(payload?.lanes) ? payload.lanes : [];
+
+    return lanes
+      .filter((lane) => lane?.title && lane?.href)
+      .slice(0, 5)
+      .map(mapDiscoveryLaneToFeatured);
+  } catch {
+    return [];
+  }
+}
+
 async function getMarketplaceServices(): Promise<MarketplacePayload> {
   try {
     const res = await fetch(`${API_BASE}/traveler/marketplace/services?limit=10`, {
@@ -123,6 +178,28 @@ async function getMarketplaceServices(): Promise<MarketplacePayload> {
     };
   }
 }
+
+type DiscoveryLane = {
+  laneKey: string;
+  title: string;
+  body?: string;
+  href: string;
+  serviceCount?: number;
+  featuredImageUrl?: string | null;
+  fallbackGradient?: string | null;
+  readinessStatus?: string;
+  source?: string;
+  mediaStatus?: string;
+  ctaLabel?: string;
+  tags?: string[];
+  tone?: FeaturedService["tone"];
+};
+
+type DiscoveryLanesPayload = {
+  ok?: boolean;
+  mode?: string;
+  lanes?: DiscoveryLane[];
+};
 
 function formatMarketplaceCategory(category?: string) {
   if (!category) return "Verified Service";
@@ -420,10 +497,12 @@ type ExploreSearchParams = {
 
 const filterOptions = [
   { label: "All", value: "ALL" },
-  { label: "Island Hopping", value: "ISLAND_HOPPING" },
-  { label: "Passport Trails", value: "PASSPORT_TRAILS" },
-  { label: "Partner Tours", value: "PARTNER_TOURS" },
+  { label: "Stays", value: "STAYS" },
+  { label: "Tours", value: "TOURS" },
+  { label: "Rentals", value: "RENTALS" },
   { label: "Surf", value: "SURF" },
+  { label: "Food", value: "FOOD_CULTURE" },
+  { label: "Health", value: "BEAUTY_HEALTH" },
 ];
 
 function normalizeSearchValue(value?: string | string[]) {
@@ -479,76 +558,140 @@ function buildExploreFilterHref(params: { q?: string; category?: string }) {
 
 function Header() {
   return (
-    <header style={{ display: "grid", gap: 16 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+    <header
+      style={{
+        display: "grid",
+        gap: 14,
+        padding: "4px 0 2px",
+      }}
+    >
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "52px 1fr 52px",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
         <Link
           href="/traveler/home"
           aria-label="Back to traveler home"
           style={{
-            width: 48,
-            height: 48,
+            width: 52,
+            height: 52,
             borderRadius: 999,
             display: "grid",
             placeItems: "center",
-            background: "#ffffff",
+            background: "rgba(255,255,255,0.96)",
             border: "1px solid rgba(15, 23, 42, 0.08)",
             color: "#0b3768",
             textDecoration: "none",
-            boxShadow: "0 10px 24px rgba(15,23,42,0.06)",
-            fontSize: 24,
-            fontWeight: 900,
+            boxShadow: "0 14px 30px rgba(15,23,42,0.07)",
+            fontSize: 28,
+            fontWeight: 950,
           }}
         >
           ‹
         </Link>
 
-        <div style={{ textAlign: "center", display: "grid", placeItems: "center", gap: 7 }}>
+        <div
+          style={{
+            minWidth: 0,
+            textAlign: "center",
+            display: "grid",
+            gap: 4,
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              color: "#078da0",
+              fontSize: 10.5,
+              fontWeight: 950,
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+            }}
+          >
+            One Siargao Pass
+          </p>
+          <h1
+            style={{
+              margin: 0,
+              color: "#102f57",
+              fontSize: 34,
+              lineHeight: 0.96,
+              letterSpacing: "-0.055em",
+              fontWeight: 950,
+            }}
+          >
+            Explore Siargao
+          </h1>
+        </div>
+
+        <div
+          aria-label="One Siargao Pass badge"
+          style={{
+            width: 52,
+            height: 52,
+            borderRadius: 18,
+            display: "grid",
+            placeItems: "center",
+            background: "rgba(255,255,255,0.96)",
+            border: "1px solid rgba(6,120,137,0.14)",
+            boxShadow: "0 14px 30px rgba(6,120,137,0.10)",
+            overflow: "hidden",
+          }}
+        >
           <img
             src="/osp/osp-logo.png"
             alt="One Siargao Pass"
             style={{
-              width: 92,
-              maxHeight: 58,
+              width: 38,
+              height: 38,
               objectFit: "contain",
               display: "block",
-              filter: "drop-shadow(0 10px 18px rgba(6,120,137,0.12))",
             }}
           />
         </div>
-
-        <div
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: 999,
-            display: "grid",
-            placeItems: "center",
-            background: "#f8fbfd",
-            border: "1px solid rgba(6,120,137,0.14)",
-            fontSize: 20,
-          }}
-        >
-          🏝️
-        </div>
       </div>
 
-      <h1
+      <section
         style={{
-          margin: 0,
-          textAlign: "center",
-          fontSize: 32,
-          lineHeight: 1.05,
-          letterSpacing: "-0.04em",
-          color: "#102f57",
-          fontWeight: 950,
+          borderRadius: 26,
+          padding: "16px 16px 15px",
+          background:
+            "radial-gradient(circle at 18% 0%, rgba(34,211,238,0.22), transparent 38%), linear-gradient(135deg, rgba(255,255,255,0.96), rgba(236,253,245,0.78))",
+          border: "1px solid rgba(6,120,137,0.12)",
+          boxShadow: "0 18px 42px rgba(15,23,42,0.06)",
         }}
       >
-        Explore Siargao
-      </h1>
+        <p
+          style={{
+            margin: 0,
+            color: "#0b7285",
+            fontSize: 11,
+            fontWeight: 950,
+            letterSpacing: "0.13em",
+            textTransform: "uppercase",
+          }}
+        >
+          Verified island discovery
+        </p>
+        <p
+          style={{
+            margin: "7px 0 0",
+            color: "#4f647e",
+            fontSize: 13.5,
+            lineHeight: 1.42,
+            fontWeight: 800,
+          }}
+        >
+          Browse stays, tours, rentals, surf schools, food, culture, and trusted local services connected to your One Siargao Pass.
+        </p>
+      </section>
     </header>
   );
 }
-
 
 function SearchRow({
   q,
@@ -558,61 +701,95 @@ function SearchRow({
   category: string;
 }) {
   return (
-    <section style={{ display: "grid", gap: 10 }}>
-      <form action="/traveler/explore" method="get" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 10 }}>
+    <section
+      style={{
+        display: "grid",
+        gap: 11,
+        marginTop: -2,
+      }}
+    >
+      <form
+        action="/traveler/explore"
+        method="get"
+        style={{
+          display: "grid",
+          gap: 8,
+        }}
+      >
         {category && category !== "ALL" ? <input type="hidden" name="category" value={category} /> : null}
 
         <label
           style={{
-            minHeight: 58,
-            borderRadius: 18,
-            background: "#ffffff",
-            border: "1px solid rgba(15,23,42,0.10)",
-            display: "flex",
+            minHeight: 62,
+            borderRadius: 24,
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(248,253,255,0.96))",
+            border: "1px solid rgba(6,120,137,0.14)",
+            display: "grid",
+            gridTemplateColumns: "34px 1fr auto",
             alignItems: "center",
-            gap: 12,
-            padding: "0 16px",
+            gap: 10,
+            padding: "8px 9px 8px 15px",
             color: "#64748b",
-            fontWeight: 750,
-            boxShadow: "0 12px 28px rgba(15,23,42,0.04)",
+            fontWeight: 800,
+            boxShadow: "0 16px 34px rgba(15,23,42,0.07)",
           }}
         >
-          <span style={{ fontSize: 20 }}>⌕</span>
+          <span
+            aria-hidden="true"
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 14,
+              display: "grid",
+              placeItems: "center",
+              background: "#e0f7fb",
+              color: "#078da0",
+              fontSize: 18,
+              fontWeight: 950,
+            }}
+          >
+            ⌕
+          </span>
+
           <input
             name="q"
             defaultValue={q}
-            placeholder="Search experiences, trails, islands"
+            placeholder="Search stays, tours, rentals, surf, food…"
             style={{
               width: "100%",
               border: 0,
               outline: 0,
               background: "transparent",
               color: "#102f57",
-              fontSize: 14,
-              fontWeight: 800,
+              fontSize: 13.5,
+              fontWeight: 850,
+              minWidth: 0,
             }}
           />
-        </label>
 
-        <button
-          type="submit"
-          style={{
-            minHeight: 58,
-            borderRadius: 18,
-            padding: "0 16px",
-            border: "1px solid rgba(15,23,42,0.10)",
-            background: "#ffffff",
-            color: "#102f57",
-            fontWeight: 900,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            boxShadow: "0 12px 28px rgba(15,23,42,0.04)",
-            cursor: "pointer",
-          }}
-        >
-          ⚙︎ <span>Search</span>
-        </button>
+          <button
+            type="submit"
+            aria-label="Search Explore Siargao"
+            style={{
+              minHeight: 44,
+              borderRadius: 18,
+              padding: "0 15px",
+              border: "1px solid rgba(255,255,255,0.28)",
+              background: "linear-gradient(135deg, #063b63, #089fa5)",
+              color: "#ffffff",
+              fontWeight: 950,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 12px 24px rgba(6,120,137,0.18)",
+              cursor: "pointer",
+              fontSize: 13,
+            }}
+          >
+            Go
+          </button>
+        </label>
       </form>
 
       <div
@@ -621,7 +798,7 @@ function SearchRow({
           display: "flex",
           gap: 8,
           overflowX: "auto",
-          padding: "2px 0 4px",
+          padding: "2px 0 5px",
           scrollbarWidth: "none",
         }}
       >
@@ -633,15 +810,25 @@ function SearchRow({
               href={buildExploreFilterHref({ q, category: option.value })}
               style={{
                 flex: "0 0 auto",
+                minHeight: 36,
                 borderRadius: 999,
-                padding: "9px 12px",
-                background: active ? "linear-gradient(135deg,#067889,#089fa5)" : "#ffffff",
-                border: active ? "1px solid rgba(6,120,137,0.28)" : "1px solid rgba(6,120,137,0.12)",
+                padding: "0 13px",
+                background: active
+                  ? "linear-gradient(135deg,#063b63,#089fa5)"
+                  : "rgba(255,255,255,0.92)",
+                border: active
+                  ? "1px solid rgba(6,120,137,0.30)"
+                  : "1px solid rgba(6,120,137,0.13)",
                 color: active ? "#ffffff" : "#0b3768",
                 textDecoration: "none",
                 fontSize: 12,
                 fontWeight: 950,
-                boxShadow: active ? "0 12px 24px rgba(6,120,137,0.16)" : "0 8px 18px rgba(15,23,42,0.04)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: active
+                  ? "0 12px 24px rgba(6,120,137,0.16)"
+                  : "0 8px 18px rgba(15,23,42,0.045)",
               }}
             >
               {option.label}
@@ -1256,9 +1443,12 @@ export default async function TravelerExplorePage({
       : [];
 
   const existingTitles = new Set(backendFeaturedServices.map((item) => item.title));
-  const previewExploreServices = fallbackFeaturedServices
-    .filter((item) => !existingTitles.has(item.title))
-    .slice(0, 5);
+  const backendDiscoveryLaneServices = await getDiscoveryLaneServices();
+  const previewExploreServices = (
+    backendDiscoveryLaneServices.length > 0
+      ? backendDiscoveryLaneServices
+      : fallbackFeaturedServices.filter((item) => !existingTitles.has(item.title))
+  ).slice(0, 5);
 
   return (
     <main
