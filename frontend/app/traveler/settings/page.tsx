@@ -983,7 +983,7 @@ export default async function TravelerSettingsPage({
     >
       <div style={{ marginBottom: 16 }}>
         <a
-          href="/"
+          href="/traveler/home"
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -998,7 +998,7 @@ export default async function TravelerSettingsPage({
             fontWeight: 900,
           }}
         >
-          ← Back to Home
+          ← Back
         </a>
       </div>
 

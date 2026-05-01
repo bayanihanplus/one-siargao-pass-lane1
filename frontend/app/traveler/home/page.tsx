@@ -1688,12 +1688,12 @@ function TravelerReassuranceAndJourney(props: {
   const continueJourneyTitle = t(props.dictionary, "home.journey.title", "Continue Your Journey");
   const tripsTitle = t(props.dictionary, "home.journey.trips.title", "Trips");
   const tripsSubtitle = t(props.dictionary, "home.journey.trips.subtitle", "Plans & records");
-  const paymentsTitle = t(props.dictionary, "home.journey.payments.title", "Payments");
-  const paymentsSubtitle = t(props.dictionary, "home.journey.payments.subtitle", "Status & receipts");
-  const passportMapTitle = t(props.dictionary, "home.journey.passportMap.title", "Passport Map");
-  const passportMapSubtitle = t(props.dictionary, "home.journey.passportMap.subtitle", "Trails & stamps");
-  const checkpointsTitle = t(props.dictionary, "home.journey.checkpoints.title", "Checkpoints");
-  const checkpointsSubtitle = t(props.dictionary, "home.journey.checkpoints.subtitle", "QR & access state");
+  const paymentsTitle = t(props.dictionary, "home.journey.payments.title", "Payments & Receipts");
+  const paymentsSubtitle = t(props.dictionary, "home.journey.payments.subtitle", "Payments & receipts");
+  const passportMapTitle = t(props.dictionary, "home.journey.myPass.title", "My Pass");
+  const passportMapSubtitle = t(props.dictionary, "home.journey.myPass.subtitle", "Show your QR identity and trip pass");
+  const checkpointsTitle = t(props.dictionary, "home.journey.explore.title", "Explore Siargao");
+  const checkpointsSubtitle = t(props.dictionary, "home.journey.explore.subtitle", "Discover stays, tours, trails, and local spots");
 
   const rootPreview = isRootPreviewTrip(props.latestTravelerTrip);
 
@@ -1771,7 +1771,7 @@ function TravelerReassuranceAndJourney(props: {
           />
 
           <TravelerJourneyCard
-            href={rootPreview ? "/traveler/start" : "/traveler/trips"}
+            href="/traveler/payments"
             title={paymentsTitle}
             subtitle={paymentsSubtitle}
             shellBg="#fff8eb"
@@ -1787,7 +1787,7 @@ function TravelerReassuranceAndJourney(props: {
           />
 
           <TravelerJourneyCard
-            href={rootPreview ? "/traveler/start" : "/traveler/passport-map"}
+            href="/traveler/pass"
             title={passportMapTitle}
             subtitle={passportMapSubtitle}
             shellBg="#ecfeff"
@@ -1810,7 +1810,7 @@ function TravelerReassuranceAndJourney(props: {
           />
 
           <TravelerJourneyCard
-            href={rootPreview ? "/traveler/start" : "/traveler/pass"}
+            href="/traveler/explore"
             title={checkpointsTitle}
             subtitle={checkpointsSubtitle}
             shellBg="#eefdf3"
@@ -1854,7 +1854,7 @@ function TravelerBottomNav(props: {
     >
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
         <TravelerBottomNavLink
-          href="/traveler/passport-map"
+          href="/traveler/home"
           label={homeLabel}
           active
           icon={
@@ -2001,16 +2001,6 @@ export default async function TravelerHomePage() {
 
   const userRole = user?.primaryRole || user?.role || "";
 
-  if (isOperatorRole(userRole)) {
-    redirect("/operator");
-  }
-  if (
-    userRole === "SILENT_LGU_ANALYTICS" ||
-    userRole === "LGU_APPROVER" ||
-    userRole === "LGU_FEE_EDITOR"
-  ) {
-    redirect("/lgu?panel=overview");
-  }
 
   if (!user) {
     return (
@@ -2114,14 +2104,14 @@ export default async function TravelerHomePage() {
               <HeaderControlButton
                 label="EN"
                 ariaLabel="Open language selector"
-                href="/login?mode=returning"
+                href="/traveler/settings"
                 icon="language"
               />
 
               <HeaderControlButton
                 label="PHP"
                 ariaLabel="Open currency selector"
-                href="/login?mode=returning"
+                href="/traveler/settings"
                 icon="currency"
               />
 
@@ -2129,12 +2119,12 @@ export default async function TravelerHomePage() {
                 className="osp-phone-secondary-control"
                 label="AI"
                 ariaLabel="Open OSP Travel Assistant"
-                href="/login?mode=returning"
+                href="/traveler/home"
                 icon="assistant"
               />
 
               <a
-                href="/login?mode=returning"
+                href="/traveler/settings"
                 aria-label="Notifications"
                 style={{
                   width: 32,
@@ -2292,7 +2282,7 @@ export default async function TravelerHomePage() {
 
                 <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
                   <a
-                    href="/traveler/start"
+                    href="/traveler/pass"
                     style={{
                       minHeight: 48,
                       borderRadius: 999,
@@ -2312,7 +2302,7 @@ export default async function TravelerHomePage() {
                   </a>
 
                   <a
-                    href="/siargao-passport-map"
+                    href="/traveler/passport-map"
                     style={{
                       minHeight: 48,
                       borderRadius: 999,
@@ -2451,7 +2441,7 @@ export default async function TravelerHomePage() {
             <TravelerJourneyCard
               title="Trips"
               subtitle="Plans & records"
-              href="/login?mode=returning"
+              href="/traveler/trips"
               shellBg="#eff6ff"
               borderColor="#bfdbfe"
               chipBg="#dbeafe"
@@ -2465,9 +2455,9 @@ export default async function TravelerHomePage() {
             />
 
             <TravelerJourneyCard
-              title="Payments"
-              subtitle="Status & receipts"
-              href="/login?mode=returning"
+              title="Payments & Receipts"
+              subtitle="Payments & receipts"
+              href="/traveler/payments"
               shellBg="#fff7ed"
               borderColor="#fed7aa"
               chipBg="#ffedd5"
@@ -2481,9 +2471,9 @@ export default async function TravelerHomePage() {
             />
 
             <TravelerJourneyCard
-              title="Passport Map"
-              subtitle="Trails & stamps"
-              href="/siargao-passport-map"
+              title="My Pass"
+              subtitle="Show your QR identity and trip pass"
+              href="/traveler/pass"
               shellBg="#ecfeff"
               borderColor="#a5f3fc"
               chipBg="#cffafe"
@@ -2497,9 +2487,9 @@ export default async function TravelerHomePage() {
             />
 
             <TravelerJourneyCard
-              title="Checkpoints"
-              subtitle="QR & access state"
-              href="/login?mode=returning"
+              title="Explore Siargao"
+              subtitle="Discover stays, tours, trails, and local spots"
+              href="/traveler/explore"
               shellBg="#f0fdf4"
               borderColor="#bbf7d0"
               chipBg="#dcfce7"
@@ -2529,7 +2519,7 @@ export default async function TravelerHomePage() {
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "center" }}>
             <TravelerBottomNavLink
-              href="/traveler/passport-map"
+              href="/traveler/home"
               label="Home"
               active
               icon={
@@ -2540,7 +2530,7 @@ export default async function TravelerHomePage() {
             />
 
             <TravelerBottomNavLink
-              href="/login?mode=returning"
+              href="/traveler/trips"
               label="Trips"
               icon={
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
@@ -2551,7 +2541,7 @@ export default async function TravelerHomePage() {
             />
 
             <a
-              href="/traveler/start"
+              href="/traveler/pass"
               aria-label="Open OSP QR"
               style={{
                 width: 66,
@@ -2575,7 +2565,7 @@ export default async function TravelerHomePage() {
             </a>
 
             <TravelerBottomNavLink
-              href="/login?mode=returning"
+              href="/traveler/payments"
               label="Payments"
               icon={
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
@@ -2586,7 +2576,7 @@ export default async function TravelerHomePage() {
             />
 
             <TravelerBottomNavLink
-              href="/login?mode=returning"
+              href="/traveler/settings"
               label="Profile"
               icon={
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
@@ -2602,14 +2592,13 @@ export default async function TravelerHomePage() {
     );
   }
 
-  const travelerTripResult =
-    user.primaryRole === "TRAVELER" ? await getTravelerHomeSummary() : { trip: null, error: null, summary: null };
+  const travelerTripResult = await getTravelerHomeSummary();
 
   const latestTravelerTrip = travelerTripResult.trip;
 
   return (
     <main style={{ width: "100%", maxWidth: 960, margin: "0 auto", padding: "8px 0 24px", boxSizing: "border-box" }}>
-      {user.primaryRole === "TRAVELER" ? (
+      {true ? (
         <>
           {travelerTripResult.error ? (
             <Section title="Traveler Trip Load Error">

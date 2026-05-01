@@ -205,7 +205,7 @@ function mapMarketplaceServiceToFeatured(service: MarketplaceService): FeaturedS
       service.operator?.displayName ||
       "Traveler-safe experience from the governed OSP marketplace catalog.",
     price: service.price?.displayPrice || "Request to confirm",
-    href: "/traveler/partner-tours",
+    href: "/traveler/explore/tours",
     tags: getFeaturedServiceTags(service),
     tone: getFeaturedServiceTone(service),
     sourceLabel: "Live marketplace",
@@ -223,13 +223,13 @@ function mapMarketplaceServiceToFeatured(service: MarketplaceService): FeaturedS
 
 const lanes: ExploreLane[] = [
   {
-    eyebrow: "Verified local experiences",
-    title: "Siargao Partner Tours",
-    body: "Join verified operator-led tours with OSP request, payment, QR, and regulated trip readiness where required.",
-    href: "/traveler/partner-tours",
+    eyebrow: "Places to stay",
+    title: "Stay in Siargao",
+    body: "Find hotels, resorts, villas, hostels, homestays, and guesthouses prepared for traveler-ready discovery.",
+    href: "/traveler/explore/stays",
     cta: "Explore",
     tone: "teal",
-    icon: "🚐",
+    icon: "🏝️",
   },
   {
     eyebrow: "Official route layer",
@@ -242,85 +242,118 @@ const lanes: ExploreLane[] = [
   },
   {
     eyebrow: "Flexible planning",
-    title: "Build Your Own Passport Trail",
-    body: "Create your own route and connect preferred island stops into one structured journey.",
+    title: "Build Your Own Trail",
+    body: "Create your own Passport Trail request and connect preferred island stops into one structured journey.",
     href: "/traveler/passport-trails/diy-trail-builder",
     cta: "Explore",
     tone: "mint",
     icon: "✨",
   },
   {
-    eyebrow: "Map and progress",
-    title: "Passport Map",
-    body: "View your journey, progress, verified island stops, and Passport Trail movement records.",
-    href: "/traveler/passport-map",
+    eyebrow: "Food and local discovery",
+    title: "Food & Local Spots",
+    body: "Discover cafés, restaurants, local culture, and curated island stops without turning Explore into a noisy directory.",
+    href: "/traveler/explore/food-culture",
     cta: "Explore",
     tone: "sky",
-    icon: "🗺️",
+    icon: "🍽️",
   },
 ];
 
 const fallbackFeaturedServices: FeaturedService[] = [
   {
-    category: "Island Hopping",
-    title: "Siargao Partner Tour",
-    body: "Connected to OSP request, manifest, and clearance-aware coordination.",
-    price: "From PHP 1,500",
-    href: "/traveler/partner-tours",
-    tags: ["QR-ready", "Verified"],
+    category: "Tour Operators",
+    title: "Siargao Tour Operators",
+    body: "Approved local tour operators for island hopping, land tours, culture routes, and custom Siargao experiences.",
+    price: "Request to confirm",
+    href: "/traveler/explore/tours",
+    tags: ["Approved operators", "Governed exposure"],
     tone: "ocean",
     sourceLabel: "Preview lane",
     mediaTruth: "PREVIEW_VISUAL",
-    operatorLabel: "Discovery lane",
-    availabilityLabel: "Explore-ready",
-    urgencyLabel: "Preview",
-    bookingModeLabel: "Discovery only",
+    operatorLabel: "Verified operator lane",
+    availabilityLabel: "Request-ready",
+    urgencyLabel: "Operator readiness",
+    bookingModeLabel: "Request to confirm",
     pricingReady: false,
     ctaLabel: "Explore",
   },
   {
-    category: "Culture & Trail",
-    title: "Passport Trails Journey",
-    body: "Curated trail experience with verified stops and traveler continuity.",
-    price: "Explore routes",
-    href: "/traveler/passport-trails",
-    tags: ["Passport eligible", "Verified"],
+    category: "Rentals",
+    title: "Rentals",
+    body: "Scooters, motorbikes, cars, vans, surfboards, gear, and island equipment after provider readiness checks.",
+    price: "Check availability",
+    href: "/traveler/explore/rentals",
+    tags: ["Deposit aware", "Policy required"],
     tone: "trail",
     sourceLabel: "Preview lane",
     mediaTruth: "PREVIEW_VISUAL",
-    operatorLabel: "Discovery lane",
-    availabilityLabel: "Explore-ready",
-    urgencyLabel: "Preview",
+    operatorLabel: "Verified rental lane",
+    availabilityLabel: "Availability required",
+    urgencyLabel: "Policy readiness",
+    bookingModeLabel: "Check availability",
+    pricingReady: false,
+    ctaLabel: "Explore",
+  },
+  {
+    category: "Surf Schools",
+    title: "Surfing Schools",
+    body: "Surf schools, instructors, beginner lessons, guided sessions, and board inclusion details when verified.",
+    price: "Request session",
+    href: "/traveler/explore/surf-schools",
+    tags: ["Instructor-ready", "Safety notes"],
+    tone: "surf",
+    sourceLabel: "Preview lane",
+    mediaTruth: "PREVIEW_VISUAL",
+    operatorLabel: "Verified surf lane",
+    availabilityLabel: "Request-ready",
+    urgencyLabel: "Lesson readiness",
+    bookingModeLabel: "Request session",
+    pricingReady: false,
+    ctaLabel: "Explore",
+  },
+  {
+    category: "Food & Culture",
+    title: "Food & Culture",
+    body: "Cafés, restaurants, local food, cultural spots, and curated island stops without becoming a noisy directory.",
+    price: "View spots",
+    href: "/traveler/explore/food-culture",
+    tags: ["Curated", "Local discovery"],
+    tone: "trail",
+    sourceLabel: "Preview lane",
+    mediaTruth: "PREVIEW_VISUAL",
+    operatorLabel: "Curated discovery lane",
+    availabilityLabel: "Discovery-ready",
+    urgencyLabel: "Curation required",
     bookingModeLabel: "Discovery only",
     pricingReady: false,
     ctaLabel: "Explore",
   },
   {
-    category: "Water Activity",
-    title: "Surf Explorer Path",
-    body: "Surf-linked route discovery through approved Passport Trail logic.",
-    price: "Request to confirm",
-    href: "/traveler/passport-trails/surf-explorer",
-    tags: ["QR-ready", "Trail-linked"],
-    tone: "surf",
+    category: "Beauty & Health",
+    title: "Beauty & Health",
+    body: "Massage, salons, wellness, clinics, and traveler services only after stronger verification and clear presentation checks.",
+    price: "Request appointment",
+    href: "/traveler/explore/beauty-health",
+    tags: ["Verified services", "Careful listing"],
+    tone: "ocean",
     sourceLabel: "Preview lane",
     mediaTruth: "PREVIEW_VISUAL",
-    operatorLabel: "Discovery lane",
-    availabilityLabel: "Explore-ready",
-    urgencyLabel: "Preview",
-    bookingModeLabel: "Discovery only",
+    operatorLabel: "Verified services lane",
+    availabilityLabel: "Appointment-ready",
+    urgencyLabel: "Verification required",
+    bookingModeLabel: "Request appointment",
     pricingReady: false,
     ctaLabel: "Explore",
   },
 ];
 
 const categories = [
-  { label: "Partner Tours", href: "/traveler/partner-tours", icon: "🚐" },
-  { label: "Passport Trails", href: "/traveler/passport-trails", icon: "🪧" },
-  { label: "Build Your Own", href: "/traveler/passport-trails/diy-trail-builder", icon: "〽️" },
-  { label: "Island Hopping", href: "/traveler/partner-tours", icon: "⛵" },
-  { label: "Surf", href: "/traveler/passport-trails/surf-explorer", icon: "🏄" },
-  { label: "Map", href: "/traveler/passport-map", icon: "🗺️" },
+  { label: "Siargao Tour Operators", href: "/traveler/explore/tours", icon: "🚐" },
+  { label: "Rentals", href: "/traveler/explore/rentals", icon: "🛵" },
+  { label: "Surfing Schools", href: "/traveler/explore/surf-schools", icon: "🏄" },
+  { label: "Food & Culture", href: "/traveler/explore/food-culture", icon: "🍽️" },
+  { label: "Beauty & Health", href: "/traveler/explore/beauty-health", icon: "🌿" },
 ];
 
 function toneStyles(tone: ExploreLane["tone"]) {
@@ -791,7 +824,7 @@ function LaneGrid() {
         <h2 style={{ margin: 0, color: "#102f57", fontSize: 22, lineHeight: 1.1 }}>
           Explore by lane
         </h2>
-        <Link href="/traveler/partner-tours" style={{ color: "#078da0", fontWeight: 900, textDecoration: "none", fontSize: 13 }}>
+        <Link href="/traveler/explore/tours" style={{ color: "#078da0", fontWeight: 900, textDecoration: "none", fontSize: 13 }}>
           See all →
         </Link>
       </div>
@@ -881,7 +914,7 @@ function FeaturedServices({
             Live marketplace services only. Preview lanes are separated below.
           </p>
         </div>
-        <Link href="/traveler/partner-tours" style={{ color: "#078da0", fontWeight: 900, textDecoration: "none", fontSize: 13 }}>
+        <Link href="/traveler/explore/tours" style={{ color: "#078da0", fontWeight: 900, textDecoration: "none", fontSize: 13 }}>
           View all →
         </Link>
       </div>
@@ -1225,7 +1258,7 @@ export default async function TravelerExplorePage({
   const existingTitles = new Set(backendFeaturedServices.map((item) => item.title));
   const previewExploreServices = fallbackFeaturedServices
     .filter((item) => !existingTitles.has(item.title))
-    .slice(0, 3);
+    .slice(0, 5);
 
   return (
     <main
@@ -1244,7 +1277,6 @@ export default async function TravelerExplorePage({
         <Header />
         <SearchRow q={q} category={category} />
         <HeroCard />
-        <CategoryChips />
         <LaneGrid />
         <FeaturedServices services={backendFeaturedServices} marketplaceMode={marketplace.mode} />
         <MoreWaysToExplore services={previewExploreServices} />

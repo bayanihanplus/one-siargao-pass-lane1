@@ -883,7 +883,7 @@ export default async function TravelerTripDetailPage({ params, searchParams }: T
       </header>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
-        <AppLink href="/" label={navHomeLabel} icon={<Icon kind="home" />} />
+        <AppLink href="/traveler/home" label={navHomeLabel} icon={<Icon kind="home" />} />
         <AppLink href="/traveler/pass" label={navPassLabel} icon={<Icon kind="pass" />} />
         <AppLink href="/traveler/passport-map" label={navPassportMapLabel} icon={<Icon kind="map" />} />
         <AppLink href="/logout" label={navLogoutLabel} icon={<Icon kind="logout" />} />

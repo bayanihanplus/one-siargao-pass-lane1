@@ -5,7 +5,7 @@ import KuyaTalaEntryButton from "../../../src/traveler-assistant/KuyaTalaEntryBu
 type TravelerDictionary = Record<string, string>;
 
 const tripsDictionaryFallback: TravelerDictionary = {
-  "trips.backHome": "Back to Home",
+  "trips.backHome": "Back",
   "trips.header.eyebrow": "Traveler Records",
   "trips.title": "My Trips",
   "trips.header.body": "Review your registered trips, clearance state, and pass access.",
@@ -351,7 +351,7 @@ export default async function TravelerTripsPage() {
   const { rows, error, user } = await getTrips();
   const dictionary = await getTravelerDictionary(user?.preferredLanguage || "en");
 
-  const backHomeLabel = t(dictionary, "trips.backHome", "Back to Home");
+  const backHomeLabel = t(dictionary, "trips.backHome", "Back");
   const headerEyebrow = t(dictionary, "trips.header.eyebrow", "Traveler Records");
   const headerTitle = t(dictionary, "trips.title", "My Trips");
   const headerBody = t(dictionary, "trips.header.body", "Review your registered trips, clearance state, and pass access.");
@@ -382,7 +382,7 @@ export default async function TravelerTripsPage() {
       <KuyaTalaEntryButton topic="trips" title="Ask Kuya Tala™ about your trips" note="Get guided help understanding trip readiness, records, pass status, and next traveler actions." />
       <div style={{ marginBottom: 16 }}>
         <a
-          href="/"
+          href="/traveler/home"
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -431,7 +431,7 @@ export default async function TravelerTripsPage() {
       </header>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
-        <PillLink href="/" label={navHome} icon={<TripsNavIcon kind="HOME" />} />
+        <PillLink href="/traveler/home" label={navHome} icon={<TripsNavIcon kind="HOME" />} />
         <PillLink href="/traveler/pass" label={navPass} icon={<TripsNavIcon kind="PASS" />} />
         <PillLink href="/logout" label={navLogout} icon={<TripsNavIcon kind="LOGOUT" />} />
       </div>
