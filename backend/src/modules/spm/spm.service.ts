@@ -3174,6 +3174,118 @@ export class SpmService {
     };
   }
 
+
+  async submitOperatorTrailProductPricing(operatorContext: OperatorContext, packageCode: string, body: any) {
+    const trailPackage = await this.prisma.spmTrailPackage.findFirst({
+      where: { code: packageCode },
+    });
+
+    if (!trailPackage) {
+      return {
+        ok: false,
+        error: 'TRAIL_PACKAGE_NOT_FOUND',
+        message: `Trail product not found: ${packageCode}`,
+      };
+    }
+
+    const pricingMode = String(body?.pricingMode || 'FIXED_PER_HEAD').trim();
+    const currencyCode = String(body?.currencyCode || 'PHP').trim().toUpperCase();
+
+    const nullableDecimal = (value: any) => {
+      const raw = String(value ?? '').trim();
+      if (!raw) return null;
+      const numeric = Number(raw);
+      if (!Number.isFinite(numeric) || numeric < 0) return null;
+      return raw;
+    };
+
+    const requestToConfirmRequired =
+      body?.requestToConfirmRequired === true ||
+      body?.requestToConfirmRequired === 'true' ||
+      body?.requestToConfirmRequired === 'on' ||
+      pricingMode === 'REQUEST_TO_CONFIRM' ||
+      pricingMode === 'FILLABLE_PRICE_REQUIRED';
+
+    const instantCheckoutAllowed =
+      body?.instantCheckoutAllowed === true ||
+      body?.instantCheckoutAllowed === 'true' ||
+      body?.instantCheckoutAllowed === 'on';
+
+    const existingPricingRule = body?.pricingRuleId
+      ? await this.prisma.spmPricingRule.findFirst({
+          where: {
+            id: String(body.pricingRuleId),
+            operatorUserId: operatorContext.operatorUserId,
+            trailPackageId: trailPackage.id,
+          },
+        })
+      : await this.prisma.spmPricingRule.findFirst({
+          where: {
+            operatorUserId: operatorContext.operatorUserId,
+            trailPackageId: trailPackage.id,
+          },
+          orderBy: { createdAt: 'desc' },
+        });
+
+    const pricingPayload = {
+      pricingMode: pricingMode as any,
+      currencyCode,
+      basePrice: nullableDecimal(body?.basePrice),
+      priceRangeMin: nullableDecimal(body?.priceRangeMin),
+      priceRangeMax: nullableDecimal(body?.priceRangeMax),
+      packageFlatRate: nullableDecimal(body?.packageFlatRate),
+      fillableRequired: pricingMode === 'FILLABLE_PRICE_REQUIRED',
+      requestToConfirmRequired,
+      instantCheckoutAllowed: instantCheckoutAllowed && !requestToConfirmRequired,
+      approvalStatus: 'DRAFT' as any,
+    };
+
+    const pricing = existingPricingRule
+      ? await this.prisma.spmPricingRule.update({
+          where: { id: existingPricingRule.id },
+          data: pricingPayload,
+        })
+      : await this.prisma.spmPricingRule.create({
+          data: {
+            trailPackageId: trailPackage.id,
+            operatorUserId: operatorContext.operatorUserId,
+            ...pricingPayload,
+          },
+        });
+
+    await this.prisma.spmAuditEvent.create({
+      data: {
+        actorUserId: operatorContext.operatorUserId,
+        actorRole: operatorContext.workspaceRole,
+        entityType: 'SPM_PRICING_RULE',
+        entityId: pricing.id,
+        action: existingPricingRule ? 'OPERATOR_PRICING_UPDATED' : 'OPERATOR_PRICING_SUBMITTED',
+        previousValueJson: existingPricingRule ? JSON.stringify(existingPricingRule) : null,
+        newValueJson: JSON.stringify({
+          packageCode,
+          trailPackageId: trailPackage.id,
+          operatorUserIdFromBodyAccepted: false,
+          pricingMode,
+          currencyCode,
+          requestToConfirmRequired,
+          instantCheckoutAllowed: instantCheckoutAllowed && !requestToConfirmRequired,
+        }),
+      },
+    });
+
+    return {
+      ok: true,
+      data: pricing,
+      dataIntegrity: {
+        operatorScoped: true,
+        operatorUserId: operatorContext.operatorUserId,
+        operatorUserIdFromBodyAccepted: false,
+        publicExposureCreated: false,
+        approvalBypassed: false,
+      },
+    };
+  }
+
   async acceptOperatorCommercialTerms(operatorContext: OperatorContext, termsId: string, body: any) {
     const terms = await this.prisma.spmCommercialTerms.findFirst({
       where: {

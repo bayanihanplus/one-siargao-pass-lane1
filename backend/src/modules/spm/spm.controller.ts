@@ -174,6 +174,17 @@ export class SpmController {
 
   @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
   @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
+  @Post('operator/trail-products/:packageCode/pricing')
+  submitOperatorTrailProductPricing(
+    @OperatorCtx() operatorContext: OperatorContext,
+    @Param('packageCode') packageCode: string,
+    @Body() body: any,
+  ) {
+    return this.spmService.submitOperatorTrailProductPricing(operatorContext, packageCode, body);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
   @Get('operator/trail-capabilities')
   listOperatorTrailCapabilities(@OperatorCtx() operatorContext: OperatorContext) {
     return this.spmService.listOperatorTrailCapabilities(operatorContext);
