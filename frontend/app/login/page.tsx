@@ -5,41 +5,44 @@ import { getApiBaseUrl, getAuthCookieName, getCurrentUser } from "../../src/lib/
 
 
 function getRoleAwareContinuePath(user: any, requestedNext?: string | null) {
-  const role = String(user?.primaryRole || user?.role || "").toUpperCase();
+  const role = String(user?.role || user?.primaryRole || "").toUpperCase();
   const next = String(requestedNext || "").trim();
+
+  const isOperatorRole = ["OPERATOR_OWNER", "OPERATOR_MANAGER", "OPERATOR_STAFF"].includes(role);
+  const isAdminRole = role === "ADMIN";
+  const isTravelerRole = role === "TRAVELER";
 
   const isSafeInternalPath =
     next.startsWith("/") &&
     !next.startsWith("//") &&
-    !next.includes("://");
-
-  const isOperatorRole = ["OPERATOR_OWNER", "OPERATOR_MANAGER", "OPERATOR_STAFF"].includes(role);
-  const isAdminRole = role === "ADMIN";
-  const isLguRole = role.startsWith("LGU_") || role === "LGU_APPROVER" || role === "LGU_VIEWER";
-  const isTravelerRole = role === "TRAVELER" || role === "";
-
-  // Never route a non-traveler into traveler continuation just because the stale next param says so.
-  if (isOperatorRole) {
-    if (isSafeInternalPath && next.startsWith("/operator")) return next;
-    return "/operator/commercial";
-  }
+    !next.startsWith("/login") &&
+    !next.startsWith("/logout");
 
   if (isAdminRole) {
-    if (isSafeInternalPath && next.startsWith("/admin")) return next;
+    if (isSafeInternalPath && (next === "/admin" || next.startsWith("/admin/") || next === "/dev" || next.startsWith("/dev/"))) {
+      return next;
+    }
+
     return "/admin/activities";
   }
 
-  if (isLguRole) {
-    if (isSafeInternalPath && next.startsWith("/lgu")) return next;
-    return "/lgu";
+  if (isOperatorRole) {
+    if (isSafeInternalPath && (next === "/operator" || next.startsWith("/operator/"))) {
+      return next;
+    }
+
+    return "/operator/commercial";
   }
 
   if (isTravelerRole) {
-    if (isSafeInternalPath && next.startsWith("/traveler")) return next;
+    if (isSafeInternalPath && (next === "/traveler" || next.startsWith("/traveler/"))) {
+      return next;
+    }
+
     return "/traveler/home";
   }
 
-  return "/";
+  return "/traveler/home";
 }
 
 function ospLoginNormalizeNext(value: string | null | undefined): string {
