@@ -1,7 +1,5 @@
 import { SpmThreeJourneyScanQrPanel } from "../../../src/spm/scan/SpmScanQrCta";
-import KuyaTalaEntryButton from "../../../src/traveler-assistant/KuyaTalaEntryButton";
 import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
-import PassportMapShortcut from "../../../src/components/traveler/PassportMapShortcut";
 const partnerTours = [
   {
     title: "Island Hopping Trail",
@@ -214,7 +212,7 @@ function IslandHoppingRequestStartedPanel({
           <div
             style={{
               marginTop: 15,
-              borderRadius: 24,
+              borderRadius: 22,
               background: "rgba(255,255,255,0.985)",
               color: "#12314a",
               padding: 13,
@@ -243,7 +241,7 @@ function IslandHoppingRequestStartedPanel({
                 </div>
                 <h2
                   style={{
-                    margin: "5px 0 0",
+                    margin: "3px 0 0",
                     fontSize: 19,
                     lineHeight: 1.05,
                     fontWeight: 900,
@@ -255,7 +253,7 @@ function IslandHoppingRequestStartedPanel({
                 </h2>
                 <p
                   style={{
-                    margin: "5px 0 0",
+                    margin: "3px 0 0",
                     fontSize: 12,
                     lineHeight: 1.35,
                     color: "#557086",
@@ -441,7 +439,7 @@ function IslandHoppingRequestStartedPanel({
         aria-label="What happens next"
         style={{
           marginTop: 13,
-          borderRadius: 24,
+          borderRadius: 22,
           background: "linear-gradient(180deg, #ffffff 0%, #f7fcfc 100%)",
           border: "1px solid #cbeef2",
           padding: 13,
@@ -589,16 +587,197 @@ export default function PassportTrailsCatalogPage({
       }}
     >
             <section
-        aria-label="Passport Trails top shortcuts"
+        aria-label="Passport Trails top actions"
         style={{
-          maxWidth: 560,
-          margin: "0 auto 14px",
-          padding: "0 14px",
+          width: "100%",
+          maxWidth: 392,
+          margin: "0 auto",
           boxSizing: "border-box",
+          display: "grid",
+          gap: 8,
         }}
       >
-        <PassportMapShortcut compact title="Open the Passport Map" body="See where Passport Trails connect across Siargao and continue your journey from the map." />
-              <KuyaTalaEntryButton topic="trail" title="Ask Kuya Tala™ about Passport Trails" note="Get guided help choosing trails, understanding QR/stamp logic, and planning your next Siargao move." />
+        <a
+          href="/traveler/passport-map"
+          aria-label="Open the Siargao Passport Map"
+          style={{
+            minHeight: 72,
+            borderRadius: 18,
+            padding: 10,
+            display: "grid",
+            gridTemplateColumns: "38px 1fr auto",
+            gap: 10,
+            alignItems: "center",
+            textDecoration: "none",
+            color: "#102f57",
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.97), rgba(241,250,248,0.92))",
+            border: "1px solid rgba(6,120,137,0.16)",
+            boxShadow: "0 8px 20px rgba(15,23,42,0.04)",
+          }}
+        >
+          <div
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: 13,
+              display: "grid",
+              placeItems: "center",
+              background: "linear-gradient(135deg,#063b63,#089fa5)",
+              color: "#ffffff",
+              fontSize: 15,
+              boxShadow: "0 8px 16px rgba(6,120,137,0.12)",
+            }}
+          >
+            🗺️
+          </div>
+
+          <div style={{ minWidth: 0 }}>
+            <div
+              style={{
+                color: "#078da0",
+                fontSize: 10,
+                fontWeight: 950,
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+              }}
+            >
+              Siargao Passport Map
+            </div>
+            <h2
+              style={{
+                margin: "2px 0 0",
+                color: "#102f57",
+                fontSize: 14,
+                lineHeight: 1.06,
+                letterSpacing: "-0.04em",
+                fontWeight: 950,
+              }}
+            >
+              Open the Passport Map
+            </h2>
+            <p
+              style={{
+                margin: "3px 0 0",
+                color: "#5b7184",
+                fontSize: 10.5,
+                lineHeight: 1.24,
+                fontWeight: 760,
+              }}
+            >
+              See verified trail routes, QR-ready stops, and island discovery points in one journey view.
+            </p>
+          </div>
+
+          <div
+            aria-hidden="true"
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 999,
+              display: "grid",
+              placeItems: "center",
+              background: "#ffffff",
+              color: "#078da0",
+              border: "1px solid rgba(6,120,137,0.15)",
+              fontSize: 13,
+              fontWeight: 900,
+            }}
+          >
+            →
+          </div>
+        </a>
+
+        <a
+          href="/traveler/settings?panel=assistant&topic=passport-trails"
+          aria-label="Ask Kuya Tala about Passport Trails"
+          style={{
+            minHeight: 72,
+            borderRadius: 18,
+            padding: 10,
+            display: "grid",
+            gridTemplateColumns: "38px 1fr auto",
+            gap: 10,
+            alignItems: "center",
+            textDecoration: "none",
+            color: "#102f57",
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(243,247,252,0.94))",
+            border: "1px solid rgba(14,116,144,0.14)",
+            boxShadow: "0 8px 20px rgba(15,23,42,0.04)",
+          }}
+        >
+          <div
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: 13,
+              display: "grid",
+              placeItems: "center",
+              background: "linear-gradient(135deg,#0b3768,#0e7490)",
+              color: "#ffffff",
+              fontSize: 14,
+              boxShadow: "0 8px 16px rgba(8,61,103,0.12)",
+            }}
+          >
+            ✦
+          </div>
+
+          <div style={{ minWidth: 0 }}>
+            <div
+              style={{
+                color: "#0b7285",
+                fontSize: 10,
+                fontWeight: 950,
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
+              }}
+            >
+              Kuya Tala™
+            </div>
+            <h2
+              style={{
+                margin: "2px 0 0",
+                color: "#102f57",
+                fontSize: 14,
+                lineHeight: 1.06,
+                letterSpacing: "-0.04em",
+                fontWeight: 950,
+              }}
+            >
+              Ask about Passport Trails
+            </h2>
+            <p
+              style={{
+                margin: "3px 0 0",
+                color: "#5b7184",
+                fontSize: 10.5,
+                lineHeight: 1.24,
+                fontWeight: 760,
+              }}
+            >
+              Get guided help choosing trails, understanding QR stamps, and planning your next Siargao move.
+            </p>
+          </div>
+
+          <div
+            aria-hidden="true"
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 999,
+              display: "grid",
+              placeItems: "center",
+              background: "linear-gradient(135deg,#089fa5,#0b7285)",
+              color: "#ffffff",
+              fontSize: 12,
+              fontWeight: 900,
+              boxShadow: "0 10px 20px rgba(6,120,137,0.16)",
+            }}
+          >
+            →
+          </div>
+        </a>
       </section>
       <div style={{ width: "100%", maxWidth: 430, margin: "0 auto" }}>
         <header
@@ -722,7 +901,7 @@ export default function PassportTrailsCatalogPage({
           style={{
             marginTop: 10,
             border: "1px solid #bfe7ee",
-            borderRadius: 24,
+            borderRadius: 22,
             background: "linear-gradient(135deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
             padding: 11,
             boxShadow: "0 16px 38px rgba(8,61,103,0.10)",
@@ -787,7 +966,7 @@ export default function PassportTrailsCatalogPage({
           style={{
             marginTop: 10,
             border: "1px solid #bfe7ee",
-            borderRadius: 24,
+            borderRadius: 22,
             background: "linear-gradient(135deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
             padding: 11,
             boxShadow: "0 16px 38px rgba(8,61,103,0.10)",
@@ -895,7 +1074,7 @@ export default function PassportTrailsCatalogPage({
           style={{
             marginTop: 10,
             border: "1px solid #bfe7ee",
-            borderRadius: 24,
+            borderRadius: 22,
             background: "linear-gradient(135deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
             padding: 11,
             boxShadow: "0 16px 38px rgba(8,61,103,0.10)",

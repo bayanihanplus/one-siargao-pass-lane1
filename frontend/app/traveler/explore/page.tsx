@@ -1395,24 +1395,35 @@ function GovernanceNote() {
         border: "1px solid rgba(217,119,6,0.18)",
         padding: 16,
         display: "grid",
-        gridTemplateColumns: "44px 1fr auto",
+        gridTemplateColumns: "52px 1fr auto",
         gap: 12,
         alignItems: "center",
       }}
     >
       <div
+        aria-label="Department of Tourism visibility note"
         style={{
-          width: 44,
-          height: 44,
-          borderRadius: 16,
+          width: 52,
+          height: 52,
+          borderRadius: 18,
           display: "grid",
           placeItems: "center",
           background: "#ffffff",
-          border: "1px solid rgba(217,119,6,0.15)",
-          fontSize: 24,
+          border: "1px solid rgba(217,119,6,0.16)",
+          boxShadow: "0 10px 24px rgba(146,64,14,0.08)",
+          overflow: "hidden",
         }}
       >
-        ⛨
+        <img
+          src="/osp/dot-logo.png"
+          alt="Department of Tourism"
+          style={{
+            width: 40,
+            height: 40,
+            objectFit: "contain",
+            display: "block",
+          }}
+        />
       </div>
       <div>
         <strong style={{ display: "block", color: "#92400e", fontSize: 14 }}>
