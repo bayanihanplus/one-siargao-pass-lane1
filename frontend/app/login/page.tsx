@@ -3,6 +3,45 @@ import { redirect } from "next/navigation";
 import { getApiBaseUrl, getAuthCookieName, getCurrentUser } from "../../src/lib/server-auth";
 
 
+
+function getRoleAwareContinuePath(user: any, requestedNext?: string | null) {
+  const role = String(user?.primaryRole || user?.role || "").toUpperCase();
+  const next = String(requestedNext || "").trim();
+
+  const isSafeInternalPath =
+    next.startsWith("/") &&
+    !next.startsWith("//") &&
+    !next.includes("://");
+
+  const isOperatorRole = ["OPERATOR_OWNER", "OPERATOR_MANAGER", "OPERATOR_STAFF"].includes(role);
+  const isAdminRole = role === "ADMIN";
+  const isLguRole = role.startsWith("LGU_") || role === "LGU_APPROVER" || role === "LGU_VIEWER";
+  const isTravelerRole = role === "TRAVELER" || role === "";
+
+  // Never route a non-traveler into traveler continuation just because the stale next param says so.
+  if (isOperatorRole) {
+    if (isSafeInternalPath && next.startsWith("/operator")) return next;
+    return "/operator/commercial";
+  }
+
+  if (isAdminRole) {
+    if (isSafeInternalPath && next.startsWith("/admin")) return next;
+    return "/admin/activities";
+  }
+
+  if (isLguRole) {
+    if (isSafeInternalPath && next.startsWith("/lgu")) return next;
+    return "/lgu";
+  }
+
+  if (isTravelerRole) {
+    if (isSafeInternalPath && next.startsWith("/traveler")) return next;
+    return "/traveler/home";
+  }
+
+  return "/";
+}
+
 function ospLoginNormalizeNext(value: string | null | undefined): string {
   if (!value || value === "/" || value === "/login" || value.startsWith("/login?")) {
     return "/traveler/home";
@@ -470,6 +509,7 @@ export default async function LoginPage({
     requestedNextPath && requestedNextPath !== "/" && requestedNextPath !== "/login"
       ? requestedNextPath
       : "/traveler/home";
+  const roleAwareContinuePath = getRoleAwareContinuePath(user, nextPath);
   const providerStatus = resolvedSearchParams?.status === "coming-soon" ? "Easy Google / Apple access is not connected yet. Use email access for now." : null;
   const registeredStatus = resolvedSearchParams?.registered === "1" ? "Traveler account created. Sign in to continue your trip setup." : null;
 
@@ -510,7 +550,7 @@ export default async function LoginPage({
           <div style={{ position: "relative", zIndex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
               <a
-                href="/traveler/home"
+                href={roleAwareContinuePath}
                 aria-label="Back to One Siargao Pass home"
                 style={{
                   width: 42,
@@ -606,7 +646,7 @@ export default async function LoginPage({
             tone="traveler"
           />
           <EntryLink
-            href="/traveler/home"
+            href={roleAwareContinuePath}
             icon="🧭"
             title="Continue My Trip"
             body="Already have an account or trip record? Sign in and continue your Siargao journey."
@@ -697,7 +737,7 @@ export default async function LoginPage({
               </div>
 
               <div style={{ marginTop: 13, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                <SecondaryLink href={nextPath} icon="↗">
+                <SecondaryLink href={roleAwareContinuePath} icon="↗">
                   Continue
                 </SecondaryLink>
                 <SecondaryLink href="/logout" icon="⇄">
