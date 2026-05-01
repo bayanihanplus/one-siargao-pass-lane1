@@ -2726,4 +2726,807 @@ export class SpmService {
     };
   }
 
+
+  private async writeSpmAuditEvent(input: {
+    actorUserId?: string | null;
+    actorRole?: string | null;
+    entityType: string;
+    entityId?: string | null;
+    action: string;
+    previousValueJson?: string | null;
+    newValueJson?: string | null;
+    reason?: string | null;
+  }) {
+    return this.prisma.spmAuditEvent.create({
+      data: {
+        actorUserId: input.actorUserId ?? null,
+        actorRole: input.actorRole ?? null,
+        entityType: input.entityType,
+        entityId: input.entityId ?? null,
+        action: input.action,
+        previousValueJson: input.previousValueJson ?? null,
+        newValueJson: input.newValueJson ?? null,
+        reason: input.reason ?? null,
+      },
+    });
+  }
+
+  private normalizePackageCode(packageCode: string) {
+    return String(packageCode || '').trim().toUpperCase().replaceAll('-', '_');
+  }
+
+  private async findTrailPackageByCode(packageCode: string) {
+    return this.prisma.spmTrailPackage.findFirst({
+      where: { code: this.normalizePackageCode(packageCode) },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        publicLabel: true,
+        productType: true,
+        fulfillmentPartnerType: true,
+        bookabilityStatus: true,
+        approvalStatus: true,
+        distributionEnabled: true,
+        instantCheckoutAllowed: true,
+        requiresPriceBeforePublish: true,
+        trailFamilyId: true,
+      },
+    });
+  }
+
+  private sanitizeCapabilityUpdate(body: any) {
+    const allowed: any = {};
+
+    for (const field of [
+      'title',
+      'description',
+      'inclusions',
+      'exclusions',
+      'pickupPolicy',
+      'weatherPolicy',
+      'cancellationPolicy',
+      'complianceNotes',
+      'availableDaysJson',
+      'blackoutDatesJson',
+    ]) {
+      if (body?.[field] !== undefined) {
+        allowed[field] = body[field] === null ? null : String(body[field]);
+      }
+    }
+
+    for (const field of ['minPax', 'maxPax', 'dailyCapacity']) {
+      if (body?.[field] !== undefined) {
+        const value = Number(body[field]);
+        allowed[field] = Number.isFinite(value) ? value : null;
+      }
+    }
+
+    return allowed;
+  }
+
+  private calculateCommercialReadinessScore(input: {
+    approvalStatus?: string | null;
+    pricingReady?: boolean;
+    mediaReady?: boolean;
+    termsAccepted?: boolean;
+    capabilityReady?: boolean;
+    marketplaceEnabled?: boolean;
+    hasCommercialDetails?: boolean;
+    noComplianceBlocker?: boolean;
+  }) {
+    let score = 0;
+
+    if (input.approvalStatus === 'APPROVED') score += 20;
+    if (input.pricingReady) score += 15;
+    if (input.mediaReady) score += 10;
+    if (input.termsAccepted) score += 15;
+    if (input.capabilityReady) score += 15;
+    if (input.marketplaceEnabled) score += 10;
+    if (input.hasCommercialDetails) score += 10;
+    if (input.noComplianceBlocker !== false) score += 5;
+
+    return Math.min(score, 100);
+  }
+
+  async listOperatorTrailProducts(operatorContext: OperatorContext) {
+    const packages = await this.prisma.spmTrailPackage.findMany({
+      orderBy: [{ productType: 'asc' }, { code: 'asc' }],
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        publicLabel: true,
+        productType: true,
+        fulfillmentPartnerType: true,
+        bookabilityStatus: true,
+        approvalStatus: true,
+        distributionEnabled: true,
+        instantCheckoutAllowed: true,
+        requiresPriceBeforePublish: true,
+      },
+    });
+
+    const packageIds = packages.map((item) => item.id);
+
+    const [capabilities, pricingRules, acceptedTerms, exposures] = await Promise.all([
+      this.prisma.spmOperatorTrailCapability.findMany({
+        where: {
+          operatorUserId: operatorContext.operatorUserId,
+          trailPackageId: { in: packageIds },
+        },
+      }),
+      this.prisma.spmPricingRule.findMany({
+        where: {
+          operatorUserId: operatorContext.operatorUserId,
+          trailPackageId: { in: packageIds },
+        },
+      }),
+      this.prisma.spmOperatorTermsAcceptance.findMany({
+        where: {
+          operatorUserId: operatorContext.operatorUserId,
+          status: 'ACCEPTED',
+        },
+      }),
+      this.prisma.spmMarketplaceExposure.findMany({
+        where: {
+          operatorUserId: operatorContext.operatorUserId,
+          trailPackageId: { in: packageIds },
+        },
+      }),
+    ]);
+
+    const capabilityByPackage = new Map(capabilities.map((item) => [item.trailPackageId, item]));
+    const pricingByPackage = new Map(pricingRules.map((item) => [item.trailPackageId, item]));
+    const exposureByPackage = new Map(exposures.map((item) => [item.trailPackageId, item]));
+    const hasAcceptedTerms = acceptedTerms.length > 0;
+
+    return {
+      ok: true,
+      data: packages.map((item) => {
+        const capability = capabilityByPackage.get(item.id) ?? null;
+        const pricing = pricingByPackage.get(item.id) ?? null;
+        const exposure = exposureByPackage.get(item.id) ?? null;
+
+        return {
+          packageId: item.id,
+          packageCode: item.code,
+          packageName: item.name,
+          publicLabel: item.publicLabel,
+          productType: item.productType,
+          fulfillmentPartnerType: item.fulfillmentPartnerType,
+          approvalStatus: item.approvalStatus,
+          distributionEnabled: item.distributionEnabled,
+          operatorCapability: capability,
+          operatorPricing: pricing,
+          commercialTermsAccepted: hasAcceptedTerms,
+          marketplaceExposure: exposure,
+          readiness: {
+            pricingReady: pricing?.approvalStatus === 'APPROVED',
+            capabilityReady: capability?.approvalStatus === 'APPROVED',
+            termsAccepted: hasAcceptedTerms,
+            marketplaceEnabled: capability?.marketplaceEnabled === true,
+            exposureStatus: exposure?.exposureStatus ?? 'NOT_READY',
+          },
+        };
+      }),
+      dataIntegrity: {
+        operatorScoped: true,
+        operatorUserId: operatorContext.operatorUserId,
+        operatorUserIdFromBodyAccepted: false,
+        publicExposureIncluded: false,
+      },
+    };
+  }
+
+  async getOperatorTrailProduct(operatorContext: OperatorContext, packageCode: string) {
+    const item = await this.findTrailPackageByCode(packageCode);
+
+    if (!item) {
+      return { ok: false, error: 'PASSPORT_TRAIL_PACKAGE_NOT_FOUND', data: null };
+    }
+
+    const [capability, pricing, exposure, media] = await Promise.all([
+      this.prisma.spmOperatorTrailCapability.findFirst({
+        where: {
+          operatorUserId: operatorContext.operatorUserId,
+          trailPackageId: item.id,
+        },
+      }),
+      this.prisma.spmPricingRule.findFirst({
+        where: {
+          operatorUserId: operatorContext.operatorUserId,
+          trailPackageId: item.id,
+        },
+      }),
+      this.prisma.spmMarketplaceExposure.findFirst({
+        where: {
+          operatorUserId: operatorContext.operatorUserId,
+          trailPackageId: item.id,
+        },
+      }),
+      this.prisma.spmMarketplaceMedia.findMany({
+        where: {
+          trailPackageId: item.id,
+          operatorUserId: operatorContext.operatorUserId,
+        } as any,
+        orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
+      }).catch(() => []),
+    ]);
+
+    return {
+      ok: true,
+      data: {
+        package: item,
+        operatorCapability: capability,
+        operatorPricing: pricing,
+        marketplaceExposure: exposure,
+        operatorMedia: media,
+      },
+      dataIntegrity: {
+        operatorScoped: true,
+        operatorUserId: operatorContext.operatorUserId,
+        operatorUserIdFromBodyAccepted: false,
+      },
+    };
+  }
+
+  async activateOperatorTrailProduct(operatorContext: OperatorContext, packageCode: string, body: any) {
+    const item = await this.findTrailPackageByCode(packageCode);
+
+    if (!item) {
+      return { ok: false, error: 'PASSPORT_TRAIL_PACKAGE_NOT_FOUND', data: null };
+    }
+
+    const existing = await this.prisma.spmOperatorTrailCapability.findFirst({
+      where: {
+        operatorUserId: operatorContext.operatorUserId,
+        trailPackageId: item.id,
+      },
+    });
+
+    const data = {
+      operatorUserId: operatorContext.operatorUserId,
+      trailPackageId: item.id,
+      capabilityType: 'PACKAGE_FULFILLMENT' as const,
+      approvalStatus: existing?.approvalStatus ?? 'DRAFT',
+      marketplaceEnabled: Boolean(body?.marketplaceEnabled ?? existing?.marketplaceEnabled ?? false),
+      ...this.sanitizeCapabilityUpdate(body),
+    };
+
+    const capability = existing
+      ? await this.prisma.spmOperatorTrailCapability.update({
+          where: { id: existing.id },
+          data,
+        })
+      : await this.prisma.spmOperatorTrailCapability.create({
+          data,
+        });
+
+    await this.writeSpmAuditEvent({
+      actorUserId: operatorContext.operatorUserId,
+      actorRole: operatorContext.workspaceRole,
+      entityType: 'SpmOperatorTrailCapability',
+      entityId: capability.id,
+      action: existing ? 'OPERATOR_CAPABILITY_UPDATED' : 'OPERATOR_CAPABILITY_CREATED',
+      newValueJson: JSON.stringify(capability),
+    });
+
+    return {
+      ok: true,
+      data: capability,
+      dataIntegrity: {
+        operatorScoped: true,
+        operatorUserId: operatorContext.operatorUserId,
+        operatorUserIdFromBodyAccepted: false,
+        publicExposureCreated: false,
+        approvalBypassed: false,
+      },
+    };
+  }
+
+  async updateOperatorTrailProductCommercialDetails(
+    operatorContext: OperatorContext,
+    packageCode: string,
+    body: any,
+  ) {
+    return this.activateOperatorTrailProduct(operatorContext, packageCode, body);
+  }
+
+  async submitOperatorTrailProductReview(operatorContext: OperatorContext, packageCode: string) {
+    const item = await this.findTrailPackageByCode(packageCode);
+
+    if (!item) {
+      return { ok: false, error: 'PASSPORT_TRAIL_PACKAGE_NOT_FOUND', data: null };
+    }
+
+    const capability = await this.prisma.spmOperatorTrailCapability.findFirst({
+      where: {
+        operatorUserId: operatorContext.operatorUserId,
+        trailPackageId: item.id,
+      },
+    });
+
+    if (!capability) {
+      return { ok: false, error: 'OPERATOR_CAPABILITY_NOT_FOUND', data: null };
+    }
+
+    const updated = await this.prisma.spmOperatorTrailCapability.update({
+      where: { id: capability.id },
+      data: {
+        approvalStatus: 'PENDING_REVIEW',
+        submittedAt: new Date(),
+      },
+    });
+
+    await this.writeSpmAuditEvent({
+      actorUserId: operatorContext.operatorUserId,
+      actorRole: operatorContext.workspaceRole,
+      entityType: 'SpmOperatorTrailCapability',
+      entityId: updated.id,
+      action: 'OPERATOR_CAPABILITY_SUBMITTED',
+      previousValueJson: JSON.stringify(capability),
+      newValueJson: JSON.stringify(updated),
+    });
+
+    return {
+      ok: true,
+      data: updated,
+      dataIntegrity: {
+        approvalBypassed: false,
+        publicExposureCreated: false,
+      },
+    };
+  }
+
+  async listOperatorTrailCapabilities(operatorContext: OperatorContext) {
+    const rows = await this.prisma.spmOperatorTrailCapability.findMany({
+      where: { operatorUserId: operatorContext.operatorUserId },
+      orderBy: [{ updatedAt: 'desc' }],
+    });
+
+    return {
+      ok: true,
+      data: rows,
+      dataIntegrity: {
+        operatorScoped: true,
+        operatorUserId: operatorContext.operatorUserId,
+        operatorUserIdFromBodyAccepted: false,
+      },
+    };
+  }
+
+  async updateOperatorTrailCapability(
+    operatorContext: OperatorContext,
+    capabilityId: string,
+    body: any,
+  ) {
+    const existing = await this.prisma.spmOperatorTrailCapability.findFirst({
+      where: {
+        id: capabilityId,
+        operatorUserId: operatorContext.operatorUserId,
+      },
+    });
+
+    if (!existing) {
+      return { ok: false, error: 'OPERATOR_CAPABILITY_NOT_FOUND', data: null };
+    }
+
+    const updated = await this.prisma.spmOperatorTrailCapability.update({
+      where: { id: existing.id },
+      data: {
+        ...this.sanitizeCapabilityUpdate(body),
+        marketplaceEnabled:
+          body?.marketplaceEnabled === undefined ? existing.marketplaceEnabled : Boolean(body.marketplaceEnabled),
+      },
+    });
+
+    await this.writeSpmAuditEvent({
+      actorUserId: operatorContext.operatorUserId,
+      actorRole: operatorContext.workspaceRole,
+      entityType: 'SpmOperatorTrailCapability',
+      entityId: updated.id,
+      action: 'OPERATOR_CAPABILITY_UPDATED',
+      previousValueJson: JSON.stringify(existing),
+      newValueJson: JSON.stringify(updated),
+    });
+
+    return {
+      ok: true,
+      data: updated,
+      dataIntegrity: {
+        operatorScoped: true,
+        operatorUserIdFromBodyAccepted: false,
+        approvalBypassed: false,
+      },
+    };
+  }
+
+  async listRequiredOperatorCommercialTerms(operatorContext: OperatorContext) {
+    const [terms, acceptances] = await Promise.all([
+      this.prisma.spmCommercialTerms.findMany({
+        where: {
+          isActive: true,
+          approvalStatus: 'APPROVED',
+        },
+        orderBy: [{ termsType: 'asc' }, { version: 'desc' }],
+      }),
+      this.prisma.spmOperatorTermsAcceptance.findMany({
+        where: {
+          operatorUserId: operatorContext.operatorUserId,
+          status: 'ACCEPTED',
+        },
+      }),
+    ]);
+
+    const acceptedByTermsId = new Set(acceptances.map((item) => item.commercialTermsId));
+
+    return {
+      ok: true,
+      data: terms.map((term) => ({
+        ...term,
+        acceptedByOperator: acceptedByTermsId.has(term.id),
+      })),
+      dataIntegrity: {
+        operatorScoped: true,
+        operatorUserIdFromBodyAccepted: false,
+      },
+    };
+  }
+
+  async acceptOperatorCommercialTerms(operatorContext: OperatorContext, termsId: string, body: any) {
+    const terms = await this.prisma.spmCommercialTerms.findFirst({
+      where: {
+        id: termsId,
+        isActive: true,
+        approvalStatus: 'APPROVED',
+      },
+    });
+
+    if (!terms) {
+      return { ok: false, error: 'COMMERCIAL_TERMS_NOT_FOUND_OR_NOT_ACTIVE', data: null };
+    }
+
+    const existing = await this.prisma.spmOperatorTermsAcceptance.findFirst({
+      where: {
+        commercialTermsId: terms.id,
+        operatorUserId: operatorContext.operatorUserId,
+        status: 'ACCEPTED',
+      },
+    });
+
+    if (existing) {
+      return {
+        ok: true,
+        data: existing,
+        dataIntegrity: {
+          alreadyAccepted: true,
+          operatorScoped: true,
+        },
+      };
+    }
+
+    const acceptance = await this.prisma.spmOperatorTermsAcceptance.create({
+      data: {
+        commercialTermsId: terms.id,
+        operatorUserId: operatorContext.operatorUserId,
+        acceptedByUserId: operatorContext.operatorUserId,
+        status: 'ACCEPTED',
+        acceptedAt: new Date(),
+        ipAddress: body?.ipAddress ? String(body.ipAddress) : null,
+        userAgent: body?.userAgent ? String(body.userAgent) : null,
+        trailPackageId: body?.trailPackageId ? String(body.trailPackageId) : null,
+        operatorCapabilityId: body?.operatorCapabilityId ? String(body.operatorCapabilityId) : null,
+        acceptanceSnapshot: JSON.stringify({
+          termsId: terms.id,
+          termsType: terms.termsType,
+          version: terms.version,
+          title: terms.title,
+          acceptedAt: new Date().toISOString(),
+        }),
+      },
+    });
+
+    await this.writeSpmAuditEvent({
+      actorUserId: operatorContext.operatorUserId,
+      actorRole: operatorContext.workspaceRole,
+      entityType: 'SpmOperatorTermsAcceptance',
+      entityId: acceptance.id,
+      action: 'OPERATOR_TERMS_ACCEPTED',
+      newValueJson: JSON.stringify(acceptance),
+    });
+
+    return {
+      ok: true,
+      data: acceptance,
+      dataIntegrity: {
+        operatorScoped: true,
+        operatorUserIdFromBodyAccepted: false,
+      },
+    };
+  }
+
+  async listOperatorCommercialTermsAcceptances(operatorContext: OperatorContext) {
+    const rows = await this.prisma.spmOperatorTermsAcceptance.findMany({
+      where: { operatorUserId: operatorContext.operatorUserId },
+      orderBy: [{ createdAt: 'desc' }],
+    });
+
+    return {
+      ok: true,
+      data: rows,
+      dataIntegrity: {
+        operatorScoped: true,
+        operatorUserIdFromBodyAccepted: false,
+      },
+    };
+  }
+
+  async listAdminOperatorCapabilities() {
+    const rows = await this.prisma.spmOperatorTrailCapability.findMany({
+      orderBy: [{ updatedAt: 'desc' }],
+      take: 200,
+    });
+
+    return { ok: true, data: rows };
+  }
+
+  async approveAdminOperatorCapability(adminUserId: string, capabilityId: string, body: any) {
+    const existing = await this.prisma.spmOperatorTrailCapability.findUnique({
+      where: { id: capabilityId },
+    });
+
+    if (!existing) {
+      return { ok: false, error: 'OPERATOR_CAPABILITY_NOT_FOUND', data: null };
+    }
+
+    const updated = await this.prisma.spmOperatorTrailCapability.update({
+      where: { id: existing.id },
+      data: {
+        approvalStatus: 'APPROVED',
+        approvedAt: new Date(),
+        marketplaceEnabled: body?.marketplaceEnabled === undefined ? existing.marketplaceEnabled : Boolean(body.marketplaceEnabled),
+      },
+    });
+
+    await this.writeSpmAuditEvent({
+      actorUserId: adminUserId,
+      actorRole: 'ADMIN',
+      entityType: 'SpmOperatorTrailCapability',
+      entityId: updated.id,
+      action: 'OPERATOR_CAPABILITY_APPROVED',
+      previousValueJson: JSON.stringify(existing),
+      newValueJson: JSON.stringify(updated),
+    });
+
+    return { ok: true, data: updated };
+  }
+
+  async suspendAdminOperatorCapability(adminUserId: string, capabilityId: string, body: any) {
+    const existing = await this.prisma.spmOperatorTrailCapability.findUnique({
+      where: { id: capabilityId },
+    });
+
+    if (!existing) {
+      return { ok: false, error: 'OPERATOR_CAPABILITY_NOT_FOUND', data: null };
+    }
+
+    const updated = await this.prisma.spmOperatorTrailCapability.update({
+      where: { id: existing.id },
+      data: {
+        approvalStatus: 'SUSPENDED',
+        suspendedAt: new Date(),
+        suspensionReason: body?.reason ? String(body.reason) : 'Admin suspended capability',
+        marketplaceEnabled: false,
+      },
+    });
+
+    await this.writeSpmAuditEvent({
+      actorUserId: adminUserId,
+      actorRole: 'ADMIN',
+      entityType: 'SpmOperatorTrailCapability',
+      entityId: updated.id,
+      action: 'OPERATOR_CAPABILITY_SUSPENDED',
+      previousValueJson: JSON.stringify(existing),
+      newValueJson: JSON.stringify(updated),
+      reason: updated.suspensionReason,
+    });
+
+    return { ok: true, data: updated };
+  }
+
+  async listAdminCommercialTerms() {
+    const rows = await this.prisma.spmCommercialTerms.findMany({
+      orderBy: [{ termsType: 'asc' }, { version: 'desc' }],
+    });
+
+    return { ok: true, data: rows };
+  }
+
+  async createAdminCommercialTerms(adminUserId: string, body: any) {
+    const terms = await this.prisma.spmCommercialTerms.create({
+      data: {
+        termsType: body?.termsType,
+        version: String(body?.version ?? 'v1'),
+        title: String(body?.title ?? 'Untitled commercial terms'),
+        body: String(body?.body ?? ''),
+        snapshotJson: body?.snapshotJson ? String(body.snapshotJson) : null,
+        approvalStatus: 'DRAFT',
+        isActive: false,
+      },
+    });
+
+    await this.writeSpmAuditEvent({
+      actorUserId: adminUserId,
+      actorRole: 'ADMIN',
+      entityType: 'SpmCommercialTerms',
+      entityId: terms.id,
+      action: 'COMMERCIAL_TERMS_CREATED',
+      newValueJson: JSON.stringify(terms),
+    });
+
+    return { ok: true, data: terms };
+  }
+
+  async updateAdminCommercialTerms(adminUserId: string, termsId: string, body: any) {
+    const existing = await this.prisma.spmCommercialTerms.findUnique({
+      where: { id: termsId },
+    });
+
+    if (!existing) {
+      return { ok: false, error: 'COMMERCIAL_TERMS_NOT_FOUND', data: null };
+    }
+
+    const updated = await this.prisma.spmCommercialTerms.update({
+      where: { id: existing.id },
+      data: {
+        termsType: body?.termsType ?? existing.termsType,
+        version: body?.version === undefined ? existing.version : String(body.version),
+        title: body?.title === undefined ? existing.title : String(body.title),
+        body: body?.body === undefined ? existing.body : String(body.body),
+        snapshotJson: body?.snapshotJson === undefined ? existing.snapshotJson : String(body.snapshotJson),
+      },
+    });
+
+    await this.writeSpmAuditEvent({
+      actorUserId: adminUserId,
+      actorRole: 'ADMIN',
+      entityType: 'SpmCommercialTerms',
+      entityId: updated.id,
+      action: 'COMMERCIAL_TERMS_UPDATED',
+      previousValueJson: JSON.stringify(existing),
+      newValueJson: JSON.stringify(updated),
+    });
+
+    return { ok: true, data: updated };
+  }
+
+  async approveAdminCommercialTerms(adminUserId: string, termsId: string) {
+    const existing = await this.prisma.spmCommercialTerms.findUnique({
+      where: { id: termsId },
+    });
+
+    if (!existing) {
+      return { ok: false, error: 'COMMERCIAL_TERMS_NOT_FOUND', data: null };
+    }
+
+    const updated = await this.prisma.spmCommercialTerms.update({
+      where: { id: existing.id },
+      data: {
+        approvalStatus: 'APPROVED',
+        isActive: true,
+        approvedAt: new Date(),
+        effectiveAt: existing.effectiveAt ?? new Date(),
+      },
+    });
+
+    await this.writeSpmAuditEvent({
+      actorUserId: adminUserId,
+      actorRole: 'ADMIN',
+      entityType: 'SpmCommercialTerms',
+      entityId: updated.id,
+      action: 'COMMERCIAL_TERMS_APPROVED',
+      previousValueJson: JSON.stringify(existing),
+      newValueJson: JSON.stringify(updated),
+    });
+
+    return { ok: true, data: updated };
+  }
+
+  async listAdminMarketplaceExposures() {
+    const rows = await this.prisma.spmMarketplaceExposure.findMany({
+      orderBy: [{ updatedAt: 'desc' }],
+      take: 200,
+    });
+
+    return { ok: true, data: rows };
+  }
+
+  async recalculateAdminMarketplaceExposure(adminUserId: string, exposureId: string) {
+    const existing = await this.prisma.spmMarketplaceExposure.findUnique({
+      where: { id: exposureId },
+    });
+
+    if (!existing) {
+      return { ok: false, error: 'MARKETPLACE_EXPOSURE_NOT_FOUND', data: null };
+    }
+
+    const finalExposureScore =
+      Math.round(
+        existing.readinessScore * 0.3 +
+          existing.matchScore * 0.25 +
+          existing.availabilityScore * 0.15 +
+          existing.fairnessScore * 0.15 +
+          existing.performanceScore * 0.1 +
+          existing.freshnessScore * 0.05 -
+          existing.riskPenalty,
+      );
+
+    const eligible =
+      existing.readinessScore >= 70 &&
+      existing.exposureStatus !== 'SUPPRESSED' &&
+      existing.exposureStatus !== 'SUSPENDED';
+
+    const updated = await this.prisma.spmMarketplaceExposure.update({
+      where: { id: existing.id },
+      data: {
+        finalExposureScore,
+        exposureStatus: eligible ? 'ELIGIBLE' : 'NOT_READY',
+        isVisible: false,
+      },
+    });
+
+    await this.writeSpmAuditEvent({
+      actorUserId: adminUserId,
+      actorRole: 'ADMIN',
+      entityType: 'SpmMarketplaceExposure',
+      entityId: updated.id,
+      action: 'MARKETPLACE_EXPOSURE_RECALCULATED',
+      previousValueJson: JSON.stringify(existing),
+      newValueJson: JSON.stringify(updated),
+    });
+
+    return {
+      ok: true,
+      data: updated,
+      dataIntegrity: {
+        scoreBypassedApproval: false,
+        visibilityForcedPublic: false,
+      },
+    };
+  }
+
+  async suppressAdminMarketplaceExposure(adminUserId: string, exposureId: string, body: any) {
+    const existing = await this.prisma.spmMarketplaceExposure.findUnique({
+      where: { id: exposureId },
+    });
+
+    if (!existing) {
+      return { ok: false, error: 'MARKETPLACE_EXPOSURE_NOT_FOUND', data: null };
+    }
+
+    const updated = await this.prisma.spmMarketplaceExposure.update({
+      where: { id: existing.id },
+      data: {
+        exposureStatus: 'SUPPRESSED',
+        isVisible: false,
+        suppressedAt: new Date(),
+        suppressionReason: body?.reason ? String(body.reason) : 'Admin suppressed marketplace exposure',
+      },
+    });
+
+    await this.writeSpmAuditEvent({
+      actorUserId: adminUserId,
+      actorRole: 'ADMIN',
+      entityType: 'SpmMarketplaceExposure',
+      entityId: updated.id,
+      action: 'MARKETPLACE_EXPOSURE_SUPPRESSED',
+      previousValueJson: JSON.stringify(existing),
+      newValueJson: JSON.stringify(updated),
+      reason: updated.suppressionReason,
+    });
+
+    return { ok: true, data: updated };
+  }
+
 }

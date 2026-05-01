@@ -2099,3 +2099,492 @@ model PartnerApiAuditLog {
   @@index([createdAt])
   @@map("partner_api_audit_logs")
 }
+
+// ============================================================================
+// PRE-VPS OPERATOR COMMERCIAL SPINE
+// Contracted MVP + Tour Operator Algorithm
+// Schema-only additive patch. No duplicate media model. No duplicate QR truth.
+// ============================================================================
+
+enum SpmGuideRequirement {
+  GUIDE_REQUIRED
+  GUIDE_OPTIONAL
+  NO_GUIDE_REQUIRED
+}
+
+enum SpmCapabilityType {
+  PACKAGE_FULFILLMENT
+  NODE_FULFILLMENT
+  DIY_SUPPORT
+  GUIDE_ATTACHED_SUPPORT
+  TRANSPORT_SUPPORT
+  STAMP_VALIDATION
+}
+
+enum SpmCommercialTermsType {
+  OPERATOR_SERVICE_TERMS
+  PASSPORT_TRAILS_PARTICIPATION
+  MARKETPLACE_EXPOSURE_TERMS
+  QR_STAMP_VALIDATION_TERMS
+  CANCELLATION_POLICY
+  WEATHER_POLICY
+  SAFETY_POLICY
+  PAYOUT_POLICY
+  OTA_DISTRIBUTION_TERMS
+}
+
+enum SpmTermsAcceptanceStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  SUPERSEDED
+}
+
+enum SpmDiyTrailStatus {
+  DRAFT
+  PLANNED
+  REQUESTED
+  PENDING_OPERATOR_CONFIRMATION
+  CONFIRMED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  EXPIRED
+}
+
+enum SpmValidationStatus {
+  PENDING
+  VALIDATED
+  REJECTED
+  REVOKED
+  EXPIRED
+}
+
+enum SpmMarketplaceCategory {
+  ISLAND_HOPPING
+  SURF
+  LAND_TOUR
+  NORTH_SIARGAO
+  SCENIC_STOPS
+  CULTURE_COMMUNITY
+  TRANSPORT_SUPPORT
+  PRIVATE_CUSTOM
+  PASSPORT_TRAIL_SUPPORT
+}
+
+enum SpmMarketplacePlacementTier {
+  FEATURED_VERIFIED
+  RECOMMENDED
+  AVAILABLE_SOON
+  LOCAL_VERIFIED_PARTNER
+  GOOD_FOR_GROUPS
+  BUDGET_JOINER_FRIENDLY
+  PRIVATE_PREMIUM
+  NEW_VERIFIED_PARTNER
+  FAIRNESS_BOOST
+  ADMIN_PINNED
+  SPONSORED
+}
+
+enum SpmMarketplaceExposureStatus {
+  NOT_READY
+  ELIGIBLE
+  VISIBLE
+  SUPPRESSED
+  SUSPENDED
+}
+
+model SpmOperatorTrailCapability {
+  id                 String            @id @default(cuid())
+  operatorUserId     String
+  trailPackageId     String?
+  trailNodeId        String?
+  trailVariantId     String?
+  diyTrailId         String?
+  capabilityType     SpmCapabilityType
+  approvalStatus     String            @default("DRAFT")
+  marketplaceEnabled Boolean           @default(false)
+
+  title              String?
+  description        String?
+  inclusions         String?
+  exclusions         String?
+  pickupPolicy       String?
+  weatherPolicy      String?
+  cancellationPolicy String?
+  complianceNotes    String?
+
+  minPax            Int?
+  maxPax            Int?
+  dailyCapacity     Int?
+  availableDaysJson String?
+  blackoutDatesJson String?
+
+  submittedAt      DateTime?
+  approvedAt       DateTime?
+  suspendedAt      DateTime?
+  suspensionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([operatorUserId])
+  @@index([trailPackageId])
+  @@index([trailNodeId])
+  @@index([trailVariantId])
+  @@index([diyTrailId])
+  @@index([capabilityType])
+  @@index([approvalStatus])
+  @@index([marketplaceEnabled])
+  @@map("spm_operator_trail_capabilities")
+}
+
+model SpmPartnerNodeCapability {
+  id               String              @id @default(cuid())
+  partnerUserId    String?
+  operatorUserId   String?
+  trailNodeId      String?
+  trailPackageId   String?
+  capabilityType   SpmCapabilityType
+  validationStatus SpmValidationStatus @default(PENDING)
+  approvalStatus   String              @default("DRAFT")
+  complianceNotes  String?
+  submittedAt      DateTime?
+  approvedAt       DateTime?
+  suspendedAt      DateTime?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@index([partnerUserId])
+  @@index([operatorUserId])
+  @@index([trailNodeId])
+  @@index([trailPackageId])
+  @@index([capabilityType])
+  @@index([validationStatus])
+  @@index([approvalStatus])
+  @@map("spm_partner_node_capabilities")
+}
+
+model SpmGuidedSupportRule {
+  id                 String              @id @default(cuid())
+  trailPackageId     String?
+  trailNodeId        String?
+  guideRequirement   SpmGuideRequirement @default(GUIDE_OPTIONAL)
+  canCompleteNode    Boolean             @default(false)
+  canValidateStamp   Boolean             @default(false)
+  canReplaceOperator Boolean             @default(false)
+  safetyNotes        String?
+  complianceNotes    String?
+  isActive           Boolean             @default(true)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@index([trailPackageId])
+  @@index([trailNodeId])
+  @@index([guideRequirement])
+  @@index([canReplaceOperator])
+  @@index([isActive])
+  @@map("spm_guided_support_rules")
+}
+
+model SpmCommercialTerms {
+  id             String                 @id @default(cuid())
+  termsType      SpmCommercialTermsType
+  version        String
+  title          String
+  body           String
+  snapshotJson   String?
+  approvalStatus String                 @default("DRAFT")
+  isActive       Boolean                @default(false)
+  effectiveAt    DateTime?
+  approvedAt     DateTime?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  @@index([termsType])
+  @@index([version])
+  @@index([approvalStatus])
+  @@index([isActive])
+  @@map("spm_commercial_terms")
+}
+
+model SpmOperatorTermsAcceptance {
+  id                   String                   @id @default(cuid())
+  commercialTermsId    String
+  operatorUserId       String
+  acceptedByUserId     String?
+  status               SpmTermsAcceptanceStatus @default(PENDING)
+  acceptedAt           DateTime?
+  revokedAt            DateTime?
+  ipAddress            String?
+  userAgent            String?
+  trailPackageId       String?
+  operatorCapabilityId String?
+  acceptanceSnapshot   String?
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+
+  @@index([commercialTermsId])
+  @@index([operatorUserId])
+  @@index([acceptedByUserId])
+  @@index([status])
+  @@index([trailPackageId])
+  @@index([operatorCapabilityId])
+  @@map("spm_operator_terms_acceptances")
+}
+
+model SpmDiyTrail {
+  id             String            @id @default(cuid())
+  travelerUserId String?
+  tripId         String?
+  status         SpmDiyTrailStatus @default(DRAFT)
+  title          String?
+  notes          String?
+  requestedDate  DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([travelerUserId])
+  @@index([tripId])
+  @@index([status])
+  @@index([requestedDate])
+  @@map("spm_diy_trails")
+}
+
+model SpmDiyTrailNode {
+  id               String              @id @default(cuid())
+  diyTrailId       String
+  trailNodeId      String?
+  sortOrder        Int                 @default(0)
+  requiresOperator Boolean             @default(false)
+  requiresGuide    Boolean             @default(false)
+  stampEligible    Boolean             @default(false)
+  validationStatus SpmValidationStatus @default(PENDING)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  @@index([diyTrailId])
+  @@index([trailNodeId])
+  @@index([sortOrder])
+  @@index([requiresOperator])
+  @@index([requiresGuide])
+  @@index([stampEligible])
+  @@index([validationStatus])
+  @@map("spm_diy_trail_nodes")
+}
+
+model SpmStampEvent {
+  id                String              @id @default(cuid())
+  travelerUserId    String?
+  tripId            String?
+  trailPackageId    String?
+  trailNodeId       String?
+  diyTrailId        String?
+  ospQrEventId      String?
+  validationStatus  SpmValidationStatus @default(PENDING)
+  stampCode         String?
+  result            String?
+  reason            String?
+  metadataJson      String?
+  validatedByUserId String?
+  validatedAt       DateTime?
+  createdAt         DateTime            @default(now())
+
+  @@index([travelerUserId])
+  @@index([tripId])
+  @@index([trailPackageId])
+  @@index([trailNodeId])
+  @@index([diyTrailId])
+  @@index([ospQrEventId])
+  @@index([validationStatus])
+  @@index([validatedAt])
+  @@map("spm_stamp_events")
+}
+
+model SpmDiyProgressEvent {
+  id               String              @id @default(cuid())
+  diyTrailId       String
+  diyTrailNodeId   String?
+  eventType        String
+  validationStatus SpmValidationStatus @default(PENDING)
+  metadataJson     String?
+  createdAt        DateTime            @default(now())
+
+  @@index([diyTrailId])
+  @@index([diyTrailNodeId])
+  @@index([eventType])
+  @@index([validationStatus])
+  @@index([createdAt])
+  @@map("spm_diy_progress_events")
+}
+
+model SpmReturnContinuityEvent {
+  id             String   @id @default(cuid())
+  travelerUserId String?
+  tripId         String?
+  trailPackageId String?
+  diyTrailId     String?
+  eventType      String
+  metadataJson   String?
+  createdAt      DateTime @default(now())
+
+  @@index([travelerUserId])
+  @@index([tripId])
+  @@index([trailPackageId])
+  @@index([diyTrailId])
+  @@index([eventType])
+  @@index([createdAt])
+  @@map("spm_return_continuity_events")
+}
+
+model SpmOperatorVisibilityScore {
+  id                String   @id @default(cuid())
+  operatorUserId    String
+  trailPackageId    String?
+  readinessScore    Int      @default(0)
+  matchScore        Int      @default(0)
+  availabilityScore Int      @default(0)
+  fairnessScore     Int      @default(0)
+  performanceScore  Int      @default(0)
+  freshnessScore    Int      @default(0)
+  riskPenalty       Int      @default(0)
+  finalScore        Int      @default(0)
+  scoreReasonJson   String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([operatorUserId])
+  @@index([trailPackageId])
+  @@index([readinessScore])
+  @@index([finalScore])
+  @@map("spm_operator_visibility_scores")
+}
+
+model SpmQrValidationRequirement {
+  id              String   @id @default(cuid())
+  trailPackageId  String?
+  trailNodeId     String?
+  requirementType String
+  actionType      String?
+  isRequired      Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([trailPackageId])
+  @@index([trailNodeId])
+  @@index([requirementType])
+  @@index([actionType])
+  @@index([isRequired])
+  @@map("spm_qr_validation_requirements")
+}
+
+model SpmDistributionRecord {
+  id                  String   @id @default(cuid())
+  trailPackageId      String?
+  operatorUserId      String?
+  channel             String
+  distributionEnabled Boolean  @default(false)
+  status              String   @default("DRAFT")
+  metadataJson        String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([trailPackageId])
+  @@index([operatorUserId])
+  @@index([channel])
+  @@index([distributionEnabled])
+  @@index([status])
+  @@map("spm_distribution_records")
+}
+
+model SpmAuditEvent {
+  id                String   @id @default(cuid())
+  actorUserId       String?
+  actorRole         String?
+  entityType        String
+  entityId          String?
+  action            String
+  previousValueJson String?
+  newValueJson      String?
+  reason            String?
+  createdAt         DateTime @default(now())
+
+  @@index([actorUserId])
+  @@index([actorRole])
+  @@index([entityType])
+  @@index([entityId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("spm_audit_events")
+}
+
+model SpmMarketplaceExposure {
+  id             String                       @id @default(cuid())
+  trailPackageId String?
+  operatorUserId String?
+  category       SpmMarketplaceCategory
+  exposureStatus SpmMarketplaceExposureStatus @default(NOT_READY)
+
+  isVisible      Boolean                      @default(false)
+  placementTier  SpmMarketplacePlacementTier?
+  exposureWeight Int                          @default(0)
+
+  readinessScore     Int @default(0)
+  matchScore         Int @default(0)
+  availabilityScore  Int @default(0)
+  fairnessScore      Int @default(0)
+  performanceScore   Int @default(0)
+  freshnessScore     Int @default(0)
+  riskPenalty        Int @default(0)
+  finalExposureScore Int @default(0)
+
+  impressions7d Int @default(0)
+  clicks7d      Int @default(0)
+  requests7d    Int @default(0)
+  bookings30d   Int @default(0)
+
+  lastShownAt       DateTime?
+  lastBookedAt      DateTime?
+  adminPinnedUntil  DateTime?
+  sponsoredUntil    DateTime?
+  suppressedAt      DateTime?
+  suspendedAt       DateTime?
+  suppressionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([trailPackageId])
+  @@index([operatorUserId])
+  @@index([category])
+  @@index([exposureStatus])
+  @@index([isVisible])
+  @@index([placementTier])
+  @@index([finalExposureScore])
+  @@index([lastShownAt])
+  @@map("spm_marketplace_exposures")
+}
+
+model SpmMarketplacePlacementLog {
+  id                 String                       @id @default(cuid())
+  travelerSessionId  String?
+  travelerUserId     String?
+  tripId             String?
+  trailPackageId     String?
+  operatorUserId     String?
+  category           SpmMarketplaceCategory
+  placementTier      SpmMarketplacePlacementTier?
+  placementPosition  Int
+  finalExposureScore Int?
+  reasonCode         String?
+  shownAt            DateTime                     @default(now())
+
+  @@index([travelerSessionId])
+  @@index([travelerUserId])
+  @@index([tripId])
+  @@index([trailPackageId])
+  @@index([operatorUserId])
+  @@index([category])
+  @@index([shownAt])
+  @@map("spm_marketplace_placement_logs")
+}

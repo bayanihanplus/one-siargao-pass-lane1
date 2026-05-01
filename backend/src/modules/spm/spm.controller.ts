@@ -123,6 +123,180 @@ export class SpmController {
     return this.spmService.updateOperatorPackagePricing(operatorContext, packageCode, body);
   }
 
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
+  @Get('operator/trail-products')
+  listOperatorTrailProducts(@OperatorCtx() operatorContext: OperatorContext) {
+    return this.spmService.listOperatorTrailProducts(operatorContext);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
+  @Get('operator/trail-products/:packageCode')
+  getOperatorTrailProduct(
+    @OperatorCtx() operatorContext: OperatorContext,
+    @Param('packageCode') packageCode: string,
+  ) {
+    return this.spmService.getOperatorTrailProduct(operatorContext, packageCode);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
+  @Post('operator/trail-products/:packageCode/activate')
+  activateOperatorTrailProduct(
+    @OperatorCtx() operatorContext: OperatorContext,
+    @Param('packageCode') packageCode: string,
+    @Body() body: any,
+  ) {
+    return this.spmService.activateOperatorTrailProduct(operatorContext, packageCode, body);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
+  @Patch('operator/trail-products/:packageCode/commercial-details')
+  updateOperatorTrailProductCommercialDetails(
+    @OperatorCtx() operatorContext: OperatorContext,
+    @Param('packageCode') packageCode: string,
+    @Body() body: any,
+  ) {
+    return this.spmService.updateOperatorTrailProductCommercialDetails(operatorContext, packageCode, body);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
+  @Post('operator/trail-products/:packageCode/submit-review')
+  submitOperatorTrailProductReview(
+    @OperatorCtx() operatorContext: OperatorContext,
+    @Param('packageCode') packageCode: string,
+  ) {
+    return this.spmService.submitOperatorTrailProductReview(operatorContext, packageCode);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
+  @Get('operator/trail-capabilities')
+  listOperatorTrailCapabilities(@OperatorCtx() operatorContext: OperatorContext) {
+    return this.spmService.listOperatorTrailCapabilities(operatorContext);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
+  @Patch('operator/trail-capabilities/:capabilityId')
+  updateOperatorTrailCapability(
+    @OperatorCtx() operatorContext: OperatorContext,
+    @Param('capabilityId') capabilityId: string,
+    @Body() body: any,
+  ) {
+    return this.spmService.updateOperatorTrailCapability(operatorContext, capabilityId, body);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
+  @Get('operator/commercial-terms/required')
+  listRequiredOperatorCommercialTerms(@OperatorCtx() operatorContext: OperatorContext) {
+    return this.spmService.listRequiredOperatorCommercialTerms(operatorContext);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
+  @Post('operator/commercial-terms/:termsId/accept')
+  acceptOperatorCommercialTerms(
+    @OperatorCtx() operatorContext: OperatorContext,
+    @Param('termsId') termsId: string,
+    @Body() body: any,
+  ) {
+    return this.spmService.acceptOperatorCommercialTerms(operatorContext, termsId, body);
+  }
+
+  @UseGuards(DevAuthGuard, RolesGuard, OperatorAuthGuard)
+  @Roles('OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF')
+  @Get('operator/commercial-terms/acceptances')
+  listOperatorCommercialTermsAcceptances(@OperatorCtx() operatorContext: OperatorContext) {
+    return this.spmService.listOperatorCommercialTermsAcceptances(operatorContext);
+  }
+
+  @Roles('ADMIN')
+  @Get('admin/operator-capabilities')
+  listAdminOperatorCapabilities() {
+    return this.spmService.listAdminOperatorCapabilities();
+  }
+
+  @Roles('ADMIN')
+  @Patch('admin/operator-capabilities/:capabilityId/approve')
+  approveAdminOperatorCapability(
+    @CurrentUserId() adminUserId: string,
+    @Param('capabilityId') capabilityId: string,
+    @Body() body: any,
+  ) {
+    return this.spmService.approveAdminOperatorCapability(adminUserId, capabilityId, body);
+  }
+
+  @Roles('ADMIN')
+  @Patch('admin/operator-capabilities/:capabilityId/suspend')
+  suspendAdminOperatorCapability(
+    @CurrentUserId() adminUserId: string,
+    @Param('capabilityId') capabilityId: string,
+    @Body() body: any,
+  ) {
+    return this.spmService.suspendAdminOperatorCapability(adminUserId, capabilityId, body);
+  }
+
+  @Roles('ADMIN')
+  @Get('admin/commercial-terms')
+  listAdminCommercialTerms() {
+    return this.spmService.listAdminCommercialTerms();
+  }
+
+  @Roles('ADMIN')
+  @Post('admin/commercial-terms')
+  createAdminCommercialTerms(@CurrentUserId() adminUserId: string, @Body() body: any) {
+    return this.spmService.createAdminCommercialTerms(adminUserId, body);
+  }
+
+  @Roles('ADMIN')
+  @Patch('admin/commercial-terms/:termsId')
+  updateAdminCommercialTerms(
+    @CurrentUserId() adminUserId: string,
+    @Param('termsId') termsId: string,
+    @Body() body: any,
+  ) {
+    return this.spmService.updateAdminCommercialTerms(adminUserId, termsId, body);
+  }
+
+  @Roles('ADMIN')
+  @Post('admin/commercial-terms/:termsId/approve')
+  approveAdminCommercialTerms(
+    @CurrentUserId() adminUserId: string,
+    @Param('termsId') termsId: string,
+  ) {
+    return this.spmService.approveAdminCommercialTerms(adminUserId, termsId);
+  }
+
+  @Roles('ADMIN')
+  @Get('admin/marketplace-exposures')
+  listAdminMarketplaceExposures() {
+    return this.spmService.listAdminMarketplaceExposures();
+  }
+
+  @Roles('ADMIN')
+  @Patch('admin/marketplace-exposures/:exposureId/recalculate')
+  recalculateAdminMarketplaceExposure(
+    @CurrentUserId() adminUserId: string,
+    @Param('exposureId') exposureId: string,
+  ) {
+    return this.spmService.recalculateAdminMarketplaceExposure(adminUserId, exposureId);
+  }
+
+  @Roles('ADMIN')
+  @Patch('admin/marketplace-exposures/:exposureId/suppress')
+  suppressAdminMarketplaceExposure(
+    @CurrentUserId() adminUserId: string,
+    @Param('exposureId') exposureId: string,
+    @Body() body: any,
+  ) {
+    return this.spmService.suppressAdminMarketplaceExposure(adminUserId, exposureId, body);
+  }
+
   @Roles('TRAVELER')
   @Get('traveler-preview')
   getTravelerPreview(@CurrentUserId() userId: string) {

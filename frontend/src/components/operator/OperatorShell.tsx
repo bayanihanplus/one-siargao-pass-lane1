@@ -13,6 +13,7 @@ const navItems = [
   { href: "/operator/manifests", label: "Manifests" },
   { href: "/operator/access-scan", label: "Access Scan" },
   { href: "/operator/records", label: "Records" },
+  { href: "/operator/commercial", label: "Commercial" },
   { href: "/operator/guides", label: "Guides" },
   { href: "/operator/settings", label: "Settings" },
 ];
