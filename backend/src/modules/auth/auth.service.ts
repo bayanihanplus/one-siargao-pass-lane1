@@ -11,6 +11,7 @@ import {
   OspParticipationStatus,
   OspPartySizeRange,
   OspQrRegistrationPurpose,
+  OspQrSubjectRelation,
   OspResidentType,
   OspSiargaoBase,
   OspTravelerType,
@@ -20,7 +21,6 @@ import {
   UserRole,
 } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-
 
 function normalizeEnumValue<T extends Record<string, string>>(value: unknown, enumObject: T, fallback: T[keyof T]): T[keyof T] {
   const normalized = String(value || '').trim().toUpperCase();
@@ -116,6 +116,11 @@ export class AuthService {
       OspQrRegistrationPurpose,
       OspQrRegistrationPurpose.TRAVEL_TO_SIARGAO,
     );
+    const qrSubjectRelation = normalizeEnumValue(
+      dto.qrSubjectRelation,
+      OspQrSubjectRelation,
+      OspQrSubjectRelation.SELF,
+    );
     const residentType = normalizeOptionalEnumValue(dto.residentType, OspResidentType);
     const mainSiargaoBase = normalizeOptionalEnumValue(dto.mainSiargaoBase, OspSiargaoBase);
     const ageBracket = normalizeOptionalEnumValue(dto.ageBracket, OspAgeBracket);
@@ -157,6 +162,7 @@ export class AuthService {
             create: {
               participantType,
               qrRegistrationPurpose,
+              qrSubjectRelation,
               primarySiargaoBase: mainSiargaoBase,
               municipality,
               barangay,
@@ -321,6 +327,7 @@ export class AuthService {
       onboarding: {
         participantType,
         qrRegistrationPurpose,
+        qrSubjectRelation,
         mainSiargaoBase,
         residentType: residentType || null,
         hasEmergencyContact: Boolean(emergencyContactName && emergencyContactMobile),

@@ -25,6 +25,10 @@ export class RegisterDto {
 
   @IsOptional()
   @IsString()
+  qrSubjectRelation?: string;
+
+  @IsOptional()
+  @IsString()
   residentType?: string;
 
   @IsOptional()

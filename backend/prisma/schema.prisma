@@ -119,6 +119,7 @@ enum OspParticipantType {
   BUSINESS_OPERATOR
   TRANSPORT_PROVIDER
   EVENT_PARTICIPANT
+  DESTINATION_AUTHORITY_USER
   LGU_GOVERNMENT_USER
 }
 
@@ -142,10 +143,22 @@ enum OspQrRegistrationPurpose {
   HEALTH_WELLNESS_SERVICE_ACCESS
   EMERGENCY_ADVISORY_ACCESS
   COMMUNITY_PROGRAM
+  COMMUNITY_EVENT
   BARANGAY_EVENT
+  DESTINATION_EVENT
   LGU_EVENT
+  PUBLIC_SERVICE_ACCESS
   GOVERNMENT_OR_LGU_ACCESS
   OTHER
+}
+
+enum OspQrSubjectRelation {
+  SELF
+  FAMILY_MEMBER
+  SENIOR_COMPANION
+  CHILD_MINOR
+  ASSISTED_GUEST
+  GROUP_PARTICIPANT
 }
 
 enum OspResidentType {
@@ -262,8 +275,11 @@ enum OspEventType {
   BUSINESS_EVENT
   SCHOOL_OR_ORG_EVENT
   COMMUNITY_EVENT
+  LOCAL_COMMUNITY_EVENT
   BARANGAY_EVENT
+  DESTINATION_EVENT
   LGU_EVENT
+  PUBLIC_SERVICE_EVENT
   GOVERNMENT_EVENT
   OTHER
 }
@@ -280,7 +296,9 @@ enum OspEventParticipantRole {
   PERFORMER
   VIP
   BUSINESS_REPRESENTATIVE
+  COMMUNITY_STAFF
   BARANGAY_STAFF
+  DESTINATION_AUTHORITY_STAFF
   LGU_STAFF
   OTHER
 }
@@ -307,6 +325,7 @@ enum OspKycCheckInPurpose {
   PAYMENT_CONFIRMATION
   SERVICE_VERIFICATION
   INCIDENT_SUPPORT
+  OFFICIAL_DESTINATION_CHECK
   LGU_COMPLIANCE_CHECK
 }
 
@@ -2833,6 +2852,7 @@ model ParticipantProfile {
   userId                String                   @unique
   participantType       OspParticipantType
   qrRegistrationPurpose OspQrRegistrationPurpose
+  qrSubjectRelation     OspQrSubjectRelation     @default(SELF)
   primarySiargaoBase    OspSiargaoBase?
   municipality          String?
   barangay              String?
