@@ -111,6 +111,238 @@ enum PaymentEventType {
   PAYMENT_MARKED_PAID
 }
 
+enum OspParticipantType {
+  VISITOR_TOURIST
+  LOCAL_RESIDENT
+  LONG_TERM_RESIDENT
+  SIARGAO_WORKER
+  BUSINESS_OPERATOR
+  TRANSPORT_PROVIDER
+  EVENT_PARTICIPANT
+  LGU_GOVERNMENT_USER
+}
+
+enum OspQrRegistrationPurpose {
+  TRAVEL_TO_SIARGAO
+  TRIP_READINESS
+  OSP_PASS_OR_QR_ACCESS
+  ACCOMMODATION_CHECK_IN
+  RENTAL_OR_SERVICE_ACCESS
+  TOUR_OR_ACTIVITY_CHECK_IN
+  PASSPORT_TRAILS_PARTICIPATION
+  PAYMENT_OR_RECEIPT_REFERENCE
+  FAMILY_OR_VISITOR_SPONSOR
+  PAY_FOR_FAMILY_OR_VISITOR
+  EVENT_ENTRY
+  WEDDING_OR_PRIVATE_EVENT
+  LOCAL_ACTIVITY_PARTICIPATION
+  BUSINESS_OR_OPERATOR_REFERENCE
+  WORK_OR_STAFF_ACCESS
+  RESTAURANT_OR_MERCHANT_PARTICIPATION
+  HEALTH_WELLNESS_SERVICE_ACCESS
+  EMERGENCY_ADVISORY_ACCESS
+  COMMUNITY_PROGRAM
+  BARANGAY_EVENT
+  LGU_EVENT
+  GOVERNMENT_OR_LGU_ACCESS
+  OTHER
+}
+
+enum OspResidentType {
+  SIARGAO_BORN_LOCAL
+  FILIPINO_RELOCATED_TO_SIARGAO
+  FOREIGN_LONG_TERM_RESIDENT
+  DIGITAL_NOMAD_BASED_IN_SIARGAO
+  WORKER_BASED_IN_SIARGAO
+  STUDENT
+  SEASONAL_RESIDENT
+  RETURNING_FAMILY_CONNECTION
+  OTHER
+}
+
+enum OspTravelerType {
+  DOMESTIC_TOURIST
+  FOREIGN_TOURIST
+  BALIKBAYAN_RETURNING_FILIPINO
+  LOCAL_RESIDENT
+  LONG_STAY_VISITOR
+  DIGITAL_NOMAD
+  BUSINESS_TRAVELER
+  EVENT_GUEST
+  FAMILY_VISITOR
+  OTHER
+}
+
+enum OspVisitPurpose {
+  LEISURE_VACATION
+  SURFING
+  ISLAND_HOPPING
+  NATURE_LAGOONS_BEACHES
+  FOOD_CULTURE
+  PASSPORT_TRAILS
+  EVENT_FESTIVAL
+  WEDDING
+  WORKATION_DIGITAL_NOMAD
+  BUSINESS
+  VISITING_FAMILY_FRIENDS
+  WELLNESS
+  COMMUNITY_ACTIVITY
+  OTHER
+}
+
+enum OspTravelPartyType {
+  SOLO
+  COUPLE
+  FAMILY_WITH_CHILDREN
+  FRIENDS_GROUP
+  CORPORATE_GROUP
+  SCHOOL_OR_ORG_GROUP
+  TOUR_GROUP
+  WEDDING_GROUP
+  EVENT_GROUP
+  OTHER
+}
+
+enum OspPartySizeRange {
+  ONE
+  TWO
+  THREE_TO_FIVE
+  SIX_TO_TEN
+  ELEVEN_TO_TWENTY
+  TWENTY_ONE_PLUS
+}
+
+enum OspAgeBracket {
+  UNDER_18
+  AGE_18_24
+  AGE_25_34
+  AGE_35_44
+  AGE_45_54
+  AGE_55_64
+  AGE_65_PLUS
+  PREFER_NOT_TO_SAY
+}
+
+enum OspSiargaoBase {
+  GENERAL_LUNA
+  DAPA
+  DEL_CARMEN
+  SAN_ISIDRO
+  BURGOS
+  PILAR
+  SANTA_MONICA
+  SAN_BENITO
+  SOCORRO
+  NOT_SURE_YET
+  OTHER
+}
+
+enum OspAccommodationType {
+  HOTEL_RESORT
+  HOSTEL
+  HOMESTAY_GUESTHOUSE
+  VACATION_RENTAL
+  LONG_TERM_RENTAL
+  STAYING_WITH_FAMILY_OR_FRIENDS
+  STAFF_HOUSING
+  NOT_BOOKED_YET
+  PREFER_NOT_TO_SAY
+  OTHER
+}
+
+enum OspEventType {
+  TRAVELER_EVENT
+  TOURISM_EVENT
+  PASSPORT_TRAIL_EVENT
+  SURF_EVENT
+  SPORTS_EVENT
+  FESTIVAL
+  WEDDING
+  PRIVATE_EVENT
+  BUSINESS_EVENT
+  SCHOOL_OR_ORG_EVENT
+  COMMUNITY_EVENT
+  BARANGAY_EVENT
+  LGU_EVENT
+  GOVERNMENT_EVENT
+  OTHER
+}
+
+enum OspEventParticipantRole {
+  GUEST
+  VISITOR_ATTENDEE
+  LOCAL_ATTENDEE
+  ORGANIZER
+  STAFF
+  VENDOR
+  SECURITY
+  MEDIA
+  PERFORMER
+  VIP
+  BUSINESS_REPRESENTATIVE
+  BARANGAY_STAFF
+  LGU_STAFF
+  OTHER
+}
+
+enum OspVenueType {
+  ACCOMMODATION
+  MOTORBIKE_RENTAL
+  CAR_RENTAL
+  SURFBOARD_RENTAL
+  TOUR_OPERATOR
+  RESTAURANT
+  HEALTH_WELLNESS
+  EVENT_VENUE
+  TRANSPORT_PROVIDER
+  LGU_CHECKPOINT
+  OTHER
+}
+
+enum OspKycCheckInPurpose {
+  ACCOMMODATION_CHECK_IN
+  RENTAL_RELEASE
+  TOUR_CHECK_IN
+  EVENT_ENTRY
+  PAYMENT_CONFIRMATION
+  SERVICE_VERIFICATION
+  INCIDENT_SUPPORT
+  LGU_COMPLIANCE_CHECK
+}
+
+enum OspDataSharingScope {
+  BASIC_IDENTITY_ONLY
+  BASIC_IDENTITY_AND_TRIP
+  BASIC_IDENTITY_AND_CONTACT
+  BOOKING_AND_PAYMENT_REFERENCE
+  EMERGENCY_ONLY
+  FULL_KYC_WITH_CONSENT
+}
+
+enum OspConsentType {
+  PRIVACY_CONSENT
+  RULES_ACKNOWLEDGEMENT
+  DATA_USE_PURPOSE_ACKNOWLEDGEMENT
+  KYC_CHECK_IN_CONSENT
+  EVENT_PARTICIPATION_CONSENT
+}
+
+enum OspConsentStatus {
+  ACCEPTED
+  WITHDRAWN
+  EXPIRED
+}
+
+enum OspParticipationStatus {
+  PENDING
+  ACTIVE
+  APPROVED
+  REJECTED
+  SUSPENDED
+  CANCELLED
+  CHECKED_IN
+}
+
 model User {
   id                           String        @id @default(cuid())
   email                        String?       @unique
@@ -127,15 +359,21 @@ model User {
   createdAt                    DateTime      @default(now())
   updatedAt                    DateTime      @updatedAt
 
-  travelerProfile   TravelerProfile?
-  operatorProfile   OperatorProfile?
-  guideProfile      GuideProfile?
-  emergencyContacts EmergencyContact[]
-  notificationPref  NotificationPreference?
-  trips             Trip[]                  @relation("TravelerTrips")
-  createdActivities ActivityTemplate[]      @relation("ActivityOwner")
-  createdManifests  Manifest[]              @relation("ManifestOperator")
-  notifications     Notification[]
+  travelerProfile     TravelerProfile?
+  operatorProfile     OperatorProfile?
+  guideProfile        GuideProfile?
+  emergencyContacts   EmergencyContact[]
+  notificationPref    NotificationPreference?
+  trips               Trip[]                  @relation("TravelerTrips")
+  createdActivities   ActivityTemplate[]      @relation("ActivityOwner")
+  createdManifests    Manifest[]              @relation("ManifestOperator")
+  notifications       Notification[]
+  participantProfile  ParticipantProfile?
+  residentProfile     ResidentProfile?
+  consentRecords      ConsentRecord[]
+  rulesRecords        RulesAcknowledgement[]
+  eventParticipations OspEventParticipation[]
+  kycCheckIns         KycCheckInEvent[]
 }
 
 model TravelerProfile {
@@ -2588,4 +2826,158 @@ model SpmMarketplacePlacementLog {
   @@index([category])
   @@index([shownAt])
   @@map("spm_marketplace_placement_logs")
+}
+
+model ParticipantProfile {
+  id                    String                   @id @default(cuid())
+  userId                String                   @unique
+  participantType       OspParticipantType
+  qrRegistrationPurpose OspQrRegistrationPurpose
+  primarySiargaoBase    OspSiargaoBase?
+  municipality          String?
+  barangay              String?
+  nationalityCode       String?
+  countryOfResidence    String?
+  ageBracket            OspAgeBracket?
+  travelerType          OspTravelerType?
+  accommodationType     OspAccommodationType?
+  visitPurpose          OspVisitPurpose?
+  travelPartyType       OspTravelPartyType?
+  partySizeRange        OspPartySizeRange?
+  arrivalDate           DateTime?
+  departureDate         DateTime?
+  accountContextStatus  OspParticipationStatus   @default(ACTIVE)
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([participantType])
+  @@index([qrRegistrationPurpose])
+  @@index([primarySiargaoBase])
+  @@index([accountContextStatus])
+}
+
+model ResidentProfile {
+  id           String          @id @default(cuid())
+  userId       String          @unique
+  residentType OspResidentType
+  municipality String?
+  barangay     String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([residentType])
+  @@index([municipality])
+}
+
+model ConsentRecord {
+  id          String           @id @default(cuid())
+  userId      String
+  consentType OspConsentType
+  status      OspConsentStatus @default(ACCEPTED)
+  version     String           @default("v1")
+  source      String           @default("ONBOARDING")
+  acceptedAt  DateTime         @default(now())
+  withdrawnAt DateTime?
+  metadata    Json?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, consentType])
+  @@index([status])
+}
+
+model RulesAcknowledgement {
+  id                 String           @id @default(cuid())
+  userId             String
+  acknowledgementKey String
+  status             OspConsentStatus @default(ACCEPTED)
+  version            String           @default("v1")
+  acceptedAt         DateTime         @default(now())
+  metadata           Json?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, acknowledgementKey])
+  @@index([status])
+}
+
+model OspEvent {
+  id              String                 @id @default(cuid())
+  eventType       OspEventType
+  title           String
+  description     String?
+  municipality    String?
+  barangay        String?
+  venueName       String?
+  startsAt        DateTime?
+  endsAt          DateTime?
+  organizerName   String?
+  organizerUserId String?
+  status          OspParticipationStatus @default(PENDING)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+
+  participations OspEventParticipation[]
+
+  @@index([eventType])
+  @@index([municipality])
+  @@index([status])
+  @@index([startsAt])
+}
+
+model OspEventParticipation {
+  id              String                  @id @default(cuid())
+  eventId         String
+  userId          String?
+  guestFullName   String?
+  participantRole OspEventParticipantRole @default(GUEST)
+  status          OspParticipationStatus  @default(PENDING)
+  qrCredentialId  String?
+  checkedInAt     DateTime?
+  sponsorUserId   String?
+  metadata        Json?
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+
+  event OspEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([eventId])
+  @@index([userId])
+  @@index([participantRole])
+  @@index([status])
+}
+
+model KycCheckInEvent {
+  id                 String                 @id @default(cuid())
+  subjectUserId      String?
+  scannedQrToken     String?
+  venueOperatorId    String?
+  venueType          OspVenueType
+  purpose            OspKycCheckInPurpose
+  dataSharingScope   OspDataSharingScope    @default(BASIC_IDENTITY_ONLY)
+  verificationStatus OspParticipationStatus @default(PENDING)
+  consentAccepted    Boolean                @default(false)
+  checkedInAt        DateTime               @default(now())
+  checkedByUserId    String?
+  metadata           Json?
+  createdAt          DateTime               @default(now())
+  updatedAt          DateTime               @updatedAt
+
+  subjectUser User? @relation(fields: [subjectUserId], references: [id], onDelete: SetNull)
+
+  @@index([subjectUserId])
+  @@index([venueOperatorId])
+  @@index([venueType])
+  @@index([purpose])
+  @@index([verificationStatus])
+  @@index([checkedInAt])
 }

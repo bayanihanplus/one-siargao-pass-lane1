@@ -4,8 +4,66 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
-import { UserRole } from '@prisma/client';
+import {
+  OspAccommodationType,
+  OspAgeBracket,
+  OspConsentType,
+  OspParticipationStatus,
+  OspPartySizeRange,
+  OspQrRegistrationPurpose,
+  OspResidentType,
+  OspSiargaoBase,
+  OspTravelerType,
+  OspTravelPartyType,
+  OspVisitPurpose,
+  OspParticipantType,
+  UserRole,
+} from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+
+
+function normalizeEnumValue<T extends Record<string, string>>(value: unknown, enumObject: T, fallback: T[keyof T]): T[keyof T] {
+  const normalized = String(value || '').trim().toUpperCase();
+  const allowed = new Set(Object.values(enumObject));
+
+  return allowed.has(normalized) ? (normalized as T[keyof T]) : fallback;
+}
+
+function normalizeOptionalEnumValue<T extends Record<string, string>>(value: unknown, enumObject: T): T[keyof T] | undefined {
+  const normalized = String(value || '').trim().toUpperCase();
+  const allowed = new Set(Object.values(enumObject));
+
+  return allowed.has(normalized) ? (normalized as T[keyof T]) : undefined;
+}
+
+function normalizeOptionalString(value: unknown) {
+  const normalized = String(value || '').trim();
+  return normalized || undefined;
+}
+
+function normalizeAccepted(value: unknown) {
+  if (value === true) return true;
+  const normalized = String(value || '').trim().toLowerCase();
+  return ['true', '1', 'yes', 'accepted', 'on'].includes(normalized);
+}
+
+function parseDateOrFallback(value: unknown, fallback: Date) {
+  const normalized = String(value || '').trim();
+  if (!normalized) return fallback;
+
+  const parsed = new Date(normalized);
+  return Number.isNaN(parsed.getTime()) ? fallback : parsed;
+}
+
+function isResidentParticipant(participantType: OspParticipantType) {
+  const residentParticipantTypes: OspParticipantType[] = [
+    OspParticipantType.LOCAL_RESIDENT,
+    OspParticipantType.LONG_TERM_RESIDENT,
+    OspParticipantType.SIARGAO_WORKER,
+  ];
+
+  return residentParticipantTypes.includes(participantType);
+}
 
 @Injectable()
 export class AuthService {
@@ -40,7 +98,43 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(dto.password, 10);
     const now = new Date();
-    const expiresAt = new Date(now.getTime() + 1000 * 60 * 60 * 24 * 30);
+    const defaultExpiresAt = new Date(now.getTime() + 1000 * 60 * 60 * 24 * 30);
+    const arrivalDate = parseDateOrFallback(dto.arrivalDate, now);
+    let departureDate = parseDateOrFallback(dto.departureDate, defaultExpiresAt);
+
+    if (departureDate <= arrivalDate) {
+      departureDate = defaultExpiresAt;
+    }
+
+    const participantType = normalizeEnumValue(
+      dto.participantType,
+      OspParticipantType,
+      OspParticipantType.VISITOR_TOURIST,
+    );
+    const qrRegistrationPurpose = normalizeEnumValue(
+      dto.qrRegistrationPurpose,
+      OspQrRegistrationPurpose,
+      OspQrRegistrationPurpose.TRAVEL_TO_SIARGAO,
+    );
+    const residentType = normalizeOptionalEnumValue(dto.residentType, OspResidentType);
+    const mainSiargaoBase = normalizeOptionalEnumValue(dto.mainSiargaoBase, OspSiargaoBase);
+    const ageBracket = normalizeOptionalEnumValue(dto.ageBracket, OspAgeBracket);
+    const travelerType = normalizeOptionalEnumValue(dto.travelerType, OspTravelerType);
+    const accommodationType = normalizeOptionalEnumValue(dto.accommodationType, OspAccommodationType);
+    const visitPurpose = normalizeOptionalEnumValue(dto.visitPurpose, OspVisitPurpose);
+    const travelPartyType = normalizeOptionalEnumValue(dto.travelPartyType, OspTravelPartyType);
+    const partySizeRange = normalizeOptionalEnumValue(dto.partySizeRange, OspPartySizeRange);
+    const nationalityCode = normalizeOptionalString(dto.nationalityCode);
+    const countryOfResidence = normalizeOptionalString(dto.countryOfResidence);
+    const municipality = normalizeOptionalString(dto.municipality);
+    const barangay = normalizeOptionalString(dto.barangay);
+    const emergencyContactName = normalizeOptionalString(dto.emergencyContactName);
+    const emergencyContactMobile = normalizeOptionalString(dto.emergencyContactMobile);
+    const emergencyContactRelationship = normalizeOptionalString(dto.emergencyContactRelationship) || 'Emergency contact';
+    const privacyConsentAccepted = normalizeAccepted(dto.privacyConsent);
+    const rulesAcknowledgementAccepted = normalizeAccepted(dto.rulesAcknowledgement);
+    const dataUsePurposeAccepted = normalizeAccepted(dto.dataUsePurposeAcknowledgement);
+    const expiresAt = departureDate;
     const passCode = `OSP-${Date.now()}-${randomUUID().slice(0, 8).toUpperCase()}`;
     const qrToken = `OSPQR-${randomUUID()}`;
     const backupCode = `BK-${randomUUID().slice(0, 12).toUpperCase()}`;
@@ -53,7 +147,89 @@ export class AuthService {
           fullName: dto.fullName,
           primaryRole: UserRole.TRAVELER,
           passwordHash,
-          travelerProfile: { create: {} },
+          travelerProfile: {
+            create: {
+              nationalityCode,
+              homeCountry: countryOfResidence,
+            },
+          },
+          participantProfile: {
+            create: {
+              participantType,
+              qrRegistrationPurpose,
+              primarySiargaoBase: mainSiargaoBase,
+              municipality,
+              barangay,
+              nationalityCode,
+              countryOfResidence,
+              ageBracket,
+              travelerType,
+              accommodationType,
+              visitPurpose,
+              travelPartyType,
+              partySizeRange,
+              arrivalDate,
+              departureDate,
+              accountContextStatus: OspParticipationStatus.ACTIVE,
+            },
+          },
+          ...(residentType || isResidentParticipant(participantType)
+            ? {
+                residentProfile: {
+                  create: {
+                    residentType: residentType || OspResidentType.OTHER,
+                    municipality,
+                    barangay,
+                  },
+                },
+              }
+            : {}),
+          ...(emergencyContactName && emergencyContactMobile
+            ? {
+                emergencyContacts: {
+                  create: [
+                    {
+                      contactName: emergencyContactName,
+                      contactMobile: emergencyContactMobile,
+                      relationship: emergencyContactRelationship,
+                      isPrimary: true,
+                    },
+                  ],
+                },
+              }
+            : {}),
+          consentRecords: {
+            create: [
+              ...(privacyConsentAccepted
+                ? [
+                    {
+                      consentType: OspConsentType.PRIVACY_CONSENT,
+                      source: 'ONBOARDING_REGISTER',
+                      metadata: { participantType, qrRegistrationPurpose },
+                    },
+                  ]
+                : []),
+              ...(dataUsePurposeAccepted
+                ? [
+                    {
+                      consentType: OspConsentType.DATA_USE_PURPOSE_ACKNOWLEDGEMENT,
+                      source: 'ONBOARDING_REGISTER',
+                      metadata: { participantType, qrRegistrationPurpose },
+                    },
+                  ]
+                : []),
+            ],
+          },
+          rulesRecords: {
+            create: rulesAcknowledgementAccepted
+              ? [
+                  {
+                    acknowledgementKey: 'ONE_SIARGAO_RULES_V1',
+                    metadata: { participantType, qrRegistrationPurpose },
+                  },
+                ]
+              : [],
+          },
           notificationPref: { create: {} },
         },
       });
@@ -62,10 +238,10 @@ export class AuthService {
         data: {
           travelerUserId: user.id,
           tripTitle: 'One Siargao Pass Starter Trip',
-          arrivalDate: now,
-          departureDate: expiresAt,
-          originLocation: 'To be completed',
-          declaredAccommodationName: 'To be completed',
+          arrivalDate,
+          departureDate,
+          originLocation: countryOfResidence || nationalityCode || 'To be completed',
+          declaredAccommodationName: accommodationType || 'To be completed',
           registration: {
             create: {
               registrationReference: `REG-DRAFT-${Date.now()}`,
@@ -141,6 +317,16 @@ export class AuthService {
         primaryRole: result.user.primaryRole,
         email: result.user.email,
         mobileNumber: result.user.mobileNumber,
+      },
+      onboarding: {
+        participantType,
+        qrRegistrationPurpose,
+        mainSiargaoBase,
+        residentType: residentType || null,
+        hasEmergencyContact: Boolean(emergencyContactName && emergencyContactMobile),
+        privacyConsentAccepted,
+        rulesAcknowledgementAccepted,
+        dataUsePurposeAccepted,
       },
       trip: {
         id: result.trip.id,
