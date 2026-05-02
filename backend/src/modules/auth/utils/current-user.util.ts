@@ -23,14 +23,14 @@ export async function getCurrentUserOrThrow(prisma: PrismaService, userId: strin
 }
 
 export function assertOperatorLikeRole(role: string) {
-  const allowed = ['OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN'];
+  const allowed = ['OPERATOR_OWNER', 'OPERATOR_MANAGER', 'OPERATOR_STAFF', 'ADMIN', 'SUPER_ADMIN'];
   if (!allowed.includes(role)) {
     throw new ForbiddenException('Operator or admin role is required');
   }
 }
 
 export function assertAdminLikeRole(role: string) {
-  const allowed = ['ADMIN'];
+  const allowed = ['ADMIN', 'SUPER_ADMIN'];
   if (!allowed.includes(role)) {
     throw new ForbiddenException('Admin role is required');
   }

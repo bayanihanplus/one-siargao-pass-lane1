@@ -4,65 +4,125 @@ import { getApiBaseUrl, getAuthCookieName, getCurrentUser } from "../../src/lib/
 
 
 
-function getRoleAwareContinuePath(user: any, requestedNext?: string | null) {
-  const role = String(user?.role || user?.primaryRole || "").toUpperCase();
-  const next = String(requestedNext || "").trim();
+function decodeJwtPayloadForLogin(token: string): any | null {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
 
-  const isOperatorRole = ["OPERATOR_OWNER", "OPERATOR_MANAGER", "OPERATOR_STAFF"].includes(role);
-  const isAdminRole = role === "ADMIN";
-  const isTravelerRole = role === "TRAVELER";
+    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const padded = payload + "=".repeat((4 - (payload.length % 4)) % 4);
+    const json = Buffer.from(padded, "base64").toString("utf8");
 
-  const isSafeInternalPath =
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
+function normalizeRole(value: unknown) {
+  return String(value || "").trim().toUpperCase();
+}
+
+function getUserRoleSet(user: any) {
+  const roles = new Set<string>();
+
+  const primaryRole = normalizeRole(user?.role || user?.primaryRole);
+  if (primaryRole) roles.add(primaryRole);
+
+  if (Array.isArray(user?.roles)) {
+    for (const role of user.roles) {
+      const normalized = normalizeRole(role);
+      if (normalized) roles.add(normalized);
+    }
+  }
+
+  return roles;
+}
+
+function hasSuperAdminRole(roles: Set<string>) {
+  return roles.has("SUPER_ADMIN");
+}
+
+function hasOperatorRole(roles: Set<string>) {
+  return ["OPERATOR", "OPERATOR_OWNER", "OPERATOR_MANAGER", "OPERATOR_STAFF"].some((role) => roles.has(role));
+}
+
+function hasAdminRole(roles: Set<string>) {
+  return roles.has("ADMIN");
+}
+
+function hasLguRole(roles: Set<string>) {
+  return ["LGU", "LGU_ADMIN", "LGU_STAFF", "LGU_OFFICER", "DOT_LGU"].some((role) => roles.has(role));
+}
+
+function isSafeInternalLoginPath(next: string) {
+  return (
     next.startsWith("/") &&
     !next.startsWith("//") &&
     !next.startsWith("/login") &&
-    !next.startsWith("/logout");
+    !next.startsWith("/logout")
+  );
+}
 
-  if (isAdminRole) {
-    if (isSafeInternalPath && (next === "/admin" || next.startsWith("/admin/") || next === "/dev" || next.startsWith("/dev/"))) {
-      return next;
-    }
+function isTravelerShellNext(next: string) {
+  return next === "/traveler" || next.startsWith("/traveler/");
+}
 
-    return "/admin/activities";
-  }
+function getDefaultRoleLanding(user: any) {
+  const roles = getUserRoleSet(user);
 
-  if (isOperatorRole) {
-    if (isSafeInternalPath && (next === "/operator" || next.startsWith("/operator/"))) {
-      return next;
-    }
-
-    return "/operator/commercial";
-  }
-
-  if (isTravelerRole) {
-    if (isSafeInternalPath && (next === "/traveler" || next.startsWith("/traveler/"))) {
-      return next;
-    }
-
-    return "/traveler/home";
-  }
+  if (hasSuperAdminRole(roles)) return "/admin/activities";
+  if (hasAdminRole(roles)) return "/admin/activities";
+  if (hasLguRole(roles)) return "/lgu";
+  if (hasOperatorRole(roles)) return "/operator/commercial";
 
   return "/traveler/home";
 }
 
+function getRoleAwareContinuePath(user: any, requestedNext?: string | null) {
+  const roles = getUserRoleSet(user);
+  const next = String(requestedNext || "").trim();
+
+  if (!next || !isSafeInternalLoginPath(next) || isTravelerShellNext(next)) {
+    return getDefaultRoleLanding(user);
+  }
+
+  if (next === "/admin" || next.startsWith("/admin/") || next === "/dev" || next.startsWith("/dev/")) {
+    return hasSuperAdminRole(roles) || hasAdminRole(roles) ? next : getDefaultRoleLanding(user);
+  }
+
+  if (next === "/operator" || next.startsWith("/operator/")) {
+    return hasSuperAdminRole(roles) || hasOperatorRole(roles) ? next : getDefaultRoleLanding(user);
+  }
+
+  if (next === "/lgu" || next.startsWith("/lgu/")) {
+    return hasSuperAdminRole(roles) || hasLguRole(roles) ? next : getDefaultRoleLanding(user);
+  }
+
+  return getDefaultRoleLanding(user);
+}
+
 function ospLoginNormalizeNext(value: string | null | undefined): string {
-  if (!value || value === "/" || value === "/login" || value.startsWith("/login?")) {
+  const next = String(value || "").trim();
+
+  if (!next || next === "/" || next === "/login" || next.startsWith("/login?") || next === "/logout") {
     return "/traveler/home";
   }
 
-  return value;
+  if (!next.startsWith("/") || next.startsWith("//")) {
+    return "/traveler/home";
+  }
+
+  if (isTravelerShellNext(next)) {
+    return "/traveler/home";
+  }
+
+  return next;
 }
-
-
 
 function normalizeTravelerReturnPath(value: string | null | undefined): string {
-  if (!value || value === "/" || value === "/login" || value.startsWith("/login?")) {
-    return "/traveler/home";
-  }
-
-  return value;
+  return ospLoginNormalizeNext(value);
 }
-
 
 /*
  * OSP-LOGIN-01 LOCK:
@@ -80,7 +140,8 @@ async function loginAction(formData: FormData) {
 
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "").trim();
-  const nextPath = String(formData.get("next") || "/traveler/home").trim() || "/traveler/home";
+  const requestedNextPath = String(formData.get("next") || "/traveler/home").trim() || "/traveler/home";
+  const nextPath = ospLoginNormalizeNext(requestedNextPath);
 
   if (!email || !password) {
     throw new Error("Email and password are required");
@@ -116,7 +177,11 @@ async function loginAction(formData: FormData) {
     maxAge: 60 * 60 * 24,
   });
 
-  redirect(nextPath);
+  const tokenUser = decodeJwtPayloadForLogin(json.accessToken) || {};
+  const loginUser = json?.user || json?.account || tokenUser;
+  const roleAwareRedirectPath = getRoleAwareContinuePath(loginUser, nextPath);
+
+  redirect(roleAwareRedirectPath);
 }
 
 function normalizeMode(value?: string): EntryMode {
@@ -508,10 +573,7 @@ export default async function LoginPage({
   const mode = normalizeMode(resolvedSearchParams?.mode);
   const copy = getModeCopy(mode);
   const requestedNextPath = resolvedSearchParams?.next || copy.next;
-  const nextPath =
-    requestedNextPath && requestedNextPath !== "/" && requestedNextPath !== "/login"
-      ? requestedNextPath
-      : "/traveler/home";
+  const nextPath = ospLoginNormalizeNext(requestedNextPath);
   const roleAwareContinuePath = getRoleAwareContinuePath(user, nextPath);
   const providerStatus = resolvedSearchParams?.status === "coming-soon" ? "Easy Google / Apple access is not connected yet. Use email access for now." : null;
   const registeredStatus = resolvedSearchParams?.registered === "1" ? "Traveler account created. Sign in to continue your trip setup." : null;

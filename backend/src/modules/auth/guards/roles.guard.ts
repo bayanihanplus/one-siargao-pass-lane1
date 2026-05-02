@@ -23,6 +23,10 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('Authenticated role is required');
     }
 
+    if (userRole === 'SUPER_ADMIN') {
+      return true;
+    }
+
     if (!requiredRoles.includes(userRole)) {
       throw new ForbiddenException('Insufficient role');
     }

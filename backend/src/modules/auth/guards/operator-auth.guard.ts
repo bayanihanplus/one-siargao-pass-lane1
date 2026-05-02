@@ -14,11 +14,11 @@ export class OperatorAuthGuard implements CanActivate {
       throw new ForbiddenException('Missing authenticated user');
     }
 
-    // ADMIN bypass
-    if (user.role === 'ADMIN') {
+    // ADMIN / SUPER_ADMIN bypass
+    if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') {
       const ctx: OperatorContext = {
         operatorUserId: user.id,
-        workspaceRole: 'ADMIN',
+        workspaceRole: user.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : 'ADMIN',
         isAdmin: true,
       };
       request.operatorContext = ctx;

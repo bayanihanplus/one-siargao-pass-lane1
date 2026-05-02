@@ -1,14 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-
-function ospNormalizeLoginNextPath(pathname: string | null | undefined): string {
-  if (!pathname || pathname === "/") return "/traveler/home";
-  if (pathname === "/login") return "/traveler/home";
-  if (pathname.startsWith("/login")) return "/traveler/home";
-  return pathname;
-}
-
-
 const AUTH_COOKIE_NAME = "osp_access_token";
 
 function decodeJwtPayload(token: string): any | null {
@@ -29,41 +20,34 @@ function decodeJwtPayload(token: string): any | null {
 function getRoleFromToken(token: string | undefined): string | null {
   if (!token) return null;
   const payload = decodeJwtPayload(token);
-  return typeof payload?.role === "string" ? payload.role : null;
+  return typeof payload?.role === "string" ? payload.role.toUpperCase() : null;
 }
 
-function redirectToLogin(req: NextRequest) {
-  const loginUrl = new URL("/login", req.url);
-  const nextPath = `${req.nextUrl.pathname}${req.nextUrl.search}`;
-  loginUrl.searchParams.set("next", nextPath);
-  return NextResponse.redirect(loginUrl);
+function isSuperAdminRole(role: string | null) {
+  return role === "SUPER_ADMIN";
 }
 
 function isOperatorRole(role: string | null) {
-  return ["OPERATOR_OWNER", "OPERATOR_MANAGER", "OPERATOR_STAFF"].includes(role || "");
+  return ["OPERATOR", "OPERATOR_OWNER", "OPERATOR_MANAGER", "OPERATOR_STAFF"].includes(role || "");
 }
 
 function isAdminRole(role: string | null) {
   return role === "ADMIN";
 }
 
-function isTravelerRole(role: string | null) {
-  return role === "TRAVELER";
+function isLguRole(role: string | null) {
+  return ["LGU", "LGU_ADMIN", "LGU_STAFF", "LGU_OFFICER", "DOT_LGU"].includes(role || "");
 }
 
-function allowAdminPartnersDevBypass(pathname: string) {
-  return process.env.NODE_ENV !== "production" && pathname === "/admin/partners";
+function isSafeInternalPath(pathname: string) {
+  return pathname.startsWith("/") && !pathname.startsWith("//");
 }
 
-function allowLguIntelligenceDevBypass(pathname: string) {
-  return process.env.NODE_ENV !== "production" && pathname === "/lgu/intelligence";
+function isTravelerShellRoute(pathname: string) {
+  return pathname === "/traveler" || pathname.startsWith("/traveler/");
 }
 
-function allowAdminIntelligenceDevBypass(pathname: string) {
-  return process.env.NODE_ENV !== "production" && pathname === "/admin/intelligence";
-}
-
-function isPublicRoute(pathname: string) {
+function isStaticOrPublicRoute(pathname: string) {
   if (
     pathname.startsWith("/_next") ||
     pathname === "/favicon.ico" ||
@@ -73,32 +57,12 @@ function isPublicRoute(pathname: string) {
     return true;
   }
 
-  if (
-    pathname === "/" ||
-    pathname === "/login" ||
-    pathname === "/logout"
-  ) {
-    return true;
-  }
-
-  if (
-    pathname === "/traveler/start" ||
-    pathname === "/traveler/register"
-  ) {
+  if (pathname === "/" || pathname === "/login" || pathname === "/logout") {
     return true;
   }
 
   if (
     pathname === "/siargao-passport-map" ||
-    pathname === "/traveler/passport-map" ||
-    pathname === "/traveler/passport-trails" ||
-    pathname.startsWith("/traveler/passport-trails/") ||
-    pathname === "/traveler/partner-tours"
-  ) {
-    return true;
-  }
-
-  if (
     pathname === "/travelers" ||
     pathname === "/operators" ||
     pathname === "/ota" ||
@@ -120,53 +84,64 @@ function isPublicRoute(pathname: string) {
   return false;
 }
 
+function isTravelerNext(value: string | null) {
+  if (!value) return false;
+
+  try {
+    const decoded = decodeURIComponent(value);
+    return decoded === "/traveler" || decoded.startsWith("/traveler/");
+  } catch {
+    return value === "/traveler" || value.startsWith("/traveler/") || value.includes("%2Ftraveler%2F");
+  }
+}
+
+function redirectToLogin(req: NextRequest) {
+  const loginUrl = new URL("/login", req.url);
+  const nextPath = `${req.nextUrl.pathname}${req.nextUrl.search}`;
+
+  loginUrl.searchParams.set("mode", "returning");
+
+  if (isSafeInternalPath(nextPath) && !isTravelerNext(nextPath)) {
+    loginUrl.searchParams.set("next", nextPath);
+  }
+
+  return NextResponse.redirect(loginUrl);
+}
+
+function sanitizeLoginRequest(req: NextRequest) {
+  if (req.nextUrl.pathname !== "/login") return null;
+
+  const loginUrl = req.nextUrl.clone();
+  const requestedNext = loginUrl.searchParams.get("next");
+
+  if (requestedNext && isTravelerNext(requestedNext)) {
+    loginUrl.searchParams.delete("next");
+    if (!loginUrl.searchParams.get("mode")) {
+      loginUrl.searchParams.set("mode", "returning");
+    }
+    return NextResponse.redirect(loginUrl);
+  }
+
+  return null;
+}
+
 export function middleware(req: NextRequest) {
-  // OSP_LOGIN_RETURNING_ROOT_NEXT_HARD_GUARD
-  // Normalize returning traveler root redirects before the login page renders.
-  const __ospLoginUrl = req.nextUrl.clone();
-  const __ospLoginPathname = __ospLoginUrl.pathname;
-  const __ospLoginMode = __ospLoginUrl.searchParams.get("mode");
-  const __ospLoginNext = __ospLoginUrl.searchParams.get("next");
-
-  if (
-    __ospLoginPathname === "/login" &&
-    __ospLoginMode === "returning" &&
-    (!__ospLoginNext || __ospLoginNext === "/" || __ospLoginNext === "/login")
-  ) {
-    __ospLoginUrl.searchParams.set("next", "/traveler/home");
-    return NextResponse.redirect(__ospLoginUrl);
-  }
-
-
-  // OSP_OPERATOR_LOCAL_DEMO_BYPASS
-  // Local presentation bypass only. Keeps OSP Shell, SPM, Traveler, LGU, Admin, and public routes untouched.
-  // Purpose: allow /operator and /operator/* route rendering on localhost for Mayor/DOT-LGU demo.
-  const __ospOperatorDemoPathname = req.nextUrl.pathname;
-  const __ospOperatorDemoHost = req.nextUrl.hostname;
-  const __ospOperatorDemoIsLocal =
-    __ospOperatorDemoHost === "localhost" || __ospOperatorDemoHost === "127.0.0.1";
-  const __ospOperatorDemoRoute =
-    __ospOperatorDemoPathname === "/operator" || __ospOperatorDemoPathname.startsWith("/operator/");
-  if (__ospOperatorDemoIsLocal && __ospOperatorDemoRoute) {
-    return NextResponse.next();
-  }
-
+  const sanitizedLogin = sanitizeLoginRequest(req);
+  if (sanitizedLogin) return sanitizedLogin;
 
   const { pathname } = req.nextUrl;
 
-  if (allowAdminPartnersDevBypass(pathname)) {
+  if (isStaticOrPublicRoute(pathname)) {
     return NextResponse.next();
   }
 
-  if (allowLguIntelligenceDevBypass(pathname)) {
-    return NextResponse.next();
-  }
-
-  if (allowAdminIntelligenceDevBypass(pathname)) {
-    return NextResponse.next();
-  }
-
-  if (isPublicRoute(pathname)) {
+  /*
+   * AUTH-MW-01 LOCK:
+   * Traveler shell routes are public-accessible.
+   * Private traveler data must be protected by page/API ownership checks,
+   * not by destructive middleware redirects.
+   */
+  if (isTravelerShellRoute(pathname)) {
     return NextResponse.next();
   }
 
@@ -174,7 +149,7 @@ export function middleware(req: NextRequest) {
   const role = getRoleFromToken(token);
 
   if (pathname === "/operator" || pathname.startsWith("/operator/")) {
-    if (!token || (!isOperatorRole(role) && !isAdminRole(role))) {
+    if (!token || (!isSuperAdminRole(role) && !isOperatorRole(role))) {
       return redirectToLogin(req);
     }
 
@@ -187,7 +162,7 @@ export function middleware(req: NextRequest) {
     pathname === "/dev" ||
     pathname.startsWith("/dev/")
   ) {
-    if (!token || !isAdminRole(role)) {
+    if (!token || (!isSuperAdminRole(role) && !isAdminRole(role))) {
       return redirectToLogin(req);
     }
 
@@ -195,15 +170,7 @@ export function middleware(req: NextRequest) {
   }
 
   if (pathname === "/lgu" || pathname.startsWith("/lgu/")) {
-    if (!token || !isAdminRole(role)) {
-      return redirectToLogin(req);
-    }
-
-    return NextResponse.next();
-  }
-
-  if (pathname === "/traveler" || pathname.startsWith("/traveler/")) {
-    if (!token || !isTravelerRole(role)) {
+    if (!token || (!isSuperAdminRole(role) && !isLguRole(role))) {
       return redirectToLogin(req);
     }
 
