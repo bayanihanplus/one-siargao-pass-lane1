@@ -26,6 +26,7 @@ import { PartnersModule } from './modules/partners/partners.module';
 import { TravelerMarketplaceModule } from './modules/traveler-marketplace/traveler-marketplace.module';
 import { LguIntelligenceModule } from './modules/lgu-intelligence/lgu-intelligence.module';
 import { AdminIntelligenceModule } from './modules/admin-intelligence/admin-intelligence.module';
+import { AccommodationsModule } from './modules/accommodations';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { AdminIntelligenceModule } from './modules/admin-intelligence/admin-inte
     NotificationsModule,
     GuidesModule,
     SpmModule,
+      AccommodationsModule,
   ],
   providers: [PrismaService],
 })

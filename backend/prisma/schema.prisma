@@ -3001,3 +3001,1126 @@ model KycCheckInEvent {
   @@index([verificationStatus])
   @@index([checkedInAt])
 }
+
+// ============================================================================
+// ACCOM-01B — OSP ACCOMMODATION DOMAIN SCHEMA FOUNDATION
+// Source-channel aware accommodation supply, fulfillment, QR, package,
+// payment/payout, marketplace exposure, and import staging.
+// ============================================================================
+
+enum AccommodationBookingSourceChannel {
+  OSP_DIRECT
+  OTA_API
+  TRAVEL_TOURS_PARTNER
+  ACCOMMODATION_DIRECT
+  ADMIN_CREATED
+  AFFILIATE_NETWORK
+}
+
+enum AccommodationPaymentOwnershipMode {
+  OSP_COLLECTED
+  SOURCE_PARTNER_COLLECTED
+  OPERATOR_COLLECTED
+  NO_PAYMENT_REQUIRED
+}
+
+enum AccommodationPayoutResponsibility {
+  OSP_PAYOUT
+  OTA_PAYOUT
+  TRAVEL_TOURS_PAYOUT
+  OPERATOR_DIRECT_COLLECTION
+  NO_PAYOUT_REQUIRED
+}
+
+enum AccommodationSettlementMode {
+  EXTERNAL_SETTLEMENT
+  OSP_SETTLEMENT
+  HYBRID_SETTLEMENT
+  STATEMENT_ONLY
+}
+
+enum AccommodationPackageComposerType {
+  OSP_PASSPORT_TRAIL
+  OSP_DIY_CURATED
+  OTA_PACKAGE
+  TRAVEL_TOURS_PACKAGE
+  ACCOMMODATION_STAY_ONLY
+  ADMIN_PACKAGE
+}
+
+enum AccommodationRevenueMode {
+  PLATFORM_FEE_ONLY
+  QR_ISSUANCE_FEE
+  API_PROCESSING_FEE
+  COMMISSION
+  COMMISSION_PLUS_PLATFORM_FEE
+  PAYMENT_PROCESSING_ONLY
+  FX_PLUS_PLATFORM_FEE
+  NO_OSP_REVENUE_INTERNAL_TEST
+}
+
+enum AccommodationBundleItemType {
+  ACCOMMODATION_STAY
+  TOUR
+  RENTAL
+  TRANSPORT
+  PASSPORT_TRAIL
+  DIY_TRAIL
+  EVENT
+  ADD_ON
+}
+
+enum AccommodationSupplyType {
+  LIMITED_ROOM_SUPPLY
+  MULTI_ROOM_INVENTORY
+  PRIVATE_VILLA
+  DORM_BED_SUPPLY
+  LONG_STAY_UNIT
+  EVENT_BLOCKED_ROOMS
+  OTA_MANAGED_INVENTORY
+  MANUAL_OWNER_INVENTORY
+}
+
+enum AccommodationProfileType {
+  HOTEL_RESORT
+  BOUTIQUE_HOTEL
+  GUESTHOUSE
+  HOMESTAY
+  HOSTEL
+  VILLA
+  APARTMENT
+  SURF_CAMP
+  ECO_LODGE
+  FAMILY_STAY
+  DORMITORY
+  OTHER_REQUEST_REVIEW
+}
+
+enum AccommodationBaseArea {
+  GENERAL_LUNA
+  MALINAO
+  CATANGNAN
+  DAPA
+  PACIFICO
+  BURGOS
+  SAN_ISIDRO
+  PILAR
+  DEL_CARMEN
+  SOCORRO
+  OTHER_SIARGAO_AREA
+}
+
+enum AccommodationBookingMode {
+  INSTANT_BOOK_READY
+  PAY_TO_HOLD
+  REQUEST_TO_CONFIRM
+  INQUIRY_ONLY
+  WALK_IN_SUPPORTED
+  OTA_PUSH_ONLY
+  DISABLED_PENDING_SETUP
+}
+
+enum AccommodationAvailabilityMode {
+  OWNER_MANAGED
+  CALENDAR_MANAGED
+  REQUEST_WINDOW
+  SEASONAL_AVAILABILITY
+  OTA_SYNCED
+  MANUAL_CONFIRMATION
+}
+
+enum AccommodationReadinessStatus {
+  PROFILE_STARTED
+  PROFILE_COMPLETE
+  MEDIA_READY
+  ROOMS_READY
+  BOOKING_READY
+  QR_CHECKIN_READY
+  PAYMENT_READY
+  MARKETPLACE_READY
+  FEATURED_ELIGIBLE
+  SUSPENDED
+}
+
+enum AccommodationRoomUnitType {
+  STANDARD_ROOM
+  DELUXE_ROOM
+  FAMILY_ROOM
+  PRIVATE_VILLA
+  DORM_BED
+  BARKADA_ROOM
+  COUPLE_ROOM
+  BEACHFRONT_ROOM
+  SURF_STAY_ROOM
+  LONG_STAY_UNIT
+}
+
+enum AccommodationBookingRequestStatus {
+  REQUEST_CREATED
+  OPERATOR_NOTIFIED
+  OPERATOR_VIEWED
+  REQUEST_ACCEPTED
+  REQUEST_DECLINED
+  REQUEST_EXPIRED
+  TRAVELER_CANCELLED
+  PAYMENT_PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  NO_SHOW
+  DISPUTED
+}
+
+enum AccommodationPublicExposureStatus {
+  NOT_LIVE
+  NEEDS_REVIEW
+  OWNER_CLAIM_PENDING
+  OWNER_VERIFIED
+  PROFILE_READY
+  MARKETPLACE_ELIGIBLE
+  LIVE
+  SUSPENDED
+}
+
+enum AccommodationPlacementType {
+  ORGANIC
+  FEATURED_BY_ADMIN
+  SPONSORED
+  NEW_LISTING_BOOST
+  READINESS_BOOST
+  CATEGORY_MATCH
+  BASE_AREA_MATCH
+  FAIRNESS_ROTATION
+}
+
+enum AccommodationPlacementStatus {
+  PENDING_REVIEW
+  ACTIVE
+  PAUSED
+  EXPIRED
+  REJECTED
+  SUSPENDED
+}
+
+enum AccommodationMediaType {
+  PHOTO
+  VIDEO
+  HERO
+  GALLERY
+}
+
+enum AccommodationMediaStatus {
+  PENDING_OWNER_UPLOAD
+  READY
+  HIDDEN
+  REJECTED
+}
+
+enum AccommodationInventorySourceMode {
+  OWNER
+  OTA
+  ADMIN
+  IMPORT
+}
+
+enum AccommodationAvailabilityBlockType {
+  OWNER_BLACKOUT
+  EVENT_BLOCK
+  SEASONAL_CLOSURE
+  MAINTENANCE
+  ADMIN_HOLD
+  OTA_RESERVED
+}
+
+enum AccommodationHoldStatus {
+  ACTIVE
+  RELEASED
+  EXPIRED
+  CONVERTED_TO_BOOKING
+  CANCELLED
+}
+
+enum AccommodationStayStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  NO_SHOW
+  CANCELLED
+  DISPUTED
+}
+
+enum AccommodationStayQrScanPurpose {
+  CHECK_IN
+  CHECK_OUT
+  ASSISTED_GUEST
+  PRINTED_QR
+  OTA_SYNC
+}
+
+enum AccommodationPayoutStatus {
+  NOT_REQUIRED
+  PENDING_VALIDATION
+  HOLDING
+  READY_FOR_RELEASE
+  RELEASED
+  DISPUTE_HOLD
+  REFUND_ADJUSTED
+  CANCELLED
+}
+
+enum AccommodationStatementStatus {
+  DRAFT
+  GENERATED
+  SENT
+  DOWNLOADED
+  VOID
+}
+
+enum RawAccommodationImportStatus {
+  IMPORTED_RAW
+  NORMALIZED
+  POSSIBLE_DUPLICATE
+  NEEDS_REVIEW
+  OWNER_CLAIM_PENDING
+  OWNER_VERIFIED
+  PROFILE_READY
+  MARKETPLACE_ELIGIBLE
+  LIVE
+  SUSPENDED
+}
+
+model AccommodationProfile {
+  id                   String                            @id @default(cuid())
+  ownerUserId          String?
+  operatorAccountId    String?
+  displayName          String
+  slug                 String                            @unique
+  profileType          AccommodationProfileType          @default(HOTEL_RESORT)
+  baseArea             AccommodationBaseArea             @default(GENERAL_LUNA)
+  addressText          String?
+  latitude             Float?
+  longitude            Float?
+  shortDescription     String?
+  longDescription      String?
+  bookingMode          AccommodationBookingMode          @default(REQUEST_TO_CONFIRM)
+  availabilityMode     AccommodationAvailabilityMode     @default(MANUAL_CONFIRMATION)
+  readinessStatus      AccommodationReadinessStatus      @default(PROFILE_STARTED)
+  publicExposureStatus AccommodationPublicExposureStatus @default(NOT_LIVE)
+  source               String                            @default("MANUAL")
+  claimedAt            DateTime?
+  verifiedAt           DateTime?
+  suspendedAt          DateTime?
+  createdAt            DateTime                          @default(now())
+  updatedAt            DateTime                          @updatedAt
+
+  media                               AccommodationMedia[]
+  roomTypes                           AccommodationRoomType[]
+  availabilityBlocks                  AccommodationAvailabilityBlock[]
+  inventoryDates                      AccommodationInventoryDate[]
+  bookingRequests                     AccommodationBookingRequest[]
+  bookingHolds                        AccommodationBookingHold[]
+  stays                               AccommodationStay[]
+  exposureScore                       AccommodationExposureScore?
+  placements                          AccommodationMarketplacePlacement[]
+  exposureLogs                        AccommodationExposureLog[]
+  statements                          AccommodationStatement[]
+  rawImports                          RawAccommodationImport[]
+  AccommodationBookingVoucherSnapshot AccommodationBookingVoucherSnapshot[]
+
+  @@index([ownerUserId])
+  @@index([operatorAccountId])
+  @@index([profileType])
+  @@index([baseArea])
+  @@index([bookingMode])
+  @@index([availabilityMode])
+  @@index([readinessStatus])
+  @@index([publicExposureStatus])
+  @@index([createdAt])
+  @@map("accommodation_profiles")
+}
+
+model AccommodationMedia {
+  id              String                   @id @default(cuid())
+  accommodationId String
+  mediaType       AccommodationMediaType
+  url             String?
+  caption         String?
+  mediaStatus     AccommodationMediaStatus @default(PENDING_OWNER_UPLOAD)
+  sortOrder       Int                      @default(0)
+  createdAt       DateTime                 @default(now())
+
+  accommodation AccommodationProfile @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+
+  @@index([accommodationId])
+  @@index([mediaType])
+  @@index([mediaStatus])
+  @@map("accommodation_media")
+}
+
+model AccommodationRoomType {
+  id              String                    @id @default(cuid())
+  accommodationId String
+  roomUnitType    AccommodationRoomUnitType
+  title           String
+  description     String?
+  maxOccupancy    Int                       @default(1)
+  baseCapacity    Int                       @default(1)
+  supplyType      AccommodationSupplyType   @default(LIMITED_ROOM_SUPPLY)
+  basePricePhp    Decimal?                  @db.Decimal(12, 2)
+  pricingReady    Boolean                   @default(false)
+  isActive        Boolean                   @default(true)
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+
+  accommodation      AccommodationProfile             @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  units              AccommodationUnit[]
+  inventoryDates     AccommodationInventoryDate[]
+  availabilityBlocks AccommodationAvailabilityBlock[]
+  bookingRequests    AccommodationBookingRequest[]
+  bookingHolds       AccommodationBookingHold[]
+  stays              AccommodationStay[]
+
+  @@index([accommodationId])
+  @@index([roomUnitType])
+  @@index([supplyType])
+  @@index([pricingReady])
+  @@index([isActive])
+  @@map("accommodation_room_types")
+}
+
+model AccommodationUnit {
+  id         String   @id @default(cuid())
+  roomTypeId String
+  unitLabel  String?
+  unitCode   String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  roomType           AccommodationRoomType            @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+  inventoryDates     AccommodationInventoryDate[]
+  availabilityBlocks AccommodationAvailabilityBlock[]
+  bookingRequests    AccommodationBookingRequest[]
+  bookingHolds       AccommodationBookingHold[]
+  stays              AccommodationStay[]
+
+  @@index([roomTypeId])
+  @@index([unitCode])
+  @@index([isActive])
+  @@map("accommodation_units")
+}
+
+model AccommodationInventoryDate {
+  id              String                           @id @default(cuid())
+  accommodationId String
+  roomTypeId      String
+  unitId          String?
+  inventoryDate   DateTime
+  totalUnits      Int                              @default(0)
+  availableUnits  Int                              @default(0)
+  heldUnits       Int                              @default(0)
+  bookedUnits     Int                              @default(0)
+  blockedUnits    Int                              @default(0)
+  sourceMode      AccommodationInventorySourceMode @default(OWNER)
+  createdAt       DateTime                         @default(now())
+  updatedAt       DateTime                         @updatedAt
+
+  accommodation AccommodationProfile  @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  roomType      AccommodationRoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+  unit          AccommodationUnit?    @relation(fields: [unitId], references: [id], onDelete: SetNull)
+
+  @@index([accommodationId])
+  @@index([roomTypeId])
+  @@index([unitId])
+  @@index([inventoryDate])
+  @@index([sourceMode])
+  @@map("accommodation_inventory_dates")
+}
+
+model AccommodationAvailabilityBlock {
+  id              String                             @id @default(cuid())
+  accommodationId String
+  roomTypeId      String?
+  unitId          String?
+  startDate       DateTime
+  endDate         DateTime
+  blockType       AccommodationAvailabilityBlockType
+  reason          String?
+  createdByUserId String?
+  createdAt       DateTime                           @default(now())
+
+  accommodation AccommodationProfile   @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  roomType      AccommodationRoomType? @relation(fields: [roomTypeId], references: [id], onDelete: SetNull)
+  unit          AccommodationUnit?     @relation(fields: [unitId], references: [id], onDelete: SetNull)
+
+  @@index([accommodationId])
+  @@index([roomTypeId])
+  @@index([unitId])
+  @@index([startDate])
+  @@index([endDate])
+  @@index([blockType])
+  @@index([createdByUserId])
+  @@map("accommodation_availability_blocks")
+}
+
+model AccommodationBookingRequest {
+  id                    String                            @id @default(cuid())
+  accommodationId       String
+  roomTypeId            String?
+  unitId                String?
+  bookingId             String?
+  tripId                String?
+  travelerUserId        String?
+  sourceChannel         AccommodationBookingSourceChannel
+  requestedCheckInDate  DateTime
+  requestedCheckOutDate DateTime
+  paxCount              Int                               @default(1)
+  status                AccommodationBookingRequestStatus @default(REQUEST_CREATED)
+  slaCategory           String?
+  operatorNotifiedAt    DateTime?
+  operatorViewedAt      DateTime?
+  expiresAt             DateTime?
+  acceptedAt            DateTime?
+  declinedAt            DateTime?
+  declineReason         String?
+  createdAt             DateTime                          @default(now())
+  updatedAt             DateTime                          @updatedAt
+
+  accommodation AccommodationProfile       @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  roomType      AccommodationRoomType?     @relation(fields: [roomTypeId], references: [id], onDelete: SetNull)
+  unit          AccommodationUnit?         @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  holds         AccommodationBookingHold[]
+
+  @@index([accommodationId])
+  @@index([roomTypeId])
+  @@index([unitId])
+  @@index([bookingId])
+  @@index([tripId])
+  @@index([travelerUserId])
+  @@index([sourceChannel])
+  @@index([status])
+  @@index([expiresAt])
+  @@map("accommodation_booking_requests")
+}
+
+model AccommodationBookingHold {
+  id               String                  @id @default(cuid())
+  accommodationId  String
+  roomTypeId       String
+  unitId           String?
+  bookingRequestId String?
+  bookingId        String?
+  paymentIntentId  String?
+  holdStatus       AccommodationHoldStatus @default(ACTIVE)
+  holdExpiresAt    DateTime
+  releasedAt       DateTime?
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+
+  accommodation  AccommodationProfile         @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  roomType       AccommodationRoomType        @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+  unit           AccommodationUnit?           @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  bookingRequest AccommodationBookingRequest? @relation(fields: [bookingRequestId], references: [id], onDelete: SetNull)
+
+  @@index([accommodationId])
+  @@index([roomTypeId])
+  @@index([unitId])
+  @@index([bookingRequestId])
+  @@index([bookingId])
+  @@index([paymentIntentId])
+  @@index([holdStatus])
+  @@index([holdExpiresAt])
+  @@map("accommodation_booking_holds")
+}
+
+model AccommodationStay {
+  id                   String                            @id @default(cuid())
+  accommodationId      String
+  roomTypeId           String?
+  unitId               String?
+  bookingId            String?
+  bookingItemId        String?
+  tripId               String?
+  travelerUserId       String?
+  qrCredentialId       String?
+  passId               String?
+  sourceChannel        AccommodationBookingSourceChannel
+  paymentOwnershipMode AccommodationPaymentOwnershipMode @default(NO_PAYMENT_REQUIRED)
+  payoutResponsibility AccommodationPayoutResponsibility @default(NO_PAYOUT_REQUIRED)
+  settlementMode       AccommodationSettlementMode       @default(STATEMENT_ONLY)
+  packageComposerType  AccommodationPackageComposerType?
+  checkInDate          DateTime
+  checkOutDate         DateTime
+  guestCount           Int                               @default(1)
+  stayStatus           AccommodationStayStatus           @default(PENDING)
+  checkedInAt          DateTime?
+  checkedOutAt         DateTime?
+  noShowAt             DateTime?
+  createdAt            DateTime                          @default(now())
+  updatedAt            DateTime                          @updatedAt
+
+  accommodation                       AccommodationProfile                  @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+  roomType                            AccommodationRoomType?                @relation(fields: [roomTypeId], references: [id], onDelete: SetNull)
+  unit                                AccommodationUnit?                    @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  qrEvents                            AccommodationStayQrEvent[]
+  commercialSnapshots                 AccommodationCommercialSnapshot[]
+  payouts                             AccommodationPayoutRecord[]
+  AccommodationBookingVoucherSnapshot AccommodationBookingVoucherSnapshot[]
+
+  @@index([accommodationId])
+  @@index([roomTypeId])
+  @@index([unitId])
+  @@index([bookingId])
+  @@index([bookingItemId])
+  @@index([tripId])
+  @@index([travelerUserId])
+  @@index([qrCredentialId])
+  @@index([passId])
+  @@index([sourceChannel])
+  @@index([stayStatus])
+  @@index([checkInDate])
+  @@index([checkOutDate])
+  @@map("accommodation_stays")
+}
+
+model AccommodationStayQrEvent {
+  id                  String                         @id @default(cuid())
+  accommodationStayId String
+  ospQrEventId        String
+  scanPurpose         AccommodationStayQrScanPurpose
+  createdAt           DateTime                       @default(now())
+
+  accommodationStay AccommodationStay @relation(fields: [accommodationStayId], references: [id], onDelete: Cascade)
+
+  @@index([accommodationStayId])
+  @@index([ospQrEventId])
+  @@index([scanPurpose])
+  @@map("accommodation_stay_qr_events")
+}
+
+model AccommodationCommercialSnapshot {
+  id                              String                            @id @default(cuid())
+  accommodationStayId             String?
+  bookingId                       String?
+  paymentIntentId                 String?
+  sourceChannel                   AccommodationBookingSourceChannel
+  paymentOwnershipMode            AccommodationPaymentOwnershipMode
+  payoutResponsibility            AccommodationPayoutResponsibility
+  settlementMode                  AccommodationSettlementMode
+  revenueMode                     AccommodationRevenueMode
+  currencyCode                    String                            @default("PHP")
+  base_supply_amount              Decimal                           @default(0) @db.Decimal(12, 2)
+  traveler_fee_matrix_amount      Decimal                           @default(0) @db.Decimal(12, 2)
+  ota_fee_matrix_amount           Decimal                           @default(0) @db.Decimal(12, 2)
+  currency_fx_rate                Decimal?                          @db.Decimal(18, 8)
+  currency_fx_amount              Decimal                           @default(0) @db.Decimal(12, 2)
+  payment_processing_amount       Decimal                           @default(0) @db.Decimal(12, 2)
+  platform_share_amount           Decimal                           @default(0) @db.Decimal(12, 2)
+  operator_payout_amount          Decimal                           @default(0) @db.Decimal(12, 2)
+  traveler_total_amount           Decimal                           @default(0) @db.Decimal(12, 2)
+  commercial_adjustment_amount    Decimal                           @default(0) @db.Decimal(12, 2)
+  accommodation_commission_rate   Decimal?                          @db.Decimal(7, 4)
+  accommodation_commission_amount Decimal                           @default(0) @db.Decimal(12, 2)
+  platform_fee_amount             Decimal                           @default(0) @db.Decimal(12, 2)
+  qr_issuance_fee_amount          Decimal                           @default(0) @db.Decimal(12, 2)
+  api_processing_fee_amount       Decimal                           @default(0) @db.Decimal(12, 2)
+  package_processing_fee_amount   Decimal                           @default(0) @db.Decimal(12, 2)
+  ota_channel_fee_amount          Decimal                           @default(0) @db.Decimal(12, 2)
+  travel_tours_channel_fee_amount Decimal                           @default(0) @db.Decimal(12, 2)
+  sponsored_placement_amount      Decimal                           @default(0) @db.Decimal(12, 2)
+  featured_placement_amount       Decimal                           @default(0) @db.Decimal(12, 2)
+  payout_hold_days                Int                               @default(7)
+  payout_release_date             DateTime?
+  payout_currency_code            String                            @default("PHP")
+  payout_fx_rate                  Decimal?                          @db.Decimal(18, 8)
+  payout_fx_amount                Decimal                           @default(0) @db.Decimal(12, 2)
+  snapshotJson                    Json?
+  createdAt                       DateTime                          @default(now())
+
+  accommodationStay AccommodationStay? @relation(fields: [accommodationStayId], references: [id], onDelete: SetNull)
+
+  @@index([accommodationStayId])
+  @@index([bookingId])
+  @@index([paymentIntentId])
+  @@index([sourceChannel])
+  @@index([paymentOwnershipMode])
+  @@index([payoutResponsibility])
+  @@index([settlementMode])
+  @@index([revenueMode])
+  @@index([createdAt])
+  @@map("accommodation_commercial_snapshots")
+}
+
+model AccommodationPayoutRecord {
+  id                     String                            @id @default(cuid())
+  accommodationStayId    String
+  bookingId              String?
+  operatorUserId         String?
+  payoutResponsibility   AccommodationPayoutResponsibility
+  payoutStatus           AccommodationPayoutStatus         @default(PENDING_VALIDATION)
+  operatorPayoutAmount   Decimal                           @default(0) @db.Decimal(12, 2)
+  currencyCode           String                            @default("PHP")
+  holdDays               Int                               @default(7)
+  expectedReleaseDate    DateTime?
+  releasedAt             DateTime?
+  disputeHoldAt          DateTime?
+  refundAdjustmentAmount Decimal                           @default(0) @db.Decimal(12, 2)
+  statementId            String?
+  createdAt              DateTime                          @default(now())
+  updatedAt              DateTime                          @updatedAt
+
+  accommodationStay AccommodationStay @relation(fields: [accommodationStayId], references: [id], onDelete: Cascade)
+
+  @@index([accommodationStayId])
+  @@index([bookingId])
+  @@index([operatorUserId])
+  @@index([payoutResponsibility])
+  @@index([payoutStatus])
+  @@index([expectedReleaseDate])
+  @@index([statementId])
+  @@map("accommodation_payout_records")
+}
+
+model AccommodationStatement {
+  id                   String                       @id @default(cuid())
+  accommodationId      String
+  operatorUserId       String?
+  statementPeriodStart DateTime
+  statementPeriodEnd   DateTime
+  totalGrossAmount     Decimal                      @default(0) @db.Decimal(12, 2)
+  totalPayoutAmount    Decimal                      @default(0) @db.Decimal(12, 2)
+  totalPlatformFees    Decimal                      @default(0) @db.Decimal(12, 2)
+  totalAdjustments     Decimal                      @default(0) @db.Decimal(12, 2)
+  currencyCode         String                       @default("PHP")
+  statementStatus      AccommodationStatementStatus @default(DRAFT)
+  generatedAt          DateTime                     @default(now())
+  downloadedAt         DateTime?
+  createdAt            DateTime                     @default(now())
+
+  accommodation AccommodationProfile @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+
+  @@index([accommodationId])
+  @@index([operatorUserId])
+  @@index([statementPeriodStart])
+  @@index([statementPeriodEnd])
+  @@index([statementStatus])
+  @@map("accommodation_statements")
+}
+
+model AccommodationExposureScore {
+  id                              String    @id @default(cuid())
+  accommodationId                 String    @unique
+  readiness_score                 Int       @default(0)
+  media_quality_score             Int       @default(0)
+  room_inventory_score            Int       @default(0)
+  availability_reliability_score  Int       @default(0)
+  response_score                  Int       @default(0)
+  checkin_completion_score        Int       @default(0)
+  payment_readiness_score         Int       @default(0)
+  base_area_match_score           Int       @default(0)
+  traveler_preference_match_score Int       @default(0)
+  package_relevance_score         Int       @default(0)
+  fairness_boost                  Int       @default(0)
+  freshness_boost                 Int       @default(0)
+  sponsored_boost                 Int       @default(0)
+  risk_penalty                    Int       @default(0)
+  complaint_penalty               Int       @default(0)
+  final_exposure_score            Int       @default(0)
+  lastCalculatedAt                DateTime?
+  createdAt                       DateTime  @default(now())
+  updatedAt                       DateTime  @updatedAt
+
+  accommodation AccommodationProfile @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+
+  @@index([final_exposure_score])
+  @@index([lastCalculatedAt])
+  @@map("accommodation_exposure_scores")
+}
+
+model AccommodationMarketplacePlacement {
+  id                String                       @id @default(cuid())
+  accommodationId   String
+  placementType     AccommodationPlacementType
+  placementStatus   AccommodationPlacementStatus @default(PENDING_REVIEW)
+  startDate         DateTime?
+  endDate           DateTime?
+  budgetAmount      Decimal?                     @db.Decimal(12, 2)
+  placementArea     String?
+  categoryTarget    String?
+  baseAreaTarget    AccommodationBaseArea?
+  maxImpressions    Int?
+  maxClicks         Int?
+  readinessRequired Int?
+  adminApproved     Boolean                      @default(false)
+  approvedByUserId  String?
+  createdAt         DateTime                     @default(now())
+  updatedAt         DateTime                     @updatedAt
+
+  accommodation AccommodationProfile @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+
+  @@index([accommodationId])
+  @@index([placementType])
+  @@index([placementStatus])
+  @@index([startDate])
+  @@index([endDate])
+  @@index([baseAreaTarget])
+  @@index([adminApproved])
+  @@map("accommodation_marketplace_placements")
+}
+
+model AccommodationExposureLog {
+  id                 String                     @id @default(cuid())
+  accommodationId    String
+  travelerUserId     String?
+  travelerSessionId  String?
+  tripId             String?
+  placementType      AccommodationPlacementType
+  placementPosition  Int?
+  finalExposureScore Int?
+  reasonCode         String?
+  shownAt            DateTime                   @default(now())
+
+  accommodation AccommodationProfile @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+
+  @@index([accommodationId])
+  @@index([travelerUserId])
+  @@index([travelerSessionId])
+  @@index([tripId])
+  @@index([placementType])
+  @@index([shownAt])
+  @@map("accommodation_exposure_logs")
+}
+
+model RawAccommodationImport {
+  id                               String                       @id @default(cuid())
+  sourceName                       String
+  rawName                          String
+  rawAddress                       String?
+  rawMunicipality                  String?
+  rawPhone                         String?
+  rawEmail                         String?
+  rawUrl                           String?
+  rawPayloadJson                   Json
+  normalizedName                   String?
+  mappedBaseArea                   AccommodationBaseArea?
+  mappedProfileType                AccommodationProfileType?
+  possibleDuplicateAccommodationId String?
+  importStatus                     RawAccommodationImportStatus @default(IMPORTED_RAW)
+  reviewedByUserId                 String?
+  createdAccommodationId           String?
+  createdAt                        DateTime                     @default(now())
+  updatedAt                        DateTime                     @updatedAt
+
+  createdAccommodation AccommodationProfile? @relation(fields: [createdAccommodationId], references: [id], onDelete: SetNull)
+
+  @@index([sourceName])
+  @@index([rawName])
+  @@index([rawMunicipality])
+  @@index([mappedBaseArea])
+  @@index([mappedProfileType])
+  @@index([possibleDuplicateAccommodationId])
+  @@index([importStatus])
+  @@index([reviewedByUserId])
+  @@index([createdAccommodationId])
+  @@map("raw_accommodation_imports")
+}
+
+// ============================================================================
+// ACCOM-04B — ACCOMMODATION BOOKING VOUCHER SNAPSHOT + DOCUMENT DELIVERY
+// Voucher snapshot, document, email, QR payload, delivery, and audit schema.
+// Booking voucher != payment receipt != QR/pass credential.
+// ============================================================================
+
+enum AccommodationVoucherStatus {
+  DRAFT
+  ISSUED
+  SENT_TO_TRAVELER
+  SENT_TO_OPERATOR
+  VIEWED_BY_TRAVELER
+  VIEWED_BY_OPERATOR
+  CANCELLED
+  SUPERSEDED
+}
+
+enum AccommodationVoucherAudience {
+  TRAVELER
+  OPERATOR
+  ADMIN
+  SOURCE_PARTNER
+}
+
+enum AccommodationVoucherDeliveryStatus {
+  PENDING
+  SENT
+  VIEWED
+  FAILED
+  CANCELLED
+}
+
+enum AccommodationVoucherQrPayloadStatus {
+  NOT_QR_READY
+  QR_READY
+  CHECK_IN_AVAILABLE
+  CHECKED_IN
+  CHECK_OUT_AVAILABLE
+  CHECKED_OUT
+  QR_REVOKED
+}
+
+enum AccommodationVoucherEventType {
+  ISSUED
+  SENT_TO_TRAVELER
+  SENT_TO_OPERATOR
+  VIEWED_BY_TRAVELER
+  VIEWED_BY_OPERATOR
+  QR_READY
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+  SUPERSEDED
+}
+
+enum AccommodationVoucherOutputMode {
+  IN_APP
+  EMAIL
+  PDF
+  PRINT
+}
+
+enum AccommodationVoucherDocumentStatus {
+  NOT_GENERATED
+  GENERATED
+  SENT
+  DOWNLOADED
+  PRINTED
+  FAILED
+  REVOKED
+  SUPERSEDED
+}
+
+enum AccommodationVoucherEmailStatus {
+  NOT_REQUIRED
+  PENDING
+  SENT
+  FAILED
+  BOUNCED
+  OPENED
+  CANCELLED
+}
+
+model AccommodationBookingVoucherSnapshot {
+  id                         String                             @id @default(cuid())
+  voucherCode                String                             @unique
+  bookingId                  String?
+  bookingItemId              String?
+  accommodationStayId        String?
+  tripId                     String?
+  travelerUserId             String?
+  operatorUserId             String?
+  accommodationId            String?
+  sourceChannel              AccommodationBookingSourceChannel
+  paymentOwnershipMode       AccommodationPaymentOwnershipMode
+  payoutResponsibility       AccommodationPayoutResponsibility
+  settlementMode             AccommodationSettlementMode
+  packageComposerType        AccommodationPackageComposerType
+  voucherStatus              AccommodationVoucherStatus         @default(DRAFT)
+  bookingReference           String?
+  serviceType                AccommodationBundleItemType        @default(ACCOMMODATION_STAY)
+  serviceTitle               String
+  scheduledDate              DateTime?
+  checkInDate                DateTime?
+  checkOutDate               DateTime?
+  paxCount                   Int?
+  travelerDisplaySummaryJson Json
+  operatorDisplaySummaryJson Json
+  qrPayloadJson              Json?
+  commercialVisibilityJson   Json?
+  defaultOutputMode          AccommodationVoucherOutputMode?
+  latestDocumentStatus       AccommodationVoucherDocumentStatus @default(NOT_GENERATED)
+  latestDocumentVersion      Int                                @default(1)
+  latestPdfUrl               String?
+  latestPrintUrl             String?
+  latestEmailSubject         String?
+  latestEmailRecipient       String?
+  latestEmailSentAt          DateTime?
+  latestDownloadedAt         DateTime?
+  latestPrintedAt            DateTime?
+  latestGeneratedAt          DateTime?
+  issuedAt                   DateTime?
+  sentToTravelerAt           DateTime?
+  sentToOperatorAt           DateTime?
+  viewedByTravelerAt         DateTime?
+  viewedByOperatorAt         DateTime?
+  cancelledAt                DateTime?
+  createdAt                  DateTime                           @default(now())
+  updatedAt                  DateTime                           @updatedAt
+
+  accommodationStay AccommodationStay?                  @relation(fields: [accommodationStayId], references: [id], onDelete: SetNull)
+  accommodation     AccommodationProfile?               @relation(fields: [accommodationId], references: [id], onDelete: SetNull)
+  deliveries        AccommodationVoucherDelivery[]
+  qrPayload         AccommodationVoucherQrPayload?
+  auditEvents       AccommodationVoucherAuditEvent[]
+  documents         AccommodationVoucherDocument[]
+  emailDeliveries   AccommodationVoucherEmailDelivery[]
+
+  @@index([bookingId])
+  @@index([bookingItemId])
+  @@index([accommodationStayId])
+  @@index([tripId])
+  @@index([travelerUserId])
+  @@index([operatorUserId])
+  @@index([accommodationId])
+  @@index([sourceChannel])
+  @@index([paymentOwnershipMode])
+  @@index([payoutResponsibility])
+  @@index([settlementMode])
+  @@index([packageComposerType])
+  @@index([voucherStatus])
+  @@index([issuedAt])
+  @@index([latestDocumentStatus])
+  @@index([defaultOutputMode])
+  @@map("accommodation_booking_voucher_snapshots")
+}
+
+model AccommodationVoucherDelivery {
+  id                   String                             @id @default(cuid())
+  voucherSnapshotId    String
+  audience             AccommodationVoucherAudience
+  deliveryStatus       AccommodationVoucherDeliveryStatus @default(PENDING)
+  recipientUserId      String?
+  recipientExternalRef String?
+  sentAt               DateTime?
+  viewedAt             DateTime?
+  failedAt             DateTime?
+  failureReason        String?
+  createdAt            DateTime                           @default(now())
+  updatedAt            DateTime                           @updatedAt
+
+  voucherSnapshot AccommodationBookingVoucherSnapshot @relation(fields: [voucherSnapshotId], references: [id], onDelete: Cascade)
+
+  @@index([voucherSnapshotId])
+  @@index([audience])
+  @@index([deliveryStatus])
+  @@index([recipientUserId])
+  @@index([sentAt])
+  @@index([viewedAt])
+  @@map("accommodation_voucher_deliveries")
+}
+
+model AccommodationVoucherQrPayload {
+  id                  String                              @id @default(cuid())
+  voucherSnapshotId   String                              @unique
+  accommodationStayId String?
+  bookingId           String?
+  tripId              String?
+  passId              String?
+  qrCredentialId      String?
+  qrPayloadStatus     AccommodationVoucherQrPayloadStatus @default(NOT_QR_READY)
+  checkInAvailableAt  DateTime?
+  checkedInAt         DateTime?
+  checkOutAvailableAt DateTime?
+  checkedOutAt        DateTime?
+  revokedAt           DateTime?
+  payloadJson         Json
+  createdAt           DateTime                            @default(now())
+  updatedAt           DateTime                            @updatedAt
+
+  voucherSnapshot AccommodationBookingVoucherSnapshot @relation(fields: [voucherSnapshotId], references: [id], onDelete: Cascade)
+
+  @@index([accommodationStayId])
+  @@index([bookingId])
+  @@index([tripId])
+  @@index([passId])
+  @@index([qrCredentialId])
+  @@index([qrPayloadStatus])
+  @@index([checkedInAt])
+  @@index([checkedOutAt])
+  @@map("accommodation_voucher_qr_payloads")
+}
+
+model AccommodationVoucherAuditEvent {
+  id                String                        @id @default(cuid())
+  voucherSnapshotId String
+  eventType         AccommodationVoucherEventType
+  actorUserId       String?
+  eventKey          String?
+  eventPayloadJson  Json?
+  createdAt         DateTime                      @default(now())
+
+  voucherSnapshot AccommodationBookingVoucherSnapshot @relation(fields: [voucherSnapshotId], references: [id], onDelete: Cascade)
+
+  @@index([voucherSnapshotId])
+  @@index([eventType])
+  @@index([actorUserId])
+  @@index([createdAt])
+  @@map("accommodation_voucher_audit_events")
+}
+
+model AccommodationVoucherDocument {
+  id                  String                             @id @default(cuid())
+  voucherSnapshotId   String
+  audience            AccommodationVoucherAudience
+  outputMode          AccommodationVoucherOutputMode
+  documentStatus      AccommodationVoucherDocumentStatus @default(NOT_GENERATED)
+  documentVersion     Int                                @default(1)
+  title               String
+  pdfUrl              String?
+  printUrl            String?
+  htmlSnapshotJson    Json?
+  documentPayloadJson Json
+  generatedAt         DateTime?
+  downloadedAt        DateTime?
+  printedAt           DateTime?
+  revokedAt           DateTime?
+  supersededAt        DateTime?
+  createdAt           DateTime                           @default(now())
+  updatedAt           DateTime                           @updatedAt
+
+  voucherSnapshot AccommodationBookingVoucherSnapshot @relation(fields: [voucherSnapshotId], references: [id], onDelete: Cascade)
+  emailDeliveries AccommodationVoucherEmailDelivery[]
+
+  @@index([voucherSnapshotId])
+  @@index([audience])
+  @@index([outputMode])
+  @@index([documentStatus])
+  @@index([generatedAt])
+  @@index([downloadedAt])
+  @@index([printedAt])
+  @@map("accommodation_voucher_documents")
+}
+
+model AccommodationVoucherEmailDelivery {
+  id                String                          @id @default(cuid())
+  voucherSnapshotId String
+  voucherDocumentId String?
+  audience          AccommodationVoucherAudience
+  emailStatus       AccommodationVoucherEmailStatus @default(PENDING)
+  recipientUserId   String?
+  recipientEmail    String
+  recipientName     String?
+  emailSubject      String
+  emailTemplateKey  String
+  emailPayloadJson  Json
+  providerMessageId String?
+  sentAt            DateTime?
+  failedAt          DateTime?
+  bouncedAt         DateTime?
+  openedAt          DateTime?
+  failureReason     String?
+  createdAt         DateTime                        @default(now())
+  updatedAt         DateTime                        @updatedAt
+
+  voucherSnapshot AccommodationBookingVoucherSnapshot @relation(fields: [voucherSnapshotId], references: [id], onDelete: Cascade)
+  voucherDocument AccommodationVoucherDocument?       @relation(fields: [voucherDocumentId], references: [id], onDelete: SetNull)
+
+  @@index([voucherSnapshotId])
+  @@index([voucherDocumentId])
+  @@index([audience])
+  @@index([emailStatus])
+  @@index([recipientUserId])
+  @@index([recipientEmail])
+  @@index([providerMessageId])
+  @@index([sentAt])
+  @@map("accommodation_voucher_email_deliveries")
+}
