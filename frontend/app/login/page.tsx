@@ -217,10 +217,10 @@ function getModeCopy(mode: EntryMode) {
 function Pill(props: { children: string; tone?: "light" | "blue" | "green" | "gold" | "slate" }) {
   const theme = {
     light: ["rgba(255,255,255,0.16)", "#ffffff", "rgba(255,255,255,0.24)"],
-    blue: ["rgba(14,165,233,0.11)", "#0369a1", "rgba(14,165,233,0.18)"],
-    green: ["rgba(22,163,74,0.10)", "#166534", "rgba(22,163,74,0.18)"],
-    gold: ["rgba(217,119,6,0.11)", "#92400e", "rgba(217,119,6,0.18)"],
-    slate: ["rgba(15,23,42,0.06)", "#334155", "rgba(15,23,42,0.10)"],
+    blue: ["rgba(5,150,165,0.10)", "#013863", "rgba(5,150,165,0.18)"],
+    green: ["rgba(5,150,165,0.10)", "#013863", "rgba(5,150,165,0.18)"],
+    gold: ["rgba(243,174,38,0.12)", "#7A4A00", "rgba(243,174,38,0.22)"],
+    slate: ["rgba(1,56,99,0.06)", "#013863", "rgba(1,56,99,0.10)"],
   }[props.tone ?? "slate"];
 
   return (
@@ -257,10 +257,10 @@ function EntryLink(props: {
 
   const accent =
     tone === "staff"
-      ? { bg: "#10234a", soft: "rgba(16,35,74,0.08)", color: "#10234a", icon: "🛡️" }
+      ? { color: "#013863", icon: "🛡️" }
       : tone === "returning"
-        ? { bg: "#0f766e", soft: "rgba(15,118,110,0.08)", color: "#0f766e", icon: "🧭" }
-        : { bg: "#078da0", soft: "rgba(14,165,233,0.09)", color: "#078da0", icon: "▣" };
+        ? { color: "#013863", icon: "🧭" }
+        : { color: "#0596A5", icon: "▣" };
 
   return (
     <a
@@ -268,47 +268,65 @@ function EntryLink(props: {
       style={{
         display: "block",
         textDecoration: "none",
-        borderRadius: 20,
-        padding: 11,
-        background: active
-          ? "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(240,253,250,0.94))"
-          : "rgba(255,255,255,0.82)",
-        border: active ? `1px solid ${accent.bg}` : "1px solid rgba(14,116,144,0.12)",
-        boxShadow: active ? "0 16px 34px rgba(15,23,42,0.11)" : "0 10px 24px rgba(15,23,42,0.06)",
-        color: "#10234a",
+        borderRadius: 18,
+        padding: "9px 10px",
+        
+        backgroundImage: "none",
+        border: active ? "1px solid rgba(1,56,99,0.46)" : "1px solid rgba(5,150,165,0.14)",
+        boxShadow: active ? "0 8px 18px rgba(1,56,99,0.08)" : "0 5px 12px rgba(1,56,99,0.045)",
+        color: "#013863",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <div style={{ display: "flex", gap: 11, alignItems: "flex-start" }}>
+      {active ? (
         <span
           aria-hidden="true"
           style={{
-            width: 38,
-            height: 38,
-            borderRadius: 16,
+            position: "absolute",
+            left: 0,
+            top: 10,
+            bottom: 10,
+            width: 4,
+            borderRadius: 999,
+            backgroundColor: "#013863",
+          }}
+        />
+      ) : null}
+
+      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <span
+          aria-hidden="true"
+          style={{
+            width: 31,
+            height: 31,
+            borderRadius: 13,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            background: active ? accent.bg : accent.soft,
-            color: active ? "#ffffff" : accent.color,
-            fontSize: 18,
+            backgroundColor: "rgba(255,255,255,0.92)",
+            backgroundImage: "none",
+            color: active ? "#013863" : accent.color,
+            fontSize: 14,
             flex: "0 0 auto",
-            boxShadow: active ? "0 10px 20px rgba(15,23,42,0.16)" : "0 8px 16px rgba(15,23,42,0.06)",
+            border: "1px solid rgba(5,150,165,0.12)",
+            boxShadow: "0 4px 10px rgba(1,56,99,0.06)",
           }}
         >
           {props.icon || accent.icon}
         </span>
 
         <span style={{ minWidth: 0, flex: 1 }}>
-          <span style={{ display: "block", fontSize: 14.4, lineHeight: 1.12, fontWeight: 950 }}>
+          <span style={{ display: "block", fontSize: 13.2, lineHeight: 1.12, fontWeight: 950 }}>
             {props.title}
           </span>
           <span
             style={{
               display: "block",
-              marginTop: 4,
-              fontSize: 12.1,
-              lineHeight: 1.34,
-              color: "rgba(15,23,42,0.64)",
+              marginTop: 3,
+              fontSize: 11.25,
+              lineHeight: 1.28,
+              color: "rgba(80,102,139,0.92)",
               fontWeight: 720,
             }}
           >
@@ -319,17 +337,19 @@ function EntryLink(props: {
         <span
           aria-hidden="true"
           style={{
-            width: 26,
-            height: 26,
+            width: 23,
+            height: 23,
             borderRadius: 999,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            background: active ? "rgba(7,141,160,0.12)" : "rgba(15,23,42,0.05)",
-            color: active ? accent.color : "rgba(15,23,42,0.46)",
-            fontSize: 13,
+            backgroundColor: "rgba(255,255,255,0.88)",
+            backgroundImage: "none",
+            color: active ? "#013863" : "rgba(80,102,139,0.68)",
+            fontSize: 12,
             fontWeight: 950,
             flex: "0 0 auto",
+            border: "1px solid rgba(5,150,165,0.10)",
           }}
         >
           →
@@ -373,13 +393,13 @@ function InputField(props: {
           minHeight: 42,
           padding: "10px 12px",
           borderRadius: 14,
-          border: "1px solid rgba(14,116,144,0.18)",
+          border: "1px solid rgba(5,150,165,0.18)",
           background: "rgba(255,255,255,0.94)",
-          color: "#10234a",
+          color: "#013863",
           fontSize: 14,
           fontWeight: 720,
           outline: "none",
-          boxShadow: "0 8px 18px rgba(15,23,42,0.05)",
+          boxShadow: "0 8px 18px rgba(1,56,99,0.05)",
         }}
       />
     </label>
@@ -391,11 +411,11 @@ function StatusTile(props: { icon: string; label: string; value: string }) {
     <div
       style={{
         borderRadius: 20,
-        background: "rgba(255,255,255,0.92)",
+        
         border: "1px solid rgba(255,255,255,0.20)",
         padding: "11px 9px",
         textAlign: "center",
-        boxShadow: "0 10px 22px rgba(15,23,42,0.08)",
+        boxShadow: "0 10px 22px rgba(1,56,99,0.08)",
       }}
     >
       <div style={{ fontSize: 19 }}>{props.icon}</div>
@@ -406,12 +426,12 @@ function StatusTile(props: { icon: string; label: string; value: string }) {
           fontWeight: 950,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: "#078da0",
+          color: "#0596A5",
         }}
       >
         {props.label}
       </div>
-      <div style={{ marginTop: 2, fontSize: 11.5, fontWeight: 950, color: "#10234a" }}>{props.value}</div>
+      <div style={{ marginTop: 2, fontSize: 11.5, fontWeight: 950, color: "#013863" }}>{props.value}</div>
     </div>
   );
 }
@@ -453,9 +473,9 @@ function SocialAccessLink(props: { href: string; provider: "google" | "apple"; l
         gap: 10,
         textDecoration: "none",
         background: "rgba(255,255,255,0.94)",
-        color: "#10234a",
-        border: "1px solid rgba(14,116,144,0.15)",
-        boxShadow: "0 8px 18px rgba(15,23,42,0.06)",
+        color: "#013863",
+        border: "1px solid rgba(5,150,165,0.15)",
+        boxShadow: "0 8px 18px rgba(1,56,99,0.06)",
       }}
     >
       <span style={{ display: "inline-flex", alignItems: "center", gap: 9, minWidth: 0 }}>
@@ -472,7 +492,7 @@ function SocialAccessLink(props: { href: string; provider: "google" | "apple"; l
             alignItems: "center",
             justifyContent: "center",
             flex: "0 0 auto",
-            boxShadow: "0 5px 12px rgba(15,23,42,0.08)",
+            boxShadow: "0 5px 12px rgba(1,56,99,0.08)",
           }}
         >
           <SocialIcon provider={props.provider} />
@@ -481,12 +501,12 @@ function SocialAccessLink(props: { href: string; provider: "google" | "apple"; l
           <span style={{ display: "block", fontSize: 12.6, lineHeight: 1.1, fontWeight: 950 }}>
             {props.label}
           </span>
-          <span style={{ display: "block", marginTop: 2, fontSize: 10.6, lineHeight: 1.2, fontWeight: 760, color: "rgba(15,23,42,0.54)" }}>
+          <span style={{ display: "block", marginTop: 2, fontSize: 10.6, lineHeight: 1.2, fontWeight: 760, color: "rgba(80,102,139,0.72)" }}>
             {props.note}
           </span>
         </span>
       </span>
-      <span aria-hidden="true" style={{ color: "#078da0", fontSize: 13, fontWeight: 950 }}>→</span>
+      <span aria-hidden="true" style={{ color: "#0596A5", fontSize: 13, fontWeight: 950 }}>→</span>
     </a>
   );
 }
@@ -499,13 +519,13 @@ function PrimaryButton(props: { children: string }) {
         width: "100%",
         minHeight: 44,
         borderRadius: 16,
-        border: "1px solid rgba(7,141,160,0.24)",
-        background: "linear-gradient(135deg, #078da0, #0f766e)",
+        border: "1px solid rgba(5,150,165,0.24)",
+        background: "#013863",
         color: "#ffffff",
         fontSize: 13.4,
         fontWeight: 950,
         cursor: "pointer",
-        boxShadow: "0 14px 28px rgba(7,141,160,0.22)",
+        boxShadow: "0 14px 28px rgba(1,56,99,0.24)",
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
@@ -524,33 +544,33 @@ function SecondaryLink(props: { href: string; children: string; icon?: string })
     <a
       href={props.href}
       style={{
-        minHeight: 40,
-        borderRadius: 15,
-        padding: "8px 10px",
+        minHeight: 32,
+        borderRadius: 14,
+        padding: "5px 8px",
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         gap: 6,
         textDecoration: "none",
-        fontSize: 12.2,
-        fontWeight: 920,
-        background: "rgba(255,255,255,0.90)",
-        color: "#075985",
-        border: "1px solid rgba(14,116,144,0.16)",
-        boxShadow: "0 8px 18px rgba(15,23,42,0.07)",
+        fontSize: 11,
+        fontWeight: 900,
+        
+        color: "#013863",
+        border: "1px solid rgba(5,150,165,0.16)",
+        boxShadow: "0 5px 12px rgba(1,56,99,0.05)",
       }}
     >
       {props.icon ? (
         <span
           aria-hidden="true"
           style={{
-            width: 22,
-            height: 22,
-            borderRadius: 9,
+            width: 18,
+            height: 18,
+            borderRadius: 8,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "rgba(14,165,233,0.10)",
+            background: "rgba(255,255,255,0.88)",
             fontSize: 12,
             flex: "0 0 auto",
           }}
@@ -583,152 +603,353 @@ export default async function LoginPage({
       style={{
         minHeight: "100vh",
         background:
-          "radial-gradient(circle at 14% -2%, rgba(45,212,191,0.24), transparent 34%), radial-gradient(circle at 96% 2%, rgba(251,191,36,0.20), transparent 30%), radial-gradient(circle at 50% 52%, rgba(14,165,233,0.08), transparent 38%), linear-gradient(180deg, #f8fdff 0%, #eefbf7 44%, #f8fafc 100%)",
-        color: "#10234a",
+          "radial-gradient(circle at 14% -2%, rgba(5,150,165,0.14), transparent 32%), radial-gradient(circle at 96% 2%, rgba(243,174,38,0.16), transparent 28%), linear-gradient(180deg, #F8FDFF 0%, #F4FCFA 46%, #FFFFFF 100%)",
+        color: "#013863",
         padding: "14px 12px 88px",
       }}
     >
+
       <div style={{ maxWidth: 460, margin: "0 auto" }}>
         <header
           style={{
-            position: "relative",
-            overflow: "hidden",
-            borderRadius: 30,
-            background:
-              "linear-gradient(145deg, rgba(12,74,110,0.98), rgba(8,145,178,0.92), rgba(20,184,166,0.82))",
-            boxShadow: "0 22px 50px rgba(15,23,42,0.19)",
-            padding: 16,
-            color: "#ffffff",
-            border: "1px solid rgba(255,255,255,0.16)",
+            borderRadius: 28,
+            background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,253,255,0.96))",
+            border: "1px solid rgba(5,150,165,0.16)",
+            boxShadow: "0 18px 38px rgba(1,56,99,0.10)",
+            padding: 14,
+            color: "#013863",
           }}
         >
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background:
-                "radial-gradient(circle at 82% 18%, rgba(255,255,255,0.24), transparent 23%), radial-gradient(circle at 15% 92%, rgba(250,204,21,0.18), transparent 25%)",
-              pointerEvents: "none",
-            }}
-          />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+            <a
+              href={roleAwareContinuePath}
+              aria-label="Back to One Siargao Pass home"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 16,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textDecoration: "none",
+                background: "#FFFFFF",
+                color: "#013863",
+                border: "1px solid rgba(5,150,165,0.18)",
+                boxShadow: "0 8px 18px rgba(1,56,99,0.08)",
+                fontWeight: 950,
+              }}
+            >
+              ←
+            </a>
 
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-              <a
-                href={roleAwareContinuePath}
-                aria-label="Back to One Siargao Pass home"
+            <div
+              aria-label="One Siargao Pass"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 9,
+                minWidth: 0,
+              }}
+            >
+              <span
+                aria-hidden="true"
                 style={{
-                  width: 42,
-                  height: 42,
-                  borderRadius: 17,
+                  width: 38,
+                  height: 38,
+                  borderRadius: 13,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  textDecoration: "none",
-                  background: "rgba(255,255,255,0.16)",
-                  color: "#ffffff",
-                  border: "1px solid rgba(255,255,255,0.20)",
+                  background: "linear-gradient(135deg, #013863 0%, #003B66 48%, #0596A5 100%)",
+                  color: "#FFFFFF",
+                  border: "1px solid rgba(255,255,255,0.55)",
+                  boxShadow: "0 10px 22px rgba(1,56,99,0.18)",
+                  fontSize: 17,
                   fontWeight: 950,
+                  flex: "0 0 auto",
                 }}
               >
-                ←
-              </a>
-              <Pill tone="light">One Siargao Pass</Pill>
+                ▣
+              </span>
+              <span style={{ display: "grid", minWidth: 0 }}>
+                <span
+                  style={{
+                    fontSize: 10,
+                    lineHeight: 1,
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "#0596A5",
+                    fontWeight: 950,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  One Siargao Pass
+                </span>
+                <span
+                  style={{
+                    marginTop: 4,
+                    fontSize: 13,
+                    lineHeight: 1.1,
+                    color: "#013863",
+                    fontWeight: 950,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  Account Access
+                </span>
+              </span>
             </div>
 
-            <div style={{ marginTop: 22 }}>
-              <div
-                style={{
-                  fontSize: 10.5,
-                  fontWeight: 950,
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.78)",
-                }}
-              >
-                {copy.eyebrow}
-              </div>
-
-              <h1
-                style={{
-                  margin: "7px 0 0",
-                  fontSize: 30,
-                  lineHeight: 1,
-                  letterSpacing: "-0.045em",
-                  fontWeight: 950,
-                }}
-              >
-                {copy.title}
-              </h1>
-
-              <p style={{ margin: "10px 0 0", color: "#fef9c3", fontSize: 15.8, lineHeight: 1.22, fontWeight: 950 }}>
-                Your Siargao journey starts here.
-              </p>
-
-              <p
-                style={{
-                  margin: "10px 0 0",
-                  color: "rgba(255,255,255,0.84)",
-                  fontSize: 12.8,
-                  lineHeight: 1.42,
-                  fontWeight: 700,
-                  maxWidth: 390,
-                }}
-              >
-                {copy.body}
-              </p>
-            </div>
-
-            <div
+            <span
               style={{
-                marginTop: 15,
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 7,
+                borderRadius: 999,
+                padding: "7px 10px",
+                background: "rgba(243,174,38,0.13)",
+                color: "#7A4A00",
+                border: "1px solid rgba(243,174,38,0.25)",
+                fontSize: 10.5,
+                fontWeight: 950,
+                whiteSpace: "nowrap",
               }}
             >
-              <Pill tone="light">OSP Pass</Pill>
-              <Pill tone="light">Trip access</Pill>
-              <Pill tone="light">QR ready when eligible</Pill>
+              {mode === "returning" ? "Returning" : "Start"}
+            </span>
+          </div>
+
+          <div style={{ marginTop: 16 }}>
+            <div
+              style={{
+                fontSize: 10.5,
+                fontWeight: 950,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "#0596A5",
+              }}
+            >
+              {copy.eyebrow}
             </div>
+            <h1
+              style={{
+                margin: "6px 0 0",
+                fontSize: 30,
+                lineHeight: 0.98,
+                letterSpacing: "-0.045em",
+                fontWeight: 950,
+                color: "#013863",
+              }}
+            >
+              {copy.title}
+            </h1>
+            <p style={{ margin: "9px 0 0", color: "#50668B", fontSize: 14.2, lineHeight: 1.36, fontWeight: 780 }}>
+              {mode === "returning" ? "Sign in to continue your One Siargao Pass journey." : "Create or access your traveler account for Siargao."}
+            </p>
+            <p style={{ margin: "7px 0 0", color: "#50668B", fontSize: 12.2, lineHeight: 1.38, fontWeight: 700 }}>
+              {copy.body}
+            </p>
+          </div>
+
+          <div style={{ marginTop: 13, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 7 }}>
+            <span style={compactChipStyle}>
+              <span aria-hidden="true">▣</span>
+              OSP Pass
+            </span>
+            <span style={compactChipStyle}>
+              <span aria-hidden="true">🧭</span>
+              Trip access
+            </span>
+            <span style={compactChipStyle}>
+              <span aria-hidden="true">🗺️</span>
+              Map ready
+            </span>
           </div>
         </header>
-
         <section
           aria-label="Choose your OSP access lane"
           style={{
-            marginTop: 13,
+            marginTop: 11,
             display: "grid",
-            gap: 9,
+            gap: 7,
           }}
         >
-          <EntryLink
+          <a
             href="/traveler/register"
-            icon="▣"
-            title="Create My OSP Pass"
-            body="New to One Siargao Pass? Start with traveler access for your trip, pass, and QR readiness."
-            active={mode === "traveler"}
-            tone="traveler"
-          />
-          <EntryLink
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              minHeight: 52,
+              borderRadius: 18,
+              padding: "9px 10px",
+              textDecoration: "none",
+              
+              backgroundImage: "none",
+              border: "1px solid rgba(5,150,165,0.14)",
+              boxShadow: "0 5px 12px rgba(1,56,99,0.045)",
+              color: "#013863",
+            }}
+          >
+            <span
+              aria-hidden="true"
+              style={{
+                width: 31,
+                height: 31,
+                borderRadius: 13,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "rgba(255,255,255,0.92)",
+                backgroundImage: "none",
+                color: "#0596A5",
+                border: "1px solid rgba(5,150,165,0.12)",
+                boxShadow: "0 4px 10px rgba(1,56,99,0.06)",
+                flex: "0 0 auto",
+              }}
+            >
+              ▣
+            </span>
+
+            <span style={{ minWidth: 0, flex: 1 }}>
+              <span style={{ display: "block", fontSize: 13.2, lineHeight: 1.12, fontWeight: 950 }}>
+                Create My OSP Pass
+              </span>
+              <span
+                style={{
+                  display: "block",
+                  marginTop: 3,
+                  fontSize: 11.25,
+                  lineHeight: 1.28,
+                  color: "rgba(80,102,139,0.92)",
+                  fontWeight: 720,
+                }}
+              >
+                New to One Siargao Pass? Start with traveler access for your trip, pass, and QR readiness.
+              </span>
+            </span>
+
+            <span
+              aria-hidden="true"
+              style={{
+                width: 23,
+                height: 23,
+                borderRadius: 999,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "rgba(255,255,255,0.88)",
+                backgroundImage: "none",
+                color: "rgba(80,102,139,0.68)",
+                border: "1px solid rgba(5,150,165,0.10)",
+                fontSize: 12,
+                fontWeight: 950,
+                flex: "0 0 auto",
+              }}
+            >
+              →
+            </span>
+          </a>
+
+          <a
             href={roleAwareContinuePath}
-            icon="🧭"
-            title="Continue My Trip"
-            body="Already have an account or trip record? Sign in and continue your Siargao journey."
-            active={mode === "returning"}
-            tone="returning"
-          />
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              minHeight: 52,
+              borderRadius: 18,
+              padding: "9px 10px",
+              textDecoration: "none",
+              
+              backgroundImage: "none",
+              border: "1px solid rgba(1,56,99,0.46)",
+              boxShadow: "0 8px 18px rgba(1,56,99,0.08)",
+              color: "#013863",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <span
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 10,
+                bottom: 10,
+                width: 4,
+                borderRadius: 999,
+                background: "#013863",
+              }}
+            />
+
+            <span
+              aria-hidden="true"
+              style={{
+                width: 31,
+                height: 31,
+                borderRadius: 13,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "rgba(255,255,255,0.92)",
+                backgroundImage: "none",
+                color: "#013863",
+                border: "1px solid rgba(5,150,165,0.12)",
+                boxShadow: "0 4px 10px rgba(1,56,99,0.06)",
+                flex: "0 0 auto",
+              }}
+            >
+              🧭
+            </span>
+
+            <span style={{ minWidth: 0, flex: 1 }}>
+              <span style={{ display: "block", fontSize: 13.2, lineHeight: 1.12, fontWeight: 950 }}>
+                Continue My Trip
+              </span>
+              <span
+                style={{
+                  display: "block",
+                  marginTop: 3,
+                  fontSize: 11.25,
+                  lineHeight: 1.28,
+                  color: "rgba(80,102,139,0.92)",
+                  fontWeight: 720,
+                }}
+              >
+                Already have an account or trip record? Sign in and continue your Siargao journey.
+              </span>
+            </span>
+
+            <span
+              aria-hidden="true"
+              style={{
+                width: 23,
+                height: 23,
+                borderRadius: 999,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "rgba(255,255,255,0.88)",
+                backgroundImage: "none",
+                color: "#013863",
+                border: "1px solid rgba(5,150,165,0.10)",
+                fontSize: 12,
+                fontWeight: 950,
+                flex: "0 0 auto",
+              }}
+            >
+              →
+            </span>
+          </a>
         </section>
 
         <section
           aria-label="What happens after traveler sign in"
           style={{
             marginTop: 12,
-            borderRadius: 22,
-            background: "rgba(255,255,255,0.90)",
-            border: "1px solid rgba(14,116,144,0.12)",
-            boxShadow: "0 12px 28px rgba(15,23,42,0.07)",
-            padding: 12,
+            borderRadius: 20,
+            
+            border: "1px solid rgba(5,150,165,0.14)",
+            boxShadow: "0 8px 20px rgba(1,56,99,0.06)",
+            padding: 10,
           }}
         >
           <div
@@ -737,7 +958,7 @@ export default async function LoginPage({
               fontWeight: 950,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "#078da0",
+              color: "#0596A5",
             }}
           >
             After sign in
@@ -752,14 +973,14 @@ export default async function LoginPage({
                 key={label}
                 style={{
                   borderRadius: 16,
-                  background: "linear-gradient(180deg, rgba(240,253,250,0.92), rgba(255,255,255,0.94))",
-                  border: "1px solid rgba(14,116,144,0.10)",
+                  background: "linear-gradient(180deg, rgba(255, rgba(248,253,255,0.94))",
+                  border: "1px solid rgba(5,150,165,0.12)",
                   padding: "9px 7px",
                   textAlign: "center",
                 }}
               >
                 <div style={{ fontSize: 17 }}>{icon}</div>
-                <div style={{ marginTop: 3, fontSize: 11, fontWeight: 900, color: "#10234a" }}>{label}</div>
+                <div style={{ marginTop: 3, fontSize: 11, fontWeight: 900, color: "#013863" }}>{label}</div>
               </div>
             ))}
           </div>
@@ -769,9 +990,9 @@ export default async function LoginPage({
           style={{
             marginTop: 13,
             borderRadius: 24,
-            background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(240,253,250,0.92))",
-            border: "1px solid rgba(14,116,144,0.14)",
-            boxShadow: "0 16px 36px rgba(15,23,42,0.08)",
+            background: "linear-gradient(180deg, rgba(255,255,255,0.99), rgba(248,253,255,0.95))",
+            border: "1px solid rgba(5,150,165,0.14)",
+            boxShadow: "0 16px 36px rgba(1,56,99,0.08)",
             padding: 14,
           }}
         >
@@ -781,7 +1002,7 @@ export default async function LoginPage({
               <h2 style={{ margin: "8px 0 0", fontSize: 20, lineHeight: 1.08, fontWeight: 950 }}>
                 You are already signed in.
               </h2>
-              <p style={{ margin: "8px 0 0", fontSize: 12.8, lineHeight: 1.45, color: "rgba(15,23,42,0.66)", fontWeight: 720 }}>
+              <p style={{ margin: "8px 0 0", fontSize: 12.8, lineHeight: 1.45, color: "rgba(80,102,139,0.86)", fontWeight: 720 }}>
                 Continue with your current session or log out to switch accounts.
               </p>
 
@@ -792,7 +1013,7 @@ export default async function LoginPage({
                   gap: 8,
                   borderRadius: 20,
                   background: "rgba(255,255,255,0.74)",
-                  border: "1px solid rgba(14,116,144,0.10)",
+                  border: "1px solid rgba(5,150,165,0.12)",
                   padding: 11,
                 }}
               >
@@ -820,7 +1041,7 @@ export default async function LoginPage({
                 Sign in securely
               </h2>
 
-              <p style={{ margin: "8px 0 0", fontSize: 12.8, lineHeight: 1.45, color: "rgba(15,23,42,0.66)", fontWeight: 720 }}>
+              <p style={{ margin: "8px 0 0", fontSize: 12.8, lineHeight: 1.45, color: "rgba(80,102,139,0.86)", fontWeight: 720 }}>
                 {copy.formNote}
               </p>
 
@@ -831,9 +1052,9 @@ export default async function LoginPage({
                 <div
                   style={{
                     borderRadius: 16,
-                    background: "rgba(22,163,74,0.10)",
-                    border: "1px solid rgba(22,163,74,0.18)",
-                    color: "#166534",
+                    background: "rgba(255,255,255,0.88)",
+                    border: "1px solid rgba(5,150,165,0.18)",
+                    color: "#013863",
                     padding: "10px 11px",
                     fontSize: 12,
                     lineHeight: 1.35,
@@ -889,16 +1110,16 @@ export default async function LoginPage({
                   gridTemplateColumns: "1fr auto 1fr",
                   alignItems: "center",
                   gap: 10,
-                  color: "rgba(15,23,42,0.45)",
+                  color: "rgba(80,102,139,0.64)",
                   fontSize: 11,
                   fontWeight: 850,
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
                 }}
               >
-                <span style={{ height: 1, background: "rgba(14,116,144,0.14)" }} />
+                <span style={{ height: 1, background: "rgba(5,150,165,0.14)" }} />
                 <span>Email access</span>
-                <span style={{ height: 1, background: "rgba(14,116,144,0.14)" }} />
+                <span style={{ height: 1, background: "rgba(5,150,165,0.14)" }} />
               </div>
 
                 <InputField
@@ -929,10 +1150,10 @@ export default async function LoginPage({
           style={{
             marginTop: 13,
             borderRadius: 24,
-            background: "linear-gradient(180deg, rgba(240,253,250,0.98), rgba(220,252,231,0.88))",
-            color: "#10234a",
-            border: "1px solid rgba(22,163,74,0.16)",
-            boxShadow: "0 16px 36px rgba(15,23,42,0.08)",
+            background: "linear-gradient(180deg, rgba(248,253,255,0.98), rgba(248,253,255,0.88))",
+            color: "#013863",
+            border: "1px solid rgba(5,150,165,0.16)",
+            boxShadow: "0 16px 36px rgba(1,56,99,0.08)",
             padding: 14,
           }}
         >
@@ -942,13 +1163,13 @@ export default async function LoginPage({
               fontWeight: 950,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color: "#0f766e",
+              color: "#0596A5",
             }}
           >
             Traveler start path
           </div>
 
-          <h2 style={{ margin: "5px 0 0", fontSize: 20, lineHeight: 1.1, fontWeight: 950, color: "#10234a" }}>
+          <h2 style={{ margin: "5px 0 0", fontSize: 20, lineHeight: 1.1, fontWeight: 950, color: "#013863" }}>
             Simple start. Clear next steps.
           </h2>
 
@@ -966,8 +1187,8 @@ export default async function LoginPage({
                   alignItems: "center",
                   gap: 10,
                   borderRadius: 18,
-                  background: "rgba(255,255,255,0.78)",
-                  border: "1px solid rgba(22,163,74,0.13)",
+                  background: "rgba(255,255,255,0.88)",
+                  border: "1px solid rgba(5,150,165,0.13)",
                   padding: "10px 11px",
                 }}
               >
@@ -980,8 +1201,8 @@ export default async function LoginPage({
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    background: "rgba(22,163,74,0.12)",
-                    color: "#166534",
+                    background: "rgba(5,150,165,0.12)",
+                    color: "#013863",
                     fontSize: 12,
                     fontWeight: 950,
                     flex: "0 0 auto",
@@ -989,7 +1210,7 @@ export default async function LoginPage({
                 >
                   {number}
                 </span>
-                <span style={{ fontSize: 12.8, lineHeight: 1.35, fontWeight: 800, color: "rgba(15,23,42,0.70)" }}>
+                <span style={{ fontSize: 12.8, lineHeight: 1.35, fontWeight: 800, color: "rgba(80,102,139,0.86)" }}>
                   {label}
                 </span>
               </div>
@@ -1005,10 +1226,10 @@ export default async function LoginPage({
             right: 0,
             bottom: 0,
             zIndex: 20,
-            padding: "10px 13px 14px",
+            padding: "6px 12px 9px",
             background:
               "linear-gradient(180deg, rgba(248,250,252,0), rgba(248,250,252,0.96) 24%, rgba(248,250,252,1))",
-            borderTop: "1px solid rgba(14,116,144,0.08)",
+            borderTop: "1px solid rgba(5,150,165,0.10)",
           }}
         >
           <div
@@ -1017,7 +1238,7 @@ export default async function LoginPage({
               margin: "0 auto",
               display: "grid",
               gridTemplateColumns: "1fr 1fr 1fr",
-              gap: 7,
+              gap: 6,
             }}
           >
             <SecondaryLink href="/traveler/register" icon="▣">
@@ -1035,3 +1256,20 @@ export default async function LoginPage({
     </main>
   );
 }
+
+const compactChipStyle: React.CSSProperties = {
+  minHeight: 34,
+  borderRadius: 15,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 6,
+  
+  color: "#013863",
+  border: "1px solid rgba(5,150,165,0.16)",
+  boxShadow: "0 8px 18px rgba(1,56,99,0.06)",
+  fontSize: 11.2,
+  lineHeight: 1,
+  fontWeight: 920,
+  whiteSpace: "nowrap",
+};

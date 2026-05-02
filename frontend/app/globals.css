@@ -6255,3 +6255,68 @@ main p {
   letter-spacing: -0.055em;
   line-height: 0.96;
 }
+
+/* ================================================================
+   OSP LOGIN ACTION ROW NO-FILL DOCTRINE
+   Hard rule: login action rows must never become green/teal filled.
+   Only text, borders, small icons, and thin rails may carry accents.
+   ================================================================= */
+
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"],
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:hover,
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:focus,
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:active {
+  background: linear-gradient(180deg, #F4FCFA 0%, #EAFBFA 100%) !important;
+  background-color: #F4FCFA !important;
+  background-image: linear-gradient(180deg, #F4FCFA 0%, #EAFBFA 100%) !important;
+  color: #013863 !important;
+}
+
+html body main[data-osp-entry-page="true"] a[href="/traveler/home"],
+html body main[data-osp-entry-page="true"] a[href="/traveler/home"]:hover,
+html body main[data-osp-entry-page="true"] a[href="/traveler/home"]:focus,
+html body main[data-osp-entry-page="true"] a[href="/traveler/home"]:active,
+html body main[data-osp-entry-page="true"] a[href="/traveler/pass"],
+html body main[data-osp-entry-page="true"] a[href="/traveler/pass"]:hover,
+html body main[data-osp-entry-page="true"] a[href="/traveler/pass"]:focus,
+html body main[data-osp-entry-page="true"] a[href="/traveler/pass"]:active,
+html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"],
+html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"]:hover,
+html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"]:focus,
+html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"]:active {
+  background: rgba(255,255,255,0.96) !important;
+  background-color: rgba(255,255,255,0.96) !important;
+  background-image: none !important;
+  color: #013863 !important;
+}
+
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"] *,
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:hover *,
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:focus *,
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:active * {
+  color: #013863 !important;
+}
+
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"] span,
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:hover span,
+html body main[data-osp-entry-page="true"] a[href="/traveler/home"] span,
+html body main[data-osp-entry-page="true"] a[href="/traveler/home"]:hover span,
+html body main[data-osp-entry-page="true"] a[href="/traveler/pass"] span,
+html body main[data-osp-entry-page="true"] a[href="/traveler/pass"]:hover span,
+html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"] span,
+html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"]:hover span {
+  background-image: none !important;
+}
+
+/* Keep small icon chips light, not filled. */
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"] > span:first-of-type,
+html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:hover > span:first-of-type,
+html body main[data-osp-entry-page="true"] a[href="/traveler/pass"] > span:first-of-type,
+html body main[data-osp-entry-page="true"] a[href="/traveler/home"] > span:first-of-type,
+html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"] > span:first-of-type {
+  background: rgba(255,255,255,0.92) !important;
+  background-color: rgba(255,255,255,0.92) !important;
+  background-image: none !important;
+  color: #013863 !important;
+}
+
