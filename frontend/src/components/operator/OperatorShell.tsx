@@ -14,6 +14,7 @@ const navItems = [
   { href: "/operator/access-scan", label: "Access Scan" },
   { href: "/operator/records", label: "Records" },
   { href: "/operator/commercial", label: "Commercial" },
+  { href: "/operator/accommodations", label: "Accommodations" },
   { href: "/operator/guides", label: "Guides" },
   { href: "/operator/settings", label: "Settings" },
 ];
