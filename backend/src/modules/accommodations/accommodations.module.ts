@@ -1,17 +1,18 @@
 import { Module } from '@nestjs/common';
+import { PrismaService } from '../../database/prisma.service';
 import {
   AccommodationVoucherDocumentsController,
   AccommodationVoucherEmailsController,
   AccommodationVoucherQrController,
   AdminAccommodationImportsController,
-  AdminAccommodationsController,
   AdminAccommodationVouchersController,
+  AdminAccommodationsController,
   OperatorAccommodationRequestsController,
-  OperatorAccommodationsController,
   OperatorAccommodationVouchersController,
+  OperatorAccommodationsController,
   TravelerAccommodationRequestsController,
-  TravelerAccommodationsController,
   TravelerAccommodationVouchersController,
+  TravelerAccommodationsController,
 } from './controllers';
 import {
   AccommodationBookingRequestService,
@@ -28,20 +29,7 @@ import {
   RawAccommodationImportService,
 } from './services';
 
-/**
- * ACCOM-09B — Accommodation module shell.
- *
- * Controller shells + provider shells only.
- *
- * No route methods.
- * No API mount into app module.
- * No DB writes.
- * No service implementation logic yet.
- * No marketplace exposure endpoint.
- * No traveler UI.
- */
 @Module({
-  imports: [],
   controllers: [
     TravelerAccommodationsController,
     TravelerAccommodationRequestsController,
@@ -57,6 +45,7 @@ import {
     AccommodationVoucherQrController,
   ],
   providers: [
+    PrismaService,
     AccommodationProfileService,
     AccommodationInventoryService,
     AccommodationBookingRequestService,
