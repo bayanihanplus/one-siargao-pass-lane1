@@ -60,6 +60,16 @@ export class OperatorAccommodationsController {
     return this.accommodationInventoryService.createAccommodationRoomDraft(userId, accommodationId, body);
   }
 
+  @Patch(':accommodationId/rooms/:roomTypeId')
+  updateAccommodationRoom(
+    @CurrentUserId() userId: string,
+    @Param('accommodationId') accommodationId: string,
+    @Param('roomTypeId') roomTypeId: string,
+    @Body() body: any,
+  ) {
+    return this.accommodationInventoryService.updateAccommodationRoom(userId, accommodationId, roomTypeId, body);
+  }
+
   @Get(':accommodationId/inventory')
   getAccommodationInventory(@Param('accommodationId') accommodationId: string) {
     return this.accommodationInventoryService.getAccommodationInventory(accommodationId);

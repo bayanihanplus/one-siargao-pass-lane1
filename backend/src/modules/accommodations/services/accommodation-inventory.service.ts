@@ -118,6 +118,52 @@ export class AccommodationInventoryService {
     return this.toOperatorAccommodationRoomDto(room);
   }
 
+  async updateAccommodationRoom(
+    userId: string,
+    accommodationId: string,
+    roomTypeId: string,
+    body: any = {},
+  ): Promise<OperatorAccommodationRoomDto> {
+    await this.assertOperatorOwnsAccommodation(userId, accommodationId);
+
+    const existingRoom = await this.prisma.accommodationRoomType.findFirst({
+      where: {
+        id: roomTypeId,
+        accommodationId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!existingRoom) {
+      throw new NotFoundException('Accommodation room not found for this operator accommodation.');
+    }
+
+    const data = this.buildOperatorRoomUpdateData(body);
+
+    if (Object.keys(data).length === 0) {
+      throw new BadRequestException('No allowed room fields were provided.');
+    }
+
+    const room = await this.prisma.accommodationRoomType.update({
+      where: {
+        id: roomTypeId,
+      },
+      data,
+      include: {
+        _count: {
+          select: {
+            units: true,
+            inventoryDates: true,
+          },
+        },
+      },
+    });
+
+    return this.toOperatorAccommodationRoomDto(room);
+  }
+
   async getAccommodationInventory(_accommodationId: string): Promise<unknown> {
     throw new NotImplementedException('ACCOM service method shell only. Implementation not wired yet.');
   }
@@ -180,6 +226,91 @@ export class AccommodationInventoryService {
         href: `/api/v1/operator/accommodations/${room.accommodationId}/rooms/${room.id}`,
       },
     };
+  }
+
+  private buildOperatorRoomUpdateData(body: any): Record<string, unknown> {
+    const data: Record<string, unknown> = {};
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'title')) {
+      data.title = this.normalizeRequiredText(body?.title, 'Room title');
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'description')) {
+      data.description = this.normalizeOptionalText(body?.description, 500);
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'roomUnitType')) {
+      data.roomUnitType = this.normalizeAllowedEnum<AccommodationRoomUnitType>(
+        body?.roomUnitType,
+        'Room unit type',
+        [
+          'STANDARD_ROOM',
+          'DELUXE_ROOM',
+          'FAMILY_ROOM',
+          'PRIVATE_VILLA',
+          'DORM_BED',
+          'BARKADA_ROOM',
+          'COUPLE_ROOM',
+          'BEACHFRONT_ROOM',
+          'SURF_STAY_ROOM',
+          'LONG_STAY_UNIT',
+        ],
+      );
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'maxOccupancy')) {
+      data.maxOccupancy = this.normalizePositiveInteger(body?.maxOccupancy, 'Max occupancy');
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'baseCapacity')) {
+      data.baseCapacity = this.normalizePositiveInteger(body?.baseCapacity, 'Base capacity');
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'basePricePhp')) {
+      const basePricePhp = this.normalizeOptionalPositiveMoney(body?.basePricePhp, 'Base price');
+      data.basePricePhp = basePricePhp;
+      data.pricingReady = basePricePhp !== null;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'isActive')) {
+      data.isActive = this.normalizeBoolean(body?.isActive, 'Room active status');
+    }
+
+    return data;
+  }
+
+  private normalizeOptionalPositiveMoney(value: unknown, fieldLabel: string): number | null {
+    if (value === null || value === undefined || String(value).trim() === '') {
+      return null;
+    }
+
+    const numberValue = Number(value);
+
+    if (!Number.isFinite(numberValue) || numberValue < 0) {
+      throw new BadRequestException(`${fieldLabel} must be a valid non-negative amount.`);
+    }
+
+    if (numberValue === 0) {
+      return null;
+    }
+
+    if (numberValue > 9999999) {
+      throw new BadRequestException(`${fieldLabel} is too high.`);
+    }
+
+    return Math.round(numberValue * 100) / 100;
+  }
+
+  private normalizeBoolean(value: unknown, fieldLabel: string): boolean {
+    if (value === true || value === 'true' || value === 'on' || value === 1 || value === '1') {
+      return true;
+    }
+
+    if (value === false || value === 'false' || value === 'off' || value === 0 || value === '0') {
+      return false;
+    }
+
+    throw new BadRequestException(`${fieldLabel} is invalid.`);
   }
 
   private normalizeRequiredText(value: unknown, fieldLabel: string): string {
