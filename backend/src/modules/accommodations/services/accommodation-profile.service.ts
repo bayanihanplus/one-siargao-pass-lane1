@@ -221,8 +221,73 @@ export class AccommodationProfileService {
     return this.toOperatorAccommodationConsoleCard(accommodation);
   }
 
-  async updateOperatorAccommodationProfile(_accommodationId: string): Promise<unknown> {
-    throw new NotImplementedException('ACCOM service method shell only. Implementation not wired yet.');
+  async updateOperatorAccommodationProfile(
+    userId: string,
+    accommodationId: string,
+    body: any = {},
+  ): Promise<OperatorAccommodationConsoleCardDto> {
+    if (!userId) {
+      throw new UnauthorizedException('Operator accommodation profile update requires an authenticated user.');
+    }
+
+    const existing = await this.prisma.accommodationProfile.findFirst({
+      where: {
+        id: accommodationId,
+        ownerUserId: userId,
+      },
+      select: {
+        id: true,
+        suspendedAt: true,
+        publicExposureStatus: true,
+      },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Accommodation profile not found for this operator.');
+    }
+
+    if (existing.suspendedAt || existing.publicExposureStatus === 'SUSPENDED') {
+      throw new BadRequestException('Suspended accommodations cannot be edited by the operator.');
+    }
+
+    const data = this.buildOperatorAccommodationUpdateData(body);
+
+    if (Object.keys(data).length === 0) {
+      throw new BadRequestException('No allowed accommodation profile fields were provided.');
+    }
+
+    const accommodation = await this.prisma.accommodationProfile.update({
+      where: {
+        id: accommodationId,
+      },
+      data,
+      include: {
+        roomTypes: {
+          select: {
+            isActive: true,
+            pricingReady: true,
+          },
+        },
+        inventoryDates: {
+          select: {
+            availableUnits: true,
+          },
+          take: 20,
+          orderBy: {
+            inventoryDate: 'asc',
+          },
+        },
+        _count: {
+          select: {
+            bookingRequests: true,
+            stays: true,
+            AccommodationBookingVoucherSnapshot: true,
+          },
+        },
+      },
+    });
+
+    return this.toOperatorAccommodationConsoleCard(accommodation);
   }
 
   async listAdminAccommodations(): Promise<AdminAccommodationGovernanceCardDto[]> {
@@ -538,6 +603,119 @@ export class AccommodationProfileService {
     });
 
     return this.toAdminAccommodationGovernanceCard(updated);
+  }
+
+  private buildOperatorAccommodationUpdateData(body: any): Record<string, unknown> {
+    const data: Record<string, unknown> = {};
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'displayName')) {
+      data.displayName = this.normalizeRequiredText(body?.displayName, 'Accommodation display name');
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'profileType')) {
+      data.profileType = this.normalizeAllowedEnum(
+        body?.profileType,
+        'Accommodation profile type',
+        [
+          'HOTEL_RESORT',
+          'BOUTIQUE_HOTEL',
+          'GUESTHOUSE',
+          'HOMESTAY',
+          'HOSTEL',
+          'VILLA',
+          'APARTMENT',
+          'SURF_CAMP',
+          'ECO_LODGE',
+          'FAMILY_STAY',
+          'DORMITORY',
+          'OTHER_REQUEST_REVIEW',
+        ],
+      );
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'baseArea')) {
+      data.baseArea = this.normalizeAllowedEnum(
+        body?.baseArea,
+        'Accommodation base area',
+        [
+          'GENERAL_LUNA',
+          'MALINAO',
+          'CATANGNAN',
+          'DAPA',
+          'PACIFICO',
+          'BURGOS',
+          'SAN_ISIDRO',
+          'PILAR',
+          'DEL_CARMEN',
+          'SOCORRO',
+          'OTHER_SIARGAO_AREA',
+        ],
+      );
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'bookingMode')) {
+      data.bookingMode = this.normalizeAllowedEnum(
+        body?.bookingMode,
+        'Accommodation booking mode',
+        [
+          'INQUIRY_ONLY',
+          'REQUEST_TO_CONFIRM',
+          'WALK_IN_SUPPORTED',
+          'DISABLED_PENDING_SETUP',
+        ],
+      );
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'availabilityMode')) {
+      data.availabilityMode = this.normalizeAllowedEnum(
+        body?.availabilityMode,
+        'Accommodation availability mode',
+        [
+          'OWNER_MANAGED',
+          'REQUEST_WINDOW',
+          'SEASONAL_AVAILABILITY',
+          'MANUAL_CONFIRMATION',
+        ],
+      );
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'addressText')) {
+      data.addressText = this.normalizeOptionalText(body?.addressText, 240);
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'shortDescription')) {
+      data.shortDescription = this.normalizeOptionalText(body?.shortDescription, 280);
+    }
+
+    if (Object.prototype.hasOwnProperty.call(body ?? {}, 'longDescription')) {
+      data.longDescription = this.normalizeOptionalText(body?.longDescription, 2000);
+    }
+
+    return data;
+  }
+
+  private normalizeOptionalText(value: unknown, maxLength: number): string | null {
+    const text = String(value ?? '').trim().replace(/\s+/g, ' ');
+
+    if (!text) {
+      return null;
+    }
+
+    if (text.length > maxLength) {
+      throw new BadRequestException(`Text value must be ${maxLength} characters or fewer.`);
+    }
+
+    return text;
+  }
+
+  private normalizeAllowedEnum(value: unknown, fieldLabel: string, allowedValues: string[]): string {
+    const text = String(value ?? '').trim().toUpperCase();
+
+    if (!allowedValues.includes(text)) {
+      throw new BadRequestException(`${fieldLabel} is invalid.`);
+    }
+
+    return text;
   }
 
   private normalizeRequiredText(value: unknown, fieldLabel: string): string {

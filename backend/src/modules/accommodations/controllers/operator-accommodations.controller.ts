@@ -35,8 +35,12 @@ export class OperatorAccommodationsController {
   }
 
   @Patch(':accommodationId')
-  updateOperatorAccommodationProfile(@Param('accommodationId') accommodationId: string) {
-    return this.accommodationProfileService.updateOperatorAccommodationProfile(accommodationId);
+  updateOperatorAccommodationProfile(
+    @CurrentUserId() userId: string,
+    @Param('accommodationId') accommodationId: string,
+    @Body() body: any,
+  ) {
+    return this.accommodationProfileService.updateOperatorAccommodationProfile(userId, accommodationId, body);
   }
 
   @Get(':accommodationId/rooms')
