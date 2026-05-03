@@ -44,13 +44,20 @@ export class OperatorAccommodationsController {
   }
 
   @Get(':accommodationId/rooms')
-  listAccommodationRooms(@Param('accommodationId') accommodationId: string) {
-    return this.accommodationInventoryService.listAccommodationRooms(accommodationId);
+  listAccommodationRooms(
+    @CurrentUserId() userId: string,
+    @Param('accommodationId') accommodationId: string,
+  ) {
+    return this.accommodationInventoryService.listAccommodationRooms(userId, accommodationId);
   }
 
   @Post(':accommodationId/rooms')
-  createAccommodationRoomDraft(@Param('accommodationId') accommodationId: string) {
-    return this.accommodationInventoryService.createAccommodationRoomDraft(accommodationId);
+  createAccommodationRoomDraft(
+    @CurrentUserId() userId: string,
+    @Param('accommodationId') accommodationId: string,
+    @Body() body: any,
+  ) {
+    return this.accommodationInventoryService.createAccommodationRoomDraft(userId, accommodationId, body);
   }
 
   @Get(':accommodationId/inventory')
