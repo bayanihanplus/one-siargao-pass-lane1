@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Post } from '@nestjs/common';
-import { AccommodationProfileService } from '../services';
+import { AccommodationMediaService, AccommodationProfileService } from '../services';
 
 /**
  * ACCOM-14B — AdminAccommodationsController wiring shell.
@@ -9,7 +9,10 @@ import { AccommodationProfileService } from '../services';
  */
 @Controller('admin/accommodations')
 export class AdminAccommodationsController {
-  constructor(private readonly accommodationProfileService: AccommodationProfileService) {}
+  constructor(
+    private readonly accommodationProfileService: AccommodationProfileService,
+    private readonly accommodationMediaService: AccommodationMediaService,
+  ) {}
 
   @Get()
   listAdminAccommodations() {
@@ -39,5 +42,26 @@ export class AdminAccommodationsController {
   @Post(':accommodationId/publish')
   publishAccommodationToTravelerDiscovery(@Param('accommodationId') accommodationId: string) {
     return this.accommodationProfileService.publishAccommodationToTravelerDiscovery(accommodationId);
+  }
+
+  @Get(':accommodationId/media')
+  listAdminAccommodationMedia(@Param('accommodationId') accommodationId: string) {
+    return this.accommodationMediaService.listAdminAccommodationMedia(accommodationId);
+  }
+
+  @Post(':accommodationId/media/:mediaId/approve')
+  approveAccommodationMedia(
+    @Param('accommodationId') accommodationId: string,
+    @Param('mediaId') mediaId: string,
+  ) {
+    return this.accommodationMediaService.approveAccommodationMedia(accommodationId, mediaId);
+  }
+
+  @Post(':accommodationId/media/:mediaId/reject')
+  rejectAccommodationMedia(
+    @Param('accommodationId') accommodationId: string,
+    @Param('mediaId') mediaId: string,
+  ) {
+    return this.accommodationMediaService.rejectAccommodationMedia(accommodationId, mediaId);
   }
 }

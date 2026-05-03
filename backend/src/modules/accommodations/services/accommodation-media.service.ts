@@ -134,6 +134,108 @@ export class AccommodationMediaService {
     return this.toOperatorAccommodationMediaDto(media);
   }
 
+  async listAdminAccommodationMedia(accommodationId: string): Promise<OperatorAccommodationMediaDto[]> {
+    await this.assertAccommodationExistsForAdminMediaReview(accommodationId);
+
+    const media = await this.prisma.accommodationMedia.findMany({
+      where: {
+        accommodationId,
+      },
+      orderBy: [{ mediaStatus: 'asc' }, { sortOrder: 'asc' }, { createdAt: 'asc' }],
+    });
+
+    return media.map((item) => this.toOperatorAccommodationMediaDto(item));
+  }
+
+  async approveAccommodationMedia(
+    accommodationId: string,
+    mediaId: string,
+  ): Promise<OperatorAccommodationMediaDto> {
+    await this.assertAccommodationExistsForAdminMediaReview(accommodationId);
+
+    const existing = await this.prisma.accommodationMedia.findFirst({
+      where: {
+        id: mediaId,
+        accommodationId,
+      },
+      select: {
+        id: true,
+        url: true,
+        mediaStatus: true,
+      },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Accommodation media record not found for admin review.');
+    }
+
+    if (!existing.url) {
+      throw new BadRequestException('Accommodation media cannot be approved without a URL.');
+    }
+
+    if (existing.mediaStatus === 'HIDDEN') {
+      throw new BadRequestException('Hidden accommodation media must be restored by operator before admin approval.');
+    }
+
+    const media = await this.prisma.accommodationMedia.update({
+      where: {
+        id: mediaId,
+      },
+      data: {
+        mediaStatus: 'READY',
+      },
+    });
+
+    return this.toOperatorAccommodationMediaDto(media);
+  }
+
+  async rejectAccommodationMedia(
+    accommodationId: string,
+    mediaId: string,
+  ): Promise<OperatorAccommodationMediaDto> {
+    await this.assertAccommodationExistsForAdminMediaReview(accommodationId);
+
+    const existing = await this.prisma.accommodationMedia.findFirst({
+      where: {
+        id: mediaId,
+        accommodationId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Accommodation media record not found for admin review.');
+    }
+
+    const media = await this.prisma.accommodationMedia.update({
+      where: {
+        id: mediaId,
+      },
+      data: {
+        mediaStatus: 'REJECTED',
+      },
+    });
+
+    return this.toOperatorAccommodationMediaDto(media);
+  }
+
+  private async assertAccommodationExistsForAdminMediaReview(accommodationId: string): Promise<void> {
+    const accommodation = await this.prisma.accommodationProfile.findUnique({
+      where: {
+        id: accommodationId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!accommodation) {
+      throw new NotFoundException('Accommodation profile not found for admin media review.');
+    }
+  }
+
   private async assertOperatorOwnsAccommodation(userId: string, accommodationId: string): Promise<void> {
     if (!userId) {
       throw new UnauthorizedException('Operator accommodation media access requires an authenticated user.');
