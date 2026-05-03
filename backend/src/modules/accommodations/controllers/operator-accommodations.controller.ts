@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import {
   AccommodationBookingRequestService,
   AccommodationInventoryService,
@@ -24,8 +25,8 @@ export class OperatorAccommodationsController {
   ) {}
 
   @Get()
-  listOperatorAccommodations() {
-    return this.accommodationProfileService.listOperatorAccommodations();
+  listOperatorAccommodations(@CurrentUserId() userId: string) {
+    return this.accommodationProfileService.listOperatorAccommodations(userId);
   }
 
   @Post()

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
+import { Injectable, NotFoundException, NotImplementedException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
 import {
   AccommodationActionDto,
@@ -6,6 +6,7 @@ import {
   AccommodationStatusChipDto,
   AccommodationSupportPathDto,
   AdminAccommodationGovernanceCardDto,
+  OperatorAccommodationConsoleCardDto,
   TravelerAccommodationCardDto,
   TravelerAccommodationDetailDto,
 } from '../dto';
@@ -129,8 +130,44 @@ export class AccommodationProfileService {
     return this.getAvailabilityModeLabel(accommodation.availabilityMode);
   }
 
-  async listOperatorAccommodations(): Promise<unknown[]> {
-    throw new NotImplementedException('ACCOM service method shell only. Implementation not wired yet.');
+  async listOperatorAccommodations(userId: string): Promise<OperatorAccommodationConsoleCardDto[]> {
+    if (!userId) {
+      throw new UnauthorizedException('Operator accommodation access requires an authenticated user.');
+    }
+
+    const accommodations = await this.prisma.accommodationProfile.findMany({
+      where: {
+        ownerUserId: userId,
+      },
+      include: {
+        roomTypes: {
+          select: {
+            isActive: true,
+            pricingReady: true,
+          },
+        },
+        inventoryDates: {
+          select: {
+            availableUnits: true,
+          },
+          take: 20,
+          orderBy: {
+            inventoryDate: 'asc',
+          },
+        },
+        _count: {
+          select: {
+            bookingRequests: true,
+            stays: true,
+            AccommodationBookingVoucherSnapshot: true,
+          },
+        },
+      },
+      orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+      take: 100,
+    });
+
+    return accommodations.map((accommodation) => this.toOperatorAccommodationConsoleCard(accommodation));
   }
 
   async createOperatorAccommodationDraft(): Promise<unknown> {
@@ -454,6 +491,133 @@ export class AccommodationProfileService {
     });
 
     return this.toAdminAccommodationGovernanceCard(updated);
+  }
+
+  private toOperatorAccommodationConsoleCard(accommodation: OperatorAccommodationSource): OperatorAccommodationConsoleCardDto {
+    const activeRoomCount = accommodation.roomTypes.filter((room) => room.isActive).length;
+    const pricedRoomCount = accommodation.roomTypes.filter((room) => room.isActive && room.pricingReady).length;
+    const availableInventoryCount = accommodation.inventoryDates.filter((item) => Number(item.availableUnits) > 0).length;
+
+    return {
+      accommodationId: accommodation.id,
+      displayTitle: accommodation.displayName,
+      propertyReadinessChip: this.getOperatorPropertyReadinessChip(accommodation),
+      roomReadinessChip: {
+        label: activeRoomCount > 0 ? `${activeRoomCount} active room setup` : 'Rooms not set up',
+        tone: activeRoomCount > 0 ? 'READY' : 'PENDING',
+        description: activeRoomCount > 0
+          ? `${pricedRoomCount} active room types have pricing configured.`
+          : 'Add at least one room or unit before requesting marketplace exposure.',
+      },
+      inventoryReadinessChip: {
+        label: availableInventoryCount > 0 ? 'Availability signal found' : 'Availability not configured',
+        tone: availableInventoryCount > 0 ? 'INFO' : 'PENDING',
+        description: 'Inventory and availability remain a separate setup lane. No room is reserved by this read slice.',
+      },
+      requestQueueLabel: `${accommodation._count.bookingRequests} booking requests`,
+      stayQueueLabel: `${accommodation._count.stays} confirmed stays`,
+      voucherQueueLabel: `${accommodation._count.AccommodationBookingVoucherSnapshot} voucher records`,
+      qrCheckInReadinessChip: {
+        label: accommodation.readinessStatus === 'QR_CHECKIN_READY' || accommodation.readinessStatus === 'PAYMENT_READY' || accommodation.readinessStatus === 'MARKETPLACE_READY' || accommodation.readinessStatus === 'FEATURED_ELIGIBLE'
+          ? 'QR readiness prepared'
+          : 'QR readiness pending',
+        tone: accommodation.readinessStatus === 'QR_CHECKIN_READY' || accommodation.readinessStatus === 'PAYMENT_READY' || accommodation.readinessStatus === 'MARKETPLACE_READY' || accommodation.readinessStatus === 'FEATURED_ELIGIBLE'
+          ? 'READY'
+          : 'PENDING',
+        description: 'QR check-in behavior remains locked until the QR lane is explicitly opened.',
+      },
+      settlementWording: this.getOperatorSettlementReadinessWording(accommodation),
+      primaryAction: this.getOperatorPrimaryAction(accommodation),
+      secondaryAction: this.getOperatorSecondaryAction(accommodation),
+    };
+  }
+
+  private getOperatorPropertyReadinessChip(accommodation: OperatorAccommodationSource): AccommodationStatusChipDto {
+    if (accommodation.suspendedAt || accommodation.publicExposureStatus === 'SUSPENDED') {
+      return {
+        label: 'Suspended by Admin',
+        tone: 'WARNING',
+        description: 'This accommodation is blocked from traveler discovery. Contact OSP admin for review.',
+      };
+    }
+
+    if (accommodation.publicExposureStatus === 'LIVE') {
+      return {
+        label: 'Live in traveler discovery',
+        tone: 'TRUST',
+        description: 'This accommodation is visible to travelers after admin publishing.',
+      };
+    }
+
+    if (accommodation.publicExposureStatus === 'MARKETPLACE_ELIGIBLE') {
+      return {
+        label: 'Eligible, waiting for publish',
+        tone: 'READY',
+        description: 'Admin has marked this profile eligible. Final live exposure remains admin-controlled.',
+      };
+    }
+
+    if (accommodation.verifiedAt) {
+      return {
+        label: this.formatEnumLabel(accommodation.readinessStatus),
+        tone: 'INFO',
+        description: 'Admin has verified this profile. Continue completing setup for marketplace exposure.',
+      };
+    }
+
+    return {
+      label: this.formatEnumLabel(accommodation.readinessStatus),
+      tone: 'PENDING',
+      description: 'Complete your accommodation profile before admin marketplace review.',
+    };
+  }
+
+  private getOperatorSettlementReadinessWording(accommodation: OperatorAccommodationSource): string {
+    if (accommodation.publicExposureStatus === 'LIVE') {
+      return 'Settlement and payout details are shown only when booking/payment lanes are explicitly enabled.';
+    }
+
+    if (accommodation.publicExposureStatus === 'MARKETPLACE_ELIGIBLE') {
+      return 'Marketplace exposure is eligible, but payment and payout controls remain pending setup.';
+    }
+
+    return 'Payment and payout readiness are not enabled for this accommodation yet.';
+  }
+
+  private getOperatorPrimaryAction(accommodation: OperatorAccommodationSource): AccommodationActionDto {
+    if (accommodation.suspendedAt || accommodation.publicExposureStatus === 'SUSPENDED') {
+      return {
+        label: 'Review Status',
+        mode: 'OPERATOR_REVIEW_ACCOMMODATION',
+        href: `/api/v1/operator/accommodations/${accommodation.id}`,
+      };
+    }
+
+    if (accommodation.readinessStatus === 'PROFILE_STARTED' || accommodation.readinessStatus === 'PROFILE_COMPLETE') {
+      return {
+        label: 'Complete Accommodation Profile',
+        mode: 'OPERATOR_COMPLETE_PROFILE',
+        href: `/api/v1/operator/accommodations/${accommodation.id}`,
+      };
+    }
+
+    return {
+      label: 'Review Accommodation',
+      mode: 'OPERATOR_REVIEW_ACCOMMODATION',
+      href: `/api/v1/operator/accommodations/${accommodation.id}`,
+    };
+  }
+
+  private getOperatorSecondaryAction(accommodation: OperatorAccommodationSource): AccommodationActionDto | undefined {
+    if (accommodation.suspendedAt || accommodation.publicExposureStatus === 'SUSPENDED') {
+      return undefined;
+    }
+
+    return {
+      label: 'Manage Rooms & Units',
+      mode: 'OPERATOR_MANAGE_ROOMS',
+      href: `/api/v1/operator/accommodations/${accommodation.id}/rooms`,
+    };
   }
 
   private toAdminAccommodationGovernanceCard(accommodation: AdminAccommodationSource): AdminAccommodationGovernanceCardDto {
@@ -907,5 +1071,26 @@ type AdminAccommodationSource = {
     bookingRequests: number;
     stays: number;
     placements: number;
+  };
+};
+
+type OperatorAccommodationSource = {
+  id: string;
+  displayName: string;
+  readinessStatus: string;
+  publicExposureStatus: string;
+  verifiedAt: Date | null;
+  suspendedAt: Date | null;
+  roomTypes: Array<{
+    isActive: boolean;
+    pricingReady: boolean;
+  }>;
+  inventoryDates: Array<{
+    availableUnits: number;
+  }>;
+  _count: {
+    bookingRequests: number;
+    stays: number;
+    AccommodationBookingVoucherSnapshot: number;
   };
 };
