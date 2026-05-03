@@ -1,5 +1,6 @@
 export * from './accommodation-profile.service';
 export * from './accommodation-inventory.service';
+export * from './accommodation-media.service';
 export * from './accommodation-booking-request.service';
 export * from './accommodation-stay.service';
 export * from './accommodation-commercial-snapshot.service';

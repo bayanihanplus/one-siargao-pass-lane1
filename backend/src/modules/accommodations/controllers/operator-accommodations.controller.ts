@@ -3,6 +3,7 @@ import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import {
   AccommodationBookingRequestService,
   AccommodationInventoryService,
+  AccommodationMediaService,
   AccommodationProfileService,
   AccommodationStayService,
   AccommodationVoucherService,
@@ -19,6 +20,7 @@ export class OperatorAccommodationsController {
   constructor(
     private readonly accommodationProfileService: AccommodationProfileService,
     private readonly accommodationInventoryService: AccommodationInventoryService,
+    private readonly accommodationMediaService: AccommodationMediaService,
     private readonly accommodationBookingRequestService: AccommodationBookingRequestService,
     private readonly accommodationStayService: AccommodationStayService,
     private readonly accommodationVoucherService: AccommodationVoucherService,
@@ -68,6 +70,32 @@ export class OperatorAccommodationsController {
     @Body() body: any,
   ) {
     return this.accommodationInventoryService.updateAccommodationRoom(userId, accommodationId, roomTypeId, body);
+  }
+
+  @Get(':accommodationId/media')
+  listAccommodationMedia(
+    @CurrentUserId() userId: string,
+    @Param('accommodationId') accommodationId: string,
+  ) {
+    return this.accommodationMediaService.listOperatorAccommodationMedia(userId, accommodationId);
+  }
+
+  @Post(':accommodationId/media')
+  registerAccommodationMedia(
+    @CurrentUserId() userId: string,
+    @Param('accommodationId') accommodationId: string,
+    @Body() body: any,
+  ) {
+    return this.accommodationMediaService.registerOperatorAccommodationMedia(userId, accommodationId, body);
+  }
+
+  @Patch(':accommodationId/media/:mediaId/hide')
+  hideAccommodationMedia(
+    @CurrentUserId() userId: string,
+    @Param('accommodationId') accommodationId: string,
+    @Param('mediaId') mediaId: string,
+  ) {
+    return this.accommodationMediaService.hideOperatorAccommodationMedia(userId, accommodationId, mediaId);
   }
 
   @Get(':accommodationId/inventory')

@@ -19,6 +19,7 @@ import {
   AccommodationCommercialSnapshotService,
   AccommodationExposureService,
   AccommodationInventoryService,
+  AccommodationMediaService,
   AccommodationPayoutService,
   AccommodationProfileService,
   AccommodationStayService,
@@ -48,6 +49,7 @@ import {
     PrismaService,
     AccommodationProfileService,
     AccommodationInventoryService,
+  AccommodationMediaService,
     AccommodationBookingRequestService,
     AccommodationStayService,
     AccommodationCommercialSnapshotService,
@@ -62,6 +64,7 @@ import {
   exports: [
     AccommodationProfileService,
     AccommodationInventoryService,
+  AccommodationMediaService,
     AccommodationBookingRequestService,
     AccommodationStayService,
     AccommodationCommercialSnapshotService,
