@@ -36,6 +36,10 @@ export type AccommodationCtaMode =
   | 'CHECK_IN_QR'
   | 'CONTACT_SUPPORT'
   | 'VIEW_STAY_DETAILS'
+  | 'ADMIN_REVIEW_ACCOMMODATION'
+  | 'ADMIN_APPROVE_ACCOMMODATION'
+  | 'ADMIN_SUSPEND_ACCOMMODATION'
+  | 'ADMIN_MARKETPLACE_ELIGIBILITY'
   | 'DISABLED';
 
 export type AccommodationStatusChipTone =

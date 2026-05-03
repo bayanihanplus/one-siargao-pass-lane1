@@ -142,23 +142,388 @@ export class AccommodationProfileService {
   }
 
   async listAdminAccommodations(): Promise<AdminAccommodationGovernanceCardDto[]> {
-    throw new NotImplementedException('ACCOM service method shell only. Implementation not wired yet.');
+    const accommodations = await this.prisma.accommodationProfile.findMany({
+      include: {
+        roomTypes: {
+          select: {
+            isActive: true,
+            pricingReady: true,
+          },
+        },
+        media: {
+          select: {
+            mediaStatus: true,
+          },
+        },
+        _count: {
+          select: {
+            bookingRequests: true,
+            stays: true,
+            placements: true,
+          },
+        },
+      },
+      orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+      take: 100,
+    });
+
+    return accommodations.map((accommodation) => this.toAdminAccommodationGovernanceCard(accommodation));
   }
 
-  async getAdminAccommodation(_accommodationId: string): Promise<AdminAccommodationGovernanceCardDto> {
-    throw new NotImplementedException('ACCOM service method shell only. Implementation not wired yet.');
+  async getAdminAccommodation(accommodationId: string): Promise<AdminAccommodationGovernanceCardDto> {
+    const accommodation = await this.prisma.accommodationProfile.findUnique({
+      where: {
+        id: accommodationId,
+      },
+      include: {
+        roomTypes: {
+          select: {
+            isActive: true,
+            pricingReady: true,
+          },
+        },
+        media: {
+          select: {
+            mediaStatus: true,
+          },
+        },
+        _count: {
+          select: {
+            bookingRequests: true,
+            stays: true,
+            placements: true,
+          },
+        },
+      },
+    });
+
+    if (!accommodation) {
+      throw new NotFoundException('Accommodation profile not found for admin governance.');
+    }
+
+    return this.toAdminAccommodationGovernanceCard(accommodation);
   }
 
-  async approveAccommodation(_accommodationId: string): Promise<AdminAccommodationGovernanceCardDto> {
-    throw new NotImplementedException('ACCOM service method shell only. Implementation not wired yet.');
+  async approveAccommodation(accommodationId: string): Promise<AdminAccommodationGovernanceCardDto> {
+    const existing = await this.prisma.accommodationProfile.findUnique({
+      where: {
+        id: accommodationId,
+      },
+      select: {
+        id: true,
+        readinessStatus: true,
+      },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Accommodation profile not found for admin approval.');
+    }
+
+    const updated = await this.prisma.accommodationProfile.update({
+      where: {
+        id: accommodationId,
+      },
+      data: {
+        verifiedAt: new Date(),
+        suspendedAt: null,
+        publicExposureStatus: 'PROFILE_READY',
+        readinessStatus:
+          existing.readinessStatus === 'SUSPENDED' ? 'PROFILE_COMPLETE' : existing.readinessStatus,
+      },
+      include: {
+        roomTypes: {
+          select: {
+            isActive: true,
+            pricingReady: true,
+          },
+        },
+        media: {
+          select: {
+            mediaStatus: true,
+          },
+        },
+        _count: {
+          select: {
+            bookingRequests: true,
+            stays: true,
+            placements: true,
+          },
+        },
+      },
+    });
+
+    return this.toAdminAccommodationGovernanceCard(updated);
   }
 
-  async suspendAccommodation(_accommodationId: string): Promise<AdminAccommodationGovernanceCardDto> {
-    throw new NotImplementedException('ACCOM service method shell only. Implementation not wired yet.');
+  async suspendAccommodation(accommodationId: string): Promise<AdminAccommodationGovernanceCardDto> {
+    const existing = await this.prisma.accommodationProfile.findUnique({
+      where: {
+        id: accommodationId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Accommodation profile not found for admin suspension.');
+    }
+
+    const updated = await this.prisma.accommodationProfile.update({
+      where: {
+        id: accommodationId,
+      },
+      data: {
+        readinessStatus: 'SUSPENDED',
+        publicExposureStatus: 'SUSPENDED',
+        suspendedAt: new Date(),
+      },
+      include: {
+        roomTypes: {
+          select: {
+            isActive: true,
+            pricingReady: true,
+          },
+        },
+        media: {
+          select: {
+            mediaStatus: true,
+          },
+        },
+        _count: {
+          select: {
+            bookingRequests: true,
+            stays: true,
+            placements: true,
+          },
+        },
+      },
+    });
+
+    return this.toAdminAccommodationGovernanceCard(updated);
   }
 
-  async updateAccommodationMarketplaceEligibility(_accommodationId: string): Promise<AdminAccommodationGovernanceCardDto> {
-    throw new NotImplementedException('ACCOM service method shell only. Implementation not wired yet.');
+  async updateAccommodationMarketplaceEligibility(accommodationId: string): Promise<AdminAccommodationGovernanceCardDto> {
+    const existing = await this.prisma.accommodationProfile.findUnique({
+      where: {
+        id: accommodationId,
+      },
+      select: {
+        id: true,
+        readinessStatus: true,
+        verifiedAt: true,
+        suspendedAt: true,
+      },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Accommodation profile not found for marketplace eligibility review.');
+    }
+
+    const marketplaceReadyStatuses = [
+      'BOOKING_READY',
+      'QR_CHECKIN_READY',
+      'PAYMENT_READY',
+      'MARKETPLACE_READY',
+      'FEATURED_ELIGIBLE',
+    ];
+
+    const isEligible =
+      Boolean(existing.verifiedAt) &&
+      !existing.suspendedAt &&
+      marketplaceReadyStatuses.includes(existing.readinessStatus);
+
+    const updated = await this.prisma.accommodationProfile.update({
+      where: {
+        id: accommodationId,
+      },
+      data: {
+        publicExposureStatus: isEligible ? 'MARKETPLACE_ELIGIBLE' : 'NEEDS_REVIEW',
+      },
+      include: {
+        roomTypes: {
+          select: {
+            isActive: true,
+            pricingReady: true,
+          },
+        },
+        media: {
+          select: {
+            mediaStatus: true,
+          },
+        },
+        _count: {
+          select: {
+            bookingRequests: true,
+            stays: true,
+            placements: true,
+          },
+        },
+      },
+    });
+
+    return this.toAdminAccommodationGovernanceCard(updated);
+  }
+
+  private toAdminAccommodationGovernanceCard(accommodation: AdminAccommodationSource): AdminAccommodationGovernanceCardDto {
+    return {
+      accommodationId: accommodation.id,
+      displayTitle: accommodation.displayName,
+      readinessReviewChip: this.getAdminReadinessChip(accommodation),
+      marketplaceEligibilityChip: this.getAdminMarketplaceEligibilityChip(accommodation),
+      exposureReadinessChip: this.getAdminExposureReadinessChip(accommodation),
+      voucherAuditChip: {
+        label: `${accommodation._count.stays} stay records`,
+        tone: accommodation._count.stays > 0 ? 'INFO' : 'DISABLED',
+        description: 'Voucher and stay audit remains shell-only until the voucher lane is explicitly opened.',
+      },
+      primaryAction: this.getAdminPrimaryAction(accommodation),
+      secondaryAction: this.getAdminSecondaryAction(accommodation),
+    };
+  }
+
+  private getAdminReadinessChip(accommodation: AdminAccommodationSource): AccommodationStatusChipDto {
+    if (accommodation.suspendedAt || accommodation.readinessStatus === 'SUSPENDED') {
+      return {
+        label: 'Suspended',
+        tone: 'WARNING',
+        description: 'This accommodation is blocked from traveler discovery.',
+      };
+    }
+
+    if (accommodation.verifiedAt) {
+      return {
+        label: this.formatEnumLabel(accommodation.readinessStatus),
+        tone: 'TRUST',
+        description: 'Admin has verified this accommodation profile for governed review.',
+      };
+    }
+
+    return {
+      label: this.formatEnumLabel(accommodation.readinessStatus),
+      tone: 'PENDING',
+      description: 'This accommodation still needs admin verification before marketplace eligibility.',
+    };
+  }
+
+  private getAdminMarketplaceEligibilityChip(accommodation: AdminAccommodationSource): AccommodationStatusChipDto {
+    if (accommodation.publicExposureStatus === 'SUSPENDED' || accommodation.suspendedAt) {
+      return {
+        label: 'Exposure suspended',
+        tone: 'WARNING',
+        description: 'This profile cannot appear in traveler discovery.',
+      };
+    }
+
+    if (accommodation.publicExposureStatus === 'MARKETPLACE_ELIGIBLE') {
+      return {
+        label: 'Marketplace eligible',
+        tone: 'READY',
+        description: 'This profile passed admin marketplace eligibility but is not automatically live.',
+      };
+    }
+
+    if (accommodation.publicExposureStatus === 'LIVE') {
+      return {
+        label: 'Live',
+        tone: 'TRUST',
+        description: 'This accommodation is visible in traveler discovery.',
+      };
+    }
+
+    return {
+      label: this.formatEnumLabel(accommodation.publicExposureStatus),
+      tone: accommodation.verifiedAt ? 'INFO' : 'PENDING',
+      description: 'Marketplace exposure is controlled separately from admin verification.',
+    };
+  }
+
+  private getAdminExposureReadinessChip(accommodation: AdminAccommodationSource): AccommodationStatusChipDto {
+    const activeRoomCount = accommodation.roomTypes.filter((room) => room.isActive).length;
+    const pricedRoomCount = accommodation.roomTypes.filter((room) => room.isActive && room.pricingReady).length;
+    const readyMediaCount = accommodation.media.filter((item) => item.mediaStatus === 'READY').length;
+
+    if (accommodation.suspendedAt || accommodation.publicExposureStatus === 'SUSPENDED') {
+      return {
+        label: 'Blocked from exposure',
+        tone: 'WARNING',
+        description: 'Suspended profiles must not be exposed publicly.',
+      };
+    }
+
+    if (accommodation.publicExposureStatus === 'MARKETPLACE_ELIGIBLE') {
+      return {
+        label: 'Eligible, not live',
+        tone: 'READY',
+        description: 'Admin can later move this through a separate live exposure lane.',
+      };
+    }
+
+    if (activeRoomCount > 0 && pricedRoomCount > 0 && readyMediaCount > 0) {
+      return {
+        label: 'Exposure review ready',
+        tone: 'INFO',
+        description: 'Rooms, pricing, and media exist. Admin eligibility review is allowed.',
+      };
+    }
+
+    return {
+      label: 'Needs setup review',
+      tone: 'PENDING',
+      description: `Active rooms: ${activeRoomCount}. Priced rooms: ${pricedRoomCount}. Ready media: ${readyMediaCount}.`,
+    };
+  }
+
+  private getAdminPrimaryAction(accommodation: AdminAccommodationSource): AccommodationActionDto {
+    if (accommodation.suspendedAt || accommodation.publicExposureStatus === 'SUSPENDED') {
+      return {
+        label: 'Review for Re-approval',
+        mode: 'ADMIN_APPROVE_ACCOMMODATION',
+        href: `/api/v1/admin/accommodations/${accommodation.id}/approve`,
+      };
+    }
+
+    if (!accommodation.verifiedAt) {
+      return {
+        label: 'Approve Profile',
+        mode: 'ADMIN_APPROVE_ACCOMMODATION',
+        href: `/api/v1/admin/accommodations/${accommodation.id}/approve`,
+      };
+    }
+
+    if (accommodation.publicExposureStatus !== 'MARKETPLACE_ELIGIBLE' && accommodation.publicExposureStatus !== 'LIVE') {
+      return {
+        label: 'Review Marketplace Eligibility',
+        mode: 'ADMIN_MARKETPLACE_ELIGIBILITY',
+        href: `/api/v1/admin/accommodations/${accommodation.id}/marketplace-eligibility`,
+      };
+    }
+
+    return {
+      label: 'Review Accommodation',
+      mode: 'ADMIN_REVIEW_ACCOMMODATION',
+      href: `/api/v1/admin/accommodations/${accommodation.id}`,
+    };
+  }
+
+  private getAdminSecondaryAction(accommodation: AdminAccommodationSource): AccommodationActionDto | undefined {
+    if (accommodation.suspendedAt || accommodation.publicExposureStatus === 'SUSPENDED') {
+      return undefined;
+    }
+
+    return {
+      label: 'Suspend Profile',
+      mode: 'ADMIN_SUSPEND_ACCOMMODATION',
+      href: `/api/v1/admin/accommodations/${accommodation.id}/suspend`,
+    };
+  }
+
+  private formatEnumLabel(value: string): string {
+    return value
+      .toLowerCase()
+      .split('_')
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(' ');
   }
 
   private toTravelerAccommodationCard(accommodation: TravelerAccommodationSource): TravelerAccommodationCardDto {
@@ -423,4 +788,25 @@ type TravelerAccommodationSource = {
     pricingReady: boolean;
     basePricePhp: unknown;
   }>;
+};
+
+type AdminAccommodationSource = {
+  id: string;
+  displayName: string;
+  readinessStatus: string;
+  publicExposureStatus: string;
+  verifiedAt: Date | null;
+  suspendedAt: Date | null;
+  media: Array<{
+    mediaStatus: string;
+  }>;
+  roomTypes: Array<{
+    isActive: boolean;
+    pricingReady: boolean;
+  }>;
+  _count: {
+    bookingRequests: number;
+    stays: number;
+    placements: number;
+  };
 };
