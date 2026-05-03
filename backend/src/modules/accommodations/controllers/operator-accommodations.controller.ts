@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CurrentUserId } from '../../auth/decorators/current-user-id.decorator';
 import {
   AccommodationBookingRequestService,
@@ -30,8 +30,8 @@ export class OperatorAccommodationsController {
   }
 
   @Post()
-  createOperatorAccommodationDraft() {
-    return this.accommodationProfileService.createOperatorAccommodationDraft();
+  createOperatorAccommodationDraft(@CurrentUserId() userId: string, @Body() body: any) {
+    return this.accommodationProfileService.createOperatorAccommodationDraft(userId, body);
   }
 
   @Patch(':accommodationId')

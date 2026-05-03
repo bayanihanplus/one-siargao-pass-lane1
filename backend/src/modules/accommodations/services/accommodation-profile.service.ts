@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, NotImplementedException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, NotImplementedException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../../database/prisma.service';
 import {
   AccommodationActionDto,
@@ -170,8 +170,55 @@ export class AccommodationProfileService {
     return accommodations.map((accommodation) => this.toOperatorAccommodationConsoleCard(accommodation));
   }
 
-  async createOperatorAccommodationDraft(): Promise<unknown> {
-    throw new NotImplementedException('ACCOM service method shell only. Implementation not wired yet.');
+  async createOperatorAccommodationDraft(
+    userId: string,
+    body: any = {},
+  ): Promise<OperatorAccommodationConsoleCardDto> {
+    if (!userId) {
+      throw new UnauthorizedException('Operator accommodation draft creation requires an authenticated user.');
+    }
+
+    const displayName = this.normalizeRequiredText(body?.displayName, 'Accommodation display name');
+    const slug = await this.buildUniqueAccommodationSlug(displayName);
+
+    const accommodation = await this.prisma.accommodationProfile.create({
+      data: {
+        ownerUserId: userId,
+        displayName,
+        slug,
+        source: 'OPERATOR_DRAFT',
+        readinessStatus: 'PROFILE_STARTED',
+        publicExposureStatus: 'NOT_LIVE',
+        bookingMode: 'DISABLED_PENDING_SETUP',
+        availabilityMode: 'MANUAL_CONFIRMATION',
+      },
+      include: {
+        roomTypes: {
+          select: {
+            isActive: true,
+            pricingReady: true,
+          },
+        },
+        inventoryDates: {
+          select: {
+            availableUnits: true,
+          },
+          take: 20,
+          orderBy: {
+            inventoryDate: 'asc',
+          },
+        },
+        _count: {
+          select: {
+            bookingRequests: true,
+            stays: true,
+            AccommodationBookingVoucherSnapshot: true,
+          },
+        },
+      },
+    });
+
+    return this.toOperatorAccommodationConsoleCard(accommodation);
   }
 
   async updateOperatorAccommodationProfile(_accommodationId: string): Promise<unknown> {
@@ -491,6 +538,51 @@ export class AccommodationProfileService {
     });
 
     return this.toAdminAccommodationGovernanceCard(updated);
+  }
+
+  private normalizeRequiredText(value: unknown, fieldLabel: string): string {
+    const text = String(value ?? '').trim().replace(/\s+/g, ' ');
+
+    if (text.length < 3) {
+      throw new BadRequestException(`${fieldLabel} is required.`);
+    }
+
+    if (text.length > 120) {
+      throw new BadRequestException(`${fieldLabel} must be 120 characters or fewer.`);
+    }
+
+    return text;
+  }
+
+  private async buildUniqueAccommodationSlug(displayName: string): Promise<string> {
+    const baseSlug = this.toAccommodationSlugBase(displayName);
+    const suffix = Date.now().toString(36);
+    const candidate = `${baseSlug}-${suffix}`.slice(0, 96);
+
+    const existing = await this.prisma.accommodationProfile.findUnique({
+      where: {
+        slug: candidate,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!existing) {
+      return candidate;
+    }
+
+    return `${baseSlug}-${suffix}-${Math.random().toString(36).slice(2, 8)}`.slice(0, 120);
+  }
+
+  private toAccommodationSlugBase(value: string): string {
+    const slug = value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 72);
+
+    return slug || 'accommodation-draft';
   }
 
   private toOperatorAccommodationConsoleCard(accommodation: OperatorAccommodationSource): OperatorAccommodationConsoleCardDto {
