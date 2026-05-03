@@ -35,4 +35,9 @@ export class AdminAccommodationsController {
   updateAccommodationMarketplaceEligibility(@Param('accommodationId') accommodationId: string) {
     return this.accommodationProfileService.updateAccommodationMarketplaceEligibility(accommodationId);
   }
+
+  @Post(':accommodationId/publish')
+  publishAccommodationToTravelerDiscovery(@Param('accommodationId') accommodationId: string) {
+    return this.accommodationProfileService.publishAccommodationToTravelerDiscovery(accommodationId);
+  }
 }

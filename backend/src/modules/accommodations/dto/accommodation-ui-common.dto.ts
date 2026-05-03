@@ -40,6 +40,7 @@ export type AccommodationCtaMode =
   | 'ADMIN_APPROVE_ACCOMMODATION'
   | 'ADMIN_SUSPEND_ACCOMMODATION'
   | 'ADMIN_MARKETPLACE_ELIGIBILITY'
+  | 'ADMIN_PUBLISH_ACCOMMODATION'
   | 'DISABLED';
 
 export type AccommodationStatusChipTone =

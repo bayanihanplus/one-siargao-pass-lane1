@@ -365,6 +365,97 @@ export class AccommodationProfileService {
     return this.toAdminAccommodationGovernanceCard(updated);
   }
 
+  async publishAccommodationToTravelerDiscovery(accommodationId: string): Promise<AdminAccommodationGovernanceCardDto> {
+    const existing = await this.prisma.accommodationProfile.findUnique({
+      where: {
+        id: accommodationId,
+      },
+      select: {
+        id: true,
+        readinessStatus: true,
+        publicExposureStatus: true,
+        verifiedAt: true,
+        suspendedAt: true,
+      },
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Accommodation profile not found for traveler discovery publishing.');
+    }
+
+    const publishReadyStatuses = ['MARKETPLACE_READY', 'FEATURED_ELIGIBLE'];
+
+    const canPublish =
+      Boolean(existing.verifiedAt) &&
+      !existing.suspendedAt &&
+      existing.publicExposureStatus === 'MARKETPLACE_ELIGIBLE' &&
+      publishReadyStatuses.includes(existing.readinessStatus);
+
+    if (!canPublish) {
+      const updated = await this.prisma.accommodationProfile.update({
+        where: {
+          id: accommodationId,
+        },
+        data: {
+          publicExposureStatus: existing.suspendedAt ? 'SUSPENDED' : 'NEEDS_REVIEW',
+        },
+        include: {
+          roomTypes: {
+            select: {
+              isActive: true,
+              pricingReady: true,
+            },
+          },
+          media: {
+            select: {
+              mediaStatus: true,
+            },
+          },
+          _count: {
+            select: {
+              bookingRequests: true,
+              stays: true,
+              placements: true,
+            },
+          },
+        },
+      });
+
+      return this.toAdminAccommodationGovernanceCard(updated);
+    }
+
+    const updated = await this.prisma.accommodationProfile.update({
+      where: {
+        id: accommodationId,
+      },
+      data: {
+        publicExposureStatus: 'LIVE',
+      },
+      include: {
+        roomTypes: {
+          select: {
+            isActive: true,
+            pricingReady: true,
+          },
+        },
+        media: {
+          select: {
+            mediaStatus: true,
+          },
+        },
+        _count: {
+          select: {
+            bookingRequests: true,
+            stays: true,
+            placements: true,
+          },
+        },
+      },
+    });
+
+    return this.toAdminAccommodationGovernanceCard(updated);
+  }
+
   private toAdminAccommodationGovernanceCard(accommodation: AdminAccommodationSource): AdminAccommodationGovernanceCardDto {
     return {
       accommodationId: accommodation.id,
@@ -496,6 +587,14 @@ export class AccommodationProfileService {
         label: 'Review Marketplace Eligibility',
         mode: 'ADMIN_MARKETPLACE_ELIGIBILITY',
         href: `/api/v1/admin/accommodations/${accommodation.id}/marketplace-eligibility`,
+      };
+    }
+
+    if (accommodation.publicExposureStatus === 'MARKETPLACE_ELIGIBLE') {
+      return {
+        label: 'Publish to Traveler Discovery',
+        mode: 'ADMIN_PUBLISH_ACCOMMODATION',
+        href: `/api/v1/admin/accommodations/${accommodation.id}/publish`,
       };
     }
 
