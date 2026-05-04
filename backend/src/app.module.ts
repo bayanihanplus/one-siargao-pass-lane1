@@ -27,9 +27,13 @@ import { TravelerMarketplaceModule } from './modules/traveler-marketplace/travel
 import { LguIntelligenceModule } from './modules/lgu-intelligence/lgu-intelligence.module';
 import { AdminIntelligenceModule } from './modules/admin-intelligence/admin-intelligence.module';
 import { AccommodationsModule } from './modules/accommodations';
+import { PublicPassportTrailsModule } from './modules/public-passport-trails/public-passport-trails.module';
+import { AdminControlTowerContractsModule } from "./modules/admin-control-tower-contracts";
 
 @Module({
   imports: [
+    AdminControlTowerContractsModule,
+    PublicPassportTrailsModule,
     AdminIntelligenceModule,
     LguIntelligenceModule,
     OfficialSafetyBroadcastsModule,
