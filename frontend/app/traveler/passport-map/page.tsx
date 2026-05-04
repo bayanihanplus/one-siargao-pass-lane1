@@ -1035,7 +1035,7 @@ function TrailPreviewCard(props: {
 
   return (
     <a
-      href="/traveler/passport-trails"
+      href="/traveler/passport-trails/follow-map"
       aria-label={`${props.title} preview card. ${props.governed ? "Governed progress." : "Visual placeholder only."}`}
       style={{
         minHeight: 132,
@@ -1809,7 +1809,7 @@ function SpmJourneyHubEngagement() {
           }}
         >
           <a
-            href="/traveler/passport-trails"
+            href="/traveler/passport-trails/follow-map"
             aria-label="Open Full Passport Map"
             style={{
               minHeight: 52,
