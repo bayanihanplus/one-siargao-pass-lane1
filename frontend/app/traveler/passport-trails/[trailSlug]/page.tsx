@@ -420,27 +420,36 @@ const TRAILS: Record<string, TrailDetail> = {
 function statusTone(status: StopStatus) {
   if (status === "STAMP_UNLOCKED") {
     return {
-      label: "Stamp record verified",
-      color: "#138a58",
-      background: "#d8fbef",
-      border: "#1fa45b",
+      label: "Verified stop",
+      color: "#0F6B4F",
+      background: "#DDF6F3",
+      border: "#8BD8D5",
+      glow: "0 16px 34px rgba(5,150,165,0.18)",
+      shell: "linear-gradient(135deg, #BDEFE8 0%, #9FE3DB 100%)",
+      shellBorder: "1px solid rgba(5,150,165,0.58)",
     };
   }
 
   if (status === "READY_TO_VERIFY") {
     return {
-      label: "Ready to verify",
-      color: "#067889",
-      background: "#dff8ff",
-      border: "#13a8b7",
+      label: "Next unlocked",
+      color: "#047D8A",
+      background: "#EAFBFA",
+      border: "#AEE4EA",
+      glow: "0 14px 30px rgba(5,150,165,0.12)",
+      shell: "linear-gradient(135deg, #DDF8FA 0%, #C7EEF2 100%)",
+      shellBorder: "1px solid rgba(5,150,165,0.42)",
     };
   }
 
   return {
     label: "Locked",
-    color: "#53657d",
-    background: "#edf2f5",
-    border: "#a0aec0",
+    color: "#50668B",
+    background: "#F3F7FA",
+    border: "#D7E4EC",
+    glow: "0 15px 32px rgba(1,56,99,0.12)",
+    shell: "linear-gradient(135deg, #EAFBFA 0%, #DCEAF4 100%)",
+    shellBorder: "1px solid rgba(5,150,165,0.34)",
   };
 }
 
@@ -450,7 +459,7 @@ function ShellCard(props: { children: React.ReactNode; ariaLabel?: string }) {
       aria-label={props.ariaLabel}
       style={{
         border: "1px solid #bfe7ee",
-        borderRadius: 26,
+        borderRadius: 22,
         background: "linear-gradient(135deg, rgba(255,255,255,0.96), rgba(244,253,255,0.88))",
         padding: 13,
         boxShadow: "0 14px 36px rgba(15,23,42,0.06)",
@@ -502,7 +511,7 @@ function ReturnContinuityPremiumPanel() {
       title: "Second Ingress Welcomes Back",
       body:
         "A second verified ingress after one completed trip activates the Welcome Back experience, but not the completed milestone yet.",
-      tone: "green",
+      tone: "teal2",
     },
     {
       number: "04",
@@ -527,11 +536,11 @@ function ReturnContinuityPremiumPanel() {
       icon: "linear-gradient(135deg, #f59e0b, #14b8a6)",
       shadow: "0 16px 34px rgba(245,158,11,0.13)",
     },
-    green: {
-      shell: "linear-gradient(145deg, rgba(240,253,244,0.98), rgba(255,255,255,0.96))",
-      border: "rgba(187,247,208,0.95)",
-      icon: "linear-gradient(135deg, #16a34a, #0891b2)",
-      shadow: "0 16px 34px rgba(22,163,74,0.13)",
+    teal2: {
+      shell: "linear-gradient(145deg, rgba(234,251,250,0.98), rgba(255,255,255,0.96))",
+      border: "rgba(191,231,238,0.95)",
+      icon: "linear-gradient(135deg, #0596A5, #0891b2)",
+      shadow: "0 16px 34px rgba(5,150,165,0.08)",
     },
     blue: {
       shell: "linear-gradient(145deg, rgba(239,246,255,0.98), rgba(255,255,255,0.96))",
@@ -625,7 +634,7 @@ function ReturnContinuityPremiumPanel() {
 
         <div
           style={{
-            borderRadius: 26,
+            borderRadius: 22,
             padding: 14,
             background:
               "linear-gradient(135deg, rgba(8,145,178,0.94), rgba(20,184,166,0.88))",
@@ -941,6 +950,177 @@ function ReturnContinuityPremiumPanel() {
 }
 
 
+function TrailPaymentGatewayCta({
+  trailSlug,
+  trailTitle,
+}: {
+  trailSlug: string;
+  trailTitle: string;
+}) {
+  const encodedTrail = encodeURIComponent(trailSlug);
+
+  return (
+    <section
+      aria-label="Trail booking and payment readiness"
+      style={{
+        margin: "12px auto 0",
+        width: "100%",
+        maxWidth: 430,
+        padding: "0 12px",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          borderRadius: 24,
+          background:
+            "linear-gradient(135deg, #FFFFFF 0%, #FFFDF5 42%, #F4FEFF 100%)",
+          border: "1px solid rgba(243,174,38,0.22)",
+          boxShadow: "0 14px 34px rgba(1,56,99,0.10)",
+          padding: 13,
+          boxSizing: "border-box",
+        }}
+      >
+        <div
+          style={{
+            borderRadius: 20,
+            background: "rgba(255,255,255,0.76)",
+            border: "1px solid rgba(5,150,165,0.14)",
+            padding: 12,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 950,
+              letterSpacing: "0.13em",
+              textTransform: "uppercase",
+              color: "#0596A5",
+            }}
+          >
+            Before You Confirm
+          </div>
+
+          <h2
+            style={{
+              margin: "6px 0 0",
+              fontSize: 20,
+              lineHeight: 1.03,
+              letterSpacing: "-0.055em",
+              fontWeight: 950,
+              color: "#013863",
+            }}
+          >
+            Booking or payment may be needed for {trailTitle}.
+          </h2>
+
+          <p
+            style={{
+              margin: "7px 0 0",
+              fontSize: 12,
+              lineHeight: 1.38,
+              fontWeight: 720,
+              color: "#50668B",
+            }}
+          >
+            Some routes can be explored freely. Others may need operator confirmation, transport, guide support, manifest readiness, or payment before your trip is ready.
+          </p>
+        </div>
+
+        <div
+          style={{
+            marginTop: 11,
+            display: "grid",
+            gridTemplateColumns: "1fr",
+            gap: 8,
+          }}
+        >
+          <a
+            href={`/traveler/payments?source=passport-trails&trail=${encodedTrail}&gateway=paymongo`}
+            style={{
+              minHeight: 48,
+              borderRadius: 17,
+              background: "linear-gradient(135deg, #F3AE26 0%, #F9B320 52%, #D97706 100%)",
+              color: "#FFFFFF",
+              WebkitTextFillColor: "#FFFFFF",
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              padding: "0 12px",
+              fontSize: 12,
+              lineHeight: 1.1,
+              fontWeight: 950,
+              boxShadow: "0 14px 30px rgba(217,119,6,0.24)",
+              boxSizing: "border-box",
+            }}
+          >
+            Pay / Confirm with PayMongo
+          </a>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 8,
+            }}
+          >
+            <a
+              href="/traveler/payments"
+              style={{
+                minHeight: 46,
+                borderRadius: 16,
+                background: "#FFFFFF",
+                color: "#013863",
+                WebkitTextFillColor: "#013863",
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: "0 10px",
+                fontSize: 11.5,
+                lineHeight: 1.1,
+                fontWeight: 950,
+                border: "1px solid rgba(5,150,165,0.22)",
+                boxShadow: "0 10px 22px rgba(1,56,99,0.07)",
+                boxSizing: "border-box",
+              }}
+            >
+              Payments
+            </a>
+
+            <a
+              href="/traveler/trips"
+              style={{
+                minHeight: 46,
+                borderRadius: 16,
+                background: "#EAFBFA",
+                color: "#047D8A",
+                WebkitTextFillColor: "#047D8A",
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: "0 10px",
+                fontSize: 11.5,
+                lineHeight: 1.1,
+                fontWeight: 950,
+                border: "1px solid rgba(5,150,165,0.18)",
+                boxSizing: "border-box",
+              }}
+            >
+              Trip Readiness
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function PassportTrailDetailPage({
   params,
 }: {
@@ -982,7 +1162,7 @@ export default function PassportTrailDetailPage({
             <h1
               style={{
                 margin: "5px 0 0",
-                fontSize: 30,
+                fontSize: 23,
                 lineHeight: 1.02,
                 fontWeight: 690,
                 letterSpacing: "-0.045em",
@@ -1013,7 +1193,7 @@ export default function PassportTrailDetailPage({
         <section
           aria-label="Trail hero"
           style={{
-            borderRadius: 28,
+            borderRadius: 22,
             background:
               "linear-gradient(135deg, rgba(10,115,145,0.94), rgba(19,168,183,0.88), rgba(132,184,101,0.86))",
             color: "#ffffff",
@@ -1067,7 +1247,7 @@ export default function PassportTrailDetailPage({
               display: "inline-flex",
               borderRadius: 999,
               padding: "7px 11px",
-              background: "linear-gradient(135deg, #ffffff, #f4fdff)",
+              background: "rgba(255,255,255,0.68)",
               color: "#14264b",
               fontSize: 11,
               fontWeight: 820,
@@ -1086,7 +1266,7 @@ export default function PassportTrailDetailPage({
           style={{
             marginTop: 14,
             border: "1px solid #bfe7ee",
-            borderRadius: 26,
+            borderRadius: 22,
             background: "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(232,251,255,0.92))",
             padding: 14,
             display: isReturnContinuity ? "none" : "grid",
@@ -1102,7 +1282,7 @@ export default function PassportTrailDetailPage({
               width: 48,
               height: 48,
               borderRadius: 18,
-              background: "linear-gradient(135deg, #14b8c6, #11843d)",
+              background: "linear-gradient(135deg, #14b8c6, #013863)",
               color: "#ffffff",
               display: "grid",
               placeItems: "center",
@@ -1155,7 +1335,7 @@ export default function PassportTrailDetailPage({
             style={{
               minHeight: 46,
               borderRadius: 17,
-              background: "linear-gradient(135deg, #14b8c6, #11843d)",
+              background: "linear-gradient(135deg, #14b8c6, #013863)",
               color: "#ffffff",
               display: "grid",
               placeItems: "center",
@@ -1253,12 +1433,12 @@ export default function PassportTrailDetailPage({
 
               <Link
                 href="/traveler/settings?panel=assistant&topic=trail"
-                aria-label="Ask Passport Assistant about this trail"
+                aria-label="✦ Ask Passport Assistant about this trail"
                 style={{
                   textDecoration: "none",
                   border: "1px solid rgba(191,231,238,0.92)",
                   borderRadius: 18,
-                  background: "linear-gradient(135deg, #ffffff, #f4fdff)",
+                  background: "rgba(255,255,255,0.68)",
                   color: "#14264b",
                   padding: 14,
                   minHeight: 104,
@@ -1330,14 +1510,16 @@ export default function PassportTrailDetailPage({
                 <article
                   key={stop.name}
                   style={{
-                    border: "1px solid #bfe7ee",
-                    borderLeft: `5px solid ${tone.border}`,
+                    border: tone.shellBorder,
                     borderRadius: 22,
-                    background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,253,255,0.94))",
+                    background: tone.shell,
                     padding: 13,
-                    boxShadow: "0 12px 30px rgba(8,61,103,0.075)",
+                    boxShadow: tone.glow,
+                    position: "relative",
+                    overflow: "hidden",
                   }}
                 >
+
                   <div
                     style={{
                       display: "flex",
@@ -1412,7 +1594,7 @@ export default function PassportTrailDetailPage({
                       style={{
                         borderRadius: 15,
                         border: "1px solid rgba(191,231,238,0.58)",
-                        background: "linear-gradient(135deg, #ffffff, #f4fdff)",
+                        background: "rgba(255,255,255,0.68)",
                         padding: "10px 10px",
                       }}
                     >
@@ -1442,7 +1624,7 @@ export default function PassportTrailDetailPage({
                       style={{
                         borderRadius: 15,
                         border: "1px solid rgba(191,231,238,0.58)",
-                        background: "linear-gradient(135deg, #ffffff, #f4fdff)",
+                        background: "rgba(255,255,255,0.68)",
                         padding: "10px 10px",
                       }}
                     >
@@ -1476,7 +1658,7 @@ export default function PassportTrailDetailPage({
 
         <div style={{ marginTop: 16 }}>
           <ShellCard ariaLabel="AI Passport Assistant trail detail prompt chips">
-            <SectionEyebrow>✦ Ask Passport Assistant</SectionEyebrow>
+            <SectionEyebrow>✦ ✦ Ask Passport Assistant</SectionEyebrow>
             <div
               style={{
                 marginTop: 8,
@@ -1531,7 +1713,7 @@ export default function PassportTrailDetailPage({
 
         <div style={{ marginTop: 16 }}>
           <ShellCard ariaLabel="Passport stamp rules">
-            <SectionEyebrow>Stamp Rules</SectionEyebrow>
+            <SectionEyebrow>✦ Stamp Rules</SectionEyebrow>
             <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
               {[
                 "Unlocked stamps must come from verified OSP/SPM records.",
@@ -1560,50 +1742,133 @@ export default function PassportTrailDetailPage({
         </div>
 
         <nav
-          aria-label="Passport Trail bottom navigation"
+          aria-label="Universal Traveler Bottom Tab"
           style={{
             position: "fixed",
             left: "50%",
             bottom: 18,
             transform: "translateX(-50%)",
-            width: "min(392px, calc(100vw - 28px))",
-            border: "1px solid #dbeef2",
+            width: "min(404px, calc(100vw - 24px))",
+            border: "1px solid rgba(5,150,165,0.18)",
             borderRadius: 26,
-            background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,253,255,0.94))",
-            boxShadow: "0 14px 36px rgba(15,23,42,0.08)",
-            padding: 10,
+            background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,253,255,0.96))",
+            boxShadow: "0 16px 42px rgba(1,56,99,0.14)",
+            padding: "9px 10px",
             display: "grid",
-            gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-            gap: 8,
+            gridTemplateColumns: "1fr 1fr 64px 1fr 1fr",
+            gap: 7,
+            alignItems: "center",
+            zIndex: 60,
           }}
         >
-          {[
-            { label: "Map", href: "/traveler/passport-map", icon: "⌖" },
-            { label: "Trails", href: "/traveler/passport-trails", icon: "⌁" },
-            { label: "Pass", href: "/traveler/pass", icon: "▣" },
-            { label: "Profile", href: "/traveler/settings", icon: "◉" },
-          ].map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              style={{
-                textDecoration: "none",
-                borderRadius: 18,
-                padding: "9px 6px",
-                textAlign: "center",
-                color: item.label === "Trails" ? "#0796a6" : "#607089",
-                background: item.label === "Trails" ? "linear-gradient(135deg, #dff8ff, #ffffff)" : "transparent",
-                fontSize: 10,
-                fontWeight: 820,
-              }}
-            >
-              <div style={{ fontSize: 16, lineHeight: 1 }}>{item.icon}</div>
-              <div style={{ marginTop: 4 }}>{item.label}</div>
-            </Link>
-          ))}
+          <Link
+            href="/traveler/home"
+            style={{
+              textDecoration: "none",
+              borderRadius: 18,
+              padding: "8px 4px",
+              textAlign: "center",
+              color: "#50668B",
+              WebkitTextFillColor: "#50668B",
+              background: "transparent",
+              fontSize: 10,
+              fontWeight: 880,
+              lineHeight: 1,
+            }}
+          >
+            <div style={{ fontSize: 17, lineHeight: 1 }}>⌂</div>
+            <div style={{ marginTop: 4 }}>Home</div>
+          </Link>
+
+          <Link
+            href="/traveler/trips"
+            style={{
+              textDecoration: "none",
+              borderRadius: 18,
+              padding: "8px 4px",
+              textAlign: "center",
+              color: "#50668B",
+              WebkitTextFillColor: "#50668B",
+              background: "transparent",
+              fontSize: 10,
+              fontWeight: 880,
+              lineHeight: 1,
+            }}
+          >
+            <div style={{ fontSize: 17, lineHeight: 1 }}>⌁</div>
+            <div style={{ marginTop: 4 }}>Trips</div>
+          </Link>
+
+          <Link
+            href="/traveler/scan"
+            aria-label="Open QR scanner"
+            style={{
+              width: 58,
+              height: 58,
+              margin: "-18px auto 0",
+              borderRadius: 22,
+              background: "linear-gradient(135deg, #013863 0%, #0596A5 100%)",
+              color: "#FFFFFF",
+              WebkitTextFillColor: "#FFFFFF",
+              textDecoration: "none",
+              display: "grid",
+              placeItems: "center",
+              boxShadow: "0 16px 34px rgba(1,56,99,0.24)",
+              border: "3px solid rgba(255,255,255,0.96)",
+              fontSize: 24,
+              fontWeight: 950,
+              lineHeight: 1,
+            }}
+          >
+            ▣
+          </Link>
+
+          <Link
+            href="/traveler/explore"
+            style={{
+              textDecoration: "none",
+              borderRadius: 18,
+              padding: "8px 4px",
+              textAlign: "center",
+              color: "#50668B",
+              WebkitTextFillColor: "#50668B",
+              background: "transparent",
+              fontSize: 10,
+              fontWeight: 880,
+              lineHeight: 1,
+            }}
+          >
+            <div style={{ fontSize: 17, lineHeight: 1 }}>⌕</div>
+            <div style={{ marginTop: 4 }}>Explore</div>
+          </Link>
+
+          <Link
+            href="/traveler/settings"
+            style={{
+              textDecoration: "none",
+              borderRadius: 18,
+              padding: "8px 4px",
+              textAlign: "center",
+              color: "#50668B",
+              WebkitTextFillColor: "#50668B",
+              background: "transparent",
+              fontSize: 10,
+              fontWeight: 880,
+              lineHeight: 1,
+            }}
+          >
+            <div style={{ fontSize: 17, lineHeight: 1 }}>◉</div>
+            <div style={{ marginTop: 4 }}>Profile</div>
+          </Link>
         </nav>
       </div>
-      <PassportMapShortcut compact title="View this trail on the Passport Map" body="Open the map to understand nearby stops, route context, and verified movement points." />
+      <TrailPaymentGatewayCta trailSlug={params.trailSlug} trailTitle={trail.title} />
+      <PassportMapShortcut
+        href="/traveler/settings?panel=assistant&topic=trail"
+        eyebrow="Kuya Tala™"
+        title="Talk to Kuya Tala"
+        body="Ask about route readiness, payment, stamps, and your next best move."
+      />
     </main>
   );
 }
