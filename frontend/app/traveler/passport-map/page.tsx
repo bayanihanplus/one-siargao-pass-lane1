@@ -375,9 +375,8 @@ export default async function TravelerPassportMapPage() {
             </div>
           </section>
 
-          <SpmPassportExperienceCards />
-          <SpmFeaturedPartnerTours />
           <SpmCuratedPassportTours />
+          <SpmFeaturedPartnerTours />
           <SpmBuildYourOwnTrailSection />
           <SpmGuideSupportProvidedBy />
 
@@ -579,131 +578,121 @@ type SpmVerifiedStopPreviewData = {
   href?: string;
 };
 
-function SpmVerifiedStopsPreview(props: { stops?: SpmVerifiedStopPreviewData[] | null }) {
-  const realStops = props.stops?.length ? props.stops.slice(0, 3) : [];
-  const visualPaddingStops = [
+function SpmVerifiedStopsPreview({ stops }: { stops?: SpmVerifiedStopPreviewData[] }) {
+  const stopCount = stops?.length || 0;
+  const verifiedCards = [
     {
-      stopName: "Stamp Lock",
-      subtitle: "Open pass / QR",
-      verificationStatus: "locked",
-      source: "visual_padding",
-      href: "/traveler/pass",
+      eyebrow: "Stamp-ready Stops",
+      title: "Verified places for Passport collection",
+      description: "Places prepared for stamp collection, trail movement, and destination progress.",
+      metric: stopCount ? `${stopCount} visible stops` : "Verified stop layer",
+      visual: "📍",
     },
     {
-      stopName: "QR Ready",
-      subtitle: "Show QR credential",
-      verificationStatus: "ready",
-      source: "visual_padding",
-      href: "/traveler/pass",
+      eyebrow: "QR Ready",
+      title: "Use your OSP pass for supported trail actions",
+      description: "Your QR identity keeps trail actions connected to your traveler journey.",
+      metric: "OSP pass linked",
+      visual: "🔳",
     },
     {
-      stopName: "Progress",
-      subtitle: "Open Passport Trails",
-      verificationStatus: "progress",
-      source: "visual_padding",
-      href: "/traveler/passport-trails",
+      eyebrow: "Trail Progress",
+      title: "Track completed stops and continue routes",
+      description: "Continue unfinished routes and keep your Passport journey organized.",
+      metric: "Progress layer",
+      visual: "✨",
     },
   ];
 
-  const stops = [...realStops, ...visualPaddingStops].slice(0, 3);
   return (
     <section
-      aria-label="Verified stops cards"
+      aria-label="Verified Stops"
       style={{
         marginTop: 18,
+        borderRadius: 28,
+        background: "linear-gradient(135deg, #FFFFFF 0%, #FFF8EA 46%, #F4FCFA 100%)",
+        border: "1px solid rgba(243,174,38,0.32)",
+        boxShadow: "0 18px 44px rgba(1,56,99,0.09)",
+        padding: 14,
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          gap: 12,
-          padding: "0 2px",
-        }}
-      >
-        <div style={{ minWidth: 0 }}>
-          <h2
-            style={{
-              margin: 0,
-              fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
-              fontSize: 23,
-              lineHeight: 1.08,
-              letterSpacing: "-0.04em",
-              color: "#14264b",
-              fontWeight: 590,
-            }}
-          >
-            Verified Stops
-          </h2>
-          <p
-            style={{
-              margin: "6px 0 0",
-              fontSize: 11.4,
-              lineHeight: 1.2,
-              color: "#6b7890",
-              fontWeight: 610,
-            }}
-          >
-            QR-verified activity appears here. Pending cards unlock only after real scans.
-          </p>
+      <div>
+        <div style={{ fontSize: 9.5, fontWeight: 950, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A5A00" }}>
+          Verified Stops
         </div>
-
-        <a
-          href="/traveler/pass"
-          aria-label="View pass and QR records"
-          style={{
-            minHeight: 40,
-            borderRadius: 999,
-            border: "1px solid rgba(19,168,183,0.20)",
-            background: "rgba(236,254,255,0.86)",
-            color: "#067889",
-            fontSize: 11,
-            fontWeight: 640,
-            textDecoration: "none",
-            whiteSpace: "nowrap",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 5,
-            padding: "0 10px",
-          }}
-        >
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" aria-hidden="true">
-            <path d="M12 3.5 18.5 6v5.2c0 4.2-2.7 7.5-6.5 9.3-3.8-1.8-6.5-5.1-6.5-9.3V6L12 3.5Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
-            <path d="M8.8 12.1 11 14.2l4.4-4.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Pass
-        </a>
+        <h2 style={{ margin: "6px 0 0", fontSize: 25, lineHeight: 1, fontWeight: 950, letterSpacing: "-0.055em", color: "#013863" }}>
+          Stamp-ready places connected to your Passport journey.
+        </h2>
+        <p style={{ margin: "8px 0 0", color: "#50668B", fontSize: 13.2, lineHeight: 1.42, fontWeight: 760 }}>
+          Verified stops prove the Passport Map is not just a map — it is a guided, trackable journey layer.
+        </p>
       </div>
 
-      <div
-        style={{
-          marginTop: 12,
-          display: "grid",
-          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-          gap: 9,
-        }}
-      >
-        {stops.map((stop, index) => {
-          const isPadding = stop.source === "visual_padding";
-          return (
-            <StopPreviewCard
-              key={`${stop.stopName}-${index}`}
-              name={stop.stopName ?? "Verified Stop"}
-              subtitle={stop.subtitle ?? "Verified stop"}
-              imageLabel={isPadding ? "SP" : (stop.stopName ?? "VS").slice(0, 2).toUpperCase()}
-              variant={index === 1 ? "surf" : index === 2 ? "pool" : "town"}
-              verified={!isPadding}
-              state={stop.verificationStatus ?? "pending"}
-              href={stop.href ?? (!isPadding ? "/traveler/pass" : "/traveler/passport-map")}
-            />
-          );
-        })}
+      <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
+        {verifiedCards.map((card) => (
+          <div
+            key={card.title}
+            style={{
+              borderRadius: 22,
+              background: "#FFFFFF",
+              border: "1px solid rgba(1,56,99,0.09)",
+              boxShadow: "0 12px 28px rgba(1,56,99,0.07)",
+              padding: 13,
+            }}
+          >
+            <div style={{ display: "grid", gridTemplateColumns: "48px 1fr", gap: 11, alignItems: "start" }}>
+              <div
+                style={{
+                  width: 48,
+                  minHeight: 50,
+                  borderRadius: 18,
+                  background: "#FFF8EA",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: 22,
+                  border: "1px solid rgba(243,174,38,0.24)",
+                }}
+              >
+                {card.visual}
+              </div>
+
+              <div style={{ minWidth: 0 }}>
+                <div style={{ color: "#8A5A00", fontSize: 8.6, fontWeight: 950, letterSpacing: "0.13em", textTransform: "uppercase" }}>
+                  {card.eyebrow}
+                </div>
+                <h3 style={{ margin: "4px 0 0", color: "#013863", fontSize: 17.5, lineHeight: 1.03, fontWeight: 950, letterSpacing: "-0.04em" }}>
+                  {card.title}
+                </h3>
+                <p style={{ margin: "7px 0 0", color: "#50668B", fontSize: 12.2, lineHeight: 1.35, fontWeight: 730 }}>
+                  {card.description}
+                </p>
+              </div>
+            </div>
+
+            <div
+              style={{
+                marginTop: 11,
+                borderRadius: 999,
+                background: "#F4FCFA",
+                border: "1px solid rgba(0,151,167,0.14)",
+                color: "#0097A7",
+                display: "inline-flex",
+                alignItems: "center",
+                minHeight: 32,
+                padding: "0 10px",
+                fontSize: 10,
+                fontWeight: 950,
+              }}
+            >
+              {card.metric}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
 }
+
 
 function StopPreviewCard(props: {
   name: string;
@@ -881,157 +870,141 @@ type SpmTrailPreviewData = {
   source?: string;
 };
 
-function SpmTrailCardsPreview(props: any) {
-  const fallbackTrails = [
+function SpmTrailCardsPreview({ trails }: { trails?: unknown[] }) {
+  const journeyCards = [
     {
-      trailName: "Island Hopping Trail",
-      trailStatus: "active",
-      stopsCompleted: 2,
-      stopsTotal: 6,
-      progressPercentage: 33,
-      href: "/traveler/passport-trails/island-hopping",
+      eyebrow: "Your Trips",
+      title: "Continue saved Siargao plans",
+      description: "Open saved routes, booking records, trip details, and active journey context.",
+      href: "/traveler/trips",
+      metric: trails?.length ? `${trails.length} trail options` : "Trip records",
+      visual: "🧳",
+      cta: "View Trips",
     },
     {
-      trailName: "Surf Explorer Trail",
-      trailStatus: "preview",
-      stopsCompleted: 0,
-      stopsTotal: 0,
-      progressPercentage: 0,
-      href: "/traveler/passport-trails",
+      eyebrow: "Your Pass",
+      title: "Open your OSP QR identity",
+      description: "Use your traveler QR identity and trip pass for supported OSP journey actions.",
+      href: "/traveler/pass",
+      metric: "QR ready",
+      visual: "🎫",
+      cta: "Open My Pass",
     },
     {
-      trailName: "North Siargao Trail",
-      trailStatus: "preview",
-      stopsCompleted: 0,
-      stopsTotal: 0,
-      progressPercentage: 0,
-      href: "/traveler/passport-trails",
+      eyebrow: "Payments",
+      title: "Review payments and receipts",
+      description: "Check booking-linked payment records, receipts, and payment readiness.",
+      href: "/traveler/payments",
+      metric: "Receipt layer",
+      visual: "🧾",
+      cta: "View Payments",
     },
   ];
 
-  const incoming = Array.isArray(props?.trails) && props.trails.length > 0 ? props.trails.slice(0, 3) : [];
-  const trails = incoming.length > 0
-    ? incoming.map((trail: any, index: number) => ({
-        trailName: trail.trailName ?? fallbackTrails[index]?.trailName ?? "Passport Trail",
-        trailStatus: trail.trailStatus ?? fallbackTrails[index]?.trailStatus ?? "preview",
-        stopsCompleted: trail.stopsCompleted ?? fallbackTrails[index]?.stopsCompleted ?? 0,
-        stopsTotal: trail.stopsTotal ?? fallbackTrails[index]?.stopsTotal ?? 0,
-        progressPercentage: trail.progressPercentage ?? fallbackTrails[index]?.progressPercentage ?? 0,
-        href: trail.href ?? fallbackTrails[index]?.href ?? "/traveler/passport-trails",
-      }))
-    : fallbackTrails;
-
   return (
     <section
-      aria-label="Your Passport Trails"
+      aria-label="Continue Your Journey"
       style={{
-        marginTop: 14,
-        border: "1px solid #bfe7ee",
-        borderRadius: 22,
-        background: "linear-gradient(135deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
-        padding: 12,
-        boxShadow: "0 12px 28px rgba(8,61,103,0.07)",
+        marginTop: 18,
+        borderRadius: 28,
+        background: "linear-gradient(180deg, #FFFFFF 0%, #F4FCFA 100%)",
+        border: "1px solid rgba(0,151,167,0.18)",
+        boxShadow: "0 18px 44px rgba(1,56,99,0.09)",
+        padding: 14,
       }}
     >
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
-        <div>
-          <div style={{ fontSize: 8.9, fontWeight: 840, letterSpacing: "0.13em", textTransform: "uppercase", color: "#0796a6" }}>
-            Your Trails
-          </div>
-          <h2 style={{ margin: "4px 0 0", fontSize: 20, lineHeight: 1.03, fontWeight: 780, letterSpacing: "-0.045em", color: "#14264b" }}>
-            Continue your journey.
-          </h2>
+      <div>
+        <div style={{ fontSize: 9.5, fontWeight: 950, letterSpacing: "0.14em", textTransform: "uppercase", color: "#0097A7" }}>
+          Continue Your Journey
         </div>
-
-        <a
-          href="/traveler/passport-trails"
-          aria-label="Explore all Passport Trails"
-          style={{
-            flexShrink: 0,
-            borderRadius: 999,
-            background: "linear-gradient(135deg, #14b8c6, #078da0)",
-            color: "#ffffff",
-            padding: "9px 11px",
-            fontSize: 10,
-            fontWeight: 860,
-            textDecoration: "none",
-            boxShadow: "0 12px 26px rgba(7,141,160,0.24)",
-          }}
-        >
-          Explore
-        </a>
+        <h2 style={{ margin: "6px 0 0", fontSize: 25, lineHeight: 1, fontWeight: 950, letterSpacing: "-0.055em", color: "#013863" }}>
+          Your active Passport journey control panel.
+        </h2>
+        <p style={{ margin: "8px 0 0", color: "#50668B", fontSize: 13.2, lineHeight: 1.42, fontWeight: 760 }}>
+          Pick up where your Siargao Passport journey left off.
+        </p>
       </div>
 
-      <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
-        {trails.map((trail: any, index: number) => {
-          const active = String(trail.trailStatus).toLowerCase().includes("active") || Number(trail.progressPercentage) > 0;
-          const progressText = active
-            ? `${trail.stopsCompleted ?? 0}/${trail.stopsTotal ?? 0} stops`
-            : "Preview";
-
-          return (
-            <a
-              key={`${trail.trailName}-${index}`}
-              href={trail.href ?? "/traveler/passport-trails"}
-              aria-label={`Open ${trail.trailName}`}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "42px 1fr 78px",
-                alignItems: "center",
-                gap: 9,
-                border: "1px solid #bfe7ee",
-                borderRadius: 18,
-                background: active ? "linear-gradient(135deg, #e3fff3, #f3ffff)" : "linear-gradient(135deg, #ffffff, #f7fcfd)",
-                padding: "9px",
-                textDecoration: "none",
-                color: "inherit",
-              }}
-            >
+      <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
+        {journeyCards.map((card) => (
+          <a
+            key={card.title}
+            href={card.href}
+            aria-label={`${card.eyebrow}: ${card.title}`}
+            style={{
+              display: "block",
+              color: "inherit",
+              textDecoration: "none",
+              borderRadius: 22,
+              background: "linear-gradient(135deg, #FFFFFF 0%, #EAFBFA 100%)",
+              border: "1px solid rgba(0,151,167,0.16)",
+              boxShadow: "0 12px 28px rgba(1,56,99,0.07)",
+              padding: 13,
+            }}
+          >
+            <div style={{ display: "grid", gridTemplateColumns: "48px 1fr", gap: 11, alignItems: "start" }}>
               <div
                 style={{
-                  width: 42,
-                  minHeight: 44,
+                  width: 48,
+                  minHeight: 50,
                   borderRadius: 18,
-                  background: active ? "#16a34a" : "#e4fbff",
-                  color: active ? "#ffffff" : "#078da0",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 16,
-                  fontWeight: 900,
+                  background: "#FFFFFF",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: 22,
+                  border: "1px solid rgba(1,56,99,0.08)",
                 }}
               >
-                {active ? "✓" : "→"}
+                {card.visual}
               </div>
 
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 14.2, fontWeight: 830, lineHeight: 1.04, color: "#14264b" }}>
-                  {trail.trailName}
+                <div style={{ color: "#0097A7", fontSize: 8.6, fontWeight: 950, letterSpacing: "0.13em", textTransform: "uppercase" }}>
+                  {card.eyebrow}
                 </div>
-                <div style={{ marginTop: 4, fontSize: 10.6, fontWeight: 670, color: "#53657d", lineHeight: 1.12 }}>
-                  {progressText} • Passport stamps
-                </div>
+                <h3 style={{ margin: "4px 0 0", color: "#013863", fontSize: 17.5, lineHeight: 1.03, fontWeight: 950, letterSpacing: "-0.04em" }}>
+                  {card.title}
+                </h3>
+                <p style={{ margin: "7px 0 0", color: "#50668B", fontSize: 12.2, lineHeight: 1.35, fontWeight: 730 }}>
+                  {card.description}
+                </p>
               </div>
+            </div>
 
-              <div
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 11 }}>
+              <span
                 style={{
-                  minHeight: 44,
-                  borderRadius: 14,
-                  background: active ? "#16a34a" : "#13a8b7",
-                  color: "#ffffff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 10.6,
-                  fontWeight: 860,
-                  boxShadow: "0 8px 18px rgba(8,61,103,0.14)",
+                  borderRadius: 999,
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(1,56,99,0.08)",
+                  color: "#013863",
+                  padding: "7px 9px",
+                  fontSize: 9.5,
+                  fontWeight: 900,
                 }}
               >
-                {active ? "Continue" : "Open"}
-              </div>
-            </a>
-          );
-        })}
+                {card.metric}
+              </span>
+              <span
+                style={{
+                  minHeight: 40,
+                  borderRadius: 15,
+                  background: "#013863",
+                  color: "#FFFFFF",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 12px",
+                  fontSize: 11,
+                  fontWeight: 950,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {card.cta}
+              </span>
+            </div>
+          </a>
+        ))}
       </div>
     </section>
   );
@@ -1630,338 +1603,269 @@ function NavIcon(props: {
 
 
 function SpmJourneyHubEngagement() {
-  const routeNodes = [
-    {
-      label: "Verified",
-      icon: "✓",
-      state: "completed",
-      tone: "#16a34a",
-      softBg: "rgba(220,252,231,0.92)",
-      border: "rgba(34,184,90,0.32)",
-    },
-    {
-      label: "Current",
-      icon: "⌁",
-      state: "active",
-      tone: "#0891b2",
-      softBg: "rgba(232,251,255,0.96)",
-      border: "rgba(8,145,178,0.34)",
-    },
-    {
-      label: "Next",
-      icon: "↗",
-      state: "next",
-      tone: "#f59e0b",
-      softBg: "rgba(255,248,220,0.96)",
-      border: "rgba(245,158,11,0.34)",
-    },
-    {
-      label: "Locked",
-      icon: "▣",
-      state: "locked",
-      tone: "#64748b",
-      softBg: "rgba(248,250,252,0.98)",
-      border: "rgba(148,163,184,0.34)",
-    },
+  const mapPins = [
+    { label: "Cloud 9", x: "63%", y: "51%", tone: "#F3AE26", href: "/traveler/passport-trails/surf-explorer?pin=cloud-9" },
+    { label: "General Luna", x: "56%", y: "66%", tone: "#0097A7", href: "/traveler/passport-trails?zone=general-luna" },
+    { label: "Island Hopping", x: "43%", y: "74%", tone: "#013863", href: "/traveler/passport-trails/island-hopping?pin=island-hopping" },
+    { label: "North Siargao", x: "49%", y: "25%", tone: "#F3AE26", href: "/traveler/passport-trails/north-siargao?pin=north-siargao" },
+    { label: "Sugba Lagoon", x: "33%", y: "45%", tone: "#0097A7", href: "/traveler/partner-tours?focus=sugba-lagoon-adventure" },
   ];
+
+  const trailChips = ["Official Trails", "Verified Stops", "Stamp Ready", "QR Journey"];
 
   return (
     <section
-      aria-label="SPM Functional Journey Map"
+      aria-label="Continue Passport Trail with Siargao map preview"
       style={{
-        marginTop: 16,
-        border: "1px solid #bfe7ee",
-        borderRadius: 24,
-        background: "linear-gradient(180deg, rgba(255,255,255,0.99), rgba(244,253,255,0.95))",
-        padding: 13,
-        boxShadow: "0 16px 38px rgba(8,61,103,0.10)",
+        marginTop: 18,
+        borderRadius: 30,
+        background: "linear-gradient(135deg, #013863 0%, #003B66 58%, #0097A7 100%)",
+        color: "#FFFFFF",
+        padding: 14,
+        boxShadow: "0 22px 52px rgba(1,56,99,0.22)",
+        border: "1px solid rgba(255,255,255,0.16)",
+        overflow: "hidden",
+        position: "relative",
       }}
     >
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
-        <div style={{ minWidth: 0 }}>
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(circle at 80% 8%, rgba(243,174,38,0.24), transparent 30%), radial-gradient(circle at 0% 100%, rgba(0,151,167,0.28), transparent 34%)",
+          pointerEvents: "none",
+        }}
+      />
+
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div style={{ fontSize: 9.5, fontWeight: 950, letterSpacing: "0.14em", textTransform: "uppercase", color: "#F3AE26" }}>
+          Continue Passport Trail
+        </div>
+        <h2 style={{ margin: "7px 0 0", fontSize: 27, lineHeight: 0.98, fontWeight: 950, letterSpacing: "-0.06em", color: "#FFFFFF" }}>
+          Follow your trail across Siargao.
+        </h2>
+        <p style={{ margin: "9px 0 0", color: "rgba(255,255,255,0.84)", fontSize: 13.4, lineHeight: 1.42, fontWeight: 760 }}>
+          Preview verified stops, trail paths, and Passport-ready moments before opening the full journey map.
+        </p>
+
+        <div
+          style={{
+            marginTop: 14,
+            borderRadius: 26,
+            background: "#FFFFFF",
+            border: "1px solid rgba(255,255,255,0.24)",
+            boxShadow: "0 18px 42px rgba(0,0,0,0.18)",
+            padding: 10,
+            overflow: "hidden",
+          }}
+        >
           <div
             style={{
-              fontSize: 8.8,
-              fontWeight: 900,
-              letterSpacing: "0.13em",
-              textTransform: "uppercase",
-              color: "#0796a6",
+              position: "relative",
+              borderRadius: 22,
+              minHeight: 280,
+              overflow: "hidden",
+              background: "#EAFBFA",
+              border: "1px solid rgba(1,56,99,0.10)",
             }}
           >
-            Functional Journey Map
-          </div>
-          <h2
-            style={{
-              margin: "5px 0 0",
-              fontSize: 18,
-              lineHeight: 1.04,
-              fontWeight: 900,
-              letterSpacing: "-0.045em",
-              color: "#14264b",
-            }}
-          >
-            Continue Passport Trail
-          </h2>
-          <p
-            style={{
-              margin: "5px 0 0",
-              fontSize: 10.4,
-              lineHeight: 1.22,
-              fontWeight: 720,
-              color: "#53657d",
-            }}
-          >
-            A compact route view for verified stops, next unlocks, and locked trail progress.
-          </p>
-        </div>
+            <img
+              src="/spm/spm-own-map-canvas.png"
+              alt="Siargao Passport Map preview"
+              style={{
+                width: "100%",
+                height: 280,
+                objectFit: "cover",
+                display: "block",
+                filter: "saturate(1.05) contrast(1.02)",
+              }}
+            />
 
-        <a
-          href="/traveler/passport-trails/island-hopping"
-          aria-label="Open active Island Hopping Passport Trail"
-          style={{
-            flexShrink: 0,
-            minHeight: 40,
-            minWidth: 78,
-            borderRadius: 15,
-            background: "linear-gradient(135deg, #22b85a, #11843d)",
-            color: "#ffffff",
-            display: "grid",
-            placeItems: "center",
-            textDecoration: "none",
-            fontSize: 9.8,
-            fontWeight: 900,
-            boxShadow: "0 10px 22px rgba(17,132,61,0.20)",
-          }}
-        >
-          Open Trail
-        </a>
-      </div>
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(180deg, rgba(1,56,99,0.05) 0%, rgba(1,56,99,0.16) 100%)",
+                pointerEvents: "none",
+              }}
+            />
 
-      <div
-        aria-label="Compact route progress preview"
-        style={{
-          marginTop: 12,
-          borderRadius: 22,
-          border: "1px solid rgba(191,231,238,0.82)",
-          background: "linear-gradient(135deg, #e8fbff 0%, #ffffff 54%, #f8fafc 100%)",
-          padding: "14px 12px",
-          position: "relative",
-          overflow: "hidden",
-          minHeight: 150,
-        }}
-      >
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "radial-gradient(circle at 18% 22%, rgba(20,184,198,0.14), transparent 26%), radial-gradient(circle at 82% 34%, rgba(34,184,90,0.10), transparent 28%), radial-gradient(circle at 62% 88%, rgba(245,158,11,0.12), transparent 26%)",
-          }}
-        />
-
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 320 120"
-          width="100%"
-          height="120"
-          preserveAspectRatio="none"
-          style={{ position: "relative", display: "block" }}
-        >
-          <path
-            d="M28 88 C76 44, 110 76, 146 48 C184 18, 217 42, 257 25 C282 14, 298 22, 306 38"
-            fill="none"
-            stroke="rgba(148,163,184,0.42)"
-            strokeWidth="7"
-            strokeLinecap="round"
-            strokeDasharray="8 10"
-          />
-          <path
-            d="M28 88 C76 44, 110 76, 146 48"
-            fill="none"
-            stroke="#16a34a"
-            strokeWidth="7"
-            strokeLinecap="round"
-          />
-          <path
-            d="M146 48 C184 18, 217 42, 257 25"
-            fill="none"
-            stroke="#0891b2"
-            strokeWidth="7"
-            strokeLinecap="round"
-          />
-          <path
-            d="M257 25 C282 14, 298 22, 306 38"
-            fill="none"
-            stroke="#f59e0b"
-            strokeWidth="7"
-            strokeLinecap="round"
-            strokeDasharray="4 8"
-          />
-        </svg>
-
-        <div
-          style={{
-            position: "absolute",
-            left: "7%",
-            bottom: 35,
-            width: 32,
-            height: 32,
-            borderRadius: 14,
-            background: "#16a34a",
-            color: "#ffffff",
-            display: "grid",
-            placeItems: "center",
-            fontSize: 16,
-            fontWeight: 950,
-            boxShadow: "0 10px 22px rgba(22,163,74,0.24)",
-          }}
-        >
-          ✓
-        </div>
-
-        <div
-          style={{
-            position: "absolute",
-            left: "42%",
-            top: 46,
-            width: 36,
-            height: 36,
-            borderRadius: 15,
-            background: "linear-gradient(135deg, #14b8c6, #078da0)",
-            color: "#ffffff",
-            display: "grid",
-            placeItems: "center",
-            fontSize: 18,
-            fontWeight: 950,
-            boxShadow: "0 12px 26px rgba(7,141,160,0.24)",
-          }}
-        >
-          ⌁
-        </div>
-
-        <div
-          style={{
-            position: "absolute",
-            right: "18%",
-            top: 25,
-            width: 38,
-            height: 38,
-            borderRadius: 16,
-            background: "linear-gradient(135deg, #fbbf24, #f59e0b)",
-            color: "#ffffff",
-            display: "grid",
-            placeItems: "center",
-            fontSize: 18,
-            fontWeight: 950,
-            boxShadow: "0 14px 30px rgba(245,158,11,0.28)",
-          }}
-        >
-          ↗
-        </div>
-
-        <div
-          style={{
-            position: "absolute",
-            right: "4%",
-            top: 44,
-            width: 30,
-            height: 30,
-            borderRadius: 13,
-            background: "#64748b",
-            color: "#ffffff",
-            display: "grid",
-            placeItems: "center",
-            fontSize: 14,
-            fontWeight: 900,
-            boxShadow: "0 8px 18px rgba(100,116,139,0.20)",
-          }}
-        >
-          ▣
-        </div>
-
-        <div
-          style={{
-            position: "absolute",
-            left: 12,
-            top: 12,
-            borderRadius: 999,
-            background: "rgba(255,255,255,0.86)",
-            border: "1px solid rgba(191,231,238,0.76)",
-            padding: "5px 8px",
-            fontSize: 8.5,
-            fontWeight: 900,
-            color: "#067889",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-          }}
-        >
-          Preview / DB-ready
-        </div>
-      </div>
-
-      <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 7 }}>
-        {routeNodes.map((node) => (
-          <div
-            key={node.state}
-            style={{
-              minHeight: 58,
-              borderRadius: 16,
-              border: `1px solid ${node.border}`,
-              background: `linear-gradient(180deg, ${node.softBg}, rgba(255,255,255,0.96))`,
-              display: "grid",
-              placeItems: "center",
-              textAlign: "center",
-              padding: "7px 4px",
-            }}
-          >
-            <div style={{ color: node.tone, fontSize: 15, fontWeight: 950, lineHeight: 1 }}>
-              {node.icon}
+            <div
+              aria-label="Map zoom controls preview"
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                display: "grid",
+                gap: 7,
+              }}
+            >
+              {["+", "−"].map((label) => (
+                <span
+                  key={label}
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 13,
+                    background: "rgba(255,255,255,0.94)",
+                    border: "1px solid rgba(1,56,99,0.12)",
+                    color: "#013863",
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 18,
+                    fontWeight: 950,
+                    boxShadow: "0 8px 20px rgba(1,56,99,0.12)",
+                  }}
+                >
+                  {label}
+                </span>
+              ))}
             </div>
-            <div style={{ marginTop: 5, color: "#14264b", fontSize: 8.7, lineHeight: 1.05, fontWeight: 900 }}>
-              {node.label}
+
+            {mapPins.map((pin) => (
+              <a
+                key={pin.label}
+                href={pin.href}
+                aria-label={`Open Passport Trails from ${pin.label} map pin`}
+                style={{
+                  position: "absolute",
+                  left: pin.x,
+                  top: pin.y,
+                  transform: "translate(-50%, -50%)",
+                  textDecoration: "none",
+                  display: "grid",
+                  placeItems: "center",
+                  width: 34,
+                  height: 34,
+                  borderRadius: "50%",
+                  background: pin.tone,
+                  border: "3px solid #FFFFFF",
+                  color: "#FFFFFF",
+                  fontSize: 12,
+                  fontWeight: 950,
+                  boxShadow: "0 10px 24px rgba(1,56,99,0.24)",
+                }}
+                title={pin.label}
+              >
+                •
+              </a>
+            ))}
+
+            <div
+              style={{
+                position: "absolute",
+                left: 10,
+                right: 10,
+                bottom: 10,
+                borderRadius: 18,
+                background: "rgba(255,255,255,0.94)",
+                border: "1px solid rgba(1,56,99,0.10)",
+                padding: 10,
+                boxShadow: "0 12px 30px rgba(1,56,99,0.14)",
+              }}
+            >
+              <div style={{ color: "#013863", fontSize: 12, fontWeight: 950, letterSpacing: "-0.02em" }}>
+                Siargao Passport Map Preview
+              </div>
+              <div style={{ marginTop: 4, color: "#50668B", fontSize: 11.2, lineHeight: 1.32, fontWeight: 780 }}>
+                Pins preview verified stops and trail-ready zones. Full zoom and live pin behavior comes through the map engine lane.
+              </div>
             </div>
           </div>
-        ))}
-      </div>
 
-      <div
-        style={{
-          marginTop: 10,
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 8,
-        }}
-      >
-        <div
-          style={{
-            borderRadius: 16,
-            border: "1px solid rgba(191,231,238,0.76)",
-            background: "linear-gradient(135deg, #ffffff, #f4fdff)",
-            padding: "9px 10px",
-          }}
-        >
-          <div style={{ fontSize: 8.3, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: "#067889" }}>
-            Active Trail
-          </div>
-          <div style={{ marginTop: 3, fontSize: 11.4, fontWeight: 880, color: "#14264b", lineHeight: 1.06 }}>
-            Island Hopping
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginTop: 10 }}>
+            {trailChips.map((chip) => (
+              <span
+                key={chip}
+                style={{
+                  borderRadius: 999,
+                  background: "#F4FCFA",
+                  border: "1px solid rgba(0,151,167,0.16)",
+                  color: "#013863",
+                  padding: "7px 9px",
+                  fontSize: 9.8,
+                  fontWeight: 900,
+                }}
+              >
+                {chip}
+              </span>
+            ))}
           </div>
         </div>
 
         <div
           style={{
-            borderRadius: 16,
-            border: "1px solid rgba(191,231,238,0.76)",
-            background: "linear-gradient(135deg, #ffffff, #fff8dc)",
-            padding: "9px 10px",
+            marginTop: 14,
+            borderRadius: 24,
+            background: "rgba(255,255,255,0.10)",
+            border: "1px solid rgba(255,255,255,0.16)",
+            padding: 12,
+            display: "grid",
+            gap: 9,
           }}
         >
-          <div style={{ fontSize: 8.3, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: "#b45309" }}>
-            Next Unlock
-          </div>
-          <div style={{ marginTop: 3, fontSize: 11.4, fontWeight: 880, color: "#14264b", lineHeight: 1.06 }}>
-            After verified QR scan
+          <a
+            href="/traveler/passport-trails"
+            aria-label="Open Full Passport Map"
+            style={{
+              minHeight: 52,
+              borderRadius: 17,
+              background: "#F3AE26",
+              color: "#013863",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none",
+              fontSize: 14,
+              fontWeight: 950,
+              boxShadow: "0 14px 30px rgba(0,0,0,0.14)",
+            }}
+          >
+            Open Full Passport Map
+          </a>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9 }}>
+            <a
+              href="/traveler/pass"
+              aria-label="View My Pass"
+              style={{
+                minHeight: 46,
+                borderRadius: 16,
+                background: "rgba(255,255,255,0.96)",
+                color: "#013863",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textDecoration: "none",
+                fontSize: 12,
+                fontWeight: 950,
+              }}
+            >
+              View My Pass
+            </a>
+            <a
+              href="/traveler/settings?panel=assistant&topic=map"
+              aria-label="Ask Kuya Tala"
+              style={{
+                minHeight: 46,
+                borderRadius: 16,
+                background: "rgba(255,255,255,0.16)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                color: "#FFFFFF",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textDecoration: "none",
+                fontSize: 12,
+                fontWeight: 950,
+              }}
+            >
+              Ask Kuya Tala™
+            </a>
           </div>
         </div>
       </div>
@@ -1970,41 +1874,37 @@ function SpmJourneyHubEngagement() {
 }
 
 
-
 function SpmFeaturedPartnerTours() {
   const partnerTours = [
     {
-      label: "Siargao Partner Tour",
-      title: "Island Hopping Trail",
-      subtitle: "Guyam • Daku • Naked Island",
-      badge: "Passport-ready",
-      action: "View Tour",
-      href: "/traveler/explore/tours",
-      tone: "#0891b2",
-      softBg: "rgba(232,251,255,0.96)",
-      softBorder: "#aee7f2",
+      eyebrow: "Approved Partner Tour",
+      title: "Tri-Island Joiner Tour",
+      description: "Local partner-operated island hopping experience with booking and readiness flow.",
+      duration: "Half-day to full-day",
+      bestFor: "Groups, solo joiners, first-time visitors",
+      indicator: "Partner-operated / booking-ready preview",
+      href: "/traveler/partner-tours?focus=tri-island-joiner",
+      visual: "🏝️",
     },
     {
-      label: "Siargao Partner Tour",
-      title: "Corregidor + Tri-Island",
-      subtitle: "Corregidor • Guyam • Daku",
-      badge: "Pricing before confirmation",
-      action: "Preview",
-      href: "/traveler/passport-trails",
-      tone: "#0f9aa8",
-      softBg: "rgba(236,254,255,0.94)",
-      softBorder: "#bfe7ee",
+      eyebrow: "Approved Partner Tour",
+      title: "Land Tour Highlights",
+      description: "Explore key Siargao stops with approved local operators and a clear traveler readiness path.",
+      duration: "Full-day route",
+      bestFor: "Families, couples, inland explorers",
+      indicator: "Approved partner tour",
+      href: "/traveler/partner-tours?focus=land-tour-highlights",
+      visual: "🛵",
     },
     {
-      label: "Siargao Partner Tour",
-      title: "Sohoton Joiner",
-      subtitle: "Sohoton • Bucas Grande",
-      badge: "Activation-gated",
-      action: "Preview Tour",
-      href: "/traveler/passport-trails",
-      tone: "#14a3b8",
-      softBg: "rgba(240,253,255,0.94)",
-      softBorder: "#bfe7ee",
+      eyebrow: "Request-to-confirm",
+      title: "Sugba Lagoon Adventure Trail",
+      description: "Request a flexible lagoon adventure plan with partner confirmation, timing checks, and booking readiness.",
+      duration: "Half-day to full-day",
+      bestFor: "Nature travelers, adventure groups, scenic explorers",
+      indicator: "Partner confirmation required",
+      href: "/traveler/partner-tours?focus=sugba-lagoon-adventure",
+      visual: "🛶",
     },
   ];
 
@@ -2013,107 +1913,104 @@ function SpmFeaturedPartnerTours() {
       aria-label="Featured Siargao Partner Tours"
       style={{
         marginTop: 18,
-        border: "1px solid #bfe7ee",
-        borderRadius: 24,
-        background: "linear-gradient(180deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
-        padding: 12,
-        boxShadow: "0 16px 38px rgba(8,61,103,0.10)",
+        borderRadius: 28,
+        background: "linear-gradient(180deg, #FFFFFF 0%, #F4FCFA 100%)",
+        border: "1px solid rgba(0,151,167,0.18)",
+        boxShadow: "0 18px 44px rgba(1,56,99,0.09)",
+        padding: 14,
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-        <div>
-          <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: "0.13em", textTransform: "uppercase", color: "#0796a6" }}>
-            Featured Siargao Partner Tours
-          </div>
-          <h2 style={{ margin: "5px 0 0", fontSize: 21, lineHeight: 1.03, fontWeight: 850, letterSpacing: "-0.045em", color: "#14264b" }}>
-            Partner tours.
-          </h2>
+      <div>
+        <div style={{ fontSize: 9.5, fontWeight: 950, letterSpacing: "0.14em", textTransform: "uppercase", color: "#0097A7" }}>
+          Featured Siargao Partner Tours
         </div>
-
-        <a
-          href="/traveler/passport-trails"
-          aria-label="View all Siargao Partner Tours"
-          style={{
-            minHeight: 40,
-            minWidth: 74,
-            borderRadius: 16,
-            background: "linear-gradient(135deg, #14b8c6, #078da0)",
-            color: "#ffffff",
-            display: "grid",
-            placeItems: "center",
-            fontSize: 10.2,
-            fontWeight: 900,
-            textDecoration: "none",
-            boxShadow: "0 12px 26px rgba(7,141,160,0.22)",
-          }}
-        >
-          View All
-        </a>
+        <h2 style={{ margin: "6px 0 0", fontSize: 24, lineHeight: 1, fontWeight: 950, letterSpacing: "-0.055em", color: "#013863" }}>
+          Local partner experiences.
+        </h2>
+        <p style={{ margin: "8px 0 0", color: "#50668B", fontSize: 13.2, lineHeight: 1.42, fontWeight: 760 }}>
+          Operated by approved local partners and connected to the OSP traveler journey.
+        </p>
       </div>
 
-      <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+      <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
         {partnerTours.map((tour) => (
           <a
             key={tour.title}
             href={tour.href}
-            aria-label={`Open ${tour.title}`}
+            aria-label={`View Partner Tour: ${tour.title}`}
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 82px",
-              gap: 8,
-              alignItems: "center",
-              textDecoration: "none",
-              border: `1px solid ${tour.softBorder}`,
-              borderRadius: 17,
-              background: `linear-gradient(135deg, ${tour.softBg}, #ffffff)`,
-              padding: "9px 10px",
+              display: "block",
               color: "inherit",
-              boxShadow: "0 8px 20px rgba(8,61,103,0.055)",
+              textDecoration: "none",
+              borderRadius: 22,
+              background: "linear-gradient(135deg, #FFFFFF 0%, #EAFBFA 100%)",
+              border: "1px solid rgba(0,151,167,0.16)",
+              boxShadow: "0 12px 28px rgba(1,56,99,0.07)",
+              padding: 13,
             }}
           >
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 8.4, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase", color: tour.tone }}>
-                {tour.label}
-              </div>
-              <div style={{ marginTop: 3, fontSize: 13.1, lineHeight: 1.03, fontWeight: 900, color: "#14264b" }}>
-                {tour.title}
-              </div>
-              <div style={{ marginTop: 4, fontSize: 9.4, lineHeight: 1.1, fontWeight: 700, color: "#53657d" }}>
-                {tour.subtitle}
-              </div>
+            <div style={{ display: "grid", gridTemplateColumns: "48px 1fr", gap: 11, alignItems: "start" }}>
               <div
                 style={{
-                  marginTop: 6,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  minHeight: 22,
-                  borderRadius: 999,
-                  background: "rgba(232,251,255,0.86)",
-                  color: "#067889",
-                  padding: "0 8px",
-                  fontSize: 8.4,
-                  fontWeight: 850,
+                  width: 48,
+                  minHeight: 50,
+                  borderRadius: 18,
+                  background: "#FFFFFF",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: 23,
+                  border: "1px solid rgba(1,56,99,0.08)",
                 }}
               >
-                {tour.badge}
+                {tour.visual}
               </div>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ color: "#0097A7", fontSize: 8.6, fontWeight: 950, letterSpacing: "0.13em", textTransform: "uppercase" }}>
+                  {tour.eyebrow}
+                </div>
+                <h3 style={{ margin: "4px 0 0", color: "#013863", fontSize: 17.5, lineHeight: 1.03, fontWeight: 950, letterSpacing: "-0.04em" }}>
+                  {tour.title}
+                </h3>
+                <p style={{ margin: "7px 0 0", color: "#50668B", fontSize: 12.2, lineHeight: 1.35, fontWeight: 730 }}>
+                  {tour.description}
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: 7, flexWrap: "wrap", marginTop: 11 }}>
+              {[tour.duration, tour.bestFor, tour.indicator].map((item) => (
+                <span
+                  key={item}
+                  style={{
+                    borderRadius: 999,
+                    background: "#FFFFFF",
+                    border: "1px solid rgba(1,56,99,0.08)",
+                    color: "#013863",
+                    padding: "7px 9px",
+                    fontSize: 9.5,
+                    fontWeight: 880,
+                  }}
+                >
+                  {item}
+                </span>
+              ))}
             </div>
 
             <div
               style={{
-                minHeight: 44,
+                marginTop: 11,
+                minHeight: 42,
                 borderRadius: 15,
-                background: "linear-gradient(135deg, #14b8c6, #078da0)",
-                color: "#ffffff",
-                display: "grid",
-                placeItems: "center",
-                fontSize: 9.4,
-                fontWeight: 900,
-                textAlign: "center",
-                boxShadow: "0 10px 22px rgba(7,141,160,0.18)",
+                background: "linear-gradient(135deg, #013863, #0097A7)",
+                color: "#FFFFFF",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 11.5,
+                fontWeight: 950,
               }}
             >
-              {tour.action}
+              View Partner Tour
             </div>
           </a>
         ))}
@@ -2121,303 +2018,172 @@ function SpmFeaturedPartnerTours() {
     </section>
   );
 }
-
 
 
 function SpmCuratedPassportTours() {
   const officialTrails = [
     {
-      title: "Island Hopping Trail",
-      subtitle: "Verified stamp route",
-      status: "Recommended",
-      cta: "Continue",
+      eyebrow: "Official Passport Trail",
+      title: "Start with Island Hopping Tour",
+      description:
+        "A classic Siargao sea adventure connecting island stops, coastal memories, and Passport-ready moments.",
+      duration: "Half-day to full-day",
+      bestFor: "First-time visitors, groups, island explorers",
+      indicator: "Stamp-ready / verified stops",
       href: "/traveler/passport-trails/island-hopping",
-      icon: "✓",
-      tone: "#16a34a",
-      softBg: "rgba(227,255,243,0.94)",
-      softBorder: "#a9ebc9",
-      buttonBg: "linear-gradient(135deg, #22b85a, #11843d)",
+      visual: "🛶",
+      tone: "#013863",
+      bg: "linear-gradient(135deg, #FFFFFF 0%, #FFF8EA 48%, #F4FCFA 100%)",
     },
     {
-      title: "Surf Explorer Trail",
-      subtitle: "Surf stops • coastal route",
-      cta: "Preview",
+      eyebrow: "Official Passport Trail",
+      title: "Explorer Surf Trails",
+      description:
+        "Follow Siargao’s surf culture through coastal stops, local surf zones, and beginner-friendly discovery points.",
+      duration: "Flexible day route",
+      bestFor: "Surf travelers, couples, solo explorers",
+      indicator: "Verified surf-linked stops",
       href: "/traveler/passport-trails/surf-explorer",
-      icon: "🌊",
-      tone: "#0891b2",
-      softBg: "rgba(232,251,255,0.96)",
-      softBorder: "#aee7f2",
-      buttonBg: "linear-gradient(135deg, #e8fbff, #ffffff)",
+      visual: "🌊",
+      tone: "#0097A7",
+      bg: "linear-gradient(135deg, #FFFFFF 0%, #EAFBFA 48%, #FFFFFF 100%)",
     },
     {
-      title: "North Siargao Trail",
-      subtitle: "Pacifico • north route",
-      cta: "Preview",
+      eyebrow: "Official Passport Trail",
+      title: "North Siargao Land Tour Trails",
+      description:
+        "Discover the quieter side of Siargao through scenic roads, local communities, viewpoints, and nature stops.",
+      duration: "Full-day route",
+      bestFor: "Families, culture seekers, returning travelers",
+      indicator: "Verified trail stops",
       href: "/traveler/passport-trails/north-siargao",
-      icon: "🧭",
-      tone: "#2563eb",
-      softBg: "rgba(239,246,255,0.96)",
-      softBorder: "#bfd7ff",
-      buttonBg: "linear-gradient(135deg, #eef6ff, #ffffff)",
-    },
-    {
-      title: "Inland Discovery Trail",
-      subtitle: "Falls • inland stops",
-      cta: "Preview",
-      href: "/traveler/passport-trails/inland-discovery",
-      icon: "🌿",
-      tone: "#65a30d",
-      softBg: "rgba(244,252,232,0.96)",
-      softBorder: "#d4edaa",
-      buttonBg: "linear-gradient(135deg, #f4fce8, #ffffff)",
-    },
-    {
-      title: "Culture & Community Trail",
-      subtitle: "Local life • culture stops",
-      cta: "Preview",
-      href: "/traveler/passport-trails/culture-community",
-      icon: "🧺",
-      tone: "#d97706",
-      softBg: "rgba(255,247,230,0.96)",
-      softBorder: "#f3d49b",
-      buttonBg: "linear-gradient(135deg, #fff7e6, #ffffff)",
-    },
-    {
-      title: "Sunset & Scenic Stops Trail",
-      subtitle: "Golden hour • scenic points",
-      cta: "Preview",
-      href: "/traveler/passport-trails/sunset-scenic",
-      icon: "🌅",
-      tone: "#f59e0b",
-      softBg: "rgba(255,248,220,0.96)",
-      softBorder: "#f6dd8f",
-      buttonBg: "linear-gradient(135deg, #fff8dc, #ffffff)",
-    },
-    {
-      title: "Adventure Trail",
-      subtitle: "High-energy route",
-      cta: "Preview",
-      href: "/traveler/passport-trails/adventure",
-      icon: "⛰️",
-      tone: "#7c3aed",
-      softBg: "rgba(245,240,255,0.96)",
-      softBorder: "#d8c7ff",
-      buttonBg: "linear-gradient(135deg, #f5f0ff, #ffffff)",
-    },
-    {
-      title: "Return Traveler Continuity Trail",
-      subtitle: "Come back and continue",
-      cta: "Preview",
-      href: "/traveler/passport-trails/return-traveler-continuity",
-      icon: "↻",
-      tone: "#64748b",
-      softBg: "rgba(248,250,252,0.98)",
-      softBorder: "#d8e2ee",
-      buttonBg: "linear-gradient(135deg, #f8fafc, #ffffff)",
+      visual: "🧭",
+      tone: "#013863",
+      bg: "linear-gradient(135deg, #FFFFFF 0%, #F4FCFA 48%, #EAFBFA 100%)",
     },
   ];
 
-  const featuredTrail = officialTrails[0];
-  const previewTrails = officialTrails.slice(1);
-
   return (
     <section
-      aria-label="Passport Trails Curated Tours"
+      aria-label="Official Passport Trails"
       style={{
-        marginTop: 14,
-        border: "1px solid #bfe7ee",
-        borderRadius: 24,
-        background: "linear-gradient(180deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
-        padding: 12,
-        boxShadow: "0 16px 38px rgba(8,61,103,0.10)",
+        marginTop: 18,
+        borderRadius: 28,
+        background: "linear-gradient(180deg, #FFFFFF 0%, #F4FCFA 100%)",
+        border: "1px solid rgba(0,151,167,0.18)",
+        boxShadow: "0 18px 44px rgba(1,56,99,0.10)",
+        padding: 14,
       }}
     >
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
-        <div>
-          <div style={{ fontSize: 9, fontWeight: 900, letterSpacing: "0.13em", textTransform: "uppercase", color: "#0796a6" }}>
-            Passport Trails™ Curated Tours
-          </div>
-          <h2 style={{ margin: "5px 0 0", fontSize: 21, lineHeight: 1.03, fontWeight: 850, letterSpacing: "-0.045em", color: "#14264b" }}>
-            Official trails.
-          </h2>
+      <div>
+        <div style={{ fontSize: 9.5, fontWeight: 950, letterSpacing: "0.14em", textTransform: "uppercase", color: "#0097A7" }}>
+          Official Passport Trails
         </div>
-
-        <a
-          href="/traveler/passport-trails"
-          aria-label="Explore all Passport Trails"
-          style={{
-            flexShrink: 0,
-            minHeight: 44,
-            minWidth: 78,
-            borderRadius: 16,
-            background: "linear-gradient(135deg, #22b85a, #11843d)",
-            color: "#ffffff",
-            display: "grid",
-            placeItems: "center",
-            fontSize: 10.6,
-            fontWeight: 900,
-            textDecoration: "none",
-            boxShadow: "0 12px 26px rgba(17,132,61,0.22)",
-          }}
-        >
-          Explore
-        </a>
+        <h2 style={{ margin: "6px 0 0", fontSize: 26, lineHeight: 0.98, fontWeight: 950, letterSpacing: "-0.06em", color: "#013863" }}>
+          Start with curated Siargao routes.
+        </h2>
+        <p style={{ margin: "8px 0 0", color: "#50668B", fontSize: 13.2, lineHeight: 1.42, fontWeight: 760 }}>
+          Built around verified stops, local experiences, and Passport stamp collection.
+        </p>
       </div>
 
-      <a
-        href={featuredTrail.href}
-        aria-label={`Continue ${featuredTrail.title}`}
-        style={{
-          marginTop: 10,
-          display: "grid",
-          gridTemplateColumns: "44px 1fr 82px",
-          alignItems: "center",
-          gap: 8,
-          border: `1px solid ${featuredTrail.softBorder}`,
-          borderLeft: `5px solid ${featuredTrail.tone}`,
-          borderRadius: 18,
-          background: `linear-gradient(135deg, ${featuredTrail.softBg}, #ffffff)`,
-          padding: 9,
-          color: "inherit",
-          textDecoration: "none",
-          boxShadow: "0 10px 24px rgba(22,163,74,0.10)",
-        }}
-      >
-        <div
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 16,
-            background: featuredTrail.buttonBg,
-            color: "#ffffff",
-            display: "grid",
-            placeItems: "center",
-            fontSize: 19,
-            fontWeight: 950,
-          }}
-        >
-          {featuredTrail.icon}
-        </div>
-
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 8.6, fontWeight: 900, letterSpacing: "0.11em", textTransform: "uppercase", color: featuredTrail.tone }}>
-            Recommended
-          </div>
-          <div style={{ marginTop: 2, fontSize: 14.3, fontWeight: 900, lineHeight: 1.03, color: "#14264b" }}>
-            {featuredTrail.title}
-          </div>
-          <div style={{ marginTop: 4, fontSize: 9.7, fontWeight: 720, color: "#53657d", lineHeight: 1.12 }}>
-            {featuredTrail.subtitle}
-          </div>
-        </div>
-
-        <div
-          style={{
-            minHeight: 40,
-            borderRadius: 15,
-            background: featuredTrail.buttonBg,
-            color: "#ffffff",
-            display: "grid",
-            placeItems: "center",
-            textAlign: "center",
-            fontSize: 9.5,
-            fontWeight: 900,
-            lineHeight: 1.05,
-            boxShadow: "0 10px 22px rgba(17,132,61,0.18)",
-          }}
-        >
-          {featuredTrail.cta}
-        </div>
-      </a>
-
-      <div style={{ marginTop: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <div style={{ fontSize: 10.2, fontWeight: 900, color: "#14264b" }}>More official trails</div>
-        <div style={{ fontSize: 9.8, fontWeight: 780, color: "#53657d" }}>Preview first</div>
-      </div>
-
-      <div style={{ marginTop: 8, display: "grid", gap: 8 }}>
-        {previewTrails.map((trail) => (
+      <div style={{ display: "grid", gap: 12, marginTop: 14 }}>
+        {officialTrails.map((trail) => (
           <a
             key={trail.title}
             href={trail.href}
-            aria-label={`Preview ${trail.title}`}
+            aria-label={`View Official Trail: ${trail.title}`}
             style={{
-              display: "grid",
-              gridTemplateColumns: "32px 1fr 68px",
-              alignItems: "center",
-              gap: 8,
-              border: `1px solid ${trail.softBorder}`,
-              borderRadius: 16,
-              background: `linear-gradient(135deg, ${trail.softBg}, #ffffff)`,
-              padding: "8px 9px",
-              color: "inherit",
+              display: "block",
               textDecoration: "none",
-              boxShadow: "0 7px 18px rgba(8,61,103,0.05)",
+              color: "inherit",
+              borderRadius: 24,
+              background: trail.bg,
+              border: "1px solid rgba(1,56,99,0.10)",
+              boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+              padding: 14,
+              overflow: "hidden",
             }}
           >
-            <div
-              style={{
-                width: 29,
-                height: 29,
-                borderRadius: 13,
-                background: "rgba(255,255,255,0.82)",
-                display: "grid",
-                placeItems: "center",
-                fontSize: 14,
-                color: trail.tone,
-                boxShadow: "0 6px 14px rgba(15,23,42,0.055)",
-              }}
-            >
-              {trail.icon}
+            <div style={{ display: "grid", gridTemplateColumns: "54px 1fr", gap: 12, alignItems: "start" }}>
+              <div
+                style={{
+                  width: 54,
+                  minHeight: 58,
+                  borderRadius: 20,
+                  background: "rgba(255,255,255,0.86)",
+                  border: "1px solid rgba(1,56,99,0.08)",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: 25,
+                  boxShadow: "0 10px 22px rgba(1,56,99,0.08)",
+                }}
+              >
+                {trail.visual}
+              </div>
+
+              <div style={{ minWidth: 0 }}>
+                <div style={{ color: trail.tone, fontSize: 8.8, fontWeight: 950, letterSpacing: "0.13em", textTransform: "uppercase" }}>
+                  {trail.eyebrow}
+                </div>
+                <h3 style={{ margin: "4px 0 0", color: "#013863", fontSize: 19.5, lineHeight: 1.02, fontWeight: 950, letterSpacing: "-0.045em" }}>
+                  {trail.title}
+                </h3>
+                <p style={{ margin: "7px 0 0", color: "#50668B", fontSize: 12.4, lineHeight: 1.38, fontWeight: 730 }}>
+                  {trail.description}
+                </p>
+              </div>
             </div>
 
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 11.3, fontWeight: 880, lineHeight: 1.04, color: "#14264b" }}>
-                {trail.title}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 }}>
+              <div style={{ borderRadius: 15, background: "#FFFFFF", border: "1px solid rgba(1,56,99,0.08)", padding: "9px 10px" }}>
+                <div style={{ color: "#50668B", fontSize: 8.5, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" }}>Duration</div>
+                <div style={{ marginTop: 3, color: "#013863", fontSize: 11.4, lineHeight: 1.15, fontWeight: 900 }}>{trail.duration}</div>
               </div>
-              <div style={{ marginTop: 3, fontSize: 8.8, fontWeight: 680, color: "#53657d", lineHeight: 1.1 }}>
-                {trail.subtitle}
+              <div style={{ borderRadius: 15, background: "#FFFFFF", border: "1px solid rgba(1,56,99,0.08)", padding: "9px 10px" }}>
+                <div style={{ color: "#50668B", fontSize: 8.5, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" }}>Best for</div>
+                <div style={{ marginTop: 3, color: "#013863", fontSize: 11.4, lineHeight: 1.15, fontWeight: 900 }}>{trail.bestFor}</div>
               </div>
             </div>
 
-            <div
-              style={{
-                minHeight: 34,
-                borderRadius: 13,
-                background: trail.buttonBg,
-                color: trail.tone,
-                display: "grid",
-                placeItems: "center",
-                fontSize: 8.9,
-                fontWeight: 900,
-                border: `1px solid ${trail.softBorder}`,
-              }}
-            >
-              Preview
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 12 }}>
+              <span
+                style={{
+                  borderRadius: 999,
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(0,151,167,0.18)",
+                  color: "#0097A7",
+                  padding: "8px 10px",
+                  fontSize: 10.5,
+                  fontWeight: 950,
+                }}
+              >
+                {trail.indicator}
+              </span>
+              <span
+                style={{
+                  minHeight: 40,
+                  borderRadius: 15,
+                  background: "#013863",
+                  color: "#FFFFFF",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 12px",
+                  fontSize: 11,
+                  fontWeight: 950,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                View Official Trail
+              </span>
             </div>
           </a>
         ))}
       </div>
-
-      <div
-        style={{
-          marginTop: 10,
-          borderRadius: 14,
-          background: "linear-gradient(135deg, #f8fbfc, #ffffff)",
-          padding: "8px 10px",
-          fontSize: 9.5,
-          lineHeight: 1.22,
-          fontWeight: 740,
-          color: "#355071",
-          border: "1px solid rgba(191,231,238,0.62)",
-        }}
-      >
-        Pricing must appear before checkout. Verified Passport stamps count only through governed OSP/SPM records.
-      </div>
     </section>
   );
 }
-
 
 
 function SpmBuildYourOwnTrailSection() {
@@ -2425,70 +2191,98 @@ function SpmBuildYourOwnTrailSection() {
     <section
       aria-label="Build Your Own Passport Trail"
       style={{
-        marginTop: 14,
-        border: "1px solid #bfe7ee",
-        borderRadius: 24,
-        background: "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(246,241,255,0.96))",
-        padding: 12,
-        boxShadow: "0 16px 38px rgba(8,61,103,0.10)",
+        marginTop: 18,
+        borderRadius: 28,
+        background: "linear-gradient(135deg, #FFFFFF 0%, #FFF8EA 48%, #F4FCFA 100%)",
+        border: "1px solid rgba(243,174,38,0.35)",
+        boxShadow: "0 18px 44px rgba(1,56,99,0.09)",
+        padding: 14,
       }}
     >
       <a
         href="/traveler/passport-trails/diy-trail-builder"
-        aria-label="Open Build Your Own Passport Trail"
+        aria-label="Start DIY Passport Trail Builder"
         style={{
-          display: "grid",
-          gridTemplateColumns: "42px 1fr 94px",
-          alignItems: "center",
-          gap: 9,
+          display: "block",
           color: "inherit",
           textDecoration: "none",
         }}
       >
-        <div
-          style={{
-            width: 42,
-            minHeight: 44,
-            borderRadius: 18,
-            background: "linear-gradient(135deg, #f1edff, #ffffff)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 20,
-          }}
-        >
-          🧩
+        <div style={{ fontSize: 9.5, fontWeight: 950, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A5A00" }}>
+          Build Your Own Passport Trail
         </div>
-
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 8.9, fontWeight: 840, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7048e8" }}>
-            Build Your Own Passport Trail
-          </div>
-          <div style={{ marginTop: 2, fontSize: 16, fontWeight: 840, lineHeight: 1.04, color: "#14264b" }}>
-            Plan a curated route request
-          </div>
-          <div style={{ marginTop: 4, fontSize: 10.6, fontWeight: 670, color: "#53657d", lineHeight: 1.14 }}>
-            SPM-guided. Partner support only when needed.
-          </div>
-        </div>
+        <h2 style={{ margin: "6px 0 0", fontSize: 25, lineHeight: 1, fontWeight: 950, letterSpacing: "-0.055em", color: "#013863" }}>
+          Create a flexible route from verified stops.
+        </h2>
+        <p style={{ margin: "8px 0 0", color: "#50668B", fontSize: 13.2, lineHeight: 1.42, fontWeight: 760 }}>
+          Choose verified stops, compare route ideas, review stamp opportunities, and prepare your custom trail request.
+        </p>
 
         <div
           style={{
-            minHeight: 50,
-            borderRadius: 16,
-            background: "linear-gradient(135deg, #9b72ff, #7048e8)",
-            color: "#ffffff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            fontSize: 10.5,
-            fontWeight: 880,
-            lineHeight: 1.05,
-            boxShadow: "0 10px 22px rgba(139,92,246,0.22)",
+            marginTop: 14,
+            borderRadius: 24,
+            background: "#FFFFFF",
+            border: "1px solid rgba(1,56,99,0.10)",
+            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
+            padding: 14,
           }}
         >
-          ＋ Plan Route
+          <div style={{ display: "grid", gridTemplateColumns: "54px 1fr", gap: 12, alignItems: "start" }}>
+            <div
+              style={{
+                width: 54,
+                minHeight: 58,
+                borderRadius: 20,
+                background: "#FFF8EA",
+                border: "1px solid rgba(243,174,38,0.30)",
+                display: "grid",
+                placeItems: "center",
+                fontSize: 25,
+              }}
+            >
+              🧩
+            </div>
+            <div>
+              <div style={{ color: "#8A5A00", fontSize: 8.8, fontWeight: 950, letterSpacing: "0.13em", textTransform: "uppercase" }}>
+                DIY Passport Trail Builder
+              </div>
+              <h3 style={{ margin: "4px 0 0", color: "#013863", fontSize: 19.5, lineHeight: 1.02, fontWeight: 950, letterSpacing: "-0.045em" }}>
+                Build your route around your travel style.
+              </h3>
+              <p style={{ margin: "7px 0 0", color: "#50668B", fontSize: 12.4, lineHeight: 1.38, fontWeight: 730 }}>
+                Flexible route planning with verified stops available and partner support only where needed.
+              </p>
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 }}>
+            <div style={{ borderRadius: 15, background: "#F4FCFA", border: "1px solid rgba(0,151,167,0.12)", padding: "9px 10px" }}>
+              <div style={{ color: "#50668B", fontSize: 8.5, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" }}>Duration</div>
+              <div style={{ marginTop: 3, color: "#013863", fontSize: 11.4, lineHeight: 1.15, fontWeight: 900 }}>Flexible</div>
+            </div>
+            <div style={{ borderRadius: 15, background: "#F4FCFA", border: "1px solid rgba(0,151,167,0.12)", padding: "9px 10px" }}>
+              <div style={{ color: "#50668B", fontSize: 8.5, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" }}>Best for</div>
+              <div style={{ marginTop: 3, color: "#013863", fontSize: 11.4, lineHeight: 1.15, fontWeight: 900 }}>Independent travelers, repeat visitors, custom groups</div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              marginTop: 12,
+              minHeight: 44,
+              borderRadius: 16,
+              background: "#013863",
+              color: "#FFFFFF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 12,
+              fontWeight: 950,
+            }}
+          >
+            Start DIY Trail
+          </div>
         </div>
       </a>
     </section>
@@ -2496,91 +2290,140 @@ function SpmBuildYourOwnTrailSection() {
 }
 
 
-
 function SpmGuideSupportProvidedBy() {
-  const supportCards = [
+  const guideMenus = [
     {
-      title: "Siargao Partner Tour",
-      support: "Partner guide",
-      note: "Operator-supported package",
-      tone: "#13a8b7",
+      eyebrow: "Featured Guides",
+      title: "Meet local trail support",
+      description:
+        "Highlight approved local guides, hosts, and route support partners who help travelers move with more confidence.",
+      support: "Guide discovery",
+      note: "Profile cards later",
+      href: "/traveler/partner-tours?focus=featured-guides",
+      visual: "🧑‍✈️",
+      tone: "#013863",
+      bg: "linear-gradient(135deg, #FFFFFF 0%, #EAFBFA 100%)",
     },
     {
-      title: "Passport Trails™ Curated Tour",
+      eyebrow: "Partner-Guided Tours",
+      title: "Travel with approved local partners",
+      description:
+        "Tours that need timing, boat coordination, local routing, or operational support can stay partner-guided.",
+      support: "Partner guide",
+      note: "Operator-supported",
+      href: "/traveler/partner-tours?focus=partner-guided",
+      visual: "🤝",
+      tone: "#0097A7",
+      bg: "linear-gradient(135deg, #FFFFFF 0%, #F4FCFA 100%)",
+    },
+    {
+      eyebrow: "Official Trail Guidance",
+      title: "Follow SPM-curated routes",
+      description:
+        "Official Passport Trails help travelers follow verified stops, stamp logic, and route flow without confusion.",
       support: "SPM-guided",
       note: "Official route flow",
-      tone: "#16a34a",
+      href: "/traveler/passport-trails?focus=official-guidance",
+      visual: "🗺️",
+      tone: "#8A5A00",
+      bg: "linear-gradient(135deg, #FFFFFF 0%, #FFF8EA 100%)",
     },
     {
-      title: "Build Your Own Passport Trail",
-      support: "SPM route guidance",
-      note: "Partner support if needed",
-      tone: "#8b5cf6",
+      eyebrow: "DIY With Support",
+      title: "Build freely, request help when needed",
+      description:
+        "Independent travelers can design their own trail while keeping support available for selected stops or logistics.",
+      support: "Flexible support",
+      note: "DIY-friendly",
+      href: "/traveler/passport-trails/diy-trail-builder?support=available",
+      visual: "🧩",
+      tone: "#013863",
+      bg: "linear-gradient(135deg, #FFFFFF 0%, #F4FCFA 100%)",
     },
   ];
 
   return (
     <section
-      aria-label="Guide support provided by"
+      aria-label="Guide Support for Your Passport Journey"
       style={{
-        marginTop: 14,
-        border: "1px solid #bfe7ee",
-        borderRadius: 22,
-        background: "linear-gradient(135deg, rgba(255,255,255,0.99), rgba(244,253,255,0.94))",
-        padding: 12,
-        boxShadow: "0 12px 28px rgba(8,61,103,0.07)",
+        marginTop: 18,
+        borderRadius: 28,
+        background: "linear-gradient(180deg, #013863 0%, #003B66 100%)",
+        border: "1px solid rgba(255,255,255,0.18)",
+        boxShadow: "0 20px 48px rgba(1,56,99,0.18)",
+        padding: 14,
+        color: "#FFFFFF",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <div>
-          <div style={{ fontSize: 8.9, fontWeight: 840, letterSpacing: "0.13em", textTransform: "uppercase", color: "#0796a6" }}>
-            Guide Support
-          </div>
-          <h2 style={{ margin: "4px 0 0", fontSize: 18, lineHeight: 1.04, fontWeight: 780, letterSpacing: "-0.04em", color: "#14264b" }}>
-            Who supports the trip?
-          </h2>
+      <div>
+        <div style={{ fontSize: 9.5, fontWeight: 950, letterSpacing: "0.14em", textTransform: "uppercase", color: "#F3AE26" }}>
+          Guide Support
         </div>
-        <a
-          href="/traveler/passport-trails"
-          aria-label="Ask about guide support"
-          style={{
-            flexShrink: 0,
-            borderRadius: 999,
-            background: "linear-gradient(135deg, #e8fbff, #ffffff)",
-            color: "#067889",
-            padding: "8px 10px",
-            fontSize: 9.8,
-            fontWeight: 850,
-            textDecoration: "none",
-          }}
-        >
-          Check
-        </a>
+        <h2 style={{ margin: "6px 0 0", fontSize: 25, lineHeight: 1, fontWeight: 950, letterSpacing: "-0.055em", color: "#FFFFFF" }}>
+          Guide Support for Your Passport Journey
+        </h2>
+        <p style={{ margin: "8px 0 0", color: "rgba(255,255,255,0.82)", fontSize: 13.2, lineHeight: 1.42, fontWeight: 760 }}>
+          Some journeys are partner-guided, some are SPM-guided, and some are DIY with support only when needed.
+        </p>
       </div>
 
-      <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 7 }}>
-        {supportCards.map((card) => (
-          <div
+      <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
+        {guideMenus.map((card) => (
+          <a
             key={card.title}
+            href={card.href}
+            aria-label={`${card.eyebrow}: ${card.title}`}
             style={{
-              minHeight: 78,
-              border: "1px solid #bfe7ee",
-              borderTop: `4px solid ${card.tone}`,
-              borderRadius: 16,
-              background: "linear-gradient(135deg, #ffffff, #f7fcfd)",
-              padding: "8px 7px",
+              display: "block",
+              color: "inherit",
+              textDecoration: "none",
+              borderRadius: 22,
+              background: card.bg,
+              border: "1px solid rgba(255,255,255,0.16)",
+              boxShadow: "0 12px 28px rgba(0,0,0,0.12)",
+              padding: 13,
             }}
           >
-            <div style={{ fontSize: 9.4, fontWeight: 820, lineHeight: 1.06, color: "#14264b" }}>
-              {card.title}
+            <div style={{ display: "grid", gridTemplateColumns: "48px 1fr", gap: 11, alignItems: "start" }}>
+              <div
+                style={{
+                  width: 48,
+                  minHeight: 50,
+                  borderRadius: 18,
+                  background: "#FFFFFF",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: 22,
+                  border: "1px solid rgba(1,56,99,0.08)",
+                }}
+              >
+                {card.visual}
+              </div>
+
+              <div style={{ minWidth: 0 }}>
+                <div style={{ color: card.tone, fontSize: 8.6, fontWeight: 950, letterSpacing: "0.13em", textTransform: "uppercase" }}>
+                  {card.eyebrow}
+                </div>
+                <h3 style={{ margin: "4px 0 0", color: "#013863", fontSize: 17.5, lineHeight: 1.03, fontWeight: 950, letterSpacing: "-0.04em" }}>
+                  {card.title}
+                </h3>
+                <p style={{ margin: "7px 0 0", color: "#50668B", fontSize: 12.2, lineHeight: 1.35, fontWeight: 730 }}>
+                  {card.description}
+                </p>
+              </div>
             </div>
-            <div style={{ marginTop: 5, fontSize: 9, fontWeight: 820, color: card.tone, lineHeight: 1.08 }}>
-              {card.support}
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 11 }}>
+              <div style={{ borderRadius: 15, background: "#FFFFFF", border: "1px solid rgba(1,56,99,0.08)", padding: "9px 10px" }}>
+                <div style={{ color: "#50668B", fontSize: 8.5, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" }}>Support</div>
+                <div style={{ marginTop: 3, color: "#013863", fontSize: 11.4, lineHeight: 1.15, fontWeight: 900 }}>{card.support}</div>
+              </div>
+              <div style={{ borderRadius: 15, background: "#FFFFFF", border: "1px solid rgba(1,56,99,0.08)", padding: "9px 10px" }}>
+                <div style={{ color: "#50668B", fontSize: 8.5, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" }}>Mode</div>
+                <div style={{ marginTop: 3, color: "#013863", fontSize: 11.4, lineHeight: 1.15, fontWeight: 900 }}>{card.note}</div>
+              </div>
             </div>
-            <div style={{ marginTop: 4, fontSize: 9, fontWeight: 650, color: "#53657d", lineHeight: 1.1 }}>
-              {card.note}
-            </div>
-          </div>
+          </a>
         ))}
       </div>
     </section>
