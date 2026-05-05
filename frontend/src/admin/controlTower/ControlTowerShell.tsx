@@ -96,6 +96,7 @@ function isActive(pathname: string, href: string, key: string) {
 
 export function ControlTowerShell({ children }: Props) {
   const pathname = usePathname();
+  const safePathname = pathname ?? '';
 
   return (
     <div className={styles.page}>
@@ -114,7 +115,7 @@ export function ControlTowerShell({ children }: Props) {
             <nav className={styles.nav}>
               <div className={styles.navList}>
                 {controlTowerNav.map((item) => {
-                  const active = isActive(pathname, item.href, item.key);
+                  const active = isActive(safePathname, item.href, item.key);
 
                   return (
                     <Link
@@ -147,7 +148,7 @@ export function ControlTowerShell({ children }: Props) {
             <p className={styles.mobileTitle}>One Siargao Pass Command Center</p>
             <div className={styles.mobileScroll}>
               {controlTowerNav.map((item) => {
-                const active = isActive(pathname, item.href, item.key);
+                const active = isActive(safePathname, item.href, item.key);
 
                 return (
                   <Link

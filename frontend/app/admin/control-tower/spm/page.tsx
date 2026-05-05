@@ -1,5 +1,5 @@
-import { ControlTowerGatePage } from "../../../../src/admin/controlTower/ControlTowerGatePage";
+import ControlTowerSpmPage from '../../../../src/admin/controlTower/ControlTowerSpmPage';
 
-export default function ControlTowerSpmPage() {
-  return <ControlTowerGatePage gateKey="spm" />;
+export default function AdminControlTowerSpmRoute() {
+  return <ControlTowerSpmPage />;
 }
