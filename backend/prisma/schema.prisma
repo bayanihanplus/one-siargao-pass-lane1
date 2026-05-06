@@ -4124,3 +4124,270 @@ model AccommodationVoucherEmailDelivery {
   @@index([sentAt])
   @@map("accommodation_voucher_email_deliveries")
 }
+
+// === OSP-BOARDING-MVP-05 — DCS PACK A+B AUTHORITY REGISTRY FOUNDATION ===
+// Scope: Port, boat class/category, route product, departure schedule,
+// DOT operator accreditation, vessel inventory, operator-vessel link,
+// and route capability registry.
+// Hard rule: This does NOT duplicate Booking, PaymentIntent, QrCredential,
+// OspQrEvent, OspCheckpoint, OspVessel, Manifest, InterIslandMovement,
+// ComplianceException, SpmTrailBooking, or SpmTrailPricingSnapshot.
+
+model OspPort {
+  id                   String   @id @default(cuid())
+  portCode             String   @unique
+  portName             String
+  municipality         String
+  barangay             String?
+  authorityContext     String
+  timezone             String   @default("Asia/Manila")
+  isActive             Boolean  @default(true)
+  supportsDcs          Boolean  @default(true)
+  supportsWalkIn       Boolean  @default(false)
+  supportsInterIsland  Boolean  @default(true)
+  publicDisplayEnabled Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([municipality])
+  @@index([isActive])
+  @@index([supportsDcs])
+  @@map("osp_ports")
+}
+
+model OspBoatClassCategory {
+  id                       String   @id @default(cuid())
+  portCode                 String
+  categoryCode             String
+  displayName              String
+  travelerPaxMin           Int?
+  travelerPaxMax           Int?
+  guideSlotCount           Int      @default(0)
+  totalOperationalCapacity Int?
+  pricingStatus            String   @default("PENDING_REVIEW")
+  assignmentStatus         String   @default("DISABLED_PENDING_REVIEW")
+  manualReviewRequired     Boolean  @default(true)
+  remarks                  String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@unique([portCode, categoryCode])
+  @@index([portCode])
+  @@index([categoryCode])
+  @@index([pricingStatus])
+  @@index([assignmentStatus])
+  @@index([manualReviewRequired])
+  @@map("osp_boat_class_categories")
+}
+
+model OspRouteProduct {
+  id                         String   @id @default(cuid())
+  routeProductCode           String   @unique
+  portCode                   String
+  routeName                  String
+  routeShortName             String?
+  authorityContext           String
+  pricingMode                String
+  bookabilityStatus          String   @default("REQUEST_TO_CONFIRM")
+  requiresBoatClass          Boolean  @default(true)
+  requiresOperatorAssignment Boolean  @default(true)
+  requiresVesselAssignment   Boolean  @default(true)
+  requiresManifest           Boolean  @default(true)
+  requiresBoardingQr         Boolean  @default(true)
+  requiresLguClearance       Boolean  @default(false)
+  defaultDurationMinutes     Int?
+  entranceFeeRuleCode        String?
+  isActive                   Boolean  @default(true)
+  instantBookingEnabled      Boolean  @default(false)
+  requestToConfirmRequired   Boolean  @default(true)
+  manualReviewRequired       Boolean  @default(true)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+
+  @@index([portCode])
+  @@index([pricingMode])
+  @@index([bookabilityStatus])
+  @@index([isActive])
+  @@index([instantBookingEnabled])
+  @@index([requestToConfirmRequired])
+  @@map("osp_route_products")
+}
+
+model OspRouteBoatClassRule {
+  id                     String   @id @default(cuid())
+  routeProductCode       String
+  portCode               String
+  categoryCode           String
+  isAllowed              Boolean  @default(false)
+  instantPricingAllowed  Boolean  @default(false)
+  minimumChargeClassCode String?
+  manualReviewRequired   Boolean  @default(true)
+  reasonCode             String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@unique([routeProductCode, portCode, categoryCode])
+  @@index([routeProductCode])
+  @@index([portCode])
+  @@index([categoryCode])
+  @@index([isAllowed])
+  @@index([instantPricingAllowed])
+  @@map("osp_route_boat_class_rules")
+}
+
+model OspDepartureSchedule {
+  id                 String    @id @default(cuid())
+  routeProductCode   String
+  portCode           String
+  departureTimeLocal String
+  daysOfWeekJson     Json?
+  isActive           Boolean   @default(true)
+  effectiveFrom      DateTime?
+  effectiveTo        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([routeProductCode])
+  @@index([portCode])
+  @@index([departureTimeLocal])
+  @@index([isActive])
+  @@map("osp_departure_schedules")
+}
+
+model OspOperatorAccreditation {
+  id                        String   @id @default(cuid())
+  dotAccreditationReference String   @unique
+  accreditedOperatorName    String
+  registeredAddress         String?
+  officialContactNumber     String?
+  officialEmailAddress      String?
+  sourceRegistryCode        String
+  sourceYear                Int
+  portCode                  String?
+  municipality              String?
+  operatorUserId            String?
+  operatorProfileId         String?
+  registryStatus            String   @default("LISTED")
+  verificationStatus        String   @default("PENDING_VERIFICATION")
+  manualVerificationStatus  String   @default("UNVERIFIED")
+  remarks                   String?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  @@index([portCode])
+  @@index([municipality])
+  @@index([operatorUserId])
+  @@index([operatorProfileId])
+  @@index([registryStatus])
+  @@index([verificationStatus])
+  @@index([manualVerificationStatus])
+  @@map("osp_operator_accreditations")
+}
+
+model OspVesselInventory {
+  id                        String    @id @default(cuid())
+  portCode                  String
+  categoryCode              String
+  categorySequenceNumber    Int?
+  officialVesselName        String?
+  operatorReference         String?
+  dotAccreditationReference String?
+  ospVesselId               String?
+  assignmentEligible        Boolean   @default(false)
+  pricingStatus             String    @default("PENDING_REVIEW")
+  capacityStatus            String    @default("PENDING_REVIEW")
+  maintenanceStatus         String    @default("UNKNOWN")
+  suspensionStatus          String    @default("ACTIVE")
+  lastAssignedAt            DateTime?
+  assignmentsToday          Int       @default(0)
+  assignments7d             Int       @default(0)
+  fairnessCredit            Decimal   @default(1.0) @db.Decimal(6, 3)
+  violationCount            Int       @default(0)
+  sourceReference           String?
+  extractionConfidence      String    @default("PENDING_REVIEW")
+  manualVerificationStatus  String    @default("UNVERIFIED")
+  remarks                   String?
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+
+  @@index([portCode])
+  @@index([categoryCode])
+  @@index([dotAccreditationReference])
+  @@index([ospVesselId])
+  @@index([assignmentEligible])
+  @@index([pricingStatus])
+  @@index([capacityStatus])
+  @@index([maintenanceStatus])
+  @@index([suspensionStatus])
+  @@index([manualVerificationStatus])
+  @@map("osp_vessel_inventory")
+}
+
+model OspOperatorVesselLink {
+  id                      String    @id @default(cuid())
+  operatorAccreditationId String
+  operatorUserId          String?
+  operatorProfileId       String?
+  vesselInventoryId       String
+  ospVesselId             String?
+  portCode                String
+  categoryCode            String
+  linkStatus              String    @default("PENDING_REVIEW")
+  ownershipRelation       String?
+  managementRelation      String?
+  routeCapabilityVerified Boolean   @default(false)
+  categoryVerified        Boolean   @default(false)
+  vesselVerified          Boolean   @default(false)
+  operatorVerified        Boolean   @default(false)
+  assignmentEligible      Boolean   @default(false)
+  manualReviewRequired    Boolean   @default(true)
+  verifiedByUserId        String?
+  verifiedAt              DateTime?
+  remarks                 String?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  @@unique([operatorAccreditationId, vesselInventoryId])
+  @@index([operatorAccreditationId])
+  @@index([operatorUserId])
+  @@index([operatorProfileId])
+  @@index([vesselInventoryId])
+  @@index([ospVesselId])
+  @@index([portCode])
+  @@index([categoryCode])
+  @@index([linkStatus])
+  @@index([assignmentEligible])
+  @@index([manualReviewRequired])
+  @@map("osp_operator_vessel_links")
+}
+
+model OspRouteCapability {
+  id                      String   @id @default(cuid())
+  operatorAccreditationId String
+  operatorUserId          String?
+  vesselInventoryId       String?
+  routeProductCode        String
+  portCode                String
+  categoryCode            String
+  capabilityStatus        String   @default("PENDING_REVIEW")
+  pricingReady            Boolean  @default(false)
+  capacityReady           Boolean  @default(false)
+  availabilityReady       Boolean  @default(false)
+  complianceReady         Boolean  @default(false)
+  assignmentEligible      Boolean  @default(false)
+  manualReviewRequired    Boolean  @default(true)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@unique([operatorAccreditationId, routeProductCode, categoryCode])
+  @@index([operatorAccreditationId])
+  @@index([operatorUserId])
+  @@index([vesselInventoryId])
+  @@index([routeProductCode])
+  @@index([portCode])
+  @@index([categoryCode])
+  @@index([capabilityStatus])
+  @@index([assignmentEligible])
+  @@index([manualReviewRequired])
+  @@map("osp_route_capabilities")
+}
