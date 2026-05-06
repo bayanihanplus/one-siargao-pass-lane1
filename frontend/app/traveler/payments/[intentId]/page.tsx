@@ -146,7 +146,7 @@ async function createPayMongoCheckoutAction(formData: FormData) {
     process.env.PAYMONGO_SK_TEST;
 
   if (!secretKey) {
-    redirect(`/traveler/payments/${encodeURIComponent(intentId)}?payment=paymongo-key-missing`);
+    redirect(`/traveler/payments/${encodeURIComponent(intentId)}/sandbox-handoff?provider=paymongo&reason=paymongo-key-missing&amount=${encodeURIComponent(String(amountPhp))}`);
   }
 
   const appBaseUrl =
@@ -156,7 +156,7 @@ async function createPayMongoCheckoutAction(formData: FormData) {
     "";
 
   if (appBaseUrl.length === 0) {
-    redirect(`/traveler/payments/${encodeURIComponent(intentId)}?payment=paymongo-base-url-missing`);
+    redirect(`/traveler/payments/${encodeURIComponent(intentId)}/sandbox-handoff?provider=paymongo&reason=paymongo-base-url-missing&amount=${encodeURIComponent(String(amountPhp))}`);
   }
 
   const amountCentavos = Math.round(amountPhp * 100);
@@ -181,7 +181,7 @@ async function createPayMongoCheckoutAction(formData: FormData) {
             {
               currency: "PHP",
               amount: amountCentavos,
-              name: "One Siargao Pass Island Hopping Request",
+              name: "One Siargao Pass Booking Payment",
               quantity: 1,
             },
           ],
@@ -674,9 +674,351 @@ function AppLink(props: { href: string; label: string; icon: any; primary?: bool
   );
 }
 
+
+type AccommodationPaymentPreview = {
+  intentId: string;
+  stayName: string;
+  stayType: string;
+  location: string;
+  amountLabel: string;
+  amountPhp: number;
+  feeLabel: string;
+  totalLabel: string;
+  settlementMode: string;
+  statusLabel: string;
+  detailHref: string;
+};
+
+const accommodationPaymentPreviews: AccommodationPaymentPreview[] = [
+  {
+    intentId: "preview-accommodation-general-luna-surf-stay",
+    stayName: "General Luna Surf Stay",
+    stayType: "Homestay / Surf Stay",
+    location: "General Luna · near surf access",
+    amountLabel: "PHP 2,500",
+    amountPhp: 2500,
+    feeLabel: "Payment fee calculated on confirmed checkout",
+    totalLabel: "PHP 2,500 preview",
+    settlementMode: "PayMongo sandbox gateway handoff",
+    statusLabel: "Sandbox gateway ready",
+    detailHref: "/traveler/explore/stays/preview-general-luna-surf-stay",
+  },
+  {
+    intentId: "preview-accommodation-cloud-9-family-villa",
+    stayName: "Cloud 9 Family Villa",
+    stayType: "Villa",
+    location: "Cloud 9 / Catangnan area",
+    amountLabel: "PHP 6,800",
+    amountPhp: 6800,
+    feeLabel: "Payment fee calculated on confirmed checkout",
+    totalLabel: "PHP 6,800 preview",
+    settlementMode: "PayMongo sandbox gateway handoff",
+    statusLabel: "Sandbox gateway ready",
+    detailHref: "/traveler/explore/stays/preview-cloud-9-family-villa",
+  },
+  {
+    intentId: "preview-accommodation-barkada-hostel-siargao",
+    stayName: "Barkada Hostel Siargao",
+    stayType: "Hostel / Barkada Room",
+    location: "Tourism Road access",
+    amountLabel: "PHP 950",
+    amountPhp: 950,
+    feeLabel: "Payment fee calculated on confirmed checkout",
+    totalLabel: "PHP 950 preview",
+    settlementMode: "PayMongo sandbox gateway handoff",
+    statusLabel: "Sandbox gateway ready",
+    detailHref: "/traveler/explore/stays/preview-barkada-hostel-siargao",
+  },
+  {
+    intentId: "preview-accommodation-town-center-inn",
+    stayName: "Town Center Inn",
+    stayType: "Guesthouse",
+    location: "General Luna town center",
+    amountLabel: "PHP 3,200",
+    amountPhp: 3200,
+    feeLabel: "Payment fee calculated on confirmed checkout",
+    totalLabel: "PHP 3,200 preview",
+    settlementMode: "PayMongo sandbox gateway handoff",
+    statusLabel: "Sandbox gateway ready",
+    detailHref: "/traveler/explore/stays/preview-town-center-inn",
+  },
+];
+
+function getAccommodationPaymentPreview(intentId: string) {
+  return accommodationPaymentPreviews.find((preview) => preview.intentId === intentId);
+}
+
+function AccommodationPaymentGatewayPreview({ preview, paymentStatus }: { preview: AccommodationPaymentPreview; paymentStatus?: string }) {
+  const gatewayButtonStyle: React.CSSProperties = {
+    minHeight: 58,
+    width: "100%",
+    borderRadius: 18,
+    border: "1px solid #013863",
+    background: "#013863",
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: 950,
+    cursor: "pointer",
+    boxShadow: "0 16px 34px rgba(1,56,99,0.24)",
+    touchAction: "manipulation",
+    WebkitTapHighlightColor: "transparent",
+  };
+
+  const gatewayKeyMissing = paymentStatus === "paymongo-key-missing";
+  const gatewayReturned = paymentStatus === "paymongo-returned";
+  const gatewayStateLabel = gatewayKeyMissing
+    ? "Sandbox gateway key required"
+    : gatewayReturned
+      ? "Returned from sandbox gateway"
+      : "Sandbox gateway ready";
+
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        background:
+          "radial-gradient(circle at 0% 0%, rgba(0,151,167,0.08), transparent 28%), linear-gradient(180deg, #FFFFFF 0%, #F4FCFA 48%, #FFFFFF 100%)",
+        padding: "12px 12px 44px",
+        boxSizing: "border-box",
+      }}
+    >
+      <div style={{ width: "100%", maxWidth: 430, margin: "0 auto" }}>
+        <nav style={{ display: "flex", gap: 8, marginBottom: 12, overflowX: "auto", paddingBottom: 2 }}>
+          <a
+            href={preview.detailHref}
+            style={{
+              minHeight: 42,
+              borderRadius: 16,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none",
+              background: "#FFFFFF",
+              border: "1px solid rgba(1,56,99,0.16)",
+              color: "#013863",
+              fontSize: 13,
+              fontWeight: 950,
+              padding: "0 13px",
+              flex: "0 0 auto",
+            }}
+          >
+            ← Back to Stay
+          </a>
+          <a
+            href="/traveler/explore/stays"
+            style={{
+              minHeight: 42,
+              borderRadius: 16,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none",
+              background: "#FFFFFF",
+              border: "1px solid rgba(1,56,99,0.16)",
+              color: "#013863",
+              fontSize: 13,
+              fontWeight: 950,
+              padding: "0 13px",
+              flex: "0 0 auto",
+            }}
+          >
+            Change stay
+          </a>
+        </nav>
+
+        <section
+          style={{
+            borderRadius: 30,
+            background: "linear-gradient(135deg, #013863 0%, #003B66 62%, #014B78 100%)",
+            color: "#FFFFFF",
+            padding: 20,
+            boxShadow: "0 20px 46px rgba(1,56,99,0.18)",
+          }}
+        >
+          <p style={{ margin: 0, color: "#F3AE26", fontSize: 11, fontWeight: 950, letterSpacing: "0.13em", textTransform: "uppercase" }}>
+            PayMongo sandbox
+          </p>
+          <div
+            style={{
+              marginTop: 12,
+              borderRadius: 20,
+              background: "#F3AE26",
+              border: "1px solid rgba(255,255,255,0.38)",
+              padding: "13px 14px",
+              boxShadow: "0 12px 28px rgba(1,56,99,0.22)",
+            }}
+          >
+            <div
+              role="heading"
+              aria-level={1}
+              style={{
+                margin: 0,
+                fontSize: 30,
+                lineHeight: 0.98,
+                letterSpacing: "-0.055em",
+                fontWeight: 950,
+                color: "#013863",
+              }}
+            >
+              Continue to PayMongo sandbox gateway
+            </div>
+          </div>
+          <p style={{ margin: "13px 0 0", color: "rgba(255,255,255,0.92)", fontSize: 14, lineHeight: 1.42, fontWeight: 800 }}>
+            Review the selected accommodation amount, then open the sandbox gateway.
+          </p>
+        </section>
+
+        {gatewayKeyMissing || gatewayReturned ? (
+          <section
+            style={{
+              marginTop: 14,
+              borderRadius: 22,
+              background: gatewayKeyMissing ? "#FFF8EA" : "#F4FCFA",
+              border: gatewayKeyMissing ? "1px solid rgba(243,174,38,0.42)" : "1px solid rgba(0,151,167,0.18)",
+              padding: 14,
+              color: "#013863",
+              boxShadow: "0 14px 34px rgba(1,56,99,0.06)",
+            }}
+          >
+            <p style={{ margin: 0, color: gatewayKeyMissing ? "#8A5A00" : "#0097A7", fontSize: 11, fontWeight: 950, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+              {gatewayStateLabel}
+            </p>
+            <p style={{ margin: "6px 0 0", color: "#50668B", fontSize: 13, lineHeight: 1.42, fontWeight: 800 }}>
+              {gatewayKeyMissing
+                ? "PayMongo sandbox credentials are not configured yet. The payment button now opens the OSP sandbox handoff page for demo flow continuity."
+                : "The traveler returned from the sandbox gateway. Keep the booking context visible and allow retry if needed."}
+            </p>
+          </section>
+        ) : null}
+
+        <section
+          style={{
+            marginTop: 14,
+            borderRadius: 26,
+            background: "#FFFFFF",
+            border: "1px solid rgba(1,56,99,0.10)",
+            boxShadow: "0 18px 46px rgba(1,56,99,0.08)",
+            padding: 18,
+          }}
+        >
+          <p style={{ margin: 0, color: "#0097A7", fontSize: 11, fontWeight: 950, letterSpacing: "0.13em", textTransform: "uppercase" }}>
+            Selected accommodation
+          </p>
+          <h2 style={{ margin: "7px 0 0", color: "#013863", fontSize: 25, lineHeight: 1.02, letterSpacing: "-0.045em", fontWeight: 950 }}>
+            {preview.stayName}
+          </h2>
+          <p style={{ margin: "8px 0 0", color: "#50668B", fontSize: 13.5, lineHeight: 1.45, fontWeight: 800 }}>
+            {preview.stayType} · {preview.location}
+          </p>
+
+          <div style={{ display: "grid", gap: 9, marginTop: 16 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 12,
+                borderRadius: 16,
+                background: "#F4FCFA",
+                border: "1px solid rgba(0,151,167,0.16)",
+                padding: "12px 13px",
+              }}
+            >
+              <span style={{ color: "#50668B", fontSize: 12, fontWeight: 900 }}>Sandbox amount</span>
+              <strong style={{ color: "#013863", fontSize: 13, textAlign: "right" }}>{preview.amountLabel}</strong>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: 12,
+                borderRadius: 16,
+                background: "#F4FCFA",
+                border: "1px solid rgba(0,151,167,0.16)",
+                padding: "12px 13px",
+              }}
+            >
+              <span style={{ color: "#50668B", fontSize: 12, fontWeight: 900 }}>Gateway mode</span>
+              <strong style={{ color: "#8A5A00", fontSize: 13, textAlign: "right" }}>PayMongo sandbox</strong>
+            </div>
+          </div>
+        </section>
+
+        <section
+          style={{
+            marginTop: 14,
+            borderRadius: 26,
+            background: "linear-gradient(180deg, #FFF8EA 0%, #FFFFFF 100%)",
+            border: "1px solid rgba(243,174,38,0.42)",
+            boxShadow: "0 18px 46px rgba(1,56,99,0.08)",
+            padding: 18,
+          }}
+        >
+          <p style={{ margin: 0, color: "#8A5A00", fontSize: 11, fontWeight: 950, letterSpacing: "0.13em", textTransform: "uppercase" }}>
+            Gateway handoff
+          </p>
+          <h2 style={{ margin: "7px 0 0", color: "#013863", fontSize: 23, lineHeight: 1.04, letterSpacing: "-0.045em", fontWeight: 950 }}>
+            {gatewayKeyMissing ? "Retry sandbox checkout for this stay." : "Open sandbox checkout for this stay."}
+          </h2>
+          <p style={{ margin: "9px 0 0", color: "#50668B", fontSize: 14, lineHeight: 1.48, fontWeight: 750 }}>
+            {gatewayKeyMissing
+              ? "The payment action is wired. Without sandbox keys, this button opens the OSP sandbox handoff page; with keys, it opens PayMongo checkout."
+              : "This will open the PayMongo sandbox gateway for the selected accommodation amount."}
+          </p>
+
+          <form
+            action={createPayMongoCheckoutAction}
+            style={{
+              display: "grid",
+              gap: 10,
+              marginTop: 15,
+              position: "relative",
+              zIndex: 5,
+            }}
+          >
+            <input type="hidden" name="intentId" value={preview.intentId} />
+            <input type="hidden" name="paymentIntentId" value={preview.intentId} />
+            <input type="hidden" name="intentReference" value={preview.intentId} />
+            <input type="hidden" name="amountPhp" value={String(preview.amountPhp)} />
+            <input type="hidden" name="amount" value={String(preview.amountPhp)} />
+            <input type="hidden" name="description" value={`Accommodation sandbox payment · ${preview.stayName}`} />
+            <input type="hidden" name="source" value="ACCOMMODATION_SANDBOX_GATEWAY" />
+            <button
+              type="submit"
+              aria-label={gatewayKeyMissing ? "Retry PayMongo sandbox gateway" : "Open PayMongo sandbox gateway"}
+              style={{
+                minHeight: 56,
+                width: "100%",
+                borderRadius: 18,
+                border: "1px solid #013863",
+                background: "#013863",
+                color: "#FFFFFF",
+                fontSize: 15,
+                fontWeight: 950,
+                cursor: "pointer",
+                boxShadow: "0 16px 34px rgba(1,56,99,0.24)",
+                touchAction: "manipulation",
+                WebkitTapHighlightColor: "transparent",
+              }}
+            >
+              {gatewayKeyMissing ? "Continue to Sandbox Handoff" : "Open PayMongo Sandbox Gateway"}
+            </button>
+          </form>
+        </section>
+      </div>
+    </main>
+  );
+}
+
+
 export default async function TravelerPaymentIntentPage({ params, searchParams }: PaymentPageProps) {
-  const { intentId } = await params;
-  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  const accommodationPaymentPreview = getAccommodationPaymentPreview(resolvedParams.intentId);
+  if (accommodationPaymentPreview) {
+    return <AccommodationPaymentGatewayPreview preview={accommodationPaymentPreview} paymentStatus={resolvedSearchParams?.payment} />;
+  }
+
+const { intentId } = resolvedParams;
   const gatewayStatusMessage = getGatewayStatusMessage(resolvedSearchParams?.payment);
   const { intent, error } = await getPaymentIntent(intentId);
   const dictionary = await getTravelerDictionary("en");
