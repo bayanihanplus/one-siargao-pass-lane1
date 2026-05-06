@@ -12,6 +12,13 @@ type ExploreLane = {
 };
 
 type FeaturedService = {
+  routeProductCode?: string;
+  portCode?: string;
+  pricingMode?: string;
+  feeDoctrine?: string;
+  dcsStatusLabel?: string;
+  paymentPathLabel?: string;
+  slug?: string;
   category: string;
   title: string;
   body: string;
@@ -32,6 +39,7 @@ type FeaturedService = {
 };
 
 type MarketplaceService = {
+  slug?: string;
   id?: string;
   sourceType?: string;
   sourceId?: string;
@@ -99,6 +107,158 @@ const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   process.env.API_BASE_URL ||
   "http://localhost:8001/api/v1";
+
+const LOCKED_TOUR_POSTER_BY_SLUG: Record<string, string> = {
+  "tri-island-joiner": "/osp/temp-tour-posters/tri-island-joiner.png",
+  "private-diy-land-tour": "/osp/temp-tour-posters/private-diy-land-tour.png",
+  "bucas-grande-sohoton-tour": "/osp/temp-tour-posters/bucas-grande-sohoton-tour.png",
+  "sugba-lagoon-mangrove-tours": "/osp/temp-tour-posters/sugba-lagoon-mangrove-tours.png",
+};
+
+function getFeaturedServiceCardHref(service: FeaturedService) {
+  if (service.slug && LOCKED_TOUR_POSTER_BY_SLUG[service.slug]) {
+    return `/traveler/explore/tours/${service.slug}`;
+  }
+
+  return service.href;
+}
+
+function getFeaturedServiceCardMediaUrl(service: FeaturedService) {
+  if (service.slug && LOCKED_TOUR_POSTER_BY_SLUG[service.slug]) {
+    return LOCKED_TOUR_POSTER_BY_SLUG[service.slug];
+  }
+
+  return service.mediaUrl || null;
+}
+
+function getFeaturedServiceCardCta(service: FeaturedService) {
+  if (service.slug && LOCKED_TOUR_POSTER_BY_SLUG[service.slug]) {
+    return service.ctaLabel || "View Trip Options";
+  }
+
+  return service.ctaLabel || "View details";
+}
+
+
+const LOCKED_FEATURED_VERIFIED_ROUTE_CARDS: FeaturedService[] = [
+  {
+    slug: "general-luna-island-hopping",
+    category: "Island Hopping",
+    title: "General Luna Island Hopping",
+    body: "Choose official island routes from General Luna Port. Review route options and clear fee visibility before payment.",
+    price: "Trip options",
+    href: "/traveler/explore/tours/general-luna-island-hopping",
+    tags: ["General Luna Port", "Island routes", "Voucher path"],
+    tone: "ocean",
+    sourceLabel: "Verified route gateway",
+    mediaUrl: "/osp/temp-tour-posters/tri-island-joiner.png",
+    mediaTruth: "Installed OSP route poster",
+    operatorLabel: "Approved local fulfillment",
+    availabilityLabel: "Choose route",
+    urgencyLabel: "Clear port + fees",
+    bookingModeLabel: "View Trip Options",
+    pricingReady: false,
+    ctaLabel: "View Trip Options",
+    routeProductCode: "GENERAL_LUNA_ROUTE_GROUP",
+    portCode: "GENERAL_LUNA_PORT",
+    pricingMode: "Route options before payment",
+    feeDoctrine: "Fees shown before checkout",
+    dcsStatusLabel: "Voucher and boarding path after payment",
+    paymentPathLabel: "Review route before payment",
+  },
+  {
+    slug: "sugba-lagoon-mangrove-tours",
+    category: "Lagoon & Mangrove",
+    title: "Del Carmen Lagoon & Mangrove Trips",
+    body: "Explore Sugba Lagoon, Kawhagan, Pamomoan, and Mangrove route options with published route pricing.",
+    price: "Route options",
+    href: "/traveler/explore/tours/sugba-lagoon-mangrove-tours",
+    tags: ["Del Carmen", "Sugba Lagoon", "Mangrove routes"],
+    tone: "surf",
+    sourceLabel: "Verified route gateway",
+    mediaUrl: "/osp/temp-tour-posters/sugba-lagoon-mangrove-tours.png",
+    mediaTruth: "Installed OSP route poster",
+    operatorLabel: "Del Carmen route context",
+    availabilityLabel: "Choose route",
+    urgencyLabel: "Published route prices",
+    bookingModeLabel: "View Trip Options",
+    pricingReady: false,
+    ctaLabel: "View Trip Options",
+    routeProductCode: "DEL_CARMEN_ROUTE_GROUP",
+    portCode: "DEL_CARMEN_PORT",
+    pricingMode: "Published route price + entrance fee",
+    feeDoctrine: "Entrance fee shown before checkout",
+    dcsStatusLabel: "Route product selection",
+    paymentPathLabel: "Review route before payment",
+  },
+  {
+    slug: "bucas-grande-sohoton-tour",
+    category: "Dapa / Socorro",
+    title: "Bucas Grande & Sohoton Trips",
+    body: "Discover Bucas Grande and Sohoton trip options with request-to-confirm handling before payment.",
+    price: "Request first",
+    href: "/traveler/explore/tours/bucas-grande-sohoton-tour",
+    tags: ["Dapa Port", "Sohoton", "Request first"],
+    tone: "trail",
+    sourceLabel: "Verified route gateway",
+    mediaUrl: "/osp/temp-tour-posters/bucas-grande-sohoton-tour.png",
+    mediaTruth: "Installed OSP route poster",
+    operatorLabel: "Dapa / Socorro route context",
+    availabilityLabel: "Request first",
+    urgencyLabel: "Confirmed before payment",
+    bookingModeLabel: "View Trip Options",
+    pricingReady: false,
+    ctaLabel: "View Trip Options",
+    routeProductCode: "BUCAS_SOHOTON_ROUTE_GROUP",
+    portCode: "DAPA_PORT",
+    pricingMode: "Request-to-confirm",
+    feeDoctrine: "Entrance fee and base price confirmed before checkout",
+    dcsStatusLabel: "Route confirmation first",
+    paymentPathLabel: "Request confirmation before payment",
+  },
+  {
+    slug: "private-siargao-land-route",
+    category: "Private Land Route",
+    title: "Private Siargao Land Route",
+    body: "Build a flexible land route with driver coordination, scenic stops, and confirmed inclusions before checkout.",
+    price: "Request first",
+    href: "/traveler/explore/tours/private-siargao-land-route",
+    tags: ["Land route", "Driver support", "Confirmed inclusions"],
+    tone: "trail",
+    sourceLabel: "Verified route gateway",
+    mediaUrl: "/osp/temp-tour-posters/private-diy-land-tour.png",
+    mediaTruth: "Installed OSP route poster",
+    operatorLabel: "Local route operator",
+    availabilityLabel: "Request first",
+    urgencyLabel: "Land route only",
+    bookingModeLabel: "Review Route Options",
+    pricingReady: false,
+    ctaLabel: "Review Route Options",
+    routeProductCode: "PRIVATE_SIARGAO_LAND_ROUTE",
+    portCode: "LAND_ROUTE",
+    pricingMode: "Request-to-confirm land route",
+    feeDoctrine: "Transport and stop fees confirmed before checkout",
+    dcsStatusLabel: "Not boat-class DCS",
+    paymentPathLabel: "Request confirmation before payment",
+  },
+];
+
+function getFeaturedVerifiedServicesForDisplay(services: FeaturedService[]) {
+  const lockedSlugs = new Set(LOCKED_FEATURED_VERIFIED_ROUTE_CARDS.map((item) => item.slug));
+  const extraServices = services.filter((item) => !item.slug || !lockedSlugs.has(item.slug)).slice(0, 0);
+
+  return [...LOCKED_FEATURED_VERIFIED_ROUTE_CARDS, ...extraServices].slice(0, 4);
+}
+
+function getFeaturedServiceCardPrice(service: FeaturedService) {
+  if (service.slug === "tri-island-joiner") return "Boat class + fees";
+  if (service.slug === "bucas-grande-sohoton-tour") return "Request to confirm";
+  if (service.slug === "sugba-lagoon-mangrove-tours") return "From PHP 2,650 + fees";
+  if (service.slug === "private-diy-land-tour") return "Request to confirm";
+
+  return service.price;
+}
+
 
 function normalizeDiscoveryLaneTone(value?: string): FeaturedService["tone"] {
   if (value === "trail" || value === "surf" || value === "ocean") return value;
@@ -275,6 +435,7 @@ function getGovernanceSummary(service: MarketplaceService) {
 
 function mapMarketplaceServiceToFeatured(service: MarketplaceService): FeaturedService {
   return {
+    slug: service.slug,
     category: formatMarketplaceCategory(service.category),
     title: service.title || "Verified Siargao Experience",
     body:
@@ -1090,6 +1251,8 @@ function FeaturedServices({
   services: FeaturedService[];
   marketplaceMode?: string;
 }) {
+  const displayServices = getFeaturedVerifiedServicesForDisplay(services);
+
   return (
     <section style={{ display: "grid", gap: 12 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end" }}>
@@ -1098,11 +1261,11 @@ function FeaturedServices({
             Featured verified services
           </h2>
           <p style={{ margin: "6px 0 0", color: "#64748b", fontSize: 12.5, lineHeight: 1.35, fontWeight: 750 }}>
-            Live marketplace services only. Preview lanes are separated below.
+            Choose your Siargao trip type. Open the route group, compare options, and continue only when the route and fee path feel clear.
           </p>
         </div>
         <Link href="/traveler/explore/tours" style={{ color: "#078da0", fontWeight: 900, textDecoration: "none", fontSize: 13 }}>
-          View all →
+          All tours →
         </Link>
       </div>
 
@@ -1115,7 +1278,7 @@ function FeaturedServices({
             fontWeight: 800,
           }}
         >
-          Source: governed traveler marketplace catalog
+          Source: OSP curated trip gateway
         </div>
       ) : null}
 
@@ -1130,33 +1293,33 @@ function FeaturedServices({
           scrollbarWidth: "none",
         }}
       >
-        {services.map((service) => (
+        {displayServices.map((service) => (
           <Link
             key={service.title}
-            href={service.href}
+            href={getFeaturedServiceCardHref(service)}
             style={{
-              flex: "0 0 238px",
+              flex: "0 0 296px",
               scrollSnapAlign: "start",
-              borderRadius: 20,
+              borderRadius: 24,
               overflow: "hidden",
               background: "#ffffff",
               border: "1px solid rgba(15,23,42,0.10)",
-              boxShadow: "0 12px 28px rgba(15,23,42,0.08)",
+              boxShadow: "0 18px 40px rgba(1,56,99,0.12)",
               textDecoration: "none",
               color: "#102f57",
             }}
           >
             <div
               style={{
-                height: 126,
+                height: 176,
                 position: "relative",
                 overflow: "hidden",
                 background: service.visualBackground || serviceTone(service.tone),
               }}
             >
-              {service.mediaUrl ? (
+              {getFeaturedServiceCardMediaUrl(service) ? (
                 <img
-                  src={service.mediaUrl}
+                  src={getFeaturedServiceCardMediaUrl(service) || ""}
                   alt={`${service.title} service banner`}
                   style={{
                     width: "100%",
@@ -1171,8 +1334,8 @@ function FeaturedServices({
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: service.mediaUrl
-                    ? "linear-gradient(180deg, rgba(2,24,39,0.12) 0%, rgba(2,24,39,0.44) 100%)"
+                  background: getFeaturedServiceCardMediaUrl(service)
+                    ? "linear-gradient(180deg, rgba(1,56,99,0.18) 0%, rgba(1,56,99,0.76) 100%)"
                     : "transparent",
                 }}
               />
@@ -1205,7 +1368,7 @@ function FeaturedServices({
                 <span style={{ color: "#ffffff", fontSize: 20, textShadow: "0 2px 8px rgba(0,0,0,0.35)" }}>♡</span>
               </div>
 
-              {!service.mediaUrl && service.mediaTruth ? (
+              {!getFeaturedServiceCardMediaUrl(service) && service.mediaTruth ? (
                 <div
                   style={{
                     position: "absolute",
@@ -1226,10 +1389,10 @@ function FeaturedServices({
 
             <div style={{ padding: 14, display: "grid", gap: 10 }}>
               <div>
-                <strong style={{ display: "block", fontSize: 16.5, lineHeight: 1.15, marginBottom: 6 }}>
+                <strong style={{ display: "block", fontSize: 16.5, lineHeight: 1.08, marginBottom: 6 }}>
                   {service.title}
                 </strong>
-                <p style={{ margin: 0, color: "#64748b", fontSize: 12, lineHeight: 1.35, fontWeight: 750 }}>
+                <p style={{ margin: 0, color: "#64748b", fontSize: 11.4, lineHeight: 1.42, fontWeight: 680 }}>
                   {service.body}
                 </p>
               </div>
@@ -1237,7 +1400,7 @@ function FeaturedServices({
               <div
                 style={{
                   borderRadius: 16,
-                  background: "#f8fafc",
+                  background: "#F8FBFD",
                   border: "1px solid rgba(15,23,42,0.06)",
                   padding: 10,
                   display: "grid",
@@ -1249,7 +1412,7 @@ function FeaturedServices({
                     Price
                   </span>
                   <strong style={{ color: "#078da0", fontSize: 15, fontWeight: 950, textAlign: "right" }}>
-                    {service.price}
+                    {getFeaturedServiceCardPrice(service)}
                   </strong>
                 </div>
 
@@ -1292,10 +1455,10 @@ function FeaturedServices({
                     fontWeight: 950,
                   }}
                 >
-                  {service.bookingModeLabel}
+                  {service.availabilityLabel || "Choose route"}
                 </span>
                 <span style={{ color: "#0b3768", fontSize: 12.5, fontWeight: 950 }}>
-                  {service.ctaLabel || "View details"} →
+                  {getFeaturedServiceCardCta(service)} →
                 </span>
               </div>
             </div>
@@ -1334,7 +1497,7 @@ function MoreWaysToExplore({ services }: { services: FeaturedService[] }) {
         {services.map((service) => (
           <Link
             key={service.title}
-            href={service.href}
+            href={getFeaturedServiceCardHref(service)}
             style={{
               flex: "0 0 180px",
               scrollSnapAlign: "start",
