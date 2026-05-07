@@ -1,6 +1,7 @@
 import { getApiBaseUrl, requireAccessToken } from "../../../../src/lib/server-auth";
 import KuyaTalaEntryButton from "../../../../src/traveler-assistant/KuyaTalaEntryButton";
 import { redirect } from "next/navigation";
+import { getGlRoutePriceAnchor, SUPPORTED_GL_PAYMENT_SLUGS } from "../../../../src/spm/traveler/glRoutePriceAnchors";
 
 type TravelerDictionary = Record<string, string>;
 
@@ -93,6 +94,11 @@ type PaymentPageProps = {
   }>;
   searchParams?: Promise<{
     payment?: string;
+    source?: string;
+    slug?: string;
+    seats?: string;
+    time?: string;
+    amount?: string;
   }>;
 };
 
@@ -1010,6 +1016,220 @@ function AccommodationPaymentGatewayPreview({ preview, paymentStatus }: { previe
 }
 
 
+
+function TourSandboxPaymentRecordFallback(props: {
+  intentId: string;
+  paymentStatus?: string;
+  slug?: string;
+  seats?: string;
+  time?: string;
+  amount?: string;
+}) {
+  const isSuccess = props.paymentStatus === "paymongo-success";
+  const record = getGlRoutePriceAnchor(props.slug) ?? getGlRoutePriceAnchor("tri-island-joiner");
+
+  if (!record) {
+    return null;
+  }
+
+  const queryAmount = Number(props.amount || "");
+  const hasQueryAmount = Number.isFinite(queryAmount) && queryAmount > 0;
+  const querySeatsRaw = Number(props.seats || "");
+  const querySeats = Number.isFinite(querySeatsRaw) && querySeatsRaw > 0 ? Math.floor(querySeatsRaw) : 1;
+  const queryTime = props.time || "11:00 AM";
+  const displayAmountLabel = hasQueryAmount ? `From PHP ${queryAmount.toLocaleString("en-PH")}` : record.amountLabel;
+  const displayAmountSubcopy = hasQueryAmount
+    ? `${querySeats} joiner seat${querySeats === 1 ? "" : "s"} · ${queryTime} Joiner Trip`
+    : record.amountSubcopy;
+
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        background:
+          "radial-gradient(circle at top, rgba(5,150,165,0.10), transparent 34%), linear-gradient(180deg, #F4FCFA 0%, #FFFFFF 58%, #EAFBFA 100%)",
+        color: "#013863",
+        fontFamily:
+          "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+      }}
+    >
+      <div style={{ width: "min(100%, 430px)", margin: "0 auto", padding: "14px 14px 100px" }}>
+        <a
+          href="/traveler/payments/tour-sandbox/tri-island-joiner"
+          style={{
+            display: "inline-flex",
+            color: "#0596A5",
+            fontSize: 12,
+            fontWeight: 850,
+            textDecoration: "none",
+            marginBottom: 12,
+          }}
+        >
+          ← Back to price review
+        </a>
+
+        <section
+          style={{
+            borderRadius: 30,
+            overflow: "hidden",
+            background: "#013863",
+            boxShadow: "0 24px 60px rgba(1,56,99,0.20)",
+            marginBottom: 14,
+          }}
+        >
+          <div style={{ height: 210, position: "relative" }}>
+            <img
+              src="/osp/temp-tour-posters/tri-island-joiner.png"
+              alt={record.title}
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: 0.68 }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(180deg, rgba(1,56,99,0.08) 0%, rgba(1,56,99,0.92) 100%)",
+              }}
+            />
+            <div style={{ position: "absolute", left: 18, right: 18, bottom: 18, color: "#FFFFFF" }}>
+              <span
+                style={{
+                  display: "inline-flex",
+                  padding: "7px 11px",
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.92)",
+                  color: "#013863",
+                  fontSize: 10.5,
+                  fontWeight: 950,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Payment record preview
+              </span>
+              <h1
+                style={{
+                  margin: "10px 0 0",
+                  color: "#FFFFFF",
+                  fontSize: 29,
+                  lineHeight: 1,
+                  letterSpacing: "-0.055em",
+                  fontWeight: 950,
+                  textShadow: "0 3px 18px rgba(0,0,0,0.42)",
+                }}
+              >
+                {record.title}
+              </h1>
+              <p style={{ margin: "8px 0 0", color: "rgba(255,255,255,0.90)", fontSize: 12.5, lineHeight: 1.36, fontWeight: 720 }}>
+                {record.tripNo} · {record.port}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section
+          style={{
+            borderRadius: 26,
+            padding: 16,
+            background: "#FFFFFF",
+            border: "1px solid rgba(1,56,99,0.10)",
+            boxShadow: "0 18px 42px rgba(1,56,99,0.10)",
+            marginBottom: 12,
+          }}
+        >
+          <p style={{ margin: 0, color: "#64748B", fontSize: 10.5, fontWeight: 950, letterSpacing: "0.09em", textTransform: "uppercase" }}>
+            Estimated route total
+          </p>
+          <h2 style={{ margin: "5px 0 0", color: "#013863", fontSize: 34, lineHeight: 0.96, letterSpacing: "-0.055em", fontWeight: 950 }}>
+            {displayAmountLabel}
+          </h2>
+          <p style={{ margin: "9px 0 0", color: "#50668B", fontSize: 12.2, lineHeight: 1.38, fontWeight: 720 }}>
+            {displayAmountSubcopy}
+          </p>
+
+          <div
+            style={{
+              marginTop: 12,
+              borderRadius: 18,
+              padding: 12,
+              background: isSuccess ? "#EAFBFA" : "#FFF8EA",
+              border: isSuccess ? "1px solid rgba(5,150,165,0.20)" : "1px solid rgba(243,174,38,0.34)",
+            }}
+          >
+            <p style={{ margin: 0, color: isSuccess ? "#0596A5" : "#8A5A00", fontSize: 10.5, fontWeight: 950, letterSpacing: "0.09em", textTransform: "uppercase" }}>
+              {isSuccess ? "Returned from checkout" : "Payment preview"}
+            </p>
+            <p style={{ margin: "6px 0 0", color: "#013863", fontSize: 11.8, lineHeight: 1.4, fontWeight: 760 }}>
+              Live production still requires webhook reconciliation before this record is marked as settled.
+            </p>
+          </div>
+        </section>
+
+        <section
+          style={{
+            borderRadius: 24,
+            padding: 14,
+            background: "#F4FCFA",
+            border: "1px solid rgba(5,150,165,0.16)",
+            marginBottom: 12,
+          }}
+        >
+          <p style={{ margin: 0, color: "#0596A5", fontSize: 10.5, fontWeight: 950, letterSpacing: "0.09em", textTransform: "uppercase" }}>
+            Trip details
+          </p>
+
+          <div style={{ display: "grid", gap: 8, marginTop: 11 }}>
+            <KeyValue label="Trip" value="{record.title}" compact />
+            <KeyValue label="Trip No." value={record.tripNo} compact />
+            <KeyValue label="Route" value={record.route} compact />
+            <KeyValue label="Port" value={record.port} compact />
+            <KeyValue label="Payment Intent" value={props.intentId} compact />
+            <KeyValue label="Status" value={isSuccess ? "Verification pending" : "Preview only"} compact />
+          </div>
+        </section>
+
+        <section
+          style={{
+            borderRadius: 24,
+            padding: 14,
+            background: "#FFFFFF",
+            border: "1px solid rgba(1,56,99,0.10)",
+            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
+            marginBottom: 12,
+          }}
+        >
+          <p style={{ margin: 0, color: "#013863", fontSize: 10.5, fontWeight: 950, letterSpacing: "0.09em", textTransform: "uppercase" }}>
+            What happens next
+          </p>
+
+          <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
+            <KeyValue label="Voucher" value="Prepared after successful payment verification" compact />
+            <KeyValue label="Receipt" value="Recorded from the verified payment record" compact />
+            <KeyValue label="Boarding QR" value="Prepared after valid operator and vessel assignment" compact />
+            <KeyValue label="Boarding record" value="Updated when the QR is scanned at the port" compact />
+          </div>
+        </section>
+
+        <section
+          style={{
+            borderRadius: 24,
+            padding: 14,
+            background: "#FFF8EA",
+            border: "1px solid rgba(243,174,38,0.34)",
+          }}
+        >
+          <p style={{ margin: 0, color: "#8A5A00", fontSize: 10.5, fontWeight: 950, letterSpacing: "0.09em", textTransform: "uppercase" }}>
+            Backend record required
+          </p>
+          <p style={{ margin: "7px 0 0", color: "#013863", fontSize: 12, lineHeight: 1.42, fontWeight: 760 }}>
+            This fallback prevents a sandbox-only tour intent from showing a 404. Production settlement, voucher, receipt, boarding QR, and boarding record must still come from backend events.
+          </p>
+        </section>
+      </div>
+    </main>
+  );
+}
+
 export default async function TravelerPaymentIntentPage({ params, searchParams }: PaymentPageProps) {
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
@@ -1020,6 +1240,25 @@ export default async function TravelerPaymentIntentPage({ params, searchParams }
 
 const { intentId } = resolvedParams;
   const gatewayStatusMessage = getGatewayStatusMessage(resolvedSearchParams?.payment);
+  const supportedTourSandboxSlugs = SUPPORTED_GL_PAYMENT_SLUGS as readonly string[];
+  const requestedTourSlug = resolvedSearchParams?.slug || "";
+  const isTourSandboxPaymentRecord =
+    intentId.startsWith("tour_sandbox_") ||
+    (resolvedSearchParams?.source === "tour" && supportedTourSandboxSlugs.includes(requestedTourSlug));
+
+  if (isTourSandboxPaymentRecord) {
+    return (
+      <TourSandboxPaymentRecordFallback
+        intentId={intentId}
+        paymentStatus={resolvedSearchParams?.payment}
+        slug={resolvedSearchParams?.slug}
+        seats={resolvedSearchParams?.seats}
+        time={resolvedSearchParams?.time}
+        amount={resolvedSearchParams?.amount}
+      />
+    );
+  }
+
   const { intent, error } = await getPaymentIntent(intentId);
   const dictionary = await getTravelerDictionary("en");
 
