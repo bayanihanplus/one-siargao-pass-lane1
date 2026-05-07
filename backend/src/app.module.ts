@@ -29,9 +29,11 @@ import { AdminIntelligenceModule } from './modules/admin-intelligence/admin-inte
 import { AccommodationsModule } from './modules/accommodations';
 import { PublicPassportTrailsModule } from './modules/public-passport-trails/public-passport-trails.module';
 import { AdminControlTowerContractsModule } from "./modules/admin-control-tower-contracts";
+import { SiteAccessModule } from "./modules/site-access";
 
 @Module({
   imports: [
+    SiteAccessModule,
     AdminControlTowerContractsModule,
     PublicPassportTrailsModule,
     AdminIntelligenceModule,

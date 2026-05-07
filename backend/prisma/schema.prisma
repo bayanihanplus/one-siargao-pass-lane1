@@ -4391,3 +4391,190 @@ model OspRouteCapability {
   @@index([manualReviewRequired])
   @@map("osp_route_capabilities")
 }
+
+// === OSP-CLOUD9-ACCESS-04B: LGU Site Access Entitlement Foundation ===
+
+enum SiteAccessSiteCode {
+  CLOUD_9
+}
+
+enum SiteAccessRateCategory {
+  STANDARD_RATE
+  EXEMPT
+  DISCOUNTED
+  RESIDENT_RATE
+  SENIOR_RATE
+  CHILD_RATE
+}
+
+enum SiteAccessIntentSource {
+  TRAVELER_APP
+  LGU_COUNTER
+  ADMIN_OVERRIDE
+}
+
+enum SiteAccessPaymentStatus {
+  PENDING
+  PAID
+  COUNTER_CONFIRMED
+  VOIDED
+}
+
+enum SiteAccessEntitlementStatus {
+  NOT_ISSUED
+  ACTIVE
+  USED
+  CANCELLED
+  SUSPENDED
+}
+
+enum SiteAccessScanResult {
+  VALID
+  ALREADY_USED
+  NOT_PAID
+  NOT_FOUND
+  SUSPENDED
+  WRONG_SITE
+  TRAVELER_MISMATCH
+  MANUAL_REVIEW_REQUIRED
+}
+
+enum SiteAccessAuditEventType {
+  INTENT_CREATED
+  PAYMENT_INTENT_REQUESTED
+  SANDBOX_PAYMENT_APPROVED
+  COUNTER_CONFIRMED
+  ENTITLEMENT_ISSUED
+  SCAN_VALIDATED
+  SCAN_REJECTED
+  ENTITLEMENT_USED
+  ADMIN_OVERRIDE
+  VOIDED
+  SUSPENDED
+}
+
+model SiteAccessIntent {
+  id                   String                      @id @default(cuid())
+  siteCode             SiteAccessSiteCode
+  travelerUserId       String?
+  tripId               String?
+  passId               String?
+  qrCredentialId       String?
+  bookingId            String?
+  paymentIntentId      String?
+  paxCount             Int
+  declaredRateCategory SiteAccessRateCategory      @default(STANDARD_RATE)
+  visitDate            DateTime?
+  visitWindow          String?
+  baseFeeAmountPhp     Decimal                     @default(100) @db.Decimal(12, 2)
+  totalAmountPhp       Decimal                     @default(100) @db.Decimal(12, 2)
+  paymentStatus        SiteAccessPaymentStatus     @default(PENDING)
+  entitlementStatus    SiteAccessEntitlementStatus @default(NOT_ISSUED)
+  source               SiteAccessIntentSource      @default(TRAVELER_APP)
+  metadataJson         Json?
+  createdAt            DateTime                    @default(now())
+  updatedAt            DateTime                    @updatedAt
+
+  entitlement SiteAccessEntitlement?
+  scanEvents   SiteAccessScanEvent[]
+  auditEvents  SiteAccessAuditEvent[]
+
+  @@index([siteCode])
+  @@index([travelerUserId])
+  @@index([tripId])
+  @@index([passId])
+  @@index([qrCredentialId])
+  @@index([bookingId])
+  @@index([paymentIntentId])
+  @@index([paymentStatus])
+  @@index([entitlementStatus])
+  @@index([createdAt])
+  @@map("site_access_intents")
+}
+
+model SiteAccessEntitlement {
+  id                          String                      @id @default(cuid())
+  intentId                    String                      @unique
+  siteCode                    SiteAccessSiteCode
+  travelerUserId              String?
+  tripId                      String?
+  passId                      String?
+  qrCredentialId              String?
+  paxCount                    Int
+  rateCategoryConfirmed       SiteAccessRateCategory      @default(STANDARD_RATE)
+  validFrom                   DateTime?
+  validUntil                  DateTime?
+  usedOnce                    Boolean                     @default(false)
+  usedAt                      DateTime?
+  status                      SiteAccessEntitlementStatus @default(ACTIVE)
+  attachedToOfficialTravelerQr Boolean                    @default(true)
+  metadataJson                Json?
+  createdAt                   DateTime                    @default(now())
+  updatedAt                   DateTime                    @updatedAt
+
+  intent     SiteAccessIntent      @relation(fields: [intentId], references: [id], onDelete: Cascade)
+  scanEvents SiteAccessScanEvent[]
+  auditEvents SiteAccessAuditEvent[]
+
+  @@index([siteCode])
+  @@index([travelerUserId])
+  @@index([tripId])
+  @@index([passId])
+  @@index([qrCredentialId])
+  @@index([status])
+  @@index([usedOnce])
+  @@index([createdAt])
+  @@map("site_access_entitlements")
+}
+
+model SiteAccessScanEvent {
+  id                    String               @id @default(cuid())
+  intentId              String?
+  entitlementId         String?
+  siteCode              SiteAccessSiteCode
+  scannerUserId         String?
+  scannerActorRole      String?
+  scanResult            SiteAccessScanResult
+  paxCountConfirmed     Int?
+  rateCategoryConfirmed SiteAccessRateCategory?
+  notes                 String?
+  metadataJson          Json?
+  scannedAt             DateTime             @default(now())
+
+  intent      SiteAccessIntent?      @relation(fields: [intentId], references: [id], onDelete: SetNull)
+  entitlement SiteAccessEntitlement? @relation(fields: [entitlementId], references: [id], onDelete: SetNull)
+
+  @@index([intentId])
+  @@index([entitlementId])
+  @@index([siteCode])
+  @@index([scanResult])
+  @@index([scannerUserId])
+  @@index([scannedAt])
+  @@map("site_access_scan_events")
+}
+
+model SiteAccessAuditEvent {
+  id             String                   @id @default(cuid())
+  intentId       String?
+  entitlementId  String?
+  siteCode       SiteAccessSiteCode
+  eventType      SiteAccessAuditEventType
+  actorUserId    String?
+  actorRole      String?
+  previousState  String?
+  newState       String?
+  eventKey       String                   @unique
+  metadataJson   Json?
+  createdAt      DateTime                 @default(now())
+
+  intent      SiteAccessIntent?      @relation(fields: [intentId], references: [id], onDelete: SetNull)
+  entitlement SiteAccessEntitlement? @relation(fields: [entitlementId], references: [id], onDelete: SetNull)
+
+  @@index([intentId])
+  @@index([entitlementId])
+  @@index([siteCode])
+  @@index([eventType])
+  @@index([actorUserId])
+  @@index([createdAt])
+  @@map("site_access_audit_events")
+}
