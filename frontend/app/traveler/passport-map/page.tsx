@@ -1604,7 +1604,7 @@ function NavIcon(props: {
 
 function SpmJourneyHubEngagement() {
   const mapPins = [
-    { label: "Cloud 9", x: "63%", y: "51%", tone: "#F3AE26", href: "/traveler/passport-trails/surf-explorer?pin=cloud-9" },
+    { label: "Cloud 9", x: "63%", y: "51%", tone: "#F3AE26", href: "/traveler/site-access/cloud-9" },
     { label: "General Luna", x: "56%", y: "66%", tone: "#0097A7", href: "/traveler/passport-trails?zone=general-luna" },
     { label: "Island Hopping", x: "43%", y: "74%", tone: "#013863", href: "/traveler/passport-trails/island-hopping?pin=island-hopping" },
     { label: "North Siargao", x: "49%", y: "25%", tone: "#F3AE26", href: "/traveler/passport-trails/north-siargao?pin=north-siargao" },

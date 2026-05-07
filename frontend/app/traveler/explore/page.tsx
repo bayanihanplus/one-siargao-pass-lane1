@@ -116,6 +116,8 @@ const LOCKED_TOUR_POSTER_BY_SLUG: Record<string, string> = {
 };
 
 function getFeaturedServiceCardHref(service: FeaturedService) {
+  if (service.href === "/traveler/site-access/cloud-9") return service.href;
+
   if (service.slug && LOCKED_TOUR_POSTER_BY_SLUG[service.slug]) {
     return `/traveler/explore/tours/${service.slug}`;
   }
@@ -499,6 +501,23 @@ const lanes: ExploreLane[] = [
 ];
 
 const fallbackFeaturedServices: FeaturedService[] = [
+  {
+    category: "LGU Site Access",
+    title: "Cloud 9 Site Access",
+    body: "Confirm the ₱100 LGU entrance fee and attach access to your official Traveler QR.",
+    price: "₱100 LGU fee",
+    href: "/traveler/site-access/cloud-9",
+    tags: ["Official Traveler QR", "One-use access", "LGU validation"],
+    tone: "ocean",
+    sourceLabel: "Site access",
+    mediaTruth: "LGU_SITE_ACCESS",
+    operatorLabel: "General Luna LGU",
+    availabilityLabel: "Access-ready",
+    urgencyLabel: "Gate validation",
+    bookingModeLabel: "Access intent",
+    pricingReady: true,
+    ctaLabel: "Open access",
+  },
   {
     category: "Tour Operators",
     title: "Siargao Tour Operators",
