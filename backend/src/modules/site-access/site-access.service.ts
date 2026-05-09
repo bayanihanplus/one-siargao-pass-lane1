@@ -5,6 +5,7 @@ import { CreateCloud9SiteAccessIntentDto } from "./dto/create-cloud9-site-access
 import { Cloud9SiteAccessScanDto } from "./dto/cloud9-site-access-scan.dto";
 
 const CLOUD9_BASE_FEE = 100;
+const CLOUD9_STALE_PENDING_MINUTES = 15;
 
 @Injectable()
 export class SiteAccessService {
@@ -14,6 +15,54 @@ export class SiteAccessService {
     const parsed = Number(value || 1);
     if (!Number.isFinite(parsed)) return 1;
     return Math.min(20, Math.max(1, Math.floor(parsed)));
+  }
+
+  private getCloud9StartOfToday() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today;
+  }
+
+  private getCloud9StalePendingCutoff() {
+    return new Date(Date.now() - CLOUD9_STALE_PENDING_MINUTES * 60 * 1000);
+  }
+
+  private async expireStaleCloud9PendingIntents(today: Date) {
+    const cutoff = this.getCloud9StalePendingCutoff();
+
+    const staleIntents = await this.prisma.siteAccessIntent.findMany({
+      where: {
+        siteCode: "CLOUD_9",
+        createdAt: { gte: today, lt: cutoff },
+        paymentStatus: "PENDING",
+        entitlementStatus: "NOT_ISSUED",
+      },
+      take: 50,
+      orderBy: { createdAt: "asc" },
+    });
+
+    for (const intent of staleIntents) {
+      await this.prisma.siteAccessIntent.update({
+        where: { id: intent.id },
+        data: {
+          paymentStatus: "VOIDED",
+        },
+      });
+
+      await this.writeAudit({
+        intentId: intent.id,
+        eventType: "VOIDED",
+        previousState: "PENDING",
+        newState: "VOIDED",
+        metadataJson: {
+          reason: "STALE_PENDING_INTENT_EXPIRED",
+          stalePendingMinutes: CLOUD9_STALE_PENDING_MINUTES,
+          createdAt: intent.createdAt,
+        },
+      });
+    }
+
+    return staleIntents.length;
   }
 
   private async writeAudit(params: {
@@ -360,10 +409,10 @@ export class SiteAccessService {
   }
 
   async getCloud9Daily() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = this.getCloud9StartOfToday();
+    const expiredStalePendingIntents = await this.expireStaleCloud9PendingIntents(today);
 
-    const [intents, entitlements, scans] = await Promise.all([
+    const [rawIntents, entitlements, scans] = await Promise.all([
       this.prisma.siteAccessIntent.findMany({
         where: { siteCode: "CLOUD_9", createdAt: { gte: today } },
         orderBy: { createdAt: "desc" },
@@ -381,18 +430,48 @@ export class SiteAccessService {
       }),
     ]);
 
+    const operationalIntents = rawIntents.filter((intent) =>
+      intent.paymentStatus === "PAID" ||
+      intent.paymentStatus === "COUNTER_CONFIRMED" ||
+      intent.entitlementStatus === "ACTIVE"
+    );
+
+    const pendingIntents = rawIntents.filter((intent) =>
+      intent.paymentStatus === "PENDING" &&
+      intent.entitlementStatus === "NOT_ISSUED"
+    );
+
+    const voidedIntents = rawIntents.filter((intent) => intent.paymentStatus === "VOIDED");
+
+    const paidIntents = rawIntents.filter((intent) =>
+      intent.paymentStatus === "PAID" ||
+      intent.paymentStatus === "COUNTER_CONFIRMED"
+    );
+
+    const activeEntitlements = entitlements.filter((item) => item.status === "ACTIVE" && !item.usedOnce);
+    const usedEntitlements = entitlements.filter((item) => item.usedOnce || item.status === "USED");
+
     return {
       ok: true,
       data: {
         siteCode: "CLOUD_9",
         date: today.toISOString().slice(0, 10),
         counts: {
-          intents: intents.length,
+          intents: operationalIntents.length,
           entitlements: entitlements.length,
           scans: scans.length,
-          used: entitlements.filter((item) => item.usedOnce).length,
+          used: usedEntitlements.length,
+          rawIntents: rawIntents.length,
+          pendingIntents: pendingIntents.length,
+          paidIntents: paidIntents.length,
+          voidedIntents: voidedIntents.length,
+          activeEntitlements: activeEntitlements.length,
+          usedEntitlements: usedEntitlements.length,
+          expiredStalePendingIntents,
         },
-        intents,
+        intents: operationalIntents,
+        pendingIntents,
+        voidedIntents,
         entitlements,
         scans,
       },
