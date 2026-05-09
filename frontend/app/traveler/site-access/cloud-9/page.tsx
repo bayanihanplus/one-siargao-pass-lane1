@@ -53,6 +53,28 @@ function formatVisitDate(value?: string) {
   }).format(new Date(year, month - 1, day));
 }
 
+const CLOUD9_API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:8001/api/v1";
+
+async function readCloud9Entitlement(entitlementId?: string) {
+  if (!entitlementId) return null;
+
+  try {
+    const response = await fetch(`${CLOUD9_API_BASE}/site-access/cloud-9/entitlements/${encodeURIComponent(entitlementId)}`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) return null;
+
+    const json = await response.json();
+    return json?.data || null;
+  } catch {
+    return null;
+  }
+}
+
 const rateLabels: Record<string, string> = {
   STANDARD_RATE: "Standard rate",
   SENIOR_RATE: "Senior citizen",
@@ -104,19 +126,23 @@ type Cloud9SearchParams = {
   visitDate?: string;
   window?: string;
   amount?: string;
+  intentId?: string;
+  entitlementId?: string;
+  backend?: string;
 };
 
-export default function TravelerCloud9SiteAccessPage({
+export default async function TravelerCloud9SiteAccessPage({
   searchParams,
 }: {
   searchParams?: Cloud9SearchParams;
 }) {
   const isLguCounterPath = searchParams?.path === "lgu-counter";
   const isSandboxApproved = searchParams?.payment === "sandbox-approved";
+  const backendEntitlement = await readCloud9Entitlement(searchParams?.entitlementId);
   const isApprovedState = isLguCounterPath || isSandboxApproved;
-  const confirmedPax = clampPax(searchParams?.pax);
-  const confirmedRate = searchParams?.rate || "STANDARD_RATE";
-  const confirmedAmount = Number(searchParams?.amount || confirmedPax * 100);
+  const confirmedPax = backendEntitlement?.paxCount ? clampPax(String(backendEntitlement.paxCount)) : clampPax(searchParams?.pax);
+  const confirmedRate = backendEntitlement?.rateCategoryConfirmed || searchParams?.rate || "STANDARD_RATE";
+  const confirmedAmount = Number(searchParams?.amount || backendEntitlement?.intent?.totalAmountPhp || confirmedPax * 100);
   const confirmedWindow = searchParams?.window || "Flexible within trip";
   const confirmedVisitDate = formatVisitDate(searchParams?.visitDate);
   const confirmedRateLabel = rateLabels[confirmedRate] || confirmedRate;

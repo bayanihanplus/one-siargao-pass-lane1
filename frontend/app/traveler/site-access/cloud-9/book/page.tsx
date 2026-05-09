@@ -20,6 +20,49 @@ const CLOUD9_LGU_LOGO_SRC = "/osp/general-luna-logo-siargao.png";
 
 const STANDARD_FEE = 100;
 
+const CLOUD9_API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:8001/api/v1";
+
+async function createCloud9Intent(payload: {
+  paxCount: number;
+  declaredRateCategory: string;
+  visitDate: string;
+  visitWindow: string;
+}) {
+  const response = await fetch(`${CLOUD9_API_BASE}/site-access/cloud-9/intents`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      paxCount: payload.paxCount,
+      declaredRateCategory: payload.declaredRateCategory,
+      visitDate: payload.visitDate,
+      visitWindow: payload.visitWindow,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Cloud 9 intent creation failed: HTTP ${response.status}`);
+  }
+
+  const json = await response.json();
+  const intentId = json?.data?.intent?.id;
+  const totalAmount = Number(json?.data?.amount?.totalAmount || payload.paxCount * STANDARD_FEE);
+
+  if (!intentId) {
+    throw new Error("Cloud 9 intent creation failed: missing intent id.");
+  }
+
+  return {
+    intentId,
+    totalAmount,
+  };
+}
+
+
 const rateCategories = [
   {
     code: "STANDARD_RATE",
@@ -84,6 +127,8 @@ export default function Cloud9AccessBookingPage() {
   const [visitDate, setVisitDate] = useState(todayISO());
   const [visitWindow, setVisitWindow] = useState<VisitWindow>("Flexible within trip");
   const [rateCategory, setRateCategory] = useState<RateCode>("STANDARD_RATE");
+  const [isPreparingBackendIntent, setIsPreparingBackendIntent] = useState(false);
+  const [backendIntentError, setBackendIntentError] = useState<string | null>(null);
 
   const selectedRate = rateCategories.find((item) => item.code === rateCategory) || rateCategories[0];
   const standardAmount = pax * STANDARD_FEE;
@@ -96,10 +141,46 @@ export default function Cloud9AccessBookingPage() {
       rate: rateCategory,
       visitDate,
       window: visitWindow,
+      amount: String(standardAmount),
     });
 
     return `/traveler/payments/site-sandbox/cloud-9?${params.toString()}`;
   }, [pax, rateCategory, visitDate, visitWindow]);
+
+  async function handlePrepareBackendPayment() {
+    setBackendIntentError(null);
+    setIsPreparingBackendIntent(true);
+
+    const fallbackHref = paymentHref;
+
+    try {
+      const backendIntent = await createCloud9Intent({
+        paxCount: pax,
+        declaredRateCategory: rateCategory,
+        visitDate,
+        visitWindow,
+      });
+
+      const params = new URLSearchParams({
+        site: "cloud-9",
+        pax: String(pax),
+        rate: rateCategory,
+        visitDate,
+        window: visitWindow,
+        amount: String(backendIntent.totalAmount),
+        intentId: backendIntent.intentId,
+        backend: "site-access",
+      });
+
+      window.location.href = `/traveler/payments/site-sandbox/cloud-9?${params.toString()}`;
+    } catch (error) {
+      setBackendIntentError(error instanceof Error ? error.message : "Backend unavailable. Continuing with sandbox fallback.");
+      window.location.href = fallbackHref;
+    } finally {
+      setIsPreparingBackendIntent(false);
+    }
+  }
+
 
   return (
     <main
@@ -554,7 +635,12 @@ export default function Cloud9AccessBookingPage() {
         </section>
       </div>
 
-      <BottomActionBar paymentHref={paymentHref} amount={standardAmount} />
+      <BottomActionBar paymentHref={paymentHref} amount={standardAmount} onPrepareBackendPayment={handlePrepareBackendPayment} isPreparingBackendIntent={isPreparingBackendIntent} />
+      {backendIntentError ? (
+        <div aria-label="Cloud 9 backend handoff notice" style={{ margin: "0 auto 96px", maxWidth: 520, border: "1px solid rgba(243,174,38,0.45)", borderRadius: 18, background: "#FFF8E7", padding: 14, color: "#7A5200", fontSize: 13, lineHeight: 1.5 }}>
+          Backend handoff fallback used: {backendIntentError}
+        </div>
+      ) : null}
     </main>
   );
 }
@@ -618,7 +704,7 @@ function TopBar() {
   );
 }
 
-function BottomActionBar({ paymentHref, amount }: { paymentHref: string; amount: number }) {
+function BottomActionBar({ paymentHref, amount, onPrepareBackendPayment, isPreparingBackendIntent }: { paymentHref: string; amount: number; onPrepareBackendPayment: () => void; isPreparingBackendIntent: boolean }) {
   return (
     <div
       style={{
@@ -644,8 +730,10 @@ function BottomActionBar({ paymentHref, amount }: { paymentHref: string; amount:
           gap: 8,
         }}
       >
-        <Link
-          href={paymentHref}
+        <button
+          type="button"
+          onClick={onPrepareBackendPayment}
+          disabled={isPreparingBackendIntent}
           style={{
             minHeight: 54,
             borderRadius: 19,
@@ -660,11 +748,14 @@ function BottomActionBar({ paymentHref, amount }: { paymentHref: string; amount:
             fontSize: 14.5,
             fontWeight: 950,
             boxShadow: "0 18px 40px rgba(5,150,165,0.28)",
+            border: "0",
+            cursor: isPreparingBackendIntent ? "wait" : "pointer",
+            opacity: isPreparingBackendIntent ? 0.78 : 1,
           }}
         >
-          Continue to Sandbox Payment · {formatMoney(amount)}
+          {isPreparingBackendIntent ? "Creating Cloud 9 Intent..." : `Continue to Sandbox Payment · ${formatMoney(amount)}`}
           <span style={{ marginLeft: "auto", fontSize: 26, lineHeight: 1 }}>›</span>
-        </Link>
+        </button>
 
         <Link
           href="/traveler/site-access/cloud-9"

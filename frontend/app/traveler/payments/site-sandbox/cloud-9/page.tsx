@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useMemo } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 const colors = {
@@ -20,6 +20,48 @@ const colors = {
 const CLOUD9_LGU_LOGO_SRC = "/osp/general-luna-logo-siargao.png";
 
 const STANDARD_FEE = 100;
+
+const CLOUD9_API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:8001/api/v1";
+
+async function prepareCloud9SandboxApproval(intentId: string) {
+  const paymentIntentResponse = await fetch(`${CLOUD9_API_BASE}/site-access/cloud-9/intents/${encodeURIComponent(intentId)}/payment-intent`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!paymentIntentResponse.ok) {
+    throw new Error(`Cloud 9 sandbox payment-intent failed: HTTP ${paymentIntentResponse.status}`);
+  }
+
+  const approvalResponse = await fetch(`${CLOUD9_API_BASE}/site-access/cloud-9/intents/${encodeURIComponent(intentId)}/sandbox-approve`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!approvalResponse.ok) {
+    throw new Error(`Cloud 9 sandbox approve failed: HTTP ${approvalResponse.status}`);
+  }
+
+  const approvalJson = await approvalResponse.json();
+  const entitlementId = approvalJson?.data?.entitlement?.id;
+
+  if (!entitlementId) {
+    throw new Error("Cloud 9 sandbox approve failed: missing entitlement id.");
+  }
+
+  return {
+    entitlementId,
+    amount: Number(approvalJson?.data?.intent?.totalAmountPhp || 0),
+  };
+}
+
 
 const rateLabels: Record<string, string> = {
   STANDARD_RATE: "Standard rate",
@@ -58,6 +100,8 @@ function formatVisitDate(value: string | null) {
 
 function Cloud9SiteSandboxPaymentContent() {
   const rawSearchParams = useSearchParams();
+  const [isApprovingBackendIntent, setIsApprovingBackendIntent] = useState(false);
+  const [backendApprovalError, setBackendApprovalError] = useState<string | null>(null);
 
   const getParam = (key: string) => rawSearchParams?.get(key) ?? null;
 
@@ -77,6 +121,8 @@ function Cloud9SiteSandboxPaymentContent() {
       visitDateLabel: formatVisitDate(visitDate),
       visitWindow,
       total,
+      intentId: getParam("intentId") || "",
+      backend: getParam("backend") || "",
     };
   }, [rawSearchParams]);
 
@@ -89,10 +135,45 @@ function Cloud9SiteSandboxPaymentContent() {
       visitDate: booking.visitDateRaw,
       window: booking.visitWindow,
       amount: String(booking.total),
+      intentId: booking.intentId,
     });
 
     return `/traveler/site-access/cloud-9?${params.toString()}`;
   }, [booking]);
+
+  async function handleBackendSandboxApprove() {
+    if (!booking.intentId) {
+      window.location.href = approvedHref;
+      return;
+    }
+
+    setBackendApprovalError(null);
+    setIsApprovingBackendIntent(true);
+
+    try {
+      const approval = await prepareCloud9SandboxApproval(booking.intentId);
+      const params = new URLSearchParams({
+        payment: "sandbox-approved",
+        site: "cloud-9",
+        pax: String(booking.pax),
+        rate: booking.rate,
+        visitDate: booking.visitDateRaw,
+        window: booking.visitWindow,
+        amount: String(approval.amount || booking.total),
+        intentId: booking.intentId,
+        entitlementId: approval.entitlementId,
+        backend: "site-access",
+      });
+
+      window.location.href = `/traveler/site-access/cloud-9?${params.toString()}`;
+    } catch (error) {
+      setBackendApprovalError(error instanceof Error ? error.message : "Backend approval unavailable. Continuing with sandbox fallback.");
+      window.location.href = approvedHref;
+    } finally {
+      setIsApprovingBackendIntent(false);
+    }
+  }
+
 
   return (
     <main
@@ -293,7 +374,12 @@ function Cloud9SiteSandboxPaymentContent() {
         </section>
       </div>
 
-      <BottomActionBar approvedHref={approvedHref} amount={booking.total} />
+      <BottomActionBar approvedHref={approvedHref} amount={booking.total} onBackendSandboxApprove={handleBackendSandboxApprove} isApprovingBackendIntent={isApprovingBackendIntent} />
+      {backendApprovalError ? (
+        <div aria-label="Cloud 9 backend approval notice" style={{ margin: "0 auto 96px", maxWidth: 520, border: "1px solid rgba(243,174,38,0.45)", borderRadius: 18, background: "#FFF8E7", padding: 14, color: "#7A5200", fontSize: 13, lineHeight: 1.5 }}>
+          Backend approval fallback used: {backendApprovalError}
+        </div>
+      ) : null}
     </main>
   );
 }
@@ -375,7 +461,7 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function BottomActionBar({ approvedHref, amount }: { approvedHref: string; amount: number }) {
+function BottomActionBar({ approvedHref, amount, onBackendSandboxApprove, isApprovingBackendIntent }: { approvedHref: string; amount: number; onBackendSandboxApprove: () => void; isApprovingBackendIntent: boolean }) {
   return (
     <div
       style={{
@@ -401,8 +487,10 @@ function BottomActionBar({ approvedHref, amount }: { approvedHref: string; amoun
           gap: 8,
         }}
       >
-        <Link
-          href={approvedHref}
+        <button
+          type="button"
+          onClick={onBackendSandboxApprove}
+          disabled={isApprovingBackendIntent}
           style={{
             minHeight: 54,
             borderRadius: 19,
@@ -417,11 +505,14 @@ function BottomActionBar({ approvedHref, amount }: { approvedHref: string; amoun
             fontSize: 14.5,
             fontWeight: 950,
             boxShadow: "0 18px 40px rgba(5,150,165,0.28)",
+            border: "0",
+            cursor: isApprovingBackendIntent ? "wait" : "pointer",
+            opacity: isApprovingBackendIntent ? 0.78 : 1,
           }}
         >
-          Confirm Sandbox Payment · {formatMoney(amount)}
+          {isApprovingBackendIntent ? "Approving Backend Entitlement..." : `Confirm Sandbox Payment · ${formatMoney(amount)}`}
           <span style={{ marginLeft: "auto", fontSize: 26, lineHeight: 1 }}>›</span>
-        </Link>
+        </button>
 
         <Link
           href="/traveler/site-access/cloud-9/book"
