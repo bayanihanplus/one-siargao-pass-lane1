@@ -1,3 +1,5 @@
+"use client";
+
 /*
  * ADMIN-CT-27 naming doctrine:
  * - User-facing/admin-facing product name: One Siargao Pass Command Center.

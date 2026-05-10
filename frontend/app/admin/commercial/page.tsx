@@ -618,6 +618,28 @@ export default async function AdminCommercialPage({
           <p style={{ margin: "0 0 18px", fontSize: 13, lineHeight: 1.45 }}>
             Review readiness before products reach Siargao Explore.
           </p>
+          <div style={{ marginTop: 14 }}>
+            <a
+              href="/admin/commercial/tour-architecture"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 38,
+                borderRadius: 999,
+                background: "#F3AE26",
+                color: "#013863",
+                WebkitTextFillColor: "#013863",
+                padding: "0 15px",
+                fontSize: 13,
+                fontWeight: 950,
+                textDecoration: "none",
+                boxShadow: "0 10px 22px rgba(243,174,38,0.20)",
+              }}
+            >
+              Open Tour Commercial Architecture
+            </a>
+          </div>
 
           <nav style={{ display: "grid", gap: 9 }}>
             <SidebarLink section="overview" active={activeSection} label="Overview" />

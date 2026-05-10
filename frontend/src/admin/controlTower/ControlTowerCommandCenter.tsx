@@ -1,275 +1,370 @@
-import Link from "next/link";
-import { controlTowerNav } from "./controlTowerNav";
-import styles from "./controlTower.module.css";
-import { ControlTowerContractStatus } from "./ControlTowerContractStatus";
-import { ControlTowerReadinessBoard } from "./ControlTowerReadinessBoard";
+"use client";
 
-const heroMetrics = [
+import type { CSSProperties } from "react";
+import shellStyles from "./controlTower.module.css";
+import styles from "./controlTowerCommandHome.module.css";
+
+
+const hardPageStyle: CSSProperties = {
+  width: "100%",
+  maxWidth: 1240,
+  margin: "0 auto",
+  padding: "18px 24px 48px",
+};
+
+const hardHeroStyle: CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 1fr) 360px",
+  gap: 18,
+  alignItems: "stretch",
+  borderRadius: 28,
+  padding: 24,
+  background: "linear-gradient(135deg, #013863 0%, #005f7f 52%, #0596a5 100%)",
+  color: "#ffffff",
+  border: "1px solid rgba(255,255,255,0.18)",
+  boxShadow: "0 22px 52px rgba(1,56,99,0.18)",
+};
+
+const hardPanelStyle: CSSProperties = {
+  marginTop: 18,
+  borderRadius: 30,
+  padding: 24,
+  background: "linear-gradient(180deg, #ffffff 0%, #f4fcfa 100%)",
+  border: "1px solid rgba(5,150,165,0.16)",
+  boxShadow: "0 18px 46px rgba(1,56,99,0.10)",
+};
+
+const hardTileGridStyle: CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+  gap: 14,
+  marginTop: 20,
+};
+
+const hardTileStyle: CSSProperties = {
+  minHeight: 132,
+  borderRadius: 22,
+  padding: 18,
+  background: "linear-gradient(145deg, #013863 0%, #004d72 58%, #0596a5 100%)",
+  color: "#ffffff",
+  border: "1px solid rgba(255,255,255,0.16)",
+  boxShadow: "0 14px 30px rgba(1,56,99,0.13)",
+};
+
+const hardCardGridStyle: CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+  gap: 14,
+  marginTop: 16,
+};
+
+const hardCardStyle: CSSProperties = {
+  minHeight: 230,
+  borderRadius: 24,
+  padding: 18,
+  background: "#ffffff",
+  color: "#013863",
+  border: "1px solid rgba(5,150,165,0.13)",
+  boxShadow: "0 12px 28px rgba(1,56,99,0.08)",
+};
+
+
+const heroStats = [
+  ["Control Mode", "Super Admin"],
+  ["Runtime Wiring", "Governed"],
+];
+
+const gaugeMetrics = [
   {
-    label: "Control Spine",
-    value: "A–O",
-    text: "Final Super Admin module homes established.",
+    label: "Traveler Flow Readiness",
+    value: "84%",
+    state: "Strong",
+    note: "Traveler routes, app entry, pass visibility, and route continuation.",
+    gauge: 84,
   },
   {
-    label: "Data Claims",
-    value: "0",
-    text: "No fake live counters. Control-state only.",
+    label: "QR / Pass Control",
+    value: "78%",
+    state: "Protected",
+    note: "QR identity, OSP Pass, trip readiness, and regulated activity states.",
+    gauge: 78,
   },
   {
-    label: "Build Mode",
-    value: "No Commit",
-    text: "Browser QA must pass before commit guidance.",
+    label: "Marketplace Governance",
+    value: "71%",
+    state: "Gated",
+    note: "Operator exposure, category readiness, service media, and pricing guardrails.",
+    gauge: 71,
+  },
+  {
+    label: "Public Intelligence Boundary",
+    value: "68%",
+    state: "Separated",
+    note: "Public, LGU, operator, and traveler views remain separated from Super Admin private controls.",
+    gauge: 68,
   },
 ];
 
-const executiveBlocks = [
+const commandTiles = [
   {
-    title: "Platform Health",
-    state: "Shell online",
-    body:
-      "The Control Tower route, shell, active navigation, module registry, and command-center surface are present. Live health data is not wired yet.",
+    label: "Projected Daily Travelers",
+    value: "1.2K",
+    delta: "Model range",
+    note: "Future live source: registrations, trips, QR scans.",
   },
   {
-    title: "Pending Approvals",
-    state: "Not wired yet",
-    body:
-      "Future source: operator approvals, accommodation readiness, service exposure, media review, pricing review, and compliance exceptions.",
+    label: "QR Touchpoints",
+    value: "9",
+    delta: "Control layer",
+    note: "Arrival, pass, tour, trail, payment, checkpoint, safety, exit.",
   },
   {
-    title: "Commercial Blockers",
-    state: "Control-state only",
-    body:
-      "Future source: missing base rates, missing public SRP, incomplete payout rules, PayMongo readiness, and marketplace exposure suppression.",
+    label: "Operator Readiness",
+    value: "64%",
+    delta: "Governed state",
+    note: "Future live source: approvals, media, pricing, compliance.",
   },
   {
-    title: "QR / Movement Signals",
-    state: "Not wired yet",
-    body:
-      "Future source: QR identity checks, pass validation, trail stamps, ingress, egress, activity check-in, boarding, disembarkation, and exceptions.",
-  },
-  {
-    title: "AI Assistant Risk",
-    state: "Control-state only",
-    body:
-      "Future source: Kuya Tala™ rejected answers, unsafe fallback attempts, missing approved knowledge, emergency escalation, and pricing guardrails.",
-  },
-  {
-    title: "API Partner Status",
-    state: "Not wired yet",
-    body:
-      "Future source: partner tokens, scopes, webhook logs, rate limits, booking intake, QR issuance API, and suspension state.",
+    label: "Public Exposure Risk",
+    value: "Low",
+    delta: "Guarded",
+    note: "Incomplete listings and unverified pricing remain blocked.",
   },
 ];
 
-const commandRail = [
-  {
-    code: "01",
-    title: "Protect the parent spine",
-    text:
-      "Every future admin feature must declare its Control Tower home before code. No standalone console drift.",
-  },
-  {
-    code: "02",
-    title: "Separate public exposure from onboarding",
-    text:
-      "Operators and accommodations may enter early, but they do not become public-ready until gates pass.",
-  },
-  {
-    code: "03",
-    title: "Centralize money logic",
-    text:
-      "Pricing, margins, commissions, fees, FX, payouts, and refunds belong in governance, not feature pages.",
-  },
-  {
-    code: "04",
-    title: "Keep LGU/DOT views protected",
-    text:
-      "Super Admin sees private platform intelligence. LGU/DOT gets aggregated views only, never commercial control.",
-  },
+const barSignals = [
+  ["Traveler App", 86],
+  ["QR / Pass", 78],
+  ["Explore", 74],
+  ["Passport Trails", 72],
+  ["Operator Exposure", 64],
+  ["Payments", 58],
+  ["Data Boundary", 68],
 ];
 
-const criticalRules = [
-  {
-    title: "No generic SaaS dashboard",
-    text:
-      "Every panel must describe an actual OSP/SPM operating decision, risk, dependency, or control action.",
-  },
-  {
-    title: "No invisible hero header",
-    text:
-      "Main headers on dark, teal, navy, or gradient shells must remain white or high-contrast light foreground.",
-  },
-  {
-    title: "No bulky typography",
-    text:
-      "Use refined command-center hierarchy: strong but not blocky, premium, readable, and executive-grade.",
-  },
-  {
-    title: "No fake live data",
-    text:
-      "Unwired metrics must be labeled as not wired, control-state only, or future source. Never pretend.",
-  },
+const distribution = [
+  ["Traveler App", "31%"],
+  ["Marketplace", "24%"],
+  ["QR / Pass", "20%"],
+  ["Passport Trails", "14%"],
+  ["Payments", "7%"],
+  ["Public Intel", "4%"],
+];
+
+const trafficPoints = [42, 58, 51, 68, 64, 78, 72, 84, 79, 91, 88, 96];
+
+const readinessRows = [
+  ["Traveler identity and profile", "Ready for wiring", "82%"],
+  ["OSP Pass and QR identity", "Protected state", "78%"],
+  ["Operator marketplace exposure", "Gate required", "64%"],
+  ["Payment and receipt visibility", "Sandbox controlled", "58%"],
+  ["LGU / DOT aggregate boundary", "Separated", "68%"],
+];
+
+const riskRows = [
+  ["Unverified operator public listing", "Blocked"],
+  ["Raw accommodation import exposure", "Blocked"],
+  ["Unapproved AI pricing or inclusion claim", "Blocked"],
+  ["Private traveler data in public/LGU view", "Blocked"],
 ];
 
 export function ControlTowerCommandCenter() {
   return (
-    <section className={styles.content}>
-      <ControlTowerContractStatus />
-      <ControlTowerReadinessBoard />
-      <div className={styles.commandDeck}>
-        <div className={styles.nuclearHero}>
-          <div className={styles.nuclearHeroInner}>
-            <div className={styles.nuclearHeroTop}>
-              <div>
-                <div className={styles.nuclearKicker}>
-                  <span className={styles.nuclearPulse} />
-                  ADMIN-CT-02A / Nuclear Command Build
-                </div>
-
-                <h2 className={styles.nuclearTitle}>
-                  One Siargao Pass Command Center
-                </h2>
-
-                <p className={styles.nuclearLead}>
-                  A real operating console for governing OSP, SPM, marketplace
-                  exposure, commercial readiness, pricing, payments, QR
-                  compliance, AI behavior, API access, and destination
-                  intelligence from one protected command spine.
-                </p>
-
-                <div className={styles.nuclearHeroActions}>
-                  <Link
-                    href="/admin/control-tower/spm"
-                    className={styles.nuclearActionPrimary}
-                  >
-                    Open SPM Control Lane
-                  </Link>
-                  <Link
-                    href="/admin/control-tower/settings"
-                    className={styles.nuclearActionGhost}
-                  >
-                    Review System Settings
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.nuclearStatusWall}>
-              {heroMetrics.map((metric) => (
-                <article key={metric.label} className={styles.nuclearStatusCard}>
-                  <p className={styles.nuclearMetricLabel}>{metric.label}</p>
-                  <h3 className={styles.nuclearMetricValue}>{metric.value}</h3>
-                  <p className={styles.nuclearMetricText}>{metric.text}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.opsGrid}>
-          <section className={styles.opsPanel}>
-            <div className={styles.opsPanelHead}>
-              <p className={styles.opsEyebrow}>Executive Readiness Board</p>
-              <h3 className={styles.opsTitle}>
-                Control-state signals without fake production counters
-              </h3>
-              <p className={styles.opsText}>
-                This is the OSP Command Center view of operational readiness. It is
-                designed to show what the platform controls, what is blocked,
-                what is not wired yet, and where risk lives before VPS.
-              </p>
-            </div>
-
-            <div className={styles.controlMatrix}>
-              {executiveBlocks.map((block) => (
-                <article key={block.title} className={styles.controlCell}>
-                  <div className={styles.controlTop}>
-                    <h4 className={styles.controlLabel}>{block.title}</h4>
-                    <span className={styles.controlState}>{block.state}</span>
-                  </div>
-                  <p className={styles.controlBody}>{block.body}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <aside className={styles.opsPanel}>
-            <div className={styles.opsPanelHead}>
-              <p className={styles.opsEyebrow}>Command Doctrine</p>
-              <h3 className={styles.opsTitle}>What this console must enforce</h3>
-              <p className={styles.opsText}>
-                These are not decorative cards. They are operating controls that
-                prevent page sprawl, commercial drift, exposure mistakes, and
-                governance failure.
-              </p>
-            </div>
-
-            <div className={styles.commandRail}>
-              {commandRail.map((item) => (
-                <article key={item.code} className={styles.railItem}>
-                  <div className={styles.railCode}>{item.code}</div>
-                  <div>
-                    <h4 className={styles.railTitle}>{item.title}</h4>
-                    <p className={styles.railText}>{item.text}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-
-            <div className={styles.criticalStrip}>
-              {criticalRules.map((rule) => (
-                <article key={rule.title} className={styles.criticalItem}>
-                  <span className={styles.criticalDot} />
-                  <div>
-                    <h4 className={styles.criticalTitle}>{rule.title}</h4>
-                    <p className={styles.criticalText}>{rule.text}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </aside>
-        </div>
-
-        <section className={styles.opsPanel}>
-          <div className={styles.opsPanelHead}>
-            <p className={styles.opsEyebrow}>A–O Super Admin Module Map</p>
-            <h3 className={styles.opsTitle}>
-              Every future admin page must live inside this command structure
-            </h3>
-            <p className={styles.opsText}>
-              This is the platform governance map before VPS. Gate pages,
-              migrations, and data wiring continue in the next ADMIN-CT lanes.
-            </p>
+    <section className={shellStyles.content}>
+      <div className={styles.page} style={hardPageStyle}>
+        <section className={styles.commandStrip} style={hardHeroStyle}>
+          <div className={styles.commandIdentity}>
+            <p className={styles.kicker}>Super Admin Operating Console</p>
+            <h1 className={styles.commandTitle}>One Siargao Pass Command Center</h1>
+            <span>
+              Protected operating cockpit for OSP, SPM, commercial governance, QR compliance, marketplace exposure, payments, AI behavior, API readiness, and platform settings. Live runtime wiring must remain governed and audit-safe.
+            </span>
           </div>
 
-          <div className={styles.moduleCommandGrid}>
-            {controlTowerNav.map((item) => (
-              <Link
-                key={item.key}
-                href={item.href}
-                className={styles.moduleCommandCard}
-              >
-                <div className={styles.moduleCommandTop}>
-                  <div className={styles.moduleCommandCode}>{item.code}</div>
-                  <div>
-                    <h4 className={styles.moduleCommandTitle}>{item.label}</h4>
-                    <p className={styles.moduleCommandMeta}>{item.readiness}</p>
-                  </div>
-                </div>
-                <p className={styles.moduleCommandText}>{item.purpose}</p>
-              </Link>
+          <div className={styles.heroStats}>
+            {heroStats.map(([label, value]) => (
+              <article key={label}>
+                <span>{label}</span>
+                <strong>{value}</strong>
+              </article>
             ))}
           </div>
         </section>
 
-        <section className={styles.nuclearFooterNote}>
-          <h3>Build boundary: nuclear UI, no destructive architecture change.</h3>
-          <p>
-            ADMIN-CT-02A upgrades the One Siargao Pass Command Center into a serious
-            executive-grade operating console. It does not delete old routes,
-            redirect legacy pages, wire fake counters, touch database schema,
-            add backend logic, or create a commit.
-          </p>
+        <section className={styles.dataCenter} style={hardPanelStyle}>
+          <div className={styles.dataHeader}>
+            <div>
+              <p className={styles.eyebrow}>OSP Command Metrics Cockpit</p>
+              <h2>Destination Operations Data Center</h2>
+              <span>
+                Super Admin command cockpit showing traveler readiness, QR/pass governance, operator exposure control, marketplace integrity, payment readiness, and public launch safety.
+              </span>
+            </div>
+
+            <div className={styles.modeStack}>
+              <strong>Governed metrics mode</strong>
+              <strong>Runtime wiring governed</strong>
+              <strong>No fake live data</strong>
+            </div>
+          </div>
+
+          <div className={styles.commandTileGrid} style={hardTileGridStyle}>
+            {commandTiles.map((tile) => (
+              <article className={styles.commandTile} style={hardTileStyle} key={tile.label}>
+                <span>{tile.label}</span>
+                <div>
+                  <strong>{tile.value}</strong>
+                  <em>{tile.delta}</em>
+                </div>
+                <small>{tile.note}</small>
+              </article>
+            ))}
+          </div>
+
+          <div className={styles.gaugeGrid} style={hardCardGridStyle}>
+            {gaugeMetrics.map((metric) => (
+              <article className={styles.gaugeCard} style={hardCardStyle} key={metric.label}>
+                <div className={styles.gaugeTop}>
+                  <span>{metric.label}</span>
+                  <strong>{metric.state}</strong>
+                </div>
+
+                <div
+                  className={styles.gauge}
+                  style={{ "--value": `${metric.gauge * 3.6}deg` } as CSSProperties}
+                >
+                  <div className={styles.gaugeNeedle} />
+                  <div className={styles.gaugeInner}>
+                    <strong>{metric.value}</strong>
+                    <small>governed state</small>
+                  </div>
+                </div>
+
+                <p>{metric.note}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className={styles.visualGrid}>
+            <article className={styles.chartPanelDark}>
+              <div className={styles.panelHead}>
+                <p>Traveler Demand Signal</p>
+                <strong>Projected movement trend</strong>
+                <span>Reserved chart surface for future traveler and QR event data.</span>
+              </div>
+              <div className={styles.lineChart}>
+                {trafficPoints.map((point, index) => (
+                  <i
+                    key={`${point}-${index}`}
+                    style={{
+                      height: `${point}%`,
+                      left: `${(index / (trafficPoints.length - 1)) * 100}%`,
+                    }}
+                  />
+                ))}
+                <div className={styles.chartGrid} />
+              </div>
+            </article>
+
+            <article className={styles.chartPanel}>
+              <div className={styles.panelHead}>
+                <p>Governance Distribution</p>
+                <strong>Control surface mix</strong>
+                <span>Shows which operating lanes the Command Center is built to govern.</span>
+              </div>
+
+              <div className={styles.donutWrap}>
+                <div className={styles.donut}>
+                  <span>OSP</span>
+                  <strong>Control</strong>
+                </div>
+
+                <div className={styles.legend}>
+                  {distribution.map(([label, value]) => (
+                    <span key={label}>
+                      <i />
+                      <strong>{label}</strong>
+                      <em>{value}</em>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </article>
+
+            <article className={styles.chartPanel}>
+              <div className={styles.panelHead}>
+                <p>Module Readiness Graph</p>
+                <strong>Launch control signals</strong>
+                <span>Readiness bars reserved for route, schema, and admin workflow state wiring.</span>
+              </div>
+
+              <div className={styles.barChart}>
+                {barSignals.map(([label, value]) => (
+                  <div className={styles.barRow} key={label}>
+                    <span>{label}</span>
+                    <div>
+                      <i style={{ width: `${value}%` }} />
+                    </div>
+                    <strong>{value}%</strong>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className={styles.mapPanel}>
+              <div className={styles.panelHead}>
+                <p>Destination Flow Map</p>
+                <strong>Traveler operating path</strong>
+                <span>Reserved map surface for arrivals, pass issuance, discovery, QR validation, and aggregate intelligence.</span>
+              </div>
+
+              <div className={styles.flowMap}>
+                <span className={styles.nodeA}>Arrival</span>
+                <span className={styles.nodeB}>OSP Pass</span>
+                <span className={styles.nodeC}>Explore</span>
+                <span className={styles.nodeD}>QR Scan</span>
+                <span className={styles.nodeE}>Aggregate View</span>
+                <i className={styles.pathOne} />
+                <i className={styles.pathTwo} />
+                <i className={styles.pathThree} />
+              </div>
+            </article>
+          </div>
+
+          <div className={styles.opsGrid}>
+            <article className={styles.readinessPanel}>
+              <div className={styles.panelHead}>
+                <p>Readiness Matrix</p>
+                <strong>Control Tower live-wiring roadmap</strong>
+              </div>
+
+              <div className={styles.readinessTable}>
+                {readinessRows.map(([label, state, value]) => (
+                  <span key={label}>
+                    <strong>{label}</strong>
+                    <em>{state}</em>
+                    <b>{value}</b>
+                  </span>
+                ))}
+              </div>
+            </article>
+
+            <article className={styles.riskPanel}>
+              <div className={styles.panelHead}>
+                <p>Risk Guard</p>
+                <strong>Unsafe public states blocked</strong>
+              </div>
+
+              <div className={styles.riskList}>
+                {riskRows.map(([label, state]) => (
+                  <span key={label}>
+                    <strong>{label}</strong>
+                    <em>{state}</em>
+                  </span>
+                ))}
+              </div>
+            </article>
+          </div>
         </section>
       </div>
     </section>

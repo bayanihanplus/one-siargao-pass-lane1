@@ -1,0 +1,393 @@
+/* ================================================================
+   ADMIN-CT-34 — Presentation CSS Source-of-Truth Reconstruction
+   HARD RULE:
+   - This file is the clean visual source of truth for LGU presentation-grade
+     Control Center module pages.
+   - Do not append future production page styling to controlTower.module.css.
+   - No Tailwind dependency. No polluted class reuse. No generic SaaS layout.
+   ================================================================ */
+
+.page {
+  display: grid;
+  gap: 28px;
+  width: 100%;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(380px, 0.88fr);
+  gap: 28px;
+  min-height: 560px;
+  padding: 40px;
+  border-radius: 44px;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(243, 174, 38, 0.42), transparent 30%),
+    radial-gradient(circle at 0% 0%, rgba(5, 150, 165, 0.42), transparent 36%),
+    linear-gradient(135deg, #013863 0%, #01466d 42%, #0596a5 100%);
+  box-shadow:
+    0 38px 96px rgba(1, 56, 99, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border-radius: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -180px;
+  bottom: -220px;
+  width: 560px;
+  height: 560px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(255,255,255,0.13), rgba(255,255,255,0.02) 56%, transparent 70%);
+  pointer-events: none;
+}
+
+.heroCopy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.kicker {
+  margin: 0 0 16px;
+  color: #f3ae26;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 1040px;
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(46px, 6.6vw, 92px);
+  font-weight: 620;
+  letter-spacing: -0.078em;
+  line-height: 0.9;
+}
+
+.lead {
+  max-width: 860px;
+  margin: 20px 0 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 16px;
+  line-height: 1.72;
+}
+
+.proof {
+  max-width: 860px;
+  margin-top: 24px;
+  padding: 18px 20px;
+  border-radius: 24px;
+  border: 1px solid rgba(243, 174, 38, 0.42);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.07));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.proof strong {
+  display: block;
+  color: #f3ae26;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.proof span {
+  display: block;
+  margin-top: 7px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.primary {
+  background: #f3ae26;
+  color: #013863;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.24);
+}
+
+.secondary {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.11);
+  color: #ffffff;
+}
+
+.scoreboard {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 14px;
+  align-content: center;
+}
+
+.scoreCard {
+  min-height: 124px;
+  padding: 20px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.17);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(243, 174, 38, 0.28), transparent 38%),
+    rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.scoreCard span {
+  display: block;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.scoreCard strong {
+  display: block;
+  margin-top: 8px;
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 760;
+  letter-spacing: -0.045em;
+}
+
+.scoreCard small {
+  display: block;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.executiveBrief,
+.controlBoard,
+.impactGrid {
+  padding: 28px;
+  border-radius: 34px;
+  border: 1px solid rgba(1, 56, 99, 0.12);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(243, 174, 38, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.99), rgba(234,251,250,0.93));
+  box-shadow:
+    0 24px 62px rgba(1, 56, 99, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #0596a5;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: #013863;
+  font-size: clamp(26px, 3vw, 42px);
+  font-weight: 680;
+  letter-spacing: -0.05em;
+  line-height: 1.03;
+}
+
+.sectionText {
+  display: block;
+  max-width: 980px;
+  margin-top: 12px;
+  color: #50668b;
+  font-size: 14px;
+  line-height: 1.66;
+}
+
+.controlGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.controlCard,
+.impactCard {
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: 26px;
+  border: 1px solid rgba(1, 56, 99, 0.1);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(243, 174, 38, 0.1), transparent 35%),
+    #ffffff;
+  box-shadow: 0 14px 34px rgba(1, 56, 99, 0.06);
+}
+
+.controlTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.controlTop span {
+  color: #0596a5;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.controlTop strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 62px;
+  height: 27px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #f3ae26;
+  color: #013863;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.controlCard h4,
+.impactCard h3 {
+  margin: 13px 0 0;
+  color: #013863;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.controlCard p,
+.impactCard span {
+  display: block;
+  margin-top: 8px;
+  color: #50668b;
+  font-size: 13px;
+  line-height: 1.52;
+}
+
+.detailGrid {
+  display: grid;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.detailGrid div {
+  padding: 12px;
+  border-radius: 17px;
+  border: 1px solid rgba(1, 56, 99, 0.08);
+  background: rgba(234, 251, 250, 0.62);
+}
+
+.detailGrid span {
+  display: block;
+  color: #0596a5;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.detailGrid small {
+  display: block;
+  margin-top: 6px;
+  color: #50668b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.buttonRow button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #013863;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.buttonRow button:nth-child(2) {
+  background: #f3ae26;
+  color: #013863;
+}
+
+.impactGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 1120px) {
+  .hero,
+  .controlGrid,
+  .impactGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroCopy {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 680px) {
+  .hero,
+  .executiveBrief,
+  .controlBoard,
+  .impactGrid {
+    padding: 22px;
+  }
+
+  .title {
+    font-size: 40px;
+  }
+}

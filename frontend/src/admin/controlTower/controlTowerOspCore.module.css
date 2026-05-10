@@ -1,0 +1,501 @@
+.page {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 18px 22px 42px;
+}
+
+.hero {
+  min-height: 168px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 18px;
+  align-items: stretch;
+  border-radius: 26px;
+  padding: 22px;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 92% 14%, rgba(243, 174, 38, 0.14), transparent 26%),
+    radial-gradient(circle at 18% 100%, rgba(5, 150, 165, 0.22), transparent 34%),
+    linear-gradient(135deg, #013863 0%, #00466f 54%, #0596a5 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 18px 46px rgba(1, 56, 99, 0.20);
+}
+
+.heroCopy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.kicker,
+.eyebrow {
+  margin: 0;
+  color: #f3ae26;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin: 10px 0 0;
+  max-width: 850px;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-size: clamp(32px, 3vw, 52px);
+  line-height: 0.96;
+  letter-spacing: -0.06em;
+  font-weight: 800;
+  text-shadow: 0 2px 10px rgba(0, 24, 46, 0.32);
+}
+
+.heroCopy span {
+  display: block;
+  max-width: 850px;
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 14px;
+  line-height: 1.46;
+  font-weight: 540;
+}
+
+.heroConsole {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.heroConsole article {
+  min-height: 74px;
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.heroConsole span {
+  display: block;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 9.5px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.heroConsole strong {
+  display: block;
+  margin-top: 9px;
+  color: #ffffff;
+  font-size: 16px;
+  line-height: 1.05;
+  font-weight: 820;
+}
+
+.metricsDeck {
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 30px;
+  padding: 22px;
+  background:
+    radial-gradient(circle at 88% 0%, rgba(243, 174, 38, 0.15), transparent 24%),
+    radial-gradient(circle at 8% 100%, rgba(5, 150, 165, 0.15), transparent 34%),
+    linear-gradient(180deg, #ffffff 0%, #f4fcfa 100%);
+  border: 1px solid rgba(5, 150, 165, 0.15);
+  box-shadow: 0 18px 48px rgba(1, 56, 99, 0.10);
+}
+
+.deckHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.deckHeader h2 {
+  margin: 8px 0 0;
+  color: #013863;
+  font-size: clamp(30px, 3vw, 48px);
+  line-height: 0.96;
+  letter-spacing: -0.06em;
+  font-weight: 800;
+}
+
+.deckHeader span {
+  display: block;
+  max-width: 860px;
+  margin-top: 10px;
+  color: #50668b;
+  font-size: 13.5px;
+  line-height: 1.48;
+  font-weight: 540;
+}
+
+.modePills {
+  flex: 0 0 260px;
+  display: grid;
+  gap: 8px;
+}
+
+.modePills strong {
+  min-height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #013863;
+  background: rgba(243, 174, 38, 0.16);
+  border: 1px solid rgba(243, 174, 38, 0.30);
+  font-size: 10.5px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gaugeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.gaugeCard {
+  min-height: 250px;
+  border-radius: 22px;
+  padding: 16px;
+  background:
+    linear-gradient(145deg, #013863 0%, #00466f 58%, #0596a5 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 16px 34px rgba(1, 56, 99, 0.13);
+}
+
+.gaugeTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.gaugeTop span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 9.5px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.gaugeTop strong {
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: #013863;
+  background: #f3ae26;
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.gauge {
+  --value: 250deg;
+  width: 136px;
+  height: 136px;
+  margin: 22px auto 14px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: conic-gradient(#f3ae26 var(--value), rgba(255, 255, 255, 0.14) 0deg);
+  box-shadow: 0 18px 28px rgba(0, 24, 46, 0.18);
+}
+
+.gaugeInner {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  background: linear-gradient(180deg, #013863, #00466f);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.gaugeInner strong {
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 830;
+}
+
+.gaugeInner small {
+  margin-top: 7px;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.gaugeCard p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 12px;
+  line-height: 1.38;
+  font-weight: 520;
+  text-align: center;
+}
+
+.spineGrid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.flowPanel,
+.spinePanel,
+.doctrinePanel,
+.riskPanel {
+  border-radius: 24px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid rgba(5, 150, 165, 0.13);
+  box-shadow: 0 12px 28px rgba(1, 56, 99, 0.07);
+}
+
+.panelHead p {
+  margin: 0;
+  color: #0596a5;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.panelHead strong {
+  display: block;
+  margin-top: 8px;
+  color: #013863;
+  font-size: 21px;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+
+.panelHead span {
+  display: block;
+  margin-top: 8px;
+  color: #50668b;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 540;
+}
+
+.flowLine {
+  position: relative;
+  min-height: 290px;
+  margin-top: 18px;
+  overflow: hidden;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(5, 150, 165, 0.20), transparent 18%),
+    radial-gradient(circle at 78% 68%, rgba(243, 174, 38, 0.20), transparent 20%),
+    linear-gradient(135deg, rgba(234, 251, 250, 0.98), #ffffff);
+  border: 1px solid rgba(5, 150, 165, 0.12);
+}
+
+.flowLine span {
+  position: absolute;
+  z-index: 2;
+  min-width: 92px;
+  border-radius: 999px;
+  padding: 9px 11px;
+  color: #013863;
+  background: #ffffff;
+  border: 1px solid rgba(5, 150, 165, 0.18);
+  box-shadow: 0 10px 22px rgba(1, 56, 99, 0.10);
+  font-size: 10px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.node0 { left: 6%; top: 18%; }
+.node1 { left: 32%; top: 16%; }
+.node2 { right: 18%; top: 18%; }
+.node3 { left: 16%; top: 52%; }
+.node4 { left: 44%; top: 48%; }
+.node5 { right: 10%; top: 52%; }
+.node6 { left: 38%; bottom: 12%; }
+
+.flowPathOne,
+.flowPathTwo,
+.flowPathThree {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(5, 150, 165, 0.10), #0596a5, rgba(243, 174, 38, 0.7));
+  transform-origin: left center;
+}
+
+.flowPathOne { width: 68%; left: 13%; top: 30%; transform: rotate(3deg); }
+.flowPathTwo { width: 66%; left: 18%; top: 58%; transform: rotate(-3deg); }
+.flowPathThree { width: 42%; left: 36%; bottom: 30%; transform: rotate(12deg); }
+
+.spineRows {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.spineRows span {
+  display: grid;
+  grid-template-columns: 135px 1fr 130px;
+  gap: 10px;
+  align-items: center;
+  border-radius: 15px;
+  padding: 11px 12px;
+  background: rgba(5, 150, 165, 0.06);
+  border: 1px solid rgba(5, 150, 165, 0.12);
+}
+
+.spineRows strong {
+  color: #013863;
+  font-size: 12px;
+  font-weight: 820;
+}
+
+.spineRows em {
+  color: #50668b;
+  font-size: 11px;
+  line-height: 1.35;
+  font-style: normal;
+  font-weight: 620;
+}
+
+.spineRows b {
+  color: #0596a5;
+  font-size: 11px;
+  font-weight: 900;
+  text-align: right;
+}
+
+.controlGrid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.doctrineGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.doctrineGrid article {
+  border-radius: 18px;
+  padding: 15px;
+  background: linear-gradient(180deg, #ffffff, #f8fdff);
+  border: 1px solid rgba(5, 150, 165, 0.12);
+}
+
+.doctrineGrid span {
+  color: #f3ae26;
+  font-size: 9.5px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.doctrineGrid strong {
+  display: block;
+  margin-top: 9px;
+  color: #013863;
+  font-size: 16px;
+  line-height: 1.08;
+  font-weight: 800;
+}
+
+.doctrineGrid p {
+  margin: 8px 0 0;
+  color: #50668b;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 540;
+}
+
+.riskList {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.riskList span {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  border-radius: 14px;
+  padding: 11px 12px;
+  background: rgba(243, 174, 38, 0.08);
+  border: 1px solid rgba(243, 174, 38, 0.18);
+}
+
+.riskList strong {
+  color: #013863;
+  font-size: 12px;
+  line-height: 1.3;
+  font-weight: 760;
+}
+
+.riskList em {
+  flex: 0 0 auto;
+  color: #8a650f;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1280px) {
+  .hero,
+  .deckHeader,
+  .spineGrid,
+  .controlGrid {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .modePills {
+    flex: auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .gaugeGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .page {
+    padding: 14px 12px 32px;
+  }
+
+  .hero,
+  .heroConsole,
+  .modePills,
+  .gaugeGrid,
+  .doctrineGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .metricsDeck {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .spineRows span {
+    grid-template-columns: 1fr;
+  }
+}
