@@ -326,7 +326,7 @@ function AppHeader() {
               color: OSP.slate,
             }}
           >
-            Official trails, island map pins, and custom route planning connected to your OSP Pass.
+            Official trail routes, verified stops, and saved Passport progress linked to your OSP Pass.
           </p>
         </div>
 
@@ -372,6 +372,49 @@ function AppHeader() {
           </span>
         ))}
       </div>
+
+      <div style={{ marginTop: 13, padding: "0 2px" }}>
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 950,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: OSP.tealDark,
+            WebkitTextFillColor: OSP.tealDark,
+          }}
+        >
+          Passport Trail Preview
+        </div>
+
+        <p
+          style={{
+            margin: "5px 0 0",
+            maxWidth: 330,
+            fontSize: 11.5,
+            lineHeight: 1.35,
+            fontWeight: 760,
+            color: OSP.slate,
+          }}
+        >
+          Route path, verified stops, and stamp points — previewed before you choose.
+        </p>
+      </div>
+
+      <div
+        aria-label="Passport Trails visual route preview image"
+        style={{
+          marginTop: 9,
+          height: 112,
+          borderRadius: 23,
+          overflow: "hidden",
+          border: "1px solid rgba(255,255,255,0.94)",
+          backgroundImage: "url('/osp/spm-passport-trails-hero-image-2.png')",
+          backgroundSize: "134% auto",
+          backgroundPosition: "55% center",
+          boxShadow: "0 12px 26px rgba(1,56,99,0.11)",
+        }}
+      />
     </header>
   );
 }
