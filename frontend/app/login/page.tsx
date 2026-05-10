@@ -71,8 +71,8 @@ function isTravelerShellNext(next: string) {
 function getDefaultRoleLanding(user: any) {
   const roles = getUserRoleSet(user);
 
-  if (hasSuperAdminRole(roles)) return "/admin/activities";
-  if (hasAdminRole(roles)) return "/admin/activities";
+  if (hasSuperAdminRole(roles)) return "/admin/control-tower/command-center";
+  if (hasAdminRole(roles)) return "/admin/commercial";
   if (hasLguRole(roles)) return "/lgu";
   if (hasOperatorRole(roles)) return "/operator/commercial";
 
