@@ -3,7 +3,6 @@ import { getPreferredTravelerTrip } from "../../../src/lib/travelerTripSelection
 import { redirect } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
-import PassportMapShortcut from "../../../src/components/traveler/PassportMapShortcut";
 
 function Section(props: { title: string; children: any }) {
   return (
@@ -865,6 +864,285 @@ function TravelerStatusRowCard(props: {
   );
 }
 
+function TravelerHomeQuickAccessGrid() {
+  const cards = [
+    {
+      title: "Passport Map",
+      subtitle: "Trails, stops, and stamp journey.",
+      href: "/traveler/passport-map",
+      status: "Open",
+      button: "Open Map",
+      icon: "🗺️",
+      active: true,
+      accent: "#013863",
+      iconBg: "linear-gradient(135deg, rgba(1,56,99,0.12), rgba(5,150,165,0.12))",
+      buttonBg: "linear-gradient(135deg, #EAFBFA, #FFFFFF)",
+      buttonColor: "#013863",
+      shell: "linear-gradient(145deg, #ffffff 0%, #eefbff 52%, #eafbfa 100%)",
+      glow: "radial-gradient(circle at 85% 8%, rgba(5,150,165,0.18), transparent 34%)",
+    },
+    {
+      title: "Cloud 9 Access",
+      subtitle: "QR-linked LGU site access flow.",
+      href: "/traveler/site-access/cloud-9",
+      status: "Available",
+      button: "Open Access",
+      icon: "🏄",
+      active: true,
+      accent: "#047f91",
+      iconBg: "linear-gradient(135deg, rgba(5,150,165,0.16), rgba(243,174,38,0.14))",
+      buttonBg: "linear-gradient(135deg, #EAFBFA, #FFF8E8)",
+      buttonColor: "#047f91",
+      shell: "linear-gradient(145deg, #ffffff 0%, #f4fcfa 50%, #fff8e8 100%)",
+      glow: "radial-gradient(circle at 85% 8%, rgba(243,174,38,0.22), transparent 34%)",
+    },
+    {
+      title: "Malinao Skate Park",
+      subtitle: "LGU access lane pending.",
+      href: "",
+      status: "Soon",
+      button: "Pending",
+      icon: "🛹",
+      active: false,
+      accent: "#64748b",
+      iconBg: "linear-gradient(135deg, #f8fafc, #eef2f7)",
+      buttonBg: "#f8fafc",
+      buttonColor: "#64748b",
+      shell: "linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)",
+      glow: "radial-gradient(circle at 85% 8%, rgba(100,116,139,0.10), transparent 34%)",
+    },
+    {
+      title: "AFAM Bridge",
+      subtitle: "LGU access lane pending.",
+      href: "",
+      status: "Soon",
+      button: "Pending",
+      icon: "🌉",
+      active: false,
+      accent: "#64748b",
+      iconBg: "linear-gradient(135deg, #f8fafc, #eef2f7)",
+      buttonBg: "#f8fafc",
+      buttonColor: "#64748b",
+      shell: "linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)",
+      glow: "radial-gradient(circle at 85% 8%, rgba(100,116,139,0.10), transparent 34%)",
+    },
+  ];
+
+  return (
+    <section
+      data-osp-traveler-home-quick-access="premium-force"
+      style={{
+        gridColumn: "1 / -1",
+        width: "100%",
+        minWidth: 0,
+        marginTop: 8,
+        borderRadius: 24,
+        padding: 12,
+        background:
+          "linear-gradient(145deg, rgba(234,251,250,0.92) 0%, rgba(255,255,255,0.98) 54%, rgba(255,248,232,0.88) 100%)",
+        border: "1px solid rgba(5,150,165,0.16)",
+        boxShadow: "0 16px 34px rgba(1,56,99,0.075)",
+        display: "grid",
+        gap: 11,
+        boxSizing: "border-box",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+        <div style={{ minWidth: 0 }}>
+          <div
+            style={{
+              color: "#047f91",
+              fontSize: 9.4,
+              fontWeight: 950,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+            }}
+          >
+            Quick Access
+          </div>
+
+          <h2
+            style={{
+              margin: "4px 0 0",
+              color: "#013863",
+              fontSize: 16.2,
+              lineHeight: 1.03,
+              letterSpacing: "-0.045em",
+              fontWeight: 950,
+            }}
+          >
+            Map & QR access
+          </h2>
+        </div>
+
+        <span
+          style={{
+            borderRadius: 999,
+            padding: "6px 9px",
+            background: "#ffffff",
+            border: "1px solid rgba(5,150,165,0.16)",
+            color: "#047f91",
+            fontSize: 9.3,
+            fontWeight: 950,
+            whiteSpace: "nowrap",
+            flex: "0 0 auto",
+            boxShadow: "0 6px 16px rgba(1,56,99,0.045)",
+          }}
+        >
+          OSP QR linked
+        </span>
+      </div>
+
+      <div
+        aria-label="Traveler quick access cards"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+          gap: 10,
+        }}
+      >
+        {cards.map((card) => {
+          const content = (
+            <>
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: card.glow,
+                  pointerEvents: "none",
+                }}
+              />
+
+              <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 6 }}>
+                <span
+                  aria-hidden="true"
+                  style={{
+                    width: 38,
+                    height: 38,
+                    borderRadius: 15,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: card.iconBg,
+                    border: card.active ? "1px solid rgba(5,150,165,0.20)" : "1px solid rgba(100,116,139,0.12)",
+                    color: card.accent,
+                    fontSize: 18,
+                    boxShadow: card.active ? "inset 0 1px 0 rgba(255,255,255,0.90), 0 8px 18px rgba(1,56,99,0.06)" : "inset 0 1px 0 rgba(255,255,255,0.86)",
+                    flex: "0 0 auto",
+                  }}
+                >
+                  {card.icon}
+                </span>
+
+                <span
+                  style={{
+                    borderRadius: 999,
+                    padding: "4px 7px",
+                    background: card.active ? "#ffffff" : "#f8fafc",
+                    color: card.active ? "#047f91" : "#64748b",
+                    fontSize: 8.4,
+                    fontWeight: 950,
+                    whiteSpace: "nowrap",
+                    border: card.active ? "1px solid rgba(5,150,165,0.12)" : "1px solid rgba(100,116,139,0.10)",
+                    boxShadow: card.active ? "0 5px 12px rgba(1,56,99,0.04)" : "none",
+                  }}
+                >
+                  {card.status}
+                </span>
+              </div>
+
+              <div style={{ position: "relative", zIndex: 1 }}>
+                <strong
+                  style={{
+                    display: "block",
+                    color: "#013863",
+                    fontSize: 12.4,
+                    lineHeight: 1.05,
+                    fontWeight: 950,
+                    letterSpacing: "-0.035em",
+                  }}
+                >
+                  {card.title}
+                </strong>
+
+                <p
+                  style={{
+                    margin: "5px 0 0",
+                    color: "#50668B",
+                    fontSize: 9.4,
+                    lineHeight: 1.23,
+                    fontWeight: 750,
+                  }}
+                >
+                  {card.subtitle}
+                </p>
+              </div>
+
+              <span
+                style={{
+                  position: "relative",
+                  zIndex: 1,
+                  width: "100%",
+                  minHeight: 30,
+                  borderRadius: 999,
+                  padding: "0 9px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: card.buttonBg,
+                  border: card.active ? "1px solid rgba(5,150,165,0.18)" : "1px solid rgba(100,116,139,0.12)",
+                  color: card.buttonColor,
+                  fontSize: 9.4,
+                  fontWeight: 950,
+                  letterSpacing: "0.02em",
+                  boxSizing: "border-box",
+                  boxShadow: card.active ? "inset 0 1px 0 rgba(255,255,255,0.86)" : "none",
+                }}
+              >
+                {card.button}{card.active ? " →" : ""}
+              </span>
+            </>
+          );
+
+          const style = {
+            minHeight: 132,
+            borderRadius: 22,
+            padding: 11,
+            background: card.shell,
+            border: card.active ? "1px solid rgba(5,150,165,0.18)" : "1px solid rgba(100,116,139,0.12)",
+            boxShadow: card.active ? "0 12px 28px rgba(1,56,99,0.075)" : "0 8px 18px rgba(15,23,42,0.035)",
+            display: "grid",
+            alignContent: "space-between",
+            gap: 9,
+            color: "inherit",
+            textDecoration: "none",
+            opacity: card.active ? 1 : 0.76,
+            boxSizing: "border-box",
+            position: "relative",
+            overflow: "hidden",
+          } as const;
+
+          if (card.active) {
+            return (
+              <a key={card.title} href={card.href} style={style} aria-label={`Open ${card.title}`}>
+                {content}
+              </a>
+            );
+          }
+
+          return (
+            <div key={card.title} style={style} aria-label={`${card.title} coming soon`}>
+              {content}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+
 function TravelerJourneyCard(props: {
   title: string;
   subtitle: string;
@@ -1675,6 +1953,8 @@ function TravelerCompactStatusRow(props: {
           </svg>
         }
       />
+    
+      <TravelerHomeQuickAccessGrid />
     </section>
   );
 }
@@ -1987,7 +2267,7 @@ function TravelerShell(props: {
       />
       <TravelerPassCard user={props.user} latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
       <TravelerCompactStatusRow latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
-            <PassportMapShortcut compact title="Open Siargao Passport Map" body="Jump to your map, Passport Trails, verified stops, and next island movement path." />
+
       <TravelerReassuranceAndJourney latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
       <div aria-hidden="true" style={{ height: 118 }} />
       <UniversalTravelerBottomTabBar activeTab="home" fixed />
