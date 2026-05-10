@@ -135,6 +135,20 @@ function normalizeTravelerReturnPath(value: string | null | undefined): string {
 
 type EntryMode = "traveler" | "returning";
 
+async function safeReadLoginJson(response: Response) {
+  try {
+    const raw = await response.text();
+
+    if (!raw || !raw.trim()) {
+      return null;
+    }
+
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
 async function loginAction(formData: FormData) {
   "use server";
 
@@ -159,10 +173,7 @@ async function loginAction(formData: FormData) {
     }),
   });
 
-  let json: any = null;
-  try {
-    json = await res.json();
-  } catch {}
+  const json: any = await safeReadLoginJson(res);
 
   if (!res.ok || !json?.accessToken) {
     throw new Error(json?.message || json?.error || `Login failed: HTTP ${res.status}`);
@@ -973,7 +984,7 @@ export default async function LoginPage({
                 key={label}
                 style={{
                   borderRadius: 16,
-                  background: "linear-gradient(180deg, rgba(255, rgba(248,253,255,0.94))",
+                  background: "#FFFFFF",
                   border: "1px solid rgba(5,150,165,0.12)",
                   padding: "9px 7px",
                   textAlign: "center",
@@ -990,7 +1001,7 @@ export default async function LoginPage({
           style={{
             marginTop: 13,
             borderRadius: 24,
-            background: "linear-gradient(180deg, rgba(255,255,255,0.99), rgba(248,253,255,0.95))",
+            background: "#FFFFFF",
             border: "1px solid rgba(5,150,165,0.14)",
             boxShadow: "0 16px 36px rgba(1,56,99,0.08)",
             padding: 14,
@@ -1150,7 +1161,7 @@ export default async function LoginPage({
           style={{
             marginTop: 13,
             borderRadius: 24,
-            background: "linear-gradient(180deg, rgba(248,253,255,0.98), rgba(248,253,255,0.88))",
+            background: "#FFFFFF",
             color: "#013863",
             border: "1px solid rgba(5,150,165,0.16)",
             boxShadow: "0 16px 36px rgba(1,56,99,0.08)",

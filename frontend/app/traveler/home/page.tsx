@@ -32,6 +32,20 @@ function LinkList(props: { items: Array<{ href: string; label: string }> }) {
   );
 }
 
+async function safeReadJsonResponse(response: Response) {
+  try {
+    const raw = await response.text();
+
+    if (!raw || !raw.trim()) {
+      return null;
+    }
+
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
 function isOperatorRole(role: string | null | undefined) {
   return ["OPERATOR_OWNER", "OPERATOR_MANAGER", "OPERATOR_STAFF"].includes(role || "");
 }
@@ -55,7 +69,7 @@ async function getTravelerLatestTrip() {
       return { trip: null, error: `Failed to load latest traveler trip: HTTP ${listRes.status}` };
     }
 
-    const rows = await listRes.json();
+    const rows = await safeReadJsonResponse(listRes);
     const trips = Array.isArray(rows) ? rows : [];
     const preferredTrip = getPreferredTravelerTrip(trips);
 
@@ -78,8 +92,8 @@ async function getTravelerLatestTrip() {
       };
     }
 
-    const trip = await detailRes.json();
-    return { trip, error: null };
+    const trip = await safeReadJsonResponse(detailRes);
+    return { trip: trip || null, error: null };
   } catch (error: any) {
     return {
       trip: null,
@@ -108,7 +122,7 @@ async function getTravelerHomeSummary() {
       return { summary: null, trip: null, error: `Failed to load traveler home summary: HTTP ${res.status}` };
     }
 
-    const summary = await res.json();
+    const summary = await safeReadJsonResponse(res);
     const trip = summary?.latestTrip
       ? {
           ...summary.latestTrip,
@@ -152,7 +166,7 @@ async function getTravelerDictionary(languageCode: string): Promise<Record<strin
 
     if (!res.ok) return fallback;
 
-    const payload = await res.json();
+    const payload = await safeReadJsonResponse(res);
     const dictionary = payload?.dictionary;
 
     if (!dictionary || typeof dictionary !== "object") return fallback;
