@@ -284,7 +284,7 @@ export default function Cloud9AccessBookingPage() {
                 gap: 13,
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
                 <div>
                   <strong
                     style={{
@@ -566,7 +566,7 @@ export default function Cloud9AccessBookingPage() {
               style={{
                 marginTop: 12,
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "center",
                 gap: 12,
                 alignItems: "flex-end",
               }}
@@ -656,7 +656,7 @@ function TopBar() {
         background: "linear-gradient(180deg, rgba(234,251,250,0.98) 0%, rgba(234,251,250,0.78) 70%, rgba(234,251,250,0) 100%)",
         backdropFilter: "blur(12px)",
         display: "flex",
-        justifyContent: "space-between",
+        justifyContent: "center",
         alignItems: "center",
         gap: 10,
       }}
@@ -666,7 +666,7 @@ function TopBar() {
         style={{
           minHeight: 42,
           borderRadius: 16,
-          padding: "0 14px",
+          padding: "0 44px",
           display: "inline-flex",
           alignItems: "center",
           gap: 8,
@@ -737,7 +737,7 @@ function BottomActionBar({ paymentHref, amount, onPrepareBackendPayment, isPrepa
           style={{
             minHeight: 54,
             borderRadius: 19,
-            padding: "0 16px",
+            padding: "0 48px",
             display: "inline-flex",
             alignItems: "center",
             gap: 11,

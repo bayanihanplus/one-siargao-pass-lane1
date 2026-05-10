@@ -4,6 +4,96 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { useMemo, useState } from "react";
 
+const GL_TRI_ISLAND_CANONICAL_SLUG = "gl-tri-island-standard";
+const GL_TRI_ISLAND_INTERNAL_CODE = "GL_TRI_ISLAND_STANDARD";
+
+function normalizeGeneralLunaRouteSlug(value: string | undefined | null) {
+  const raw = String(value || "").trim();
+
+  if (
+    raw === "GL_TRI_ISLAND_STANDARD" ||
+    raw === "gl-tri-island-standard" ||
+    raw === "tri-island-joiner" ||
+    raw === "classic-tri-island"
+  ) {
+    return {
+      canonicalSlug: GL_TRI_ISLAND_CANONICAL_SLUG,
+      internalCode: GL_TRI_ISLAND_INTERNAL_CODE,
+      paymentSlug: "tri-island-joiner",
+    };
+  }
+
+  return {
+    canonicalSlug: raw.toLowerCase(),
+    internalCode: raw.toUpperCase().replaceAll("-", "_"),
+    paymentSlug: raw.toLowerCase(),
+  };
+}
+
+function readPaidPaxFromSearch(searchParams?: Record<string, string | string[] | undefined>) {
+  const raw =
+    searchParams?.pax ||
+    searchParams?.paidPax ||
+    searchParams?.travelers ||
+    searchParams?.seats ||
+    "1";
+
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  const parsed = Number.parseInt(String(value || "1"), 10);
+
+  if (!Number.isFinite(parsed) || parsed < 1) return 1;
+  return Math.min(parsed, 99);
+}
+
+function getGlTriIslandPaymentHref(pax: number) {
+  const safePax = Math.max(1, Number.isFinite(Number(pax)) ? Number(pax) : 1);
+  return `/traveler/payments/tour-sandbox/tri-island-joiner?pax=${safePax}`;
+}
+
+
+function normalizeGlRouteCode(value: string | undefined | null) {
+  const raw = String(value || "").trim();
+
+  const aliases: Record<string, string> = {
+    "gl-tri-island-standard": "GL_TRI_ISLAND_STANDARD",
+    "GL_TRI_ISLAND_STANDARD": "GL_TRI_ISLAND_STANDARD",
+    "tri-island-joiner": "GL_TRI_ISLAND_STANDARD",
+    "classic-tri-island": "GL_TRI_ISLAND_STANDARD",
+    "gl-guyam-daku-mam-on": "GL_GUYAM_DAKU_MAM_ON",
+    "GL_GUYAM_DAKU_MAM_ON": "GL_GUYAM_DAKU_MAM_ON",
+    "gl-tri-island-corregidor": "GL_TRI_ISLAND_CORREGIDOR",
+    "GL_TRI_ISLAND_CORREGIDOR": "GL_TRI_ISLAND_CORREGIDOR",
+  };
+
+  return aliases[raw] || aliases[raw.toLowerCase()] || raw.toUpperCase().replaceAll("-", "_");
+}
+
+function getGlJoinerPriceSnapshot(routeCode: string, paidPax: number) {
+  const normalizedRouteCode = normalizeGlRouteCode(routeCode);
+  const safePaidPax = Math.max(1, Number.isFinite(Number(paidPax)) ? Number(paidPax) : 1);
+
+  if (normalizedRouteCode === "GL_TRI_ISLAND_STANDARD") {
+    return {
+      routeCode: normalizedRouteCode,
+      pricingMode: "JOINER_FIXED_PER_PERSON",
+      unitPricePhp: 1500,
+      paidPax: safePaidPax,
+      travelerTotalPhp: safePaidPax * 1500,
+      pricingDoctrine: "Classic Tri-Island Joiner is fixed at PHP 1,500 per paid traveler and must never be recalculated from boat class.",
+    };
+  }
+
+  return {
+    routeCode: normalizedRouteCode,
+    pricingMode: "REQUEST_TO_CONFIRM",
+    unitPricePhp: 0,
+    paidPax: safePaidPax,
+    travelerTotalPhp: 0,
+    pricingDoctrine: "Non-standard GL routes require request-to-confirm or route-specific pricing review.",
+  };
+}
+
+
 type BookingPageProps = {
   params: {
     routeCode: string;
@@ -127,14 +217,14 @@ const routes: Record<string, RouteConfig> = {
 };
 
 const departureWindows = [
-  { label: "07:00 AM", body: "Early port window. Best for full route time." },
-  { label: "08:00 AM", body: "Primary morning departure window." },
-  { label: "09:00 AM", body: "Flexible morning route window." },
-  { label: "10:00 AM", body: "Late morning slot, subject to port and weather readiness." },
-  { label: "11:00 AM", body: "Midday review window." },
-  { label: "12:00 PM", body: "Midday route window, route and weather dependent." },
-  { label: "01:00 PM", body: "Afternoon review window." },
-  { label: "02:00 PM", body: "Last preview schedule window, subject to route readiness." },
+  { time: "07:00 AM", label: "07:00 AM", body: "Early port window. Best for full route time." },
+  { time: "08:00 AM", label: "08:00 AM", body: "Primary morning departure window." },
+  { time: "09:00 AM", label: "09:00 AM", body: "Flexible morning route window." },
+  { time: "10:00 AM", label: "10:00 AM", body: "Late morning slot, subject to port and weather readiness." },
+  { time: "11:00 AM", label: "11:00 AM", body: "Midday review window." },
+  { time: "12:00 PM", label: "12:00 PM", body: "Midday route window, route and weather dependent." },
+  { time: "01:00 PM", label: "01:00 PM", body: "Afternoon review window." },
+  { time: "02:00 PM", label: "02:00 PM", body: "Last preview schedule window, subject to route readiness." },
 ];
 
 function peso(value: number | null | undefined) {
@@ -301,10 +391,14 @@ function getJoinerDefaultWindow() {
   return "11:00 AM";
 }
 
-function getJoinerTimeValue(value: string) {
-  if (value.includes("11:00 AM")) return "11:00 AM";
-  if (value.includes("12:00 PM")) return "12:00 PM";
-  return value;
+function getJoinerTimeValue(value?: string | null) {
+  const safeValue = String(value || "").trim();
+
+  if (!safeValue) return "11:00 AM";
+  if (safeValue.includes("11:00 AM")) return "11:00 AM";
+  if (safeValue.includes("12:00 PM")) return "12:00 PM";
+
+  return safeValue;
 }
 
 function isJoinerWindow(time: string) {
@@ -583,8 +677,8 @@ export default function GeneralLunaBookingSetupPage({ params }: BookingPageProps
                   style={{
                     minHeight: 50,
                     borderRadius: 16,
-                    border: isSelected ? "1px solid rgba(5,150,165,0.42)" : "1px solid rgba(1,56,99,0.10)",
-                    background: isSelected ? "#EAFBFA" : "#FFFFFF",
+                    border: isSelected ? "2px solid rgba(5,150,165,0.62)" : "1px solid rgba(1,56,99,0.10)",
+                    background: isSelected ? "linear-gradient(180deg, #EAFBFA 0%, #FFFFFF 100%)" : "#FFFFFF",
                     color: "#013863",
                     fontSize: 11.5,
                     fontWeight: 900,
@@ -637,13 +731,15 @@ export default function GeneralLunaBookingSetupPage({ params }: BookingPageProps
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {visibleDepartureWindows.map((slot) => {
-              const isSelected = getJoinerTimeValue(selectedDepartureWindow) === slot.time;
+              const slotTime = slot.time || slot.label;
+              const isSelected = getJoinerTimeValue(selectedDepartureWindow) === slotTime;
 
               return (
                 <button
                   key={slot.label}
                   type="button"
-                  onClick={() => setSelectedDepartureWindow(slot.time)}
+                  onClick={() => setSelectedDepartureWindow(slotTime)}
+                  aria-pressed={isSelected}
                   style={{
                     borderRadius: 18,
                     border: isSelected ? "1px solid rgba(5,150,165,0.42)" : "1px solid rgba(1,56,99,0.10)",
@@ -721,7 +817,7 @@ export default function GeneralLunaBookingSetupPage({ params }: BookingPageProps
                 {row("Joiner price", "PHP 1,500 / person")}
                 {row("Reservation status", GL_CLASSIC_JOINER_DEFAULT_FULFILLMENT_CLASS)}
                 {row("Seat availability", "Based on selected paid seats")}
-                {row("Joiner window", "11:00 AM Joiner Trip")}
+                {row("Joiner window", getJoinerDisplayLabel(selectedDepartureWindow))}
                 {row("Trip confirmation", "Your selected seats are reserved after payment")}
               </>
             ) : (
