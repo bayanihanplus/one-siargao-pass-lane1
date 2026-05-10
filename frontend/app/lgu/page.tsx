@@ -5,6 +5,7 @@ import { getCurrentUser, requireAccessToken } from "../../src/lib/server-auth";
 type LguPanel =
   | "overview"
   | "intelligence"
+  | "departure-control"
   | "manifests"
   | "clearance"
   | "fee-exceptions"
@@ -18,6 +19,7 @@ type LguPanel =
 const navItems: Array<{ label: string; panel: LguPanel }> = [
   { label: "Overview", panel: "overview" },
   { label: "Intelligence Layer", panel: "intelligence" },
+  { label: "Departure Control", panel: "departure-control" },
   { label: "Manifest Submissions", panel: "manifests" },
   { label: "Queue / Clearance", panel: "clearance" },
   { label: "Fee Exceptions Watch", panel: "fee-exceptions" },
@@ -921,6 +923,132 @@ export default async function LguPage({
             </div>
           </div>
         </PanelCard>
+      );
+    }
+
+    if (activePanel === "departure-control") {
+      return (
+        <>
+          <PanelCard title="Departure Control Operations">
+            <p style={{ marginTop: 0, color: colors.muted, lineHeight: 1.7, fontWeight: 700 }}>
+              LGU-facing operations view for scheduled port departures, boarding readiness, manifest visibility, and exception monitoring. This panel is the entry point into the DCS approval flow; live booking, QR, assignment, and manifest events stay inactive until approved and event-backed.
+            </p>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gap: 14,
+                marginTop: 18,
+              }}
+            >
+              <IntelligenceMetricCard
+                label="General Luna DCS"
+                value="READY"
+                note="General Luna board is ready for LGU flow review and port-scope presentation."
+                tone="green"
+              />
+              <IntelligenceMetricCard
+                label="Dapa DCS"
+                value="NEXT"
+                note="Dapa remains a future port-scoped DCS module for Bucas Grande / Sohoton."
+                tone="amber"
+              />
+              <IntelligenceMetricCard
+                label="Del Carmen DCS"
+                value="NEXT"
+                note="Del Carmen remains a future port-scoped DCS module for Sugba Lagoon and mangrove tours."
+                tone="amber"
+              />
+            </div>
+
+            <div style={{ marginTop: 22, display: "flex", flexWrap: "wrap", gap: 12 }}>
+              <Link
+                href="/lgu/departure-control"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  minHeight: 46,
+                  borderRadius: 14,
+                  padding: "0 18px",
+                  background: "#ffffff",
+                  color: colors.dark,
+                  textDecoration: "none",
+                  fontSize: 14,
+                  fontWeight: 900,
+                  border: `1px solid ${colors.border}`,
+                }}
+              >
+                Open Departure Control Console
+              </Link>
+
+
+              <Link
+                href="/lgu/departure-control/general-luna"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  minHeight: 46,
+                  borderRadius: 14,
+                  padding: "0 18px",
+                  background: colors.green,
+                  color: colors.yellow,
+                  textDecoration: "none",
+                  fontSize: 14,
+                  fontWeight: 900,
+                  border: "1px solid rgba(16,58,51,0.18)",
+                }}
+              >
+                Open General Luna Port Board →
+              </Link>
+
+              <Link
+                href="/lgu?panel=manifests"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  minHeight: 46,
+                  borderRadius: 14,
+                  padding: "0 18px",
+                  background: "#ffffff",
+                  color: colors.dark,
+                  textDecoration: "none",
+                  fontSize: 14,
+                  fontWeight: 900,
+                  border: `1px solid ${colors.border}`,
+                }}
+              >
+                Review Manifest Submissions
+              </Link>
+            </div>
+          </PanelCard>
+
+          <PanelCard title="LGU Departure Control Boundary">
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                gap: 14,
+              }}
+            >
+              <StatCard
+                label="Visible to LGU"
+                value="Port operations"
+                note="Trip number, route, departure time, boarding status, manifest status, exception status, and port operating visibility."
+              />
+              <StatCard
+                label="Hidden from LGU"
+                value="Platform commercial internals"
+                note="Platform commercial internals, private payout logic, OTA ownership details, and Super Admin configuration controls stay hidden."
+              />
+              <StatCard
+                label="Current mode"
+                value="Read-only preview"
+                note="Live booking, voucher, assignment, boarding QR, and manifest events will attach after LGU flow approval."
+              />
+            </div>
+          </PanelCard>
+        </>
       );
     }
 
