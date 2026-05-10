@@ -606,11 +606,11 @@ const fallbackFeaturedServices: FeaturedService[] = [
 ];
 
 const categories = [
-  { label: "Siargao Tour Operators", href: "/traveler/explore/tours", icon: "🚐" },
-  { label: "Rentals", href: "/traveler/explore/rentals", icon: "🛵" },
-  { label: "Surfing Schools", href: "/traveler/explore/surf-schools", icon: "🏄" },
-  { label: "Food & Culture", href: "/traveler/explore/food-culture", icon: "🍽️" },
-  { label: "Beauty & Health", href: "/traveler/explore/beauty-health", icon: "🌿" },
+  { label: "Siargao Tour Operators", href: "/traveler/explore/stays", icon: "🚐" },
+  { label: "Rentals", href: "/traveler/explore/stays", icon: "🛵" },
+  { label: "Surfing Schools", href: "/traveler/explore/stays", icon: "🏄" },
+  { label: "Food & Culture", href: "/traveler/explore/stays", icon: "🍽️" },
+  { label: "Beauty & Health", href: "/traveler/explore/stays", icon: "🌿" },
 ];
 
 function toneStyles(tone: ExploreLane["tone"]) {
@@ -679,7 +679,8 @@ const filterOptions = [
   { label: "All", value: "ALL" },
   { label: "Stays", value: "STAYS" },
   { label: "Tours", value: "TOURS" },
-  { label: "Rentals", value: "RENTALS" },
+  { label: "Rentals",
+    href: "/traveler/explore/stays", value: "RENTALS" },
   { label: "Surf", value: "SURF" },
   { label: "Food", value: "FOOD_CULTURE" },
   { label: "Health", value: "BEAUTY_HEALTH" },
@@ -1491,6 +1492,187 @@ function FeaturedServices({
 function MoreWaysToExplore({ services }: { services: FeaturedService[] }) {
   if (!services.length) return null;
 
+  function getBannerTheme(title: string) {
+    if (title === "Siargao Tour Operators") {
+      return {
+        eyebrow: "Verified local tours",
+        headline: "Island routes, land tours, and curated operator-led experiences",
+        icon: "🚐",
+        chips: ["Island hopping", "Land tours", "Custom trips"],
+        background: "linear-gradient(135deg, #013863 0%, #055f86 56%, #0ea5b1 100%)",
+        motif: "tours",
+      } as const;
+    }
+
+    if (title === "Rentals") {
+      return {
+        eyebrow: "Island mobility",
+        headline: "Motorbikes, vans, boards, and rental-ready island movement",
+        icon: "🛵",
+        chips: ["Motorbike", "Van", "Board rental"],
+        background: "linear-gradient(135deg, #0b3d67 0%, #146b89 50%, #f3ae26 100%)",
+        motif: "rentals",
+      } as const;
+    }
+
+    if (title === "Surfing Schools") {
+      return {
+        eyebrow: "Surf lessons",
+        headline: "Local coaching, board support, and beginner-to-advanced surf access",
+        icon: "🏄",
+        chips: ["Beginner", "Coaching", "Board support"],
+        background: "linear-gradient(135deg, #036b78 0%, #0c8ea0 54%, #013863 100%)",
+        motif: "surf",
+      } as const;
+    }
+
+    if (title === "Food & Culture") {
+      return {
+        eyebrow: "Local taste",
+        headline: "Cafés, restaurants, cultural stops, and curated island discoveries",
+        icon: "🍽️",
+        chips: ["Cafés", "Restaurants", "Culture stops"],
+        background: "linear-gradient(135deg, #9a5f0c 0%, #d58b18 48%, #013863 100%)",
+        motif: "food",
+      } as const;
+    }
+
+    if (title === "Beauty & Health") {
+      return {
+        eyebrow: "Wellness & care",
+        headline: "Spa, recovery, grooming, wellness, and local care services",
+        icon: "🌿",
+        chips: ["Spa", "Recovery", "Wellness"],
+        background: "linear-gradient(135deg, #0a6572 0%, #13889a 52%, #325d66 100%)",
+        motif: "wellness",
+      } as const;
+    }
+
+    return {
+      eyebrow: "Explore lane",
+      headline: title,
+      icon: "◇",
+      chips: ["Explore", "Discover", "View"],
+      background: "linear-gradient(135deg, #013863 0%, #0596a5 100%)",
+      motif: "default",
+    } as const;
+  }
+
+  function renderMotif(motif: string) {
+    if (motif === "tours") {
+      return (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: 14,
+            bottom: 18,
+            width: 82,
+            height: 58,
+            zIndex: 1,
+          }}
+        >
+          <div style={{ position: "absolute", right: 0, bottom: 0, width: 68, height: 18, borderRadius: 999, background: "rgba(255,255,255,0.16)" }} />
+          <div style={{ position: "absolute", left: 10, bottom: 16, width: 12, height: 12, borderRadius: 999, background: "#ffffff" }} />
+          <div style={{ position: "absolute", left: 30, bottom: 26, width: 12, height: 12, borderRadius: 999, background: "rgba(255,255,255,0.88)" }} />
+          <div style={{ position: "absolute", left: 50, bottom: 38, width: 12, height: 12, borderRadius: 999, background: "rgba(255,255,255,0.72)" }} />
+          <div style={{ position: "absolute", left: 18, bottom: 22, width: 18, height: 2, background: "rgba(255,255,255,0.72)", transform: "rotate(26deg)" }} />
+          <div style={{ position: "absolute", left: 38, bottom: 34, width: 18, height: 2, background: "rgba(255,255,255,0.72)", transform: "rotate(26deg)" }} />
+        </div>
+      );
+    }
+
+    if (motif === "rentals") {
+      return (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: 12,
+            bottom: 14,
+            width: 88,
+            height: 64,
+            zIndex: 1,
+          }}
+        >
+          <div style={{ position: "absolute", left: 0, right: 0, bottom: 10, height: 10, borderRadius: 999, background: "rgba(255,255,255,0.18)" }} />
+          <div style={{ position: "absolute", left: 16, bottom: 13, width: 12, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.92)" }} />
+          <div style={{ position: "absolute", left: 38, bottom: 13, width: 12, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.92)" }} />
+          <div style={{ position: "absolute", left: 60, bottom: 13, width: 12, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.92)" }} />
+          <div style={{ position: "absolute", left: 10, bottom: 28, width: 24, height: 20, borderRadius: 8, background: "rgba(255,255,255,0.88)" }} />
+          <div style={{ position: "absolute", left: 38, bottom: 24, width: 18, height: 24, borderRadius: 10, background: "rgba(255,255,255,0.78)" }} />
+          <div style={{ position: "absolute", left: 62, bottom: 30, width: 14, height: 14, borderRadius: 999, background: "rgba(255,255,255,0.94)" }} />
+        </div>
+      );
+    }
+
+    if (motif === "surf") {
+      return (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: 10,
+            bottom: 10,
+            width: 92,
+            height: 68,
+            zIndex: 1,
+          }}
+        >
+          <div style={{ position: "absolute", right: 0, bottom: 10, width: 70, height: 18, borderRadius: "20px 20px 24px 24px", border: "3px solid rgba(255,255,255,0.78)", borderLeft: "0", borderTop: "0", background: "transparent" }} />
+          <div style={{ position: "absolute", right: 18, bottom: 22, width: 52, height: 14, borderRadius: "20px 20px 22px 22px", border: "3px solid rgba(255,255,255,0.52)", borderLeft: "0", borderTop: "0", background: "transparent" }} />
+          <div style={{ position: "absolute", left: 6, bottom: 8, width: 10, height: 46, borderRadius: 999, background: "rgba(255,255,255,0.88)", transform: "rotate(18deg)" }} />
+        </div>
+      );
+    }
+
+    if (motif === "food") {
+      return (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: 12,
+            bottom: 14,
+            width: 84,
+            height: 64,
+            zIndex: 1,
+          }}
+        >
+          <div style={{ position: "absolute", right: 8, bottom: 8, width: 42, height: 42, borderRadius: 999, border: "3px solid rgba(255,255,255,0.92)" }} />
+          <div style={{ position: "absolute", right: 19, bottom: 19, width: 20, height: 20, borderRadius: 999, background: "rgba(255,255,255,0.30)" }} />
+          <div style={{ position: "absolute", left: 12, bottom: 12, width: 4, height: 36, borderRadius: 999, background: "rgba(255,255,255,0.90)" }} />
+          <div style={{ position: "absolute", left: 22, bottom: 12, width: 4, height: 36, borderRadius: 999, background: "rgba(255,255,255,0.72)" }} />
+          <div style={{ position: "absolute", left: 32, bottom: 12, width: 4, height: 36, borderRadius: 999, background: "rgba(255,255,255,0.56)" }} />
+        </div>
+      );
+    }
+
+    if (motif === "wellness") {
+      return (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: 10,
+            bottom: 12,
+            width: 86,
+            height: 66,
+            zIndex: 1,
+          }}
+        >
+          <div style={{ position: "absolute", right: 8, bottom: 8, width: 42, height: 16, borderRadius: 999, background: "rgba(255,255,255,0.32)" }} />
+          <div style={{ position: "absolute", right: 16, bottom: 26, width: 30, height: 14, borderRadius: 999, background: "rgba(255,255,255,0.54)" }} />
+          <div style={{ position: "absolute", right: 22, bottom: 42, width: 18, height: 10, borderRadius: 999, background: "rgba(255,255,255,0.82)" }} />
+          <div style={{ position: "absolute", left: 8, bottom: 12, width: 20, height: 34, borderRadius: "20px 0 20px 0", background: "rgba(255,255,255,0.82)", transform: "rotate(-22deg)" }} />
+          <div style={{ position: "absolute", left: 24, bottom: 18, width: 16, height: 28, borderRadius: "20px 0 20px 0", background: "rgba(255,255,255,0.56)", transform: "rotate(16deg)" }} />
+        </div>
+      );
+    }
+
+    return null;
+  }
+
   return (
     <section style={{ display: "grid", gap: 12 }}>
       <div>
@@ -1506,63 +1688,165 @@ function MoreWaysToExplore({ services }: { services: FeaturedService[] }) {
         aria-label="More ways to explore carousel"
         style={{
           display: "flex",
-          gap: 10,
+          gap: 12,
           overflowX: "auto",
-          padding: "2px 2px 8px",
+          padding: "2px 2px 10px",
           scrollSnapType: "x mandatory",
           scrollbarWidth: "none",
         }}
       >
-        {services.map((service) => (
-          <Link
-            key={service.title}
-            href={getFeaturedServiceCardHref(service)}
-            style={{
-              flex: "0 0 180px",
-              scrollSnapAlign: "start",
-              borderRadius: 20,
-              overflow: "hidden",
-              background: "#ffffff",
-              border: "1px solid rgba(15,23,42,0.10)",
-              boxShadow: "0 12px 28px rgba(15,23,42,0.07)",
-              textDecoration: "none",
-              color: "#102f57",
-            }}
-          >
-            <div
+        {services.map((service) => {
+          const theme = getBannerTheme(service.title);
+
+          return (
+            <Link
+              key={service.title}
+              href={getFeaturedServiceCardHref(service)}
               style={{
-                height: 92,
-                background: service.visualBackground || serviceTone(service.tone),
-                position: "relative",
-                padding: 10,
+                flex: "0 0 242px",
+                scrollSnapAlign: "start",
+                borderRadius: 26,
+                overflow: "hidden",
+                background: "#ffffff",
+                border: "1px solid rgba(5,150,165,0.14)",
+                boxShadow: "0 18px 38px rgba(1,56,99,0.11)",
+                textDecoration: "none",
+                color: "#102f57",
               }}
             >
-              <span
+              <div
                 style={{
-                  borderRadius: 999,
-                  background: "rgba(255,255,255,0.82)",
-                  color: "#475569",
-                  padding: "5px 7px",
-                  fontSize: 9.8,
-                  fontWeight: 950,
+                  minHeight: 148,
+                  padding: 14,
+                  position: "relative",
+                  overflow: "hidden",
+                  background: theme.background,
+                  color: "#ffffff",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
                 }}
               >
-                Preview lane
-              </span>
-            </div>
-            <div style={{ padding: 12, display: "grid", gap: 8 }}>
-              <strong style={{ display: "block", fontSize: 14.5, lineHeight: 1.18 }}>
-                {service.title}
-              </strong>
-              <p style={{ margin: 0, color: "#64748b", fontSize: 11.2, lineHeight: 1.35, fontWeight: 750 }}>
-                {service.body}
-              </p>
-              <span style={{ color: "#078da0", fontSize: 12, fontWeight: 950 }}>
-                Explore →
-              </span>
-            </div>
-          </Link>
-        ))}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(135deg, rgba(1,56,99,0.20) 0%, rgba(1,56,99,0.10) 100%)",
+                    zIndex: 0,
+                  }}
+                />
+
+                {renderMotif(theme.motif)}
+
+                <div
+                  style={{
+                    position: "relative",
+                    zIndex: 2,
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "space-between",
+                    gap: 10,
+                  }}
+                >
+                  <span
+                    style={{
+                      borderRadius: 999,
+                      padding: "6px 9px",
+                      background: "rgba(255,255,255,0.18)",
+                      border: "1px solid rgba(255,255,255,0.34)",
+                      color: "#ffffff",
+                      fontSize: 10.5,
+                      fontWeight: 950,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {theme.eyebrow}
+                  </span>
+
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: 16,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: "#ffffff",
+                      color: "#013863",
+                      fontSize: 19,
+                      boxShadow: "0 10px 22px rgba(1,56,99,0.18)",
+                      flex: "0 0 auto",
+                    }}
+                  >
+                    {theme.icon}
+                  </span>
+                </div>
+
+                <div style={{ position: "relative", zIndex: 2, display: "grid", gap: 10 }}>
+                  <strong
+                    style={{
+                      display: "block",
+                      maxWidth: 206,
+                      color: "#ffffff",
+                      fontSize: 16.5,
+                      lineHeight: 1.08,
+                      letterSpacing: "-0.025em",
+                      fontWeight: 950,
+                      textShadow: "0 2px 12px rgba(0,0,0,0.16)",
+                    }}
+                  >
+                    {theme.headline}
+                  </strong>
+
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {theme.chips.map((chip) => (
+                      <span
+                        key={chip}
+                        style={{
+                          borderRadius: 999,
+                          padding: "5px 8px",
+                          background: "rgba(255,255,255,0.16)",
+                          border: "1px solid rgba(255,255,255,0.22)",
+                          color: "#ffffff",
+                          fontSize: 10.5,
+                          fontWeight: 850,
+                        }}
+                      >
+                        {chip}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ padding: 13, display: "grid", gap: 8 }}>
+                <strong style={{ display: "block", fontSize: 14.5, lineHeight: 1.18 }}>
+                  {service.title}
+                </strong>
+                <p style={{ margin: 0, color: "#64748b", fontSize: 11.3, lineHeight: 1.38, fontWeight: 750 }}>
+                  {service.body}
+                </p>
+                <span
+                  style={{
+                    width: "fit-content",
+                    borderRadius: 999,
+                    padding: "7px 10px",
+                    background: "rgba(5,150,165,0.10)",
+                    color: "#047f91",
+                    border: "1px solid rgba(5,150,165,0.16)",
+                    fontSize: 12,
+                    fontWeight: 950,
+                  }}
+                >
+                  Explore →
+                </span>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
