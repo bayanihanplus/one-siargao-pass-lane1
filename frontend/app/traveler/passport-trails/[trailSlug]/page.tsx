@@ -26,193 +26,181 @@ type TrailDetail = {
 
 const TRAILS: Record<string, TrailDetail> = {
   "island-hopping": {
-    eyebrow: "PASSPORT TRAILS™",
-    title: "Island Hopping Trail",
+    eyebrow: "PASSPORT TRAILS™ · GL PORT",
+    title: "Tri-Island Passport Trail",
     subtitle:
-      "Follow official Island Hopping nodes through OSP/SPM verification. Stamps count only after verified QR / Passport records.",
-    progressLabel: "1/5 Core Stops",
-    statusLabel: "Live Trail",
-    nextStop: "Daku Island",
+      "A classic General Luna island-hopping route usually completed in one scheduled tour day, depending on weather, clearance, payment, operator readiness, and departure conditions.",
+    progressLabel: "One-day island route",
+    statusLabel: "GL Port / DCS-related",
+    nextStop: "General Luna Port readiness",
     nextStopReason:
-      "Guyam is already stamped. Daku is the next ready-to-verify official Island Hopping node. Corregidor, Mam-on, and Secret Island stay locked until governed package or progress rules apply.",
+      "Choose the route, book or reserve, pay or confirm, board from GL Port, complete the tour, then record Passport progress. Continue-later is not the normal behavior unless weather, cancellation, reassignment, or interruption occurs.",
     stops: [
       {
         name: "Guyam Island",
         shortCode: "GU",
-        note: "Official QR stamp node. Stamp record verified from verified OSP/SPM validation.",
-        status: "STAMP_UNLOCKED",
-        source: "QR",
+        note: "Classic Tri-Island stop. Stamp or progress should follow verified OSP/SPM booking or QR records.",
+        status: "READY_TO_VERIFY",
+        source: "Pending",
       },
       {
         name: "Daku Island",
         shortCode: "DA",
-        note: "Official QR stamp node. Ready for QR-based stop verification.",
+        note: "Main island-hopping stop. Package inclusions, lunch, and operator handling depend on the selected tour product.",
         status: "READY_TO_VERIFY",
         source: "Pending",
       },
       {
         name: "Naked Island",
         shortCode: "NA",
-        note: "Official QR stamp node. Ready for QR-based stop verification.",
+        note: "Classic sandbar stop. Timing, weather, and sea conditions remain route-aware.",
         status: "READY_TO_VERIFY",
         source: "Pending",
       },
       {
-        name: "Corregidor Island",
-        shortCode: "CO",
-        note: "Official QR stamp node. Locked until selected route/package progress allows it.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Mam-on Island",
-        shortCode: "MO",
-        note: "Official QR stamp node. Locked until selected route/package progress allows it.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Secret Island",
-        shortCode: "SI",
-        note: "Conditional package-only node. Hidden or locked until governed package rules apply.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-    ],
-  },
-  "surf-explorer": {
-    eyebrow: "PASSPORT TRAILS™",
-    title: "Surf Explorer Trail",
-    subtitle:
-      "Cloud 9 is the approved surf anchor. Other surf nodes stay pending-review until local validation is completed.",
-    progressLabel: "1 approved anchor",
-    statusLabel: "Presentation Trail",
-    nextStop: "Cloud 9",
-    nextStopReason:
-      "Cloud 9 is the approved Surf Explorer anchor. Jacking Horse, Quicksilver, Tuason Point, Stimpy’s, and Pacifico Surf Area are shown as pending-review surf nodes, not approved completion nodes.",
-    stops: [
-      {
-        name: "Cloud 9",
-        shortCode: "C9",
-        note: "Approved Surf Explorer anchor node.",
-        status: "STAMP_UNLOCKED",
-        source: "QR",
-      },
-      {
-        name: "Jacking Horse",
-        shortCode: "JH",
-        note: "Pending-review beginner surf-side node.",
-        status: "READY_TO_VERIFY",
-        source: "Pending",
-      },
-      {
-        name: "Quicksilver",
-        shortCode: "QS",
-        note: "Pending-review surf break candidate.",
-        status: "READY_TO_VERIFY",
-        source: "Pending",
-      },
-      {
-        name: "Tuason Point",
-        shortCode: "TP",
-        note: "Pending-review advanced surf candidate.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Stimpy’s",
-        shortCode: "ST",
-        note: "Pending-review reef / offshore surf candidate.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Pacifico Surf Area",
-        shortCode: "PF",
-        note: "Pending-review north surf expansion node.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-    ],
-  },
-  "north-siargao": {
-    eyebrow: "PASSPORT TRAILS™",
-    title: "North Siargao Trail",
-    subtitle:
-      "Follow the approved North Siargao route through Pacifico, Alegria Beach, and Taktak Falls. Burgos and Coconut Road remain pending-review corridor nodes.",
-    progressLabel: "3 approved nodes",
-    statusLabel: "Presentation Trail",
-    nextStop: "Alegria Beach",
-    nextStopReason:
-      "Pacifico is the approved north anchor. Alegria Beach and Taktak Falls are approved QR nodes. Burgos and Coconut Road stay locked until final local validation is completed.",
-    stops: [
-      {
-        name: "Pacifico",
-        shortCode: "PF",
-        note: "Approved North Siargao place / north route anchor. Separate from Pacifico Surf Area.",
-        status: "STAMP_UNLOCKED",
-        source: "QR",
-      },
-      {
-        name: "Alegria Beach",
-        shortCode: "AL",
-        note: "Approved scenic North Siargao QR node.",
-        status: "READY_TO_VERIFY",
-        source: "Pending",
-      },
-      {
-        name: "Taktak Falls",
-        shortCode: "TF",
-        note: "Approved safety-controlled scenic QR node. Verification must respect local access and safety rules.",
-        status: "READY_TO_VERIFY",
-        source: "Pending",
-      },
-      {
-        name: "Burgos",
-        shortCode: "BG",
-        note: "Pending-review town / north corridor node.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Coconut Road",
-        shortCode: "CR",
-        note: "Pending-review scenic road corridor node.",
+        name: "GL Port Departure",
+        shortCode: "GL",
+        note: "Operational anchor for this trail. Boarding, payment, operator readiness, and DCS-related logic must remain booking-backed.",
         status: "LOCKED",
         source: "Pending",
       },
     ],
   },
 
-  "inland-discovery": {
-    eyebrow: "PASSPORT TRAILS™",
-    title: "Inland Discovery Trail",
+  "sugba-lagoon": {
+    eyebrow: "PASSPORT TRAILS™ · DEL CARMEN",
+    title: "Sugba Lagoon Island Hopping",
     subtitle:
-      "Inland route details are being prepared for approved node placement, tide/safety rules, and QR validation.",
-    progressLabel: "Node setup pending",
-    statusLabel: "Preparation Trail",
-    nextStop: "Maasin River",
+      "A governed lagoon route connected to official access, departure readiness, operator availability, and scheduled movement.",
+    progressLabel: "Governed one-day route",
+    statusLabel: "DCS-linked / route-governed",
+    nextStop: "Del Carmen access readiness",
     nextStopReason:
-      "Inland Discovery nodes must remain governed by safety, access, and QR validation rules before completion can be claimed.",
+      "Sugba Lagoon must not be treated as a casual land-tour stop. It may appear as a cross-linked highlight inside the land tour, but the deeper route should point to this official governed flow.",
     stops: [
       {
-        name: "Maasin River",
-        shortCode: "MR",
-        note: "Inland candidate / anchor stop pending final page map placement.",
-        status: "READY_TO_VERIFY",
-        source: "Pending",
-      },
-      {
-        name: "Magpupungko Rock Pools",
-        shortCode: "MP",
-        note: "Tide and safety-sensitive node. Must not be treated as casual completion without validation.",
+        name: "Del Carmen Access Flow",
+        shortCode: "DC",
+        note: "Operational access anchor. Future DCS / departure-control logic must connect here before full production movement.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "Tayangban Cave Pool",
-        shortCode: "TC",
-        note: "Safety-controlled candidate node pending access validation.",
+        name: "Sugba Lagoon",
+        shortCode: "SL",
+        note: "Governed lagoon stop. Operator readiness, official access, and booking/payment readiness must be confirmed before live movement.",
+        status: "READY_TO_VERIFY",
+        source: "Pending",
+      },
+      {
+        name: "Operator Readiness",
+        shortCode: "OP",
+        note: "Operator or route partner readiness is required before traveler payment and fulfillment should unlock.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+    ],
+  },
+
+  "bucas-grande-sohoton": {
+    eyebrow: "PASSPORT TRAILS™ · DAPA-SIDE",
+    title: "Bucas Grande / Sohoton Official Trail",
+    subtitle:
+      "A future-ready governed route for Bucas Grande and Sohoton access, operator readiness, and Dapa-side scheduled movement.",
+    progressLabel: "Future official route",
+    statusLabel: "Reserved / future-ready",
+    nextStop: "Route readiness review",
+    nextStopReason:
+      "Do not claim this route is fully bookable until backend route readiness, operator capacity, source attribution, and payment rules are wired.",
+    stops: [
+      {
+        name: "Dapa-side Movement",
+        shortCode: "DP",
+        note: "Future governed movement anchor for Bucas Grande / Sohoton operations.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Sohoton Cove",
+        shortCode: "SC",
+        note: "Future official route stop. Must remain operator/governance-ready before public booking claims.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Bucas Grande",
+        shortCode: "BG",
+        note: "Future-ready route cluster. Do not fake availability until governed access is active.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+    ],
+  },
+
+  "siargao-land-tour": {
+    eyebrow: "PASSPORT TRAILS™ · LOCAL OPERATOR SUPPORT",
+    title: "Siargao Land Tour Passport Trail",
+    subtitle:
+      "Choose South Highlights or North Highlights as a one-day land tour. Complete both across separate days or through a private DIY arrangement with local operator support.",
+    progressLabel: "South / North one-day options",
+    statusLabel: "Local operator support",
+    nextStop: "Choose South or North route",
+    nextStopReason:
+      "South Tour can be one day. North Tour can be one day. Full South + North should not be presented as one normal-day route unless it is a private custom DIY arrangement.",
+    stops: [
+      {
+        name: "South Tour Highlights",
+        shortCode: "ST",
+        note: "Mountain / Coconut Trees View Deck, Coconut Road, Maasin River, Magpupungko, Canijugan Peak, Secret Beach, and Malinao Skate Road. Sugba Lagoon should cross-link to its governed official route.",
+        status: "READY_TO_VERIFY",
+        source: "Pending",
+      },
+      {
+        name: "North Tour Highlights",
+        shortCode: "NT",
+        note: "Pacifico Beach, Trogon’s Perch, Little Hawaii, Alegria Beach, Somyot Cave, Taktak Falls, and Pasikon / Pasicon Beach pending local spelling validation.",
+        status: "READY_TO_VERIFY",
+        source: "Pending",
+      },
+      {
+        name: "Guided Private DIY Option",
+        shortCode: "GD",
+        note: "Guide, driver, TukTuk, motorcycle, van, mobile photographer, drone/no-drone variant, and local tour operator support must be selectable later.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+    ],
+  },
+
+  "surf-explorer": {
+    eyebrow: "PASSPORT TRAILS™ · CONTINUE-LATER",
+    title: "Explorer Surf Trail",
+    subtitle:
+      "Explore surf spots, lessons, and surf culture across Siargao. You do not need to finish this trail in one day.",
+    progressLabel: "Continue-later surf path",
+    statusLabel: "Beginner-safe / multi-session",
+    nextStop: "Start with one surf stop",
+    nextStopReason:
+      "A beginner may visit Cloud 9, take one lesson, watch surfers, visit one surf school, and save the rest for later. That is still successful progress.",
+    stops: [
+      {
+        name: "Cloud 9",
+        shortCode: "C9",
+        note: "Approved surf anchor. Can be a viewing stop, lesson context, or surf-culture start.",
+        status: "READY_TO_VERIFY",
+        source: "Pending",
+      },
+      {
+        name: "Beginner Lesson / Surf School",
+        shortCode: "LS",
+        note: "Optional operator-supported action. Pricing and availability should be confirmed when a lesson or coach is involved.",
+        status: "LOCKED",
+        source: "Pending",
+      },
+      {
+        name: "Continue Later",
+        shortCode: "CL",
+        note: "Progress should remain saved during this trip or for a future Siargao visit.",
         status: "LOCKED",
         source: "Pending",
       },
@@ -220,139 +208,69 @@ const TRAILS: Record<string, TrailDetail> = {
   },
 
   "culture-community": {
-    eyebrow: "PASSPORT TRAILS™",
+    eyebrow: "PASSPORT TRAILS™ · LOCAL DISCOVERY",
     title: "Culture & Community Trail",
     subtitle:
-      "Consent-first cultural participation surface. Public completion is not open until partner approval and community consent governance are complete.",
-    progressLabel: "Governance locked",
-    statusLabel: "Consent-first Trail",
-    nextStop: "Boodle Fight Experience",
+      "A local discovery trail through community stops, food makers, cultural touchpoints, local stories, and island experiences that can usually be completed within the day.",
+    progressLabel: "One-day local discovery",
+    statusLabel: "Consent-first / partner-approved",
+    nextStop: "Approved local stop",
     nextStopReason:
-      "Boodle Fight Experience is package-only, pending review, conditional, booking-led, operator-participation based, and not stamp-eligible. No public culture/community completion route is implied.",
+      "This trail should feel warm, human, and local — not bureaucratic. Community consent and partner readiness remain required before public completion claims.",
     stops: [
       {
-        name: "Boodle Fight Experience",
-        shortCode: "BF",
-        note: "Conditional package-only participation node. Requires booking and operator participation. Not stamp-eligible.",
+        name: "Local Makers / Stories",
+        shortCode: "LS",
+        note: "Potential local maker, story, or community stop. Must remain partner-approved.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "Partner Approval Required",
-        shortCode: "PA",
-        note: "Governance lock. Approved operator / partner participation is required before public behavior is exposed.",
+        name: "Community Café / Food Stop",
+        shortCode: "CF",
+        note: "Possible local stop category. Pricing and participation must follow approved partner rules.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "Community Consent Review",
-        shortCode: "CR",
-        note: "Governance lock. Community consent and review are required before completion logic is exposed.",
+        name: "Workshop / Market / Heritage Point",
+        shortCode: "WH",
+        note: "Possible future stop category. Do not expose as completed until partner approval is ready.",
         status: "LOCKED",
         source: "Pending",
       },
     ],
   },
 
-  "sunset-scenic": {
-    eyebrow: "PASSPORT TRAILS™",
-    title: "Sunset & Scenic Stops Trail",
+  "food-wellness": {
+    eyebrow: "PASSPORT TRAILS™ · MERCHANT-OPERATED",
+    title: "Food & Wellness Trail",
     subtitle:
-      "A focused golden-hour scenic route using approved Cloud 9 / Catangnan anchors and presentation-approved pending-review scenic stops.",
-    progressLabel: "Functional map wired",
-    statusLabel: "Presentation Trail",
-    nextStop: "Catangnan Bridge / Sunset Bridge",
+      "Discover restaurants, cafés, wellness spaces, recovery spots, and island care experiences operated by local merchants. Complete it in one day or across your stay.",
+    progressLabel: "Flexible merchant trail",
+    statusLabel: "Restaurants + wellness merchants",
+    nextStop: "Choose food or wellness path",
     nextStopReason:
-      "Cloud 9 Sunset Zone is the approved scenic anchor. Catangnan Bridge is next. Malinao, Coconut Road Scenic Point, and Magpupungko Scenic Area remain pending DB review and must not be treated as active QR-completion nodes yet.",
+      "This trail must be operated by restaurants and wellness-related merchants, not generic attractions. It can support rewards, repeat visits, and local spend later.",
     stops: [
       {
-        name: "Cloud 9 Sunset Zone",
-        shortCode: "C9",
-        note: "DB-approved scenic anchor for Sunset & Scenic. Separate from the Surf Explorer Cloud 9 surf anchor.",
-        status: "READY_TO_VERIFY",
-        source: "QR",
-      },
-      {
-        name: "Catangnan Bridge / Sunset Bridge",
-        shortCode: "CB",
-        note: "DB-approved scenic / sunset node. Next QR-ready candidate after final governed validation wiring.",
-        status: "READY_TO_VERIFY",
-        source: "QR",
-      },
-      {
-        name: "Malinao Skate Area",
-        shortCode: "MS",
-        note: "Presentation-approved scenic road / skate-road stop. Pending DB review; not active QR-completion truth yet.",
+        name: "Restaurant / Local Dining",
+        shortCode: "FD",
+        note: "Restaurant-operated stop category. Merchant payment and reward logic must be explicit before live commerce.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "Coconut Road Scenic Point",
-        shortCode: "CR",
-        note: "Presentation-approved scenic corridor node. Separate from North Siargao Coconut Road. Pending DB review.",
+        name: "Café / Smoothie / Healthy Food",
+        shortCode: "CF",
+        note: "Food and beverage merchant category for flexible stops across the traveler stay.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "Magpupungko Scenic Area",
-        shortCode: "MG",
-        note: "Presentation-approved scenic/tide-sensitive node. Separate from Inland Discovery Magpupungko Rock Pools. Pending DB and safety review.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-    ],
-  },
-
-  "adventure": {
-    eyebrow: "PASSPORT TRAILS™",
-    title: "Adventure Trail",
-    subtitle:
-      "Adventure nodes are safety-controlled, operator-backed, and not DIY-casual. Passport Stamp completion requires governed QR, operator, guide, or partner validation.",
-    progressLabel: "Safety-controlled map wired",
-    statusLabel: "Controlled Trail",
-    nextStop: "Sugba Lagoon",
-    nextStopReason:
-      "Sugba Lagoon is the next adventure anchor, but completion must remain locked behind operator/access validation. Sohoton, Bucas Grande, Tayangban, Wakepark, and Calicoan remain controlled or pending review.",
-    stops: [
-      {
-        name: "Sugba Lagoon",
-        shortCode: "SL",
-        note: "Safety-controlled lagoon/access node. Requires operator or access validation before Passport Stamp completion can activate.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Sohoton Cove",
-        shortCode: "SC",
-        note: "Operator-controlled Bucas Grande adventure cluster. Not DIY-completable and not active without governed booking/access validation.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Bucas Grande Island",
-        shortCode: "BG",
-        note: "Expedition island cluster tied to operator-controlled movement, manifest, vessel, and safety validation where applicable.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Tayangban Cave Pool",
-        shortCode: "TC",
-        note: "Safety-sensitive cave/pool candidate node. Must not be treated as casual QR completion without access and safety rules.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Siargao Wakepark",
-        shortCode: "SW",
-        note: "Partner/activity-style adventure node. QR/stamp behavior requires approved partner validation before activation.",
-        status: "READY_TO_VERIFY",
-        source: "Pending",
-      },
-      {
-        name: "Calicoan Paddle Trail / Urban Legacy",
-        shortCode: "CP",
-        note: "Presentation/candidate paddle-adventure node only. Conditional and not active completion truth.",
+        name: "Spa / Wellness / Recovery",
+        shortCode: "WL",
+        note: "Wellness merchant category including spa, massage, yoga, recovery, beauty, or health operators.",
         status: "LOCKED",
         source: "Pending",
       },
@@ -360,62 +278,41 @@ const TRAILS: Record<string, TrailDetail> = {
   },
 
   "return-traveler-continuity": {
-    eyebrow: "PASSPORT TRAILS™",
-    title: "Your Siargao Story Continues",
+    eyebrow: "PASSPORT TRAILS™ · CONTINUITY",
+    title: "Return Traveler Continuity",
     subtitle:
-      "Return Continuity is a gated journey-memory layer. First egress saves the first journey. Second ingress activates the Welcome Back experience. Second egress completes the return milestone.",
-    progressLabel: "State-gated preview",
-    statusLabel: "Ingress + Egress Required",
-    nextStop: "Second ingress return mode",
+      "Continue unfinished Passport Trails, revisit saved stops, and keep building your Siargao journey across future trips.",
+    progressLabel: "Across-trip progress",
+    statusLabel: "Saved progress layer",
+    nextStop: "Continue saved progress",
     nextStopReason:
-      "This page is accessible as a locked preview, but active return identity requires verified travel history. Ingress activates the return journey. Egress completes the milestone.",
+      "This is not a normal trail. It is a continuity mechanism for unfinished trails, saved stops, previous stamps, repeat visits, loyalty, and rewards later.",
     stops: [
       {
-        name: "No Verified History",
-        shortCode: "NH",
-        note: "Traveler can preview the page, but Return Continuity is locked until a verified Siargao trip lifecycle exists.",
+        name: "Saved Trail Progress",
+        shortCode: "SP",
+        note: "Traveler-owned progress should remain attached to the OSP account.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "First Trip Active",
-        shortCode: "IA",
-        note: "Triggered when the traveler has ingress but no verified egress yet. The current trip is active, but return history is not completed.",
+        name: "Return Visit Recognition",
+        shortCode: "RV",
+        note: "Future return-journey state. No reward, perk, or status is promised until governed rules exist.",
         status: "LOCKED",
         source: "Pending",
       },
       {
-        name: "First Journey Saved",
-        shortCode: "FE",
-        note: "Unlock condition: first trip has verified egress, trip closeout, or approved completion fallback. This creates historical memory but not return-traveler completion.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Welcome Back / Return Journey Active",
-        shortCode: "RI",
-        note: "Triggered by second verified ingress after at least one completed past trip. The traveler is recognized as returning, but the Second Trip Return Explorer milestone is not complete yet.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Second Trip Return Explorer Completed",
-        shortCode: "RE",
-        note: "Unlock condition: second verified egress or completed second trip lifecycle. This is the first true return-traveler completion moment.",
-        status: "LOCKED",
-        source: "Pending",
-      },
-      {
-        name: "Multi-Return Traveler",
-        shortCode: "MR",
-        note: "Future state for multiple completed Siargao trip cycles and verified Passport Trail history. No reward, perk, or status is promised until governed rules exist.",
+        name: "Unfinished Stops",
+        shortCode: "US",
+        note: "Unfinished Passport progress should be available when the traveler returns to Siargao.",
         status: "LOCKED",
         source: "Pending",
       },
     ],
   },
-
 };
+
 
 function statusTone(status: StopStatus) {
   if (status === "STAMP_UNLOCKED") {
@@ -950,18 +847,422 @@ function ReturnContinuityPremiumPanel() {
 }
 
 
-function TrailPaymentGatewayCta({
+function DiscoverOtherPassportTrails({
+  currentTrailSlug,
+}: {
+  currentTrailSlug: string;
+}) {
+  const otherTrails = [
+    {
+      slug: "island-hopping",
+      label: "Tri-Island",
+      meta: "GL Port • one-day island route",
+      badge: "GL Port",
+    },
+    {
+      slug: "sugba-lagoon",
+      label: "Sugba Lagoon",
+      meta: "Del Carmen • governed route",
+      badge: "DCS-linked",
+    },
+    {
+      slug: "bucas-grande-sohoton",
+      label: "Bucas / Sohoton",
+      meta: "Dapa-side • future official route",
+      badge: "Future",
+    },
+    {
+      slug: "siargao-land-tour",
+      label: "Land Tour",
+      meta: "South or North • guide + TukTuk",
+      badge: "Operator",
+    },
+    {
+      slug: "surf-explorer",
+      label: "Explorer Surf",
+      meta: "Continue later • surf support",
+      badge: "Surf",
+    },
+    {
+      slug: "culture-community",
+      label: "Culture",
+      meta: "Local stories • community stops",
+      badge: "Local",
+    },
+    {
+      slug: "food-wellness",
+      label: "Food & Wellness",
+      meta: "Restaurants • cafés • recovery",
+      badge: "Merchant",
+    },
+    {
+      slug: "return-traveler-continuity",
+      label: "Return Continuity",
+      meta: "Saved progress • repeat journey",
+      badge: "Progress",
+    },
+  ].filter((trail) => trail.slug !== currentTrailSlug);
+
+  const featuredTrails = otherTrails.slice(0, 4);
+
+  return (
+    <section
+      aria-label="Discover other Passport Trails"
+      style={{
+        margin: "14px auto 0",
+        width: "100%",
+        maxWidth: 430,
+        padding: "0 12px",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          borderRadius: 24,
+          background: "linear-gradient(135deg, #FFFFFF 0%, #F4FEFF 100%)",
+          border: "1px solid rgba(5,150,165,0.18)",
+          boxShadow: "0 16px 34px rgba(1,56,99,0.09)",
+          padding: 13,
+          boxSizing: "border-box",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            gap: 10,
+          }}
+        >
+          <div>
+            <div
+              style={{
+                color: "#0596A5",
+                fontSize: 9,
+                fontWeight: 950,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+              }}
+            >
+              Discover other Trails
+            </div>
+            <h2
+              style={{
+                margin: "5px 0 0",
+                color: "#013863",
+                fontSize: 18,
+                lineHeight: 1.05,
+                fontWeight: 950,
+                letterSpacing: "-0.04em",
+              }}
+            >
+              Continue your Passport journey.
+            </h2>
+          </div>
+
+          <Link
+            href="/traveler/passport-trails"
+            style={{
+              flex: "0 0 auto",
+              minHeight: 34,
+              borderRadius: 999,
+              background: "#EAFBFA",
+              color: "#047D8A",
+              WebkitTextFillColor: "#047D8A",
+              border: "1px solid rgba(5,150,165,0.18)",
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 11px",
+              fontSize: 10.5,
+              fontWeight: 950,
+              whiteSpace: "nowrap",
+            }}
+          >
+            View all
+          </Link>
+        </div>
+
+        <div
+          style={{
+            marginTop: 11,
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 8,
+          }}
+        >
+          {featuredTrails.map((trail) => (
+            <Link
+              key={trail.slug}
+              href={`/traveler/passport-trails/${trail.slug}`}
+              style={{
+                minHeight: 156,
+                borderRadius: 18,
+                background:
+                  "linear-gradient(135deg, rgba(234,251,250,0.92), rgba(255,255,255,0.98))",
+                border: "1px solid rgba(5,150,165,0.16)",
+                boxShadow: "0 10px 22px rgba(1,56,99,0.06)",
+                padding: 10,
+                textDecoration: "none",
+                color: "#013863",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                boxSizing: "border-box",
+                overflow: "hidden",
+              }}
+            >
+              <div>
+                <div
+                  aria-label={`Admin photo placeholder for ${trail.label}`}
+                  style={{
+                    minHeight: 68,
+                    borderRadius: 14,
+                    background:
+                      "linear-gradient(145deg, rgba(5,150,165,0.18), rgba(1,56,99,0.10)), linear-gradient(135deg, #F4FEFF 0%, #EAFBFA 100%)",
+                    border: "1px solid rgba(5,150,165,0.18)",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.42)",
+                    padding: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 6,
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        borderRadius: 999,
+                        background: "rgba(255,255,255,0.84)",
+                        color: "#047D8A",
+                        border: "1px solid rgba(5,150,165,0.14)",
+                        padding: "4px 6px",
+                        fontSize: 8,
+                        fontWeight: 950,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Admin Photo
+                    </span>
+
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        width: 20,
+                        height: 20,
+                        borderRadius: 8,
+                        background: "rgba(255,255,255,0.82)",
+                        border: "1px solid rgba(5,150,165,0.14)",
+                        display: "grid",
+                        placeItems: "center",
+                        color: "#0596A5",
+                        fontSize: 10,
+                        fontWeight: 950,
+                      }}
+                    >
+                      ◼
+                    </span>
+                  </div>
+
+                  <div>
+                    <div
+                      style={{
+                        fontSize: 10.5,
+                        lineHeight: 1.1,
+                        fontWeight: 900,
+                        color: "#013863",
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      {trail.label}
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 3,
+                        fontSize: 8.8,
+                        lineHeight: 1.2,
+                        fontWeight: 700,
+                        color: "#50668B",
+                      }}
+                    >
+                      Approved media slot from Admin Console
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: 9 }}>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      borderRadius: 999,
+                      background: "rgba(243,174,38,0.16)",
+                      color: "#A95B00",
+                      padding: "5px 7px",
+                      fontSize: 8.4,
+                      fontWeight: 950,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {trail.badge}
+                  </span>
+
+                  <div
+                    style={{
+                      marginTop: 7,
+                      fontSize: 13.1,
+                      lineHeight: 1.08,
+                      fontWeight: 950,
+                      letterSpacing: "-0.03em",
+                      color: "#013863",
+                    }}
+                  >
+                    {trail.label}
+                  </div>
+
+                  <div
+                    style={{
+                      marginTop: 4,
+                      fontSize: 10.1,
+                      lineHeight: 1.25,
+                      fontWeight: 700,
+                      color: "#50668B",
+                    }}
+                  >
+                    {trail.meta}
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  marginTop: 9,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 8,
+                  color: "#0596A5",
+                  fontSize: 10.5,
+                  fontWeight: 950,
+                }}
+              >
+                <span>Open trail</span>
+                <span aria-hidden="true">›</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function OfficialTrailMediaPreview({
   trailSlug,
   trailTitle,
 }: {
   trailSlug: string;
   trailTitle: string;
 }) {
-  const encodedTrail = encodeURIComponent(trailSlug);
+  const mediaByTrail: Record<
+    string,
+    {
+      badge: string;
+      headline: string;
+      subline: string;
+      primaryFrame: string;
+      secondaryFrames: string[];
+      proofLine: string;
+    }
+  > = {
+    "island-hopping": {
+      badge: "GL Port route",
+      headline: "Tri-Island Passport Trail Preview",
+      subline: "Approved GL Port route video, island photos, and operator media appear here once enabled by Admin.",
+      primaryFrame: "Guyam • Daku • Naked",
+      secondaryFrames: ["GL Port", "Boat day", "Stamp record"],
+      proofLine: "Admin-approved island-hopping media only",
+    },
+    "sugba-lagoon": {
+      badge: "Governed lagoon route",
+      headline: "Sugba Lagoon Island Hopping Preview",
+      subline: "Del Carmen route photos and operator/access media appear after governed route readiness.",
+      primaryFrame: "Sugba Lagoon route preview",
+      secondaryFrames: ["Del Carmen", "Lagoon route", "Operator readiness"],
+      proofLine: "Approved governed route media only",
+    },
+    "bucas-grande-sohoton": {
+      badge: "Future governed route",
+      headline: "Bucas Grande / Sohoton Official Trail Preview",
+      subline: "Dapa-side route photos and operator-approved media will appear once the governed route is activated.",
+      primaryFrame: "Sohoton route preview",
+      secondaryFrames: ["Bucas Grande", "Sohoton Cove", "Dapa-side movement"],
+      proofLine: "Future approved route media only",
+    },
+    "siargao-land-tour": {
+      badge: "Guide support",
+      headline: "Siargao Land Tour Passport Trail Preview",
+      subline: "South and North land tour media appears after Admin and approved local operator readiness.",
+      primaryFrame: "South or North route preview",
+      secondaryFrames: ["Guide support", "TukTuk / motorcycle", "Drone/no-drone option"],
+      proofLine: "Approved land tour media only",
+    },
+    "surf-explorer": {
+      badge: "Continue-later surf trail",
+      headline: "Explorer Surf Trail Preview",
+      subline: "Surf stop, surf school, and lesson media appears only after review and approval.",
+      primaryFrame: "Cloud 9 surf flow",
+      secondaryFrames: ["Beginner lesson", "Surf school", "Continue later"],
+      proofLine: "Approved surf media only",
+    },
+    "culture-community": {
+      badge: "Local discovery",
+      headline: "Culture & Community Trail Preview",
+      subline: "Local story, maker, food, and community media appears only after consent and partner approval.",
+      primaryFrame: "Culture • Community • Local stories",
+      secondaryFrames: ["Local host", "Maker stop", "Community stop"],
+      proofLine: "Approved community/partner media only",
+    },
+    "food-wellness": {
+      badge: "Merchant trail",
+      headline: "Food & Wellness Trail Preview",
+      subline: "Restaurant, café, wellness, spa, recovery, and island care media appears only after merchant approval.",
+      primaryFrame: "Food and wellness flow",
+      secondaryFrames: ["Restaurant stop", "Café stop", "Wellness stop"],
+      proofLine: "Approved merchant media only",
+    },
+    "return-traveler-continuity": {
+      badge: "Progress preview",
+      headline: "Return Traveler Continuity Preview",
+      subline: "Progress visuals will connect to verified Passport history and saved trail progress later.",
+      primaryFrame: "Verified return progress",
+      secondaryFrames: ["Past trails", "Unfinished stops", "Next journey"],
+      proofLine: "Verified history only",
+    },
+  };
+  const media = mediaByTrail[trailSlug] ?? {
+    badge: "Trail preview",
+    headline: `Preview ${trailTitle}`,
+    subline: "Approved trail video, route photos, and partner media appear here once Admin enables public media.",
+    primaryFrame: "Official Passport Trail",
+    secondaryFrames: ["Route", "Experience", "Stamp"],
+    proofLine: "Admin-approved media only",
+  };
 
   return (
     <section
-      aria-label="Trail booking and payment readiness"
+      aria-label="Official trail approved media preview"
       style={{
         margin: "12px auto 0",
         width: "100%",
@@ -972,74 +1273,3761 @@ function TrailPaymentGatewayCta({
     >
       <div
         style={{
-          borderRadius: 24,
+          borderRadius: 28,
+          background: "linear-gradient(135deg, #013863 0%, #035F79 54%, #0596A5 100%)",
+          border: "1px solid rgba(255,255,255,0.16)",
+          boxShadow: "0 22px 48px rgba(1,56,99,0.22)",
+          padding: 14,
+          color: "#FFFFFF",
+          boxSizing: "border-box",
+          overflow: "hidden",
+          position: "relative",
+        }}
+      >
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            right: -38,
+            top: -44,
+            width: 130,
+            height: 130,
+            borderRadius: 999,
+            background: "rgba(243,174,38,0.18)",
+          }}
+        />
+
+        <div
+          style={{
+            position: "relative",
+            display: "grid",
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              borderRadius: 23,
+              minHeight: 178,
+              background:
+                "radial-gradient(circle at 20% 18%, rgba(255,255,255,0.28), transparent 24%), linear-gradient(145deg, rgba(234,251,250,0.25), rgba(1,56,99,0.28)), linear-gradient(135deg, #047D8A, #013863)",
+              border: "1px solid rgba(255,255,255,0.20)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.16), 0 16px 34px rgba(1,25,45,0.22)",
+              padding: 14,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              boxSizing: "border-box",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                gap: 10,
+              }}
+            >
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.16)",
+                  border: "1px solid rgba(255,255,255,0.18)",
+                  padding: "6px 9px",
+                  fontSize: 9.5,
+                  fontWeight: 950,
+                  letterSpacing: "0.11em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {media.badge}
+              </span>
+
+              <span
+                aria-hidden="true"
+                style={{
+                  width: 46,
+                  height: 46,
+                  borderRadius: 999,
+                  background: "linear-gradient(135deg, #F3AE26, #D97706)",
+                  color: "#FFFFFF",
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: 18,
+                  fontWeight: 950,
+                  boxShadow: "0 12px 24px rgba(217,119,6,0.28)",
+                }}
+              >
+                ▶
+              </span>
+            </div>
+
+            <div>
+              <div
+                style={{
+                  display: "inline-flex",
+                  borderRadius: 14,
+                  background: "rgba(255,255,255,0.13)",
+                  padding: "7px 9px",
+                  fontSize: 11,
+                  fontWeight: 900,
+                  lineHeight: 1,
+                }}
+              >
+                {media.primaryFrame}
+              </div>
+
+              <div
+                style={{
+                  marginTop: 10,
+                  height: 5,
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.18)",
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    width: "42%",
+                    height: "100%",
+                    borderRadius: 999,
+                    background: "linear-gradient(90deg, #F3AE26, #FFFFFF)",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                borderRadius: 999,
+                background: "rgba(243,174,38,0.18)",
+                color: "#FFF3D1",
+                padding: "6px 9px",
+                fontSize: 9.2,
+                fontWeight: 950,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+              }}
+            >
+              {media.proofLine}
+            </div>
+
+            <h2
+              style={{
+                margin: "8px 0 0",
+                fontSize: 22,
+                lineHeight: 1.02,
+                letterSpacing: "-0.055em",
+                fontWeight: 950,
+                color: "#FFFFFF",
+                WebkitTextFillColor: "#FFFFFF",
+                textShadow: "0 2px 12px rgba(1,56,99,0.22)",
+              }}
+            >
+              {media.headline}
+            </h2>
+
+            <p
+              style={{
+                margin: "6px 0 0",
+                color: "rgba(255,255,255,0.82)",
+                fontSize: 11.8,
+                lineHeight: 1.34,
+                fontWeight: 720,
+              }}
+            >
+              {media.subline}
+            </p>
+          </div>
+
+          <div>
+            <div
+              style={{
+                marginBottom: 7,
+                color: "rgba(255,255,255,0.78)",
+                fontSize: 9,
+                fontWeight: 950,
+                letterSpacing: "0.11em",
+                textTransform: "uppercase",
+              }}
+            >
+              Approved trail media
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                gap: 7,
+              }}
+            >
+              {media.secondaryFrames.map((item, index) => (
+                <div
+                  key={item}
+                  aria-label={`Approved photo placeholder ${index + 1}: ${item}`}
+                  style={{
+                    minHeight: 72,
+                    borderRadius: 16,
+                    background:
+                      index === 0
+                        ? "linear-gradient(145deg, rgba(243,174,38,0.26), rgba(255,255,255,0.12))"
+                        : index === 1
+                          ? "linear-gradient(145deg, rgba(234,251,250,0.22), rgba(255,255,255,0.10))"
+                          : "linear-gradient(145deg, rgba(255,255,255,0.18), rgba(5,150,165,0.20))",
+                    border: "1px solid rgba(255,255,255,0.17)",
+                    padding: "8px 7px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    color: "#FFFFFF",
+                    fontSize: 10.5,
+                    lineHeight: 1.12,
+                    fontWeight: 850,
+                    boxSizing: "border-box",
+                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12)",
+                  }}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: 9,
+                      background: "rgba(255,255,255,0.16)",
+                      border: "1px solid rgba(255,255,255,0.14)",
+                      display: "grid",
+                      placeItems: "center",
+                      fontSize: 11,
+                      fontWeight: 950,
+                    }}
+                  >
+                    ◼
+                  </span>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+
+
+
+
+
+function LandTourMockupHeroHeader() {
+  return (
+    <section
+      aria-label="Siargao Land Tour Passport Trail hero banner"
+      style={{
+        width: "100%",
+        maxWidth: 460,
+        margin: "10px auto 10px",
+        padding: "0 16px",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          aspectRatio: "21 / 9",
+          minHeight: 154,
+          borderRadius: 28,
+          overflow: "hidden",
+          background: "#EAFBFA",
+          boxShadow: "0 18px 42px rgba(1,56,99,0.14)",
+          border: "1px solid rgba(5,150,165,0.12)",
+        }}
+      >
+        <img
+          src="/images/spm/siargao-land-tour-hero-banner.png"
+          alt="Siargao Land Tour Passport Trail road trip banner"
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "block",
+            objectFit: "cover",
+            objectPosition: "center center",
+          }}
+        />
+
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(180deg, rgba(1,56,99,0.08) 0%, rgba(1,56,99,0.00) 42%, rgba(1,56,99,0.10) 100%)",
+            pointerEvents: "none",
+          }}
+        />
+      </div>
+    </section>
+  );
+}
+
+
+function OfficialTrailCommercialExposurePanel({
+  trailSlug,
+}: {
+  trailSlug: string;
+}) {
+  const premium: Record<
+    string,
+    {
+      descriptionTitle: string;
+      description: string;
+      heroChips: string[];
+      featureCards: Array<{ title: string; body: string; icon: string }>;
+      bookingFields: Array<{ label: string; value: string; helper: string }>;
+      flowSteps: string[];
+      priceHeadline: string;
+      priceBody: string;
+      paxRows: Array<{ pax: string; rule: string }>;
+      supportHeadline: string;
+      supportCards: Array<{ title: string; body: string }>;
+      readinessLabel: string;
+      readinessBody: string;
+      primaryCta: string;
+      secondaryCta: string;
+      tone: "teal" | "gold" | "slate";
+    }
+  > = {
+    "siargao-land-tour": {
+      descriptionTitle: "Siargao Land Tour Passport Trail",
+      description:
+        "Choose a South Tour or North Tour route with local operator support. This trail is designed for guided island movement by road, with clear pax, pickup, vehicle, and support options before confirmation.",
+      heroChips: ["South Tour", "North Tour", "Guide support", "Drone option"],
+      featureCards: [
+        {
+          icon: "🛺",
+          title: "South or North route",
+          body: "South and North are handled as separate one-day land tour choices.",
+        },
+        {
+          icon: "👥",
+          title: "Pax-aware request",
+          body: "Solo, couple, family, or group size affects vehicle and support.",
+        },
+        {
+          icon: "📍",
+          title: "Pickup + route support",
+          body: "Pickup point, route timing, and operator availability are checked.",
+        },
+        {
+          icon: "📸",
+          title: "Photo / drone option",
+          body: "Mobile photographer or drone pilot can be selected when available.",
+        },
+      ],
+      bookingFields: [
+        {
+          label: "Route",
+          value: "South Tour or North Tour",
+          helper: "Select one route first for a cleaner day plan.",
+        },
+        {
+          label: "Pax",
+          value: "Solo / 2–3 / 4–6 / 7–10",
+          helper: "Pax controls vehicle, quote, and handling.",
+        },
+        {
+          label: "Transport",
+          value: "TukTuk / motorcycle / van",
+          helper: "Matched after pax and pickup are known.",
+        },
+        {
+          label: "Add-ons",
+          value: "Guide / photo / drone",
+          helper: "Optional support confirmed by operator.",
+        },
+      ],
+      flowSteps: ["Pick route", "Set pax", "Choose support", "Request confirmation"],
+      priceHeadline: "Price to confirm",
+      priceBody:
+        "Final price depends on route choice, pax count, pickup area, vehicle type, guide support, and photo/drone add-ons.",
+      paxRows: [
+        { pax: "Solo", rule: "Private support quote" },
+        { pax: "2–3 pax", rule: "TukTuk / motorcycle review" },
+        { pax: "4–6 pax", rule: "Vehicle + guide review" },
+        { pax: "7–10 pax", rule: "Van / group handling" },
+      ],
+      supportHeadline: "Local operator support required",
+      supportCards: [
+        {
+          title: "Guide / driver",
+          body: "Route timing, stops, and local movement are handled by approved support.",
+        },
+        {
+          title: "Transport",
+          body: "TukTuk, motorcycle, or van depends on pax and pickup point.",
+        },
+        {
+          title: "Media support",
+          body: "Mobile photographer or drone pilot is optional and availability-based.",
+        },
+      ],
+      readinessLabel: "Request confirmation before payment",
+      readinessBody:
+        "Payment should open only after the selected route, pax, pickup, vehicle, and operator support are confirmed.",
+      primaryCta: "Request Land Tour Confirmation",
+      secondaryCta: "Ask Kuya Tala™",
+      tone: "gold",
+    },
+    "island-hopping": {
+      descriptionTitle: "Tri-Island Passport Trail",
+      description:
+        "A classic General Luna island-hopping route usually completed in one scheduled tour day from GL Port.",
+      heroChips: ["GL Port", "Guyam", "Daku", "Naked"],
+      featureCards: [
+        { icon: "🚤", title: "Boat day route", body: "Built around the classic GL island-hopping flow." },
+        { icon: "👥", title: "Joiner-ready", body: "Pax pricing starts from the joiner anchor." },
+        { icon: "🌤️", title: "Weather-aware", body: "Departure remains route and condition dependent." },
+        { icon: "🎫", title: "Passport record", body: "Progress depends on verified booking or QR records." },
+      ],
+      bookingFields: [
+        { label: "Route", value: "Guyam • Daku • Naked", helper: "Classic GL island route." },
+        { label: "Pax", value: "Solo / group", helper: "Pax affects booking and final total." },
+        { label: "Departure", value: "GL Port", helper: "Operational anchor for this route." },
+        { label: "Status", value: "Booking-backed", helper: "Payment follows route readiness." },
+      ],
+      flowSteps: ["Choose route", "Confirm pax", "Create booking", "Proceed to payment"],
+      priceHeadline: "From ₱1,500 / pax",
+      priceBody: "Joiner anchor starts at ₱1,500 per person. Final total follows selected pax and package rules.",
+      paxRows: [
+        { pax: "Solo", rule: "Joiner seat" },
+        { pax: "2–3 pax", rule: "Regular joiner rate" },
+        { pax: "4–6 pax", rule: "Group adjustment" },
+        { pax: "7–10 pax", rule: "Group handling" },
+      ],
+      supportHeadline: "Boat/operator fulfillment",
+      supportCards: [
+        { title: "Boat coordination", body: "Operator readiness is required before departure." },
+        { title: "Port conditions", body: "Weather and clearance remain part of the trip state." },
+        { title: "Booking record", body: "Payment and progress stay attached to booking truth." },
+      ],
+      readinessLabel: "Booking-backed checkout",
+      readinessBody: "Payment can proceed through the booking-backed island-hopping flow.",
+      primaryCta: "Create Booking Record",
+      secondaryCta: "Ask Kuya Tala™",
+      tone: "teal",
+    },
+    "sugba-lagoon": {
+      descriptionTitle: "Sugba Lagoon Island Hopping",
+      description:
+        "A governed Del Carmen lagoon route connected to official access, operator readiness, and scheduled movement.",
+      heroChips: ["Del Carmen", "Governed", "Lagoon route", "DCS-linked"],
+      featureCards: [
+        { icon: "🛶", title: "Lagoon route", body: "Handled as an official route, not a casual land stop." },
+        { icon: "✅", title: "Access readiness", body: "Route access must be confirmed first." },
+        { icon: "👥", title: "Operator capacity", body: "Availability and pax handling are checked." },
+        { icon: "🎫", title: "Route-backed", body: "Booking and payment depend on readiness." },
+      ],
+      bookingFields: [
+        { label: "Route", value: "Sugba Lagoon", helper: "Governed route flow." },
+        { label: "Access", value: "To confirm", helper: "Official readiness first." },
+        { label: "Operator", value: "Required", helper: "Capacity must be checked." },
+        { label: "Payment", value: "After confirmation", helper: "No premature checkout." },
+      ],
+      flowSteps: ["Check route", "Confirm access", "Confirm operator", "Unlock payment"],
+      priceHeadline: "Price to confirm",
+      priceBody: "Final amount depends on route access, pax, operator capacity, and official readiness.",
+      paxRows: [
+        { pax: "Solo", rule: "Route quote" },
+        { pax: "2–3 pax", rule: "Operator review" },
+        { pax: "4–6 pax", rule: "Capacity review" },
+        { pax: "7–10 pax", rule: "Group confirmation" },
+      ],
+      supportHeadline: "Governed route support",
+      supportCards: [
+        { title: "Access flow", body: "Official route readiness must be checked." },
+        { title: "Operator readiness", body: "Operator capacity controls fulfillment." },
+        { title: "Payment state", body: "Checkout opens only after confirmation." },
+      ],
+      readinessLabel: "Route confirmation required",
+      readinessBody: "Payment unlocks only after governed route readiness is confirmed.",
+      primaryCta: "Request Route Confirmation",
+      secondaryCta: "Ask Kuya Tala™",
+      tone: "teal",
+    },
+    "bucas-grande-sohoton": {
+      descriptionTitle: "Bucas Grande / Sohoton Official Trail",
+      description:
+        "A future Dapa-side governed route for Bucas Grande and Sohoton access. This page is a route preview until operations are activated.",
+      heroChips: ["Future route", "Dapa-side", "Sohoton", "Not live yet"],
+      featureCards: [
+        { icon: "⛰️", title: "Future official trail", body: "Reserved for governed Sohoton-side movement." },
+        { icon: "🧭", title: "Dapa-side anchor", body: "Movement logic must be configured later." },
+        { icon: "👥", title: "Operator readiness", body: "Capacity must be wired before live booking." },
+        { icon: "₱", title: "No live checkout", body: "No payment collection until activated." },
+      ],
+      bookingFields: [
+        { label: "Route", value: "Bucas / Sohoton", helper: "Future official route." },
+        { label: "Status", value: "Preview", helper: "Not live-bookable." },
+        { label: "Operator", value: "Pending", helper: "To be activated later." },
+        { label: "Payment", value: "Disabled", helper: "No live checkout." },
+      ],
+      flowSteps: ["Preview route", "Wait activation", "Confirm operator later", "No checkout yet"],
+      priceHeadline: "Future-ready",
+      priceBody: "No live price claim. Pricing must be snapshot-backed before this route becomes bookable.",
+      paxRows: [
+        { pax: "Solo", rule: "Pending" },
+        { pax: "2–3 pax", rule: "Pending" },
+        { pax: "4–6 pax", rule: "Pending" },
+        { pax: "7–10 pax", rule: "Pending" },
+      ],
+      supportHeadline: "Future operator readiness",
+      supportCards: [
+        { title: "Route rules", body: "Governed movement must be configured." },
+        { title: "Operator capacity", body: "Fulfillment must be confirmed later." },
+        { title: "Payment guard", body: "No checkout until route is operational." },
+      ],
+      readinessLabel: "Not live-bookable yet",
+      readinessBody: "This trail is future-ready only. Payment stays closed until operational rules are wired.",
+      primaryCta: "View Future Route",
+      secondaryCta: "Ask Kuya Tala™",
+      tone: "slate",
+    },
+    "surf-explorer": {
+      descriptionTitle: "Explorer Surf Trail",
+      description:
+        "A continue-later surf trail where travelers can start with one surf stop, lesson, or surf school visit.",
+      heroChips: ["Beginner-safe", "Lesson optional", "Save progress", "Continue later"],
+      featureCards: [
+        { icon: "🏄", title: "Surf moment first", body: "Start with a lesson, viewing stop, or surf school." },
+        { icon: "🧑‍🏫", title: "Coach optional", body: "Instructor support applies when a lesson is selected." },
+        { icon: "🎫", title: "Saved progress", body: "Progress can continue during this trip or later." },
+        { icon: "🌊", title: "No pressure", body: "Travelers do not need to finish all surf stops in one day." },
+      ],
+      bookingFields: [
+        { label: "Level", value: "Beginner / experienced", helper: "Choose comfort level." },
+        { label: "Activity", value: "Lesson / viewing", helper: "Select surf action." },
+        { label: "Support", value: "Optional", helper: "Coach if needed." },
+        { label: "Progress", value: "Saved", helper: "Continue later." },
+      ],
+      flowSteps: ["Pick level", "Choose lesson/viewing", "Request support", "Save progress"],
+      priceHeadline: "Price to confirm",
+      priceBody: "Price depends on lesson type, coach or surf school availability, timing, and group size.",
+      paxRows: [
+        { pax: "Solo", rule: "Lesson quote" },
+        { pax: "2–3 pax", rule: "Coach review" },
+        { pax: "4–6 pax", rule: "Group session" },
+        { pax: "7–10 pax", rule: "Group handling" },
+      ],
+      supportHeadline: "Surf support optional",
+      supportCards: [
+        { title: "Instructor", body: "Needed only when lesson is selected." },
+        { title: "Surf school", body: "Availability depends on partner readiness." },
+        { title: "Progress", body: "Stops can continue later." },
+      ],
+      readinessLabel: "Support-based payment",
+      readinessBody: "No payment pressure unless a lesson, coach, or supported surf session is selected.",
+      primaryCta: "Start Surf Trail",
+      secondaryCta: "Ask Kuya Tala™",
+      tone: "teal",
+    },
+    "culture-community": {
+      descriptionTitle: "Culture & Community Trail",
+      description:
+        "A local discovery trail through community stops, food makers, cultural touchpoints, local stories, and island experiences.",
+      heroChips: ["Local stories", "Makers", "Community stops", "Consent-first"],
+      featureCards: [
+        { icon: "🤝", title: "Local connection", body: "Built around approved local participation." },
+        { icon: "🍲", title: "Food and makers", body: "May include local food, markets, or maker stops." },
+        { icon: "📍", title: "One-day fit", body: "Can usually be completed within the day." },
+        { icon: "✅", title: "Partner approval", body: "Public completion depends on approved participation." },
+      ],
+      bookingFields: [
+        { label: "Interest", value: "Culture / food / stories", helper: "Choose local angle." },
+        { label: "Partner", value: "Approval needed", helper: "Capacity check." },
+        { label: "Group", value: "Pax review", helper: "Host capacity." },
+        { label: "Visit", value: "Approved stops", helper: "Respectful flow." },
+      ],
+      flowSteps: ["Choose interest", "Check partner", "Confirm capacity", "Visit approved stops"],
+      priceHeadline: "Price to confirm",
+      priceBody: "Some stops may be free. Paid stops depend on approved partner offer and capacity.",
+      paxRows: [
+        { pax: "Solo", rule: "Partner approval" },
+        { pax: "2–3 pax", rule: "Small group" },
+        { pax: "4–6 pax", rule: "Host capacity" },
+        { pax: "7–10 pax", rule: "Group review" },
+      ],
+      supportHeadline: "Local host / partner support",
+      supportCards: [
+        { title: "Host readiness", body: "Partner readiness controls availability." },
+        { title: "Consent-first", body: "Community participation must be approved." },
+        { title: "Local story", body: "Experience should stay human and local." },
+      ],
+      readinessLabel: "Partner readiness required",
+      readinessBody: "Payment follows approved partner capacity, consent, and stop-level rules.",
+      primaryCta: "Explore Local Stops",
+      secondaryCta: "Ask Kuya Tala™",
+      tone: "gold",
+    },
+    "food-wellness": {
+      descriptionTitle: "Food & Wellness Trail",
+      description:
+        "A merchant-operated trail for restaurants, cafés, wellness spaces, recovery spots, spa, massage, beauty, health, and island care experiences.",
+      heroChips: ["Restaurants", "Cafés", "Wellness", "Recovery"],
+      featureCards: [
+        { icon: "🥗", title: "Restaurant stops", body: "Local dining, cafés, and food partners." },
+        { icon: "💆", title: "Wellness care", body: "Spa, massage, recovery, and island care." },
+        { icon: "🛍️", title: "Merchant-led", body: "Availability depends on merchant offers." },
+        { icon: "🎁", title: "Rewards-ready", body: "Strong future lane for repeat local spend." },
+      ],
+      bookingFields: [
+        { label: "Category", value: "Food / wellness", helper: "Choose stop type." },
+        { label: "Merchant", value: "Select stop", helper: "Offer availability." },
+        { label: "Pax", value: "Group availability", helper: "Table/service capacity." },
+        { label: "Payment", value: "Merchant rules", helper: "Offer dependent." },
+      ],
+      flowSteps: ["Choose category", "Select merchant", "Check offer", "Visit stop"],
+      priceHeadline: "Free or merchant-priced",
+      priceBody: "Price depends on merchant offer, table/service availability, wellness service, and group size.",
+      paxRows: [
+        { pax: "Solo", rule: "Merchant offer" },
+        { pax: "2–3 pax", rule: "Table/service" },
+        { pax: "4–6 pax", rule: "Group availability" },
+        { pax: "7–10 pax", rule: "Merchant review" },
+      ],
+      supportHeadline: "Merchant-operated trail",
+      supportCards: [
+        { title: "Restaurants/cafés", body: "Food stops control their own offers." },
+        { title: "Wellness operators", body: "Spa and recovery services depend on availability." },
+        { title: "No generic attractions", body: "This lane is for merchant participation." },
+      ],
+      readinessLabel: "Merchant payment rules required",
+      readinessBody: "Merchant payment and reward logic must be explicit before live commerce.",
+      primaryCta: "Explore Food & Wellness",
+      secondaryCta: "Ask Kuya Tala™",
+      tone: "gold",
+    },
+    "return-traveler-continuity": {
+      descriptionTitle: "Return Traveler Continuity",
+      description:
+        "A progress layer for unfinished Passport Trails, saved stops, previous stamps, repeat visits, loyalty, and future rewards.",
+      heroChips: ["Saved trails", "Unfinished stops", "Return visits", "Progress layer"],
+      featureCards: [
+        { icon: "🎫", title: "Saved progress", body: "Keeps unfinished trail activity attached to the traveler." },
+        { icon: "🔁", title: "Return visits", body: "Built for travelers who come back to Siargao." },
+        { icon: "📍", title: "Unfinished stops", body: "Continue what was not completed before." },
+        { icon: "₱", title: "No instant checkout", body: "Payment only applies if the selected trail requires it." },
+      ],
+      bookingFields: [
+        { label: "Progress", value: "Saved", helper: "Review history." },
+        { label: "Trail", value: "Unfinished", helper: "Pick what to continue." },
+        { label: "Support", value: "Trail dependent", helper: "Based on selected trail." },
+        { label: "Payment", value: "If needed", helper: "No continuity checkout." },
+      ],
+      flowSteps: ["Review progress", "Pick unfinished trail", "Continue later", "Keep history"],
+      priceHeadline: "No instant checkout",
+      priceBody: "Payment applies only when the selected continued trail or service requires it.",
+      paxRows: [
+        { pax: "Solo", rule: "Progress" },
+        { pax: "Group", rule: "Trail dependent" },
+        { pax: "Support", rule: "Service dependent" },
+        { pax: "Payment", rule: "Only if required" },
+      ],
+      supportHeadline: "Depends on selected trail",
+      supportCards: [
+        { title: "Trail dependent", body: "Guide and support rules come from the trail continued." },
+        { title: "History-based", body: "Progress is attached to OSP traveler identity." },
+        { title: "No fake rewards", body: "Rewards only appear when governed rules exist." },
+      ],
+      readinessLabel: "Progress layer only",
+      readinessBody: "No checkout from continuity alone. Payment depends on the selected trail or service.",
+      primaryCta: "Review Saved Progress",
+      secondaryCta: "Ask Kuya Tala™",
+      tone: "slate",
+    },
+  };
+
+  const item = premium[trailSlug];
+
+  if (!item) {
+    return null;
+  }
+
+  // LANDTOUR_MOCKUP_LOCK_UI_05F
+  if (trailSlug === "siargao-land-tour") {
+    const navy = "#013863";
+    const teal = "#0596A5";
+    const tealDeep = "#047F91";
+    const gold = "#F3AE26";
+    const softGold = "#FFF8E8";
+    const mist = "#EAFBFA";
+    const slate = "#50668B";
+
+    const card: React.CSSProperties = {
+      borderRadius: 30,
+      background: "#FFFFFF",
+      border: "1px solid rgba(1,56,99,0.08)",
+      boxShadow: "0 18px 42px rgba(1,56,99,0.10)",
+      padding: 14,
+      boxSizing: "border-box",
+      overflow: "hidden",
+    };
+
+    const sectionHead: React.CSSProperties = {
+      display: "flex",
+      alignItems: "center",
+      gap: 9,
+      color: tealDeep,
+      fontSize: 13,
+      lineHeight: 1,
+      fontWeight: 950,
+      letterSpacing: "0.055em",
+      textTransform: "uppercase",
+      marginBottom: 13,
+    };
+
+    const sectionIcon: React.CSSProperties = {
+      width: 32,
+      height: 32,
+      borderRadius: 14,
+      background: "rgba(5,150,165,0.10)",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      color: tealDeep,
+      fontSize: 17,
+      flex: "0 0 auto",
+    };
+
+    const label: React.CSSProperties = {
+      display: "block",
+      color: navy,
+      fontSize: 12,
+      lineHeight: 1,
+      fontWeight: 900,
+      marginBottom: 8,
+    };
+
+    const info: React.CSSProperties = {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: 14,
+      height: 14,
+      borderRadius: 999,
+      border: "1px solid rgba(80,102,139,0.35)",
+      color: slate,
+      fontSize: 9,
+      fontWeight: 950,
+      marginLeft: 4,
+      verticalAlign: "1px",
+    };
+
+    const input: React.CSSProperties = {
+      width: "100%",
+      minHeight: 50,
+      borderRadius: 16,
+      border: "1px solid rgba(1,56,99,0.16)",
+      background: "#FFFFFF",
+      color: navy,
+      fontSize: 14,
+      fontWeight: 780,
+      padding: "0 13px",
+      boxSizing: "border-box",
+      outline: "none",
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.88)",
+    };
+
+    const selectedRoute: React.CSSProperties = {
+      minHeight: 54,
+      borderRadius: 16,
+      border: "1px solid rgba(5,150,165,0.28)",
+      background: "linear-gradient(135deg, #0596A5, #08AFC0)",
+      color: "#FFFFFF",
+      WebkitTextFillColor: "#FFFFFF",
+      fontSize: 14,
+      fontWeight: 950,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      padding: "0 12px",
+      boxShadow: "0 12px 24px rgba(5,150,165,0.22)",
+      cursor: "pointer",
+    };
+
+    const routeOption: React.CSSProperties = {
+      minHeight: 54,
+      borderRadius: 16,
+      border: "1px solid rgba(1,56,99,0.18)",
+      background: "#FFFFFF",
+      color: navy,
+      WebkitTextFillColor: navy,
+      fontSize: 14,
+      fontWeight: 850,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      padding: "0 12px",
+      cursor: "pointer",
+    };
+
+    const segmented: React.CSSProperties = {
+      display: "grid",
+      gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+      borderRadius: 16,
+      border: "1px solid rgba(1,56,99,0.14)",
+      overflow: "hidden",
+      background: "#FFFFFF",
+    };
+
+    const selectCell = (active: boolean, isLast: boolean): React.CSSProperties => ({
+      minHeight: 50,
+      border: 0,
+      borderRight: isLast ? 0 : "1px solid rgba(1,56,99,0.10)",
+      background: active ? "rgba(5,150,165,0.10)" : "#FFFFFF",
+      color: active ? tealDeep : slate,
+      WebkitTextFillColor: active ? tealDeep : slate,
+      fontSize: 9.5,
+      fontWeight: 850,
+      display: "grid",
+      placeItems: "center",
+      gap: 2,
+      cursor: "pointer",
+      padding: 5,
+      textAlign: "center",
+    });
+
+    return (
+      <section
+        aria-label="Siargao Land Tour booking details"
+        style={{
+          margin: "0 auto",
+          width: "100%",
+          maxWidth: 460,
+          padding: "0 16px",
+          boxSizing: "border-box",
           background:
-            "linear-gradient(135deg, #FFFFFF 0%, #FFFDF5 42%, #F4FEFF 100%)",
-          border: "1px solid rgba(243,174,38,0.22)",
-          boxShadow: "0 14px 34px rgba(1,56,99,0.10)",
-          padding: 13,
+            "linear-gradient(180deg, rgba(234,251,250,0.60) 0%, rgba(255,255,255,0.98) 44%, rgba(255,248,232,0.46) 100%)",
+          borderRadius: 38,
+          overflow: "hidden",
+        }}
+      >
+        <div style={{ display: "grid", gap: 13 }}>
+          <article
+            aria-label="Siargao Land Tour Passport Trail summary"
+            style={{
+              ...card,
+              width: "100%",
+              maxWidth: "100%",
+              display: "grid",
+              gridTemplateColumns: "60px minmax(0, 1fr)",
+              gap: 14,
+              alignItems: "center",
+              margin: "-14px auto 0",
+              borderRadius: 24,
+              background: "linear-gradient(145deg, #FFFFFF 0%, rgba(244,252,250,0.98) 100%)",
+              padding: "16px 17px",
+              boxShadow: "0 16px 38px rgba(1,56,99,0.10)",
+              border: "1px solid rgba(5,150,165,0.10)",
+              boxSizing: "border-box",
+              position: "relative",
+              zIndex: 2,
+              minHeight: 104,
+              overflow: "hidden",
+            }}
+          >
+            <div
+              aria-hidden="true"
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 999,
+                background: "linear-gradient(135deg, #0596A5, #047F91)",
+                color: "#FFFFFF",
+                display: "grid",
+                placeItems: "center",
+                boxShadow: "0 14px 26px rgba(5,150,165,0.22)",
+                alignSelf: "center",
+                position: "relative",
+                flex: "0 0 auto",
+              }}
+            >
+              <svg
+                width="38"
+                height="38"
+                viewBox="0 0 64 64"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path
+                  d="M9 47C15.5 43.5 22.5 43.5 29 47C35.5 50.5 42.5 50.5 49 47C52 45.4 54.5 44.7 57 44.7"
+                  stroke="#FFFFFF"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M14 53C20 50 26 50 32 53C38 56 44 56 50 53"
+                  stroke="#FFFFFF"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  opacity="0.92"
+                />
+                <path
+                  d="M33 43V24"
+                  stroke="#FFFFFF"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M33 25C29 18.5 23 15.5 17 16.5"
+                  stroke="#FFFFFF"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M34 25C39.5 18 46 15 53 17"
+                  stroke="#FFFFFF"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M33 24C31.5 16 33.2 10.5 38 7"
+                  stroke="#FFFFFF"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M32 24C27.5 17 27.6 11 31.5 7"
+                  stroke="#FFFFFF"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+
+            <div
+              style={{
+                minWidth: 0,
+                display: "grid",
+                alignContent: "center",
+              }}
+            >
+              <h2
+                style={{
+                  margin: 0,
+                  color: "#013863",
+                  fontSize: "clamp(18.5px, 4.55vw, 21px)",
+                  lineHeight: 1.08,
+                  fontWeight: 820,
+                  letterSpacing: "-0.028em",
+                }}
+              >
+                Siargao Land Tour Passport Trail
+              </h2>
+              <p
+                style={{
+                  margin: "5px 0 0",
+                  color: "#013863",
+                  fontSize: "clamp(11.75px, 2.85vw, 12.75px)",
+                  lineHeight: 1.34,
+                  fontWeight: 560,
+                }}
+              >
+                Choose a South Tour or North Tour route with local operator support. Built for guided island movement by road, with pax, pickup, vehicle, and support options confirmed before payment.
+              </p>
+            </div>
+          </article>
+
+          <article
+            aria-label="Route and Tour Options"
+            style={{
+              ...card,
+              borderRadius: 24,
+              background: "linear-gradient(145deg, #FFFFFF 0%, rgba(234,251,250,0.72) 100%)",
+              boxShadow: "0 16px 36px rgba(1,56,99,0.09)",
+              border: "1px solid rgba(5,150,165,0.12)",
+              padding: 16,
+            }}
+          >
+            <div style={sectionHead}>
+              <span style={sectionIcon}>📍</span>
+              Route & Tour Options
+            </div>
+
+            <form
+              id="siargao-land-tour-options"
+              aria-label="Siargao Land Tour options and price form"
+              style={{
+                display: "grid",
+                gap: 12,
+                margin: 0,
+              }}
+            >
+              <fieldset
+                style={{
+                  border: 0,
+                  padding: 0,
+                  margin: 0,
+                  display: "grid",
+                  gridTemplateColumns: "minmax(0, 1fr) 112px",
+                  gap: 10,
+                  alignItems: "start",
+                }}
+              >
+                <div>
+                  <legend style={{ ...label, marginBottom: 7 }}>
+                    Route <span style={info}>i</span>
+                  </legend>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 8,
+                    }}
+                  >
+                    <label
+                      aria-label="Select South Tour"
+                      style={{
+                        minHeight: 70,
+                        borderRadius: 18,
+                        border: "1px solid rgba(5,150,165,0.22)",
+                        background: "linear-gradient(145deg, #0596A5 0%, #08AFC0 100%)",
+                        color: "#FFFFFF",
+                        WebkitTextFillColor: "#FFFFFF",
+                        padding: "10px",
+                        display: "grid",
+                        gridTemplateColumns: "32px minmax(0, 1fr)",
+                        gap: 8,
+                        alignItems: "center",
+                        textAlign: "left",
+                        boxShadow: "0 12px 24px rgba(5,150,165,0.20)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="landTourRoute"
+                        value="south-tour"
+                        defaultChecked
+                        style={{
+                          position: "absolute",
+                          opacity: 0,
+                          pointerEvents: "none",
+                        }}
+                      />
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: 999,
+                          background: "rgba(255,255,255,0.18)",
+                          display: "grid",
+                          placeItems: "center",
+                          fontSize: 17,
+                        }}
+                      >
+                        🌴
+                      </span>
+                      <span>
+                        <strong
+                          style={{
+                            display: "block",
+                            fontSize: 13,
+                            lineHeight: 1.05,
+                            fontWeight: 900,
+                            letterSpacing: "-0.02em",
+                          }}
+                        >
+                          South Tour
+                        </strong>
+                        <span
+                          style={{
+                            display: "block",
+                            marginTop: 4,
+                            fontSize: 9.2,
+                            lineHeight: 1.15,
+                            fontWeight: 750,
+                            opacity: 0.92,
+                          }}
+                        >
+                          Coconut road · Maasin
+                        </span>
+                      </span>
+                    </label>
+
+                    <label
+                      aria-label="Select North Tour"
+                      style={{
+                        minHeight: 70,
+                        borderRadius: 18,
+                        border: "1px solid rgba(5,150,165,0.14)",
+                        background: "rgba(255,255,255,0.97)",
+                        color: "#013863",
+                        WebkitTextFillColor: "#013863",
+                        padding: "10px",
+                        display: "grid",
+                        gridTemplateColumns: "32px minmax(0, 1fr)",
+                        gap: 8,
+                        alignItems: "center",
+                        textAlign: "left",
+                        boxShadow: "0 10px 20px rgba(1,56,99,0.05)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="landTourRoute"
+                        value="north-tour"
+                        style={{
+                          position: "absolute",
+                          opacity: 0,
+                          pointerEvents: "none",
+                        }}
+                      />
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: 999,
+                          background: "rgba(234,251,250,0.95)",
+                          display: "grid",
+                          placeItems: "center",
+                          fontSize: 16,
+                        }}
+                      >
+                        ⛰️
+                      </span>
+                      <span>
+                        <strong
+                          style={{
+                            display: "block",
+                            fontSize: 13,
+                            lineHeight: 1.05,
+                            fontWeight: 900,
+                            letterSpacing: "-0.02em",
+                          }}
+                        >
+                          North Tour
+                        </strong>
+                        <span
+                          style={{
+                            display: "block",
+                            marginTop: 4,
+                            fontSize: 9.2,
+                            lineHeight: 1.15,
+                            fontWeight: 750,
+                            color: "#50668B",
+                          }}
+                        >
+                          Pacifico · Alegria
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+
+                  <label style={{ marginTop: 9, display: "block" }}>
+                    <span style={{ ...label, marginBottom: 6 }}>
+                      Tour timing
+                    </span>
+                    <select
+                      name="landTourDayMode"
+                      aria-label="Choose land tour day option"
+                      defaultValue="single-day"
+                      style={{
+                        ...input,
+                        minHeight: 45,
+                        borderRadius: 16,
+                        fontSize: 12.5,
+                        fontWeight: 850,
+                        background: "#FFFFFF",
+                      }}
+                    >
+                      <option value="single-day">Single route today</option>
+                      <option value="both-days">Both on separate days</option>
+                      <option value="operator-plan">Let operator recommend</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div>
+                  <label>
+                    <span style={{ ...label, marginBottom: 7 }}>
+                      No. of pax <span style={info}>i</span>
+                    </span>
+
+                    <input
+                      id="landTourPaxInput"
+                      name="landTourPax"
+                      aria-label="Number of passengers"
+                      type="number"
+                      min="1"
+                      max="10"
+                      defaultValue="7"
+                      inputMode="numeric"
+                      style={{
+                        width: "100%",
+                        minHeight: 58,
+                        borderRadius: 20,
+                        background: "linear-gradient(180deg, #FFFFFF 0%, rgba(234,251,250,0.82) 100%)",
+                        border: "1px solid rgba(5,150,165,0.14)",
+                        boxShadow: "0 10px 20px rgba(1,56,99,0.05)",
+                        color: "#013863",
+                        fontSize: 25,
+                        fontWeight: 950,
+                        textAlign: "center",
+                        outline: "none",
+                        boxSizing: "border-box",
+                      }}
+                    />
+                  </label>
+
+                  <div
+                    aria-label="Unit price based on passenger count"
+                    style={{
+                      marginTop: 8,
+                      borderRadius: 18,
+                      background: "linear-gradient(145deg, rgba(255,248,232,0.98), #FFFFFF)",
+                      border: "1px solid rgba(243,174,38,0.28)",
+                      padding: "9px 8px",
+                      textAlign: "center",
+                      boxShadow: "0 8px 18px rgba(1,56,99,0.045)",
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "block",
+                        color: "#50668B",
+                        fontSize: 8.4,
+                        lineHeight: 1.05,
+                        fontWeight: 850,
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Unit price
+                    </span>
+                    <strong
+                      id="landTourUnitPrice"
+                      style={{
+                        display: "block",
+                        marginTop: 4,
+                        color: "#0596A5",
+                        fontSize: 16,
+                        lineHeight: 1,
+                        fontWeight: 950,
+                        letterSpacing: "-0.035em",
+                      }}
+                    >
+                      ₱1,500 / pax
+                    </strong>
+                    <span
+                      id="landTourTierLabel"
+                      style={{
+                        display: "block",
+                        marginTop: 4,
+                        color: "#50668B",
+                        fontSize: 8.4,
+                        lineHeight: 1.15,
+                        fontWeight: 740,
+                      }}
+                    >
+                      7–10 pax tier
+                    </span>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div
+                aria-label="Estimated total summary"
+                style={{
+                  borderRadius: 22,
+                  background: "linear-gradient(135deg, #013863 0%, #045E78 100%)",
+                  border: "1px solid rgba(5,150,165,0.16)",
+                  boxShadow: "0 16px 30px rgba(1,56,99,0.16)",
+                  padding: "13px 14px",
+                  display: "grid",
+                  gridTemplateColumns: "minmax(0, 1fr) auto",
+                  gap: 12,
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <span
+                    style={{
+                      display: "block",
+                      color: "rgba(255,255,255,0.72)",
+                      fontSize: 9,
+                      lineHeight: 1.05,
+                      fontWeight: 900,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Estimated total
+                  </span>
+                  <strong
+                    id="landTourFormulaLabel"
+                    style={{
+                      display: "block",
+                      marginTop: 5,
+                      color: "#FFFFFF",
+                      fontSize: 12.4,
+                      lineHeight: 1.15,
+                      fontWeight: 850,
+                    }}
+                  >
+                    7 pax × ₱1,500 / pax
+                  </strong>
+                </div>
+
+                <strong
+                  id="landTourTotalPrice"
+                  style={{
+                    color: "#F3AE26",
+                    fontSize: 24,
+                    lineHeight: 1,
+                    fontWeight: 950,
+                    letterSpacing: "-0.04em",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  ₱10,500
+                </strong>
+              </div>
+
+              <div
+                aria-label="Pax tier reference"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                  gap: 6,
+                }}
+              >
+                {[
+                  ["Solo", "₱3,200"],
+                  ["2–3 pax", "₱2,200"],
+                  ["4–6 pax", "₱1,800"],
+                  ["7–10 pax", "₱1,500"],
+                ].map(([tier, price], index) => (
+                  <div
+                    key={tier}
+                    style={{
+                      minHeight: 46,
+                      borderRadius: 15,
+                      background:
+                        index === 3
+                          ? "rgba(234,251,250,0.96)"
+                          : "rgba(255,255,255,0.94)",
+                      border:
+                        index === 3
+                          ? "1px solid rgba(5,150,165,0.22)"
+                          : "1px solid rgba(1,56,99,0.08)",
+                      display: "grid",
+                      placeItems: "center",
+                      textAlign: "center",
+                      padding: "6px 4px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: "#013863",
+                        fontSize: 8.6,
+                        lineHeight: 1.05,
+                        fontWeight: 850,
+                      }}
+                    >
+                      {tier}
+                    </span>
+                    <strong
+                      style={{
+                        marginTop: 3,
+                        color: "#0596A5",
+                        fontSize: 11.3,
+                        lineHeight: 1,
+                        fontWeight: 950,
+                      }}
+                    >
+                      {price}
+                    </strong>
+                  </div>
+                ))}
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 10,
+                }}
+              >
+                <label>
+                  <span style={label}>
+                    Transport <span style={info}>i</span>
+                  </span>
+                  <select
+                    name="landTourTransport"
+                    aria-label="Choose transport mode"
+                    defaultValue="tuktuk"
+                    style={{
+                      ...input,
+                      minHeight: 47,
+                      borderRadius: 16,
+                      fontSize: 12.8,
+                      fontWeight: 850,
+                      background: "#FFFFFF",
+                    }}
+                  >
+                    <option value="tuktuk">🛺 TukTuk</option>
+                    <option value="motorcycle">🏍️ Motorcycle</option>
+                    <option value="van">🚐 Van</option>
+                    <option value="operator-recommend">⭐ Operator recommendation</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span style={label}>
+                    Photo / drone <span style={info}>i</span>
+                  </span>
+                  <select
+                    name="landTourMedia"
+                    aria-label="Choose photo or drone option"
+                    defaultValue="mobile-photo"
+                    style={{
+                      ...input,
+                      minHeight: 47,
+                      borderRadius: 16,
+                      fontSize: 12.8,
+                      fontWeight: 850,
+                      background: "#FFFFFF",
+                    }}
+                  >
+                    <option value="none">No media</option>
+                    <option value="mobile-photo">📷 Mobile photographer</option>
+                    <option value="drone">🚁 Drone</option>
+                    <option value="photo-drone">📷 Photo + drone</option>
+                  </select>
+                </label>
+              </div>
+
+              <div
+                aria-label="Price confirmation note"
+                style={{
+                  borderRadius: 17,
+                  background: "rgba(255,255,255,0.92)",
+                  border: "1px solid rgba(5,150,165,0.12)",
+                  padding: 10,
+                  color: "#50668B",
+                  fontSize: 10,
+                  lineHeight: 1.3,
+                  fontWeight: 720,
+                }}
+              >
+                Estimated total is based on pax range. Final amount is confirmed after operator review, route timing, vehicle, and support options.
+              </div>
+            </form>
+
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  (() => {
+                    const root = document.getElementById("siargao-land-tour-options");
+                    if (!root || root.dataset.priceBound === "true") return;
+                    root.dataset.priceBound = "true";
+
+                    const paxInput = document.getElementById("landTourPaxInput");
+                    const unitPrice = document.getElementById("landTourUnitPrice");
+                    const tierLabel = document.getElementById("landTourTierLabel");
+                    const formulaLabel = document.getElementById("landTourFormulaLabel");
+                    const totalPrice = document.getElementById("landTourTotalPrice");
+
+                    const fmt = new Intl.NumberFormat("en-PH");
+
+                    function resolvePrice(pax) {
+                      if (pax <= 1) return { unit: 3200, tier: "solo tier" };
+                      if (pax <= 3) return { unit: 2200, tier: "2–3 pax tier" };
+                      if (pax <= 6) return { unit: 1800, tier: "4–6 pax tier" };
+                      return { unit: 1500, tier: "7–10 pax tier" };
+                    }
+
+                    function update() {
+                      const raw = Number(paxInput?.value || 1);
+                      const pax = Math.min(10, Math.max(1, Number.isFinite(raw) ? raw : 1));
+                      if (paxInput && String(paxInput.value) !== String(pax)) paxInput.value = String(pax);
+
+                      const price = resolvePrice(pax);
+                      const total = pax * price.unit;
+
+                      if (unitPrice) unitPrice.textContent = "₱" + fmt.format(price.unit) + " / pax";
+                      if (tierLabel) tierLabel.textContent = price.tier;
+                      if (formulaLabel) formulaLabel.textContent = pax + " pax × ₱" + fmt.format(price.unit) + " / pax";
+                      if (totalPrice) totalPrice.textContent = "₱" + fmt.format(total);
+                    }
+
+                    paxInput?.addEventListener("input", update);
+                    paxInput?.addEventListener("change", update);
+                    update();
+                  })();
+                `,
+              }}
+            />
+          </article>
+
+          <article
+            aria-label="Trail Stops and Stamp Readiness"
+            style={{
+              ...card,
+              borderRadius: 24,
+              background: "linear-gradient(145deg, #FFFFFF 0%, rgba(234,251,250,0.70) 100%)",
+              boxShadow: "0 16px 36px rgba(1,56,99,0.085)",
+              border: "1px solid rgba(5,150,165,0.12)",
+              padding: 16,
+            }}
+          >
+            <div style={sectionHead}>
+              <span style={sectionIcon}>🗺️</span>
+              Trail Stops & Stamp Readiness
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gap: 11,
+              }}
+            >
+              <div
+                style={{
+                  borderRadius: 20,
+                  background: "linear-gradient(135deg, rgba(5,150,165,0.11), rgba(255,255,255,0.94))",
+                  border: "1px solid rgba(5,150,165,0.16)",
+                  padding: 11,
+                  display: "grid",
+                  gap: 4,
+                }}
+              >
+                <strong
+                  style={{
+                    color: "#013863",
+                    fontSize: 12.4,
+                    lineHeight: 1.1,
+                    fontWeight: 950,
+                  }}
+                >
+                  South or North can be done in one day
+                </strong>
+                <span
+                  style={{
+                    color: "#50668B",
+                    fontSize: 10.2,
+                    lineHeight: 1.32,
+                    fontWeight: 720,
+                  }}
+                >
+                  Complete both across separate days or through a private DIY arrangement with local operator support.
+                </span>
+              </div>
+
+              {[
+                {
+                  group: "South Tour Highlights",
+                  tint: "teal",
+                  stops: [
+                    ["Mountain / Coconut Trees View Deck", "Scenic stop", "Stamp-ready"],
+                    ["Coconut Road", "Photo stop", "Stamp-ready"],
+                    ["Maasin River", "Barangay / LGU stop", "Verify stop"],
+                    ["Magpupungko", "Coastal pool stop", "Stamp-ready"],
+                    ["Sugba Lagoon", "Governed route cross-link", "Use Sugba Lagoon trail"],
+                    ["Canijugan Peak", "Viewpoint stop", "Stamp-ready"],
+                    ["Secret Beach", "Beach stop", "Stamp-ready"],
+                    ["Malinao Skate Road", "Road / skate stop", "Verify stop"],
+                  ],
+                },
+                {
+                  group: "North Tour Highlights",
+                  tint: "gold",
+                  stops: [
+                    ["Pacifico Beach", "Beach / surf area", "Stamp-ready"],
+                    ["Trogon’s Perch", "Scenic stop", "Stamp-ready"],
+                    ["Little Hawaii", "Must-stop highlight", "Verify stop"],
+                    ["Alegria Beach", "Beach stop", "Stamp-ready"],
+                    ["Somyot Cave", "Must-stop cave", "Verify stop"],
+                    ["Taktak Falls", "Must-stop falls", "Verify stop"],
+                    ["Pasikon / Pasicon Beach", "Name to verify locally", "Local spelling check"],
+                  ],
+                },
+              ].map((routeGroup) => (
+                <div
+                  key={routeGroup.group}
+                  style={{
+                    borderRadius: 22,
+                    background: "#FFFFFF",
+                    border: "1px solid rgba(1,56,99,0.08)",
+                    boxShadow: "0 10px 22px rgba(1,56,99,0.055)",
+                    padding: 12,
+                    display: "grid",
+                    gap: 9,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "minmax(0, 1fr) auto",
+                      gap: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <strong
+                      style={{
+                        color: "#013863",
+                        fontSize: 12.8,
+                        lineHeight: 1.12,
+                        fontWeight: 950,
+                        letterSpacing: "-0.015em",
+                      }}
+                    >
+                      {routeGroup.group}
+                    </strong>
+                    <span
+                      style={{
+                        borderRadius: 999,
+                        background:
+                          routeGroup.tint === "teal"
+                            ? "rgba(5,150,165,0.11)"
+                            : "rgba(243,174,38,0.16)",
+                        color: routeGroup.tint === "teal" ? "#047F91" : "#A26200",
+                        border:
+                          routeGroup.tint === "teal"
+                            ? "1px solid rgba(5,150,165,0.18)"
+                            : "1px solid rgba(243,174,38,0.24)",
+                        padding: "5px 8px",
+                        fontSize: 8.4,
+                        lineHeight: 1,
+                        fontWeight: 950,
+                        letterSpacing: "0.05em",
+                        textTransform: "uppercase",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      One-day branch
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gap: 7,
+                    }}
+                  >
+                    {routeGroup.stops.map(([stopName, stopType, status], index) => {
+                      const isGoverned = status === "Use Sugba Lagoon trail";
+                      const needsVerify = status === "Verify stop" || status === "Local spelling check";
+                      return (
+                        <div
+                          key={stopName}
+                          style={{
+                            minHeight: 54,
+                            borderRadius: 17,
+                            background:
+                              isGoverned
+                                ? "linear-gradient(135deg, rgba(255,248,232,0.94), #FFFFFF)"
+                                : "rgba(244,252,250,0.82)",
+                            border:
+                              isGoverned
+                                ? "1px solid rgba(243,174,38,0.24)"
+                                : "1px solid rgba(5,150,165,0.11)",
+                            padding: "9px 10px",
+                            display: "grid",
+                            gridTemplateColumns: "30px minmax(0, 1fr) auto",
+                            gap: 9,
+                            alignItems: "center",
+                          }}
+                        >
+                          <span
+                            aria-hidden="true"
+                            style={{
+                              width: 30,
+                              height: 30,
+                              borderRadius: 999,
+                              background: isGoverned
+                                ? "linear-gradient(135deg, #F3AE26, #F59E0B)"
+                                : "linear-gradient(135deg, #0596A5, #047F91)",
+                              color: "#FFFFFF",
+                              display: "grid",
+                              placeItems: "center",
+                              fontSize: 11,
+                              fontWeight: 950,
+                              boxShadow: "0 8px 16px rgba(1,56,99,0.08)",
+                            }}
+                          >
+                            {index + 1}
+                          </span>
+
+                          <span style={{ minWidth: 0 }}>
+                            <strong
+                              style={{
+                                display: "block",
+                                color: "#013863",
+                                fontSize: 11.8,
+                                lineHeight: 1.13,
+                                fontWeight: 920,
+                              }}
+                            >
+                              {stopName}
+                            </strong>
+                            <span
+                              style={{
+                                display: "block",
+                                marginTop: 3,
+                                color: "#50668B",
+                                fontSize: 9.4,
+                                lineHeight: 1.12,
+                                fontWeight: 720,
+                              }}
+                            >
+                              {stopType}
+                            </span>
+                          </span>
+
+                          <span
+                            style={{
+                              borderRadius: 999,
+                              background: isGoverned
+                                ? "rgba(243,174,38,0.14)"
+                                : needsVerify
+                                  ? "rgba(255,248,232,0.92)"
+                                  : "rgba(5,150,165,0.10)",
+                              color: isGoverned
+                                ? "#A26200"
+                                : needsVerify
+                                  ? "#A26200"
+                                  : "#047F91",
+                              border: isGoverned
+                                ? "1px solid rgba(243,174,38,0.22)"
+                                : needsVerify
+                                  ? "1px solid rgba(243,174,38,0.22)"
+                                  : "1px solid rgba(5,150,165,0.16)",
+                              padding: "5px 7px",
+                              fontSize: 8.4,
+                              lineHeight: 1,
+                              fontWeight: 900,
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {status}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          <article
+            aria-label="Booking Flow"
+            style={{
+              ...card,
+              borderRadius: 24,
+              background: "linear-gradient(145deg, #FFFFFF 0%, rgba(234,251,250,0.66) 100%)",
+              boxShadow: "0 16px 36px rgba(1,56,99,0.085)",
+              border: "1px solid rgba(5,150,165,0.12)",
+              padding: 16,
+            }}
+          >
+            <div style={sectionHead}>
+              <span style={sectionIcon}>🗓️</span>
+              Booking Details
+            </div>
+
+            <form
+              id="siargao-land-tour-booking-handoff"
+              aria-label="Siargao Land Tour booking handoff form"
+              style={{
+                display: "grid",
+                gap: 12,
+                margin: 0,
+              }}
+            >
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 10,
+                }}
+              >
+                <label>
+                  <span style={label}>
+                    Pickup area <span style={info}>i</span>
+                  </span>
+                  <select
+                    name="pickupArea"
+                    aria-label="Choose pickup area"
+                    defaultValue="general-luna"
+                    style={{
+                      ...input,
+                      minHeight: 48,
+                      borderRadius: 16,
+                      fontSize: 13,
+                      fontWeight: 850,
+                      background: "#FFFFFF",
+                    }}
+                  >
+                    <option value="general-luna">📍 General Luna</option>
+                    <option value="cloud-9">Cloud 9 / Catangnan</option>
+                    <option value="malinao">Malinao</option>
+                    <option value="dapa">Dapa</option>
+                    <option value="other">Other / confirm with operator</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span style={label}>Preferred date</span>
+                  <input
+                    name="preferredDate"
+                    aria-label="Preferred land tour date"
+                    type="date"
+                    defaultValue="2026-05-22"
+                    style={{
+                      ...input,
+                      minHeight: 48,
+                      borderRadius: 16,
+                      fontSize: 13,
+                      fontWeight: 850,
+                      background: "#FFFFFF",
+                    }}
+                  />
+                </label>
+              </div>
+
+              <label>
+                <span style={label}>Support package</span>
+                <select
+                  name="supportPackage"
+                  aria-label="Choose support package"
+                  defaultValue="standard"
+                  style={{
+                    ...input,
+                    minHeight: 48,
+                    borderRadius: 16,
+                    fontSize: 13,
+                    fontWeight: 850,
+                    background: "#FFFFFF",
+                  }}
+                >
+                  <option value="standard">🛡️ Standard — driver / local support</option>
+                  <option value="driver-guide">Driver + local guide</option>
+                  <option value="photo">Guide + mobile photographer</option>
+                  <option value="full-media">Guide + photo / drone support</option>
+                </select>
+              </label>
+
+              <label style={{ display: "block" }}>
+                <span style={label}>
+                  Notes for operator <span style={{ color: "#50668B", fontWeight: 760 }}>(optional)</span>
+                </span>
+
+                <div style={{ position: "relative" }}>
+                  <textarea
+                    name="operatorNotes"
+                    aria-label="Notes for land tour operator"
+                    defaultValue={"We’d love scenic stops and local food spots.\nPlease include Coconut View Deck if possible."}
+                    rows={3}
+                    maxLength={200}
+                    style={{
+                      ...input,
+                      minHeight: 84,
+                      borderRadius: 18,
+                      paddingTop: 13,
+                      paddingLeft: 42,
+                      paddingBottom: 18,
+                      resize: "vertical",
+                      fontFamily: "inherit",
+                      lineHeight: 1.35,
+                      fontSize: 12.5,
+                      fontWeight: 650,
+                      background: "#FFFFFF",
+                    }}
+                  />
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      left: 14,
+                      top: 14,
+                      color: "#50668B",
+                      fontSize: 17,
+                    }}
+                  >
+                    📝
+                  </span>
+                  <span
+                    style={{
+                      position: "absolute",
+                      right: 12,
+                      bottom: 9,
+                      color: "#50668B",
+                      fontSize: 9.5,
+                      fontWeight: 760,
+                    }}
+                  >
+                    73/200
+                  </span>
+                </div>
+              </label>
+
+              <div
+                aria-label="Booking handoff summary"
+                style={{
+                  borderRadius: 18,
+                  background: "rgba(255,248,232,0.82)",
+                  border: "1px solid rgba(243,174,38,0.24)",
+                  padding: 11,
+                  display: "grid",
+                  gap: 7,
+                }}
+              >
+                <strong
+                  style={{
+                    color: "#013863",
+                    fontSize: 12,
+                    lineHeight: 1.1,
+                    fontWeight: 950,
+                  }}
+                >
+                  Handoff prepared for operator confirmation
+                </strong>
+                <span
+                  style={{
+                    color: "#50668B",
+                    fontSize: 10.5,
+                    lineHeight: 1.34,
+                    fontWeight: 720,
+                  }}
+                >
+                  Your route, pax, pickup, vehicle, media option, support package, and notes will be used to request local operator confirmation before payment opens.
+                </span>
+              </div>
+            </form>
+          </article>
+
+          <article
+            aria-label="Guide and Support Selection"
+            style={{
+              ...card,
+              borderRadius: 24,
+              background: "linear-gradient(145deg, #FFFFFF 0%, rgba(234,251,250,0.70) 100%)",
+              boxShadow: "0 16px 36px rgba(1,56,99,0.085)",
+              border: "1px solid rgba(5,150,165,0.12)",
+              padding: 16,
+            }}
+          >
+            <div style={sectionHead}>
+              <span style={sectionIcon}>👥</span>
+              Guide & Support Inclusions
+            </div>
+
+            <form
+              id="siargao-land-tour-guide-support"
+              aria-label="Siargao Land Tour guide and support selection form"
+              style={{
+                display: "grid",
+                gap: 12,
+                margin: 0,
+              }}
+            >
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 10,
+                }}
+              >
+                <label>
+                  <span style={label}>
+                    Guide support <span style={info}>i</span>
+                  </span>
+                  <select
+                    name="guideSupport"
+                    aria-label="Choose guide support"
+                    defaultValue="driver-local-support"
+                    style={{
+                      ...input,
+                      minHeight: 48,
+                      borderRadius: 16,
+                      fontSize: 12.8,
+                      fontWeight: 850,
+                      background: "#FFFFFF",
+                    }}
+                  >
+                    <option value="driver-local-support">🧭 Driver + local support</option>
+                    <option value="licensed-guide">Licensed local guide</option>
+                    <option value="operator-recommended">Operator recommended</option>
+                    <option value="no-separate-guide">No separate guide</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span style={label}>
+                    Support level <span style={info}>i</span>
+                  </span>
+                  <select
+                    name="supportLevel"
+                    aria-label="Choose support level"
+                    defaultValue="standard"
+                    style={{
+                      ...input,
+                      minHeight: 48,
+                      borderRadius: 16,
+                      fontSize: 12.8,
+                      fontWeight: 850,
+                      background: "#FFFFFF",
+                    }}
+                  >
+                    <option value="standard">Standard route support</option>
+                    <option value="assisted">Assisted route planning</option>
+                    <option value="premium">Premium guided support</option>
+                    <option value="custom-review">Custom operator review</option>
+                  </select>
+                </label>
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 10,
+                }}
+              >
+                <label>
+                  <span style={label}>
+                    Photo / drone <span style={info}>i</span>
+                  </span>
+                  <select
+                    name="mediaSupport"
+                    aria-label="Choose photo or drone support"
+                    defaultValue="mobile-photographer"
+                    style={{
+                      ...input,
+                      minHeight: 48,
+                      borderRadius: 16,
+                      fontSize: 12.8,
+                      fontWeight: 850,
+                      background: "#FFFFFF",
+                    }}
+                  >
+                    <option value="none">No media support</option>
+                    <option value="mobile-photographer">📷 Mobile photographer</option>
+                    <option value="drone">🚁 Drone support</option>
+                    <option value="photo-drone">📷 Photo + drone</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span style={label}>
+                    Vehicle support <span style={info}>i</span>
+                  </span>
+                  <select
+                    name="vehicleSupport"
+                    aria-label="Choose vehicle support"
+                    defaultValue="operator-match"
+                    style={{
+                      ...input,
+                      minHeight: 48,
+                      borderRadius: 16,
+                      fontSize: 12.8,
+                      fontWeight: 850,
+                      background: "#FFFFFF",
+                    }}
+                  >
+                    <option value="operator-match">Matched by operator</option>
+                    <option value="tuktuk">TukTuk preferred</option>
+                    <option value="motorcycle">Motorcycle preferred</option>
+                    <option value="van">Van preferred</option>
+                  </select>
+                </label>
+              </div>
+
+              <div
+                aria-label="Selected support summary"
+                style={{
+                  borderRadius: 28,
+                  background:
+                    "linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(234,251,250,0.72) 100%)",
+                  border: "1px solid rgba(5,150,165,0.18)",
+                  boxShadow: "0 18px 42px rgba(1,56,99,0.10)",
+                  padding: 14,
+                  display: "grid",
+                  gap: 12,
+                  overflow: "hidden",
+                  position: "relative",
+                }}
+              >
+                <div
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    right: -36,
+                    bottom: -28,
+                    width: 140,
+                    height: 90,
+                    borderRadius: "50%",
+                    background:
+                      "radial-gradient(circle, rgba(5,150,165,0.10) 0%, rgba(5,150,165,0.00) 70%)",
+                    pointerEvents: "none",
+                  }}
+                />
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                    gap: 8,
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  {[
+                    [
+                      "LOCAL SUPPORT",
+                      "Local support",
+                      "Driver / guide",
+                      (
+                        <svg
+                          width="31"
+                          height="31"
+                          viewBox="0 0 64 64"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <circle cx="32" cy="32" r="22" stroke="#FFFFFF" strokeWidth="4" />
+                          <path d="M39 25L35 39L25 43L29 29L39 25Z" stroke="#FFFFFF" strokeWidth="4" strokeLinejoin="round" />
+                          <circle cx="32" cy="32" r="3" fill="#FFFFFF" />
+                          <path d="M32 8V14" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" />
+                          <path d="M32 50V56" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" />
+                          <path d="M8 32H14" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" />
+                          <path d="M50 32H56" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" />
+                        </svg>
+                      ),
+                    ],
+                    [
+                      "TRANSPORT",
+                      "Transport",
+                      "Route matched",
+                      (
+                        <svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 64 64"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <path d="M13 25H47C50.3 25 53 27.7 53 31V43H11V27C11 25.9 11.9 25 13 25Z" stroke="#FFFFFF" strokeWidth="4" strokeLinejoin="round" />
+                          <path d="M18 25L23 15H44L49 25" stroke="#FFFFFF" strokeWidth="4" strokeLinejoin="round" />
+                          <path d="M20 32H29" stroke="#FFFFFF" strokeWidth="3.5" strokeLinecap="round" />
+                          <path d="M35 32H45" stroke="#FFFFFF" strokeWidth="3.5" strokeLinecap="round" />
+                          <circle cx="21" cy="45" r="5" stroke="#FFFFFF" strokeWidth="4" />
+                          <circle cx="44" cy="45" r="5" stroke="#FFFFFF" strokeWidth="4" />
+                          <path d="M14 18C19 13 25 11 32 11C39 11 45 13 50 18" stroke="#FFFFFF" strokeWidth="3.5" strokeLinecap="round" opacity="0.85" />
+                        </svg>
+                      ),
+                    ],
+                    [
+                      "MEDIA",
+                      "Media",
+                      "Optional add-on",
+                      (
+                        <svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 64 64"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <path d="M18 24H25L29 18H36L40 24H47C50.3 24 53 26.7 53 30V45C53 48.3 50.3 51 47 51H18C14.7 51 12 48.3 12 45V30C12 26.7 14.7 24 18 24Z" stroke="#FFFFFF" strokeWidth="4" strokeLinejoin="round" />
+                          <circle cx="32.5" cy="37.5" r="8.5" stroke="#FFFFFF" strokeWidth="4" />
+                          <path d="M46 31H46.1" stroke="#FFFFFF" strokeWidth="5" strokeLinecap="round" />
+                          <path d="M37 33L29 42" stroke="#FFFFFF" strokeWidth="3.5" strokeLinecap="round" opacity="0.85" />
+                        </svg>
+                      ),
+                    ],
+                  ].map(([eyebrow, title, sub, icon]) => (
+                    <div
+                      key={String(title)}
+                      style={{
+                        minHeight: 124,
+                        borderRadius: 24,
+                        background:
+                          "linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.96) 100%)",
+                        border: "1px solid rgba(5,150,165,0.13)",
+                        boxShadow: "0 14px 26px rgba(1,56,99,0.08)",
+                        padding: "11px 8px 12px",
+                        display: "grid",
+                        justifyItems: "center",
+                        alignContent: "start",
+                        gap: 7,
+                        textAlign: "center",
+                      }}
+                    >
+                      <span
+                        style={{
+                          borderRadius: 999,
+                          background:
+                            "linear-gradient(180deg, rgba(234,251,250,0.98), rgba(255,255,255,0.96))",
+                          border: "1px solid rgba(5,150,165,0.20)",
+                          color: "#0596A5",
+                          padding: "5px 8px",
+                          fontSize: 7.2,
+                          lineHeight: 1,
+                          fontWeight: 950,
+                          letterSpacing: "0.06em",
+                          textTransform: "uppercase",
+                          maxWidth: "100%",
+                          whiteSpace: "nowrap",
+                          boxShadow: "0 6px 12px rgba(1,56,99,0.04)",
+                        }}
+                      >
+                        {eyebrow}
+                      </span>
+
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 999,
+                          background:
+                            "radial-gradient(circle at 32% 28%, rgba(255,255,255,0.20), rgba(255,255,255,0.00) 32%), linear-gradient(135deg, #0596A5, #047F91)",
+                          color: "#FFFFFF",
+                          display: "grid",
+                          placeItems: "center",
+                          boxShadow:
+                            "0 12px 24px rgba(5,150,165,0.25), inset 0 0 0 2px rgba(255,255,255,0.20)",
+                          border: "2px solid rgba(255,255,255,0.92)",
+                        }}
+                      >
+                        {icon}
+                      </span>
+
+                      <strong
+                        style={{
+                          color: "#013863",
+                          fontSize: 12,
+                          lineHeight: 1.08,
+                          fontWeight: 950,
+                          letterSpacing: "-0.02em",
+                        }}
+                      >
+                        {title}
+                      </strong>
+
+                      <span
+                        style={{
+                          width: 16,
+                          height: 3,
+                          borderRadius: 999,
+                          background: "#0596A5",
+                        }}
+                      />
+
+                      <span
+                        style={{
+                          color: "#50668B",
+                          fontSize: 9.4,
+                          lineHeight: 1.12,
+                          fontWeight: 780,
+                        }}
+                      >
+                        {sub}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div
+                  style={{
+                    position: "relative",
+                    zIndex: 1,
+                    borderRadius: 22,
+                    background:
+                      "linear-gradient(135deg, rgba(234,251,250,0.96), rgba(255,255,255,0.94))",
+                    border: "1px solid rgba(5,150,165,0.18)",
+                    boxShadow: "0 10px 22px rgba(1,56,99,0.055)",
+                    padding: "12px 12px",
+                    display: "grid",
+                    gridTemplateColumns: "42px minmax(0, 1fr)",
+                    gap: 11,
+                    alignItems: "center",
+                    overflow: "hidden",
+                  }}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      width: 42,
+                      height: 42,
+                      borderRadius: 999,
+                      background: "rgba(255,255,255,0.92)",
+                      border: "1px solid rgba(5,150,165,0.16)",
+                      color: "#0596A5",
+                      display: "grid",
+                      placeItems: "center",
+                      boxShadow: "0 8px 16px rgba(1,56,99,0.05)",
+                    }}
+                  >
+                    <svg
+                      width="26"
+                      height="26"
+                      viewBox="0 0 64 64"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                      focusable="false"
+                    >
+                      <path d="M32 7L52 15V29C52 42 44 53 32 57C20 53 12 42 12 29V15L32 7Z" stroke="#0596A5" strokeWidth="4" strokeLinejoin="round" />
+                      <path d="M22 32L29 39L43 24" stroke="#0596A5" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+
+                  <strong
+                    style={{
+                      color: "#013863",
+                      fontSize: 12.4,
+                      lineHeight: 1.34,
+                      fontWeight: 850,
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    Guide, transport, and photo/drone support are reviewed by the local operator before payment opens.
+                  </strong>
+
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      right: 12,
+                      bottom: 8,
+                      color: "#F3AE26",
+                      fontSize: 15,
+                      opacity: 0.8,
+                    }}
+                  >
+                    ✦
+                  </span>
+                </div>
+              </div>
+
+              </form>
+          </article>
+
+          <article
+            aria-label="Payment Readiness"
+            style={{
+              ...card,
+              borderRadius: 28,
+              background:
+                "linear-gradient(145deg, rgba(255,255,255,0.99) 0%, rgba(255,248,232,0.72) 100%)",
+              boxShadow: "0 18px 42px rgba(1,56,99,0.10)",
+              border: "1px solid rgba(243,174,38,0.24)",
+              padding: 16,
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                right: -42,
+                top: -48,
+                width: 140,
+                height: 140,
+                borderRadius: 999,
+                background:
+                  "radial-gradient(circle, rgba(243,174,38,0.16) 0%, rgba(243,174,38,0.00) 70%)",
+                pointerEvents: "none",
+              }}
+            />
+
+            <div
+              style={{
+                position: "relative",
+                zIndex: 1,
+                display: "grid",
+                gridTemplateColumns: "60px minmax(0, 1fr)",
+                gap: 13,
+                alignItems: "start",
+              }}
+            >
+              <span
+                aria-hidden="true"
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 22,
+                  background:
+                    "linear-gradient(135deg, rgba(234,251,250,0.98), rgba(255,255,255,0.96))",
+                  border: "1px solid rgba(5,150,165,0.16)",
+                  boxShadow: "0 12px 24px rgba(1,56,99,0.06)",
+                  display: "grid",
+                  placeItems: "center",
+                }}
+              >
+                <svg
+                  width="36"
+                  height="36"
+                  viewBox="0 0 64 64"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M32 7L52 15V29C52 42 44 53 32 57C20 53 12 42 12 29V15L32 7Z"
+                    stroke="#0596A5"
+                    strokeWidth="4"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M22 32L29 39L43 24"
+                    stroke="#0596A5"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+
+              <div>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    borderRadius: 999,
+                    background: "rgba(243,174,38,0.16)",
+                    color: "#A26200",
+                    padding: "5px 9px",
+                    fontSize: 8.8,
+                    lineHeight: 1,
+                    fontWeight: 950,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Ready for operator confirmation
+                </span>
+
+                <h2
+                  style={{
+                    margin: "9px 0 0",
+                    color: "#013863",
+                    fontSize: 20,
+                    lineHeight: 1.12,
+                    fontWeight: 900,
+                    letterSpacing: "-0.03em",
+                  }}
+                >
+                  Confirm your Land Tour slot
+                </h2>
+
+                <p
+                  style={{
+                    margin: "7px 0 0",
+                    color: "#50668B",
+                    fontSize: 11.7,
+                    lineHeight: 1.4,
+                    fontWeight: 720,
+                  }}
+                >
+                  Send your route, pax, pickup, vehicle, guide/support, and media choices for operator confirmation. Once accepted, payment opens for your confirmed Land Tour slot.
+                </p>
+              </div>
+            </div>
+
+            <div
+              style={{
+                position: "relative",
+                zIndex: 1,
+                display: "grid",
+                gap: 9,
+                marginTop: 14,
+              }}
+            >
+              <a
+                href="/traveler/passport-trails/siargao-land-tour?request=confirm-land-tour-slot"
+                aria-label="Confirm My Land Tour Slot"
+                style={{
+                  minHeight: 54,
+                  borderRadius: 18,
+                  background:
+                    "linear-gradient(135deg, #F3AE26 0%, #F59E0B 100%)",
+                  color: "#FFFFFF",
+                  WebkitTextFillColor: "#FFFFFF",
+                  display: "grid",
+                  placeItems: "center",
+                  textDecoration: "none",
+                  fontSize: 14,
+                  fontWeight: 950,
+                  letterSpacing: "-0.01em",
+                  boxShadow: "0 14px 28px rgba(243,174,38,0.26)",
+                  border: "1px solid rgba(255,255,255,0.44)",
+                }}
+              >
+                ✅ Confirm My Land Tour Slot
+              </a>
+
+              <a
+                href="/traveler/assistant?topic=siargao-land-tour"
+                aria-label="Ask Kuya Tala about Siargao Land Tour"
+                style={{
+                  minHeight: 48,
+                  borderRadius: 18,
+                  background: "#FFFFFF",
+                  color: "#0596A5",
+                  WebkitTextFillColor: "#0596A5",
+                  display: "grid",
+                  placeItems: "center",
+                  textDecoration: "none",
+                  fontSize: 13,
+                  fontWeight: 900,
+                  border: "1px solid rgba(5,150,165,0.22)",
+                  boxShadow: "0 8px 18px rgba(1,56,99,0.045)",
+                }}
+              >
+                💬 Ask Kuya Tala™
+              </a>
+            </div>
+
+            <div
+              aria-label="Payment readiness state"
+              style={{
+                position: "relative",
+                zIndex: 1,
+                marginTop: 12,
+                borderRadius: 18,
+                background: "rgba(255,255,255,0.84)",
+                border: "1px solid rgba(5,150,165,0.12)",
+                padding: 10,
+                display: "grid",
+                gap: 7,
+              }}
+            >
+              {[
+                ["Route + pax", "Ready to send"],
+                ["Guide/support", "To confirm"],
+                ["Payment", "Opens after acceptance"],
+              ].map(([labelText, valueText], index) => (
+                <div
+                  key={labelText}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "minmax(0, 1fr) auto",
+                    gap: 8,
+                    alignItems: "center",
+                    paddingTop: index === 0 ? 0 : 7,
+                    borderTop:
+                      index === 0 ? "0" : "1px solid rgba(1,56,99,0.07)",
+                  }}
+                >
+                  <span
+                    style={{
+                      color: "#50668B",
+                      fontSize: 10.2,
+                      fontWeight: 800,
+                      lineHeight: 1.15,
+                    }}
+                  >
+                    {labelText}
+                  </span>
+                  <strong
+                    style={{
+                      color: index === 2 ? "#A26200" : "#013863",
+                      fontSize: 10.4,
+                      fontWeight: 900,
+                      lineHeight: 1.15,
+                      textAlign: "right",
+                    }}
+                  >
+                    {valueText}
+                  </strong>
+                </div>
+              ))}
+            </div>
+          </article>
+        </div>
+      </section>
+    );
+  }
+
+
+
+  const accent =
+    item.tone === "gold"
+      ? "#F3AE26"
+      : item.tone === "slate"
+        ? "#50668B"
+        : "#0596A5";
+
+  const deep =
+    item.tone === "gold"
+      ? "#9A5F0C"
+      : item.tone === "slate"
+        ? "#344055"
+        : "#047f91";
+
+  const shell =
+    item.tone === "gold"
+      ? "linear-gradient(145deg, rgba(255,255,255,0.99), rgba(255,248,232,0.92))"
+      : item.tone === "slate"
+        ? "linear-gradient(145deg, rgba(255,255,255,0.99), rgba(80,102,139,0.075))"
+        : "linear-gradient(145deg, rgba(255,255,255,0.99), rgba(234,251,250,0.94))";
+
+  const primaryGradient =
+    item.tone === "gold"
+      ? "linear-gradient(135deg, #F3AE26, #F59E0B)"
+      : item.tone === "slate"
+        ? "linear-gradient(135deg, #50668B, #344055)"
+        : "linear-gradient(135deg, #047f91, #08a6b4)";
+
+  const blockStyle: React.CSSProperties = {
+    borderRadius: 26,
+    background: shell,
+    border: "1px solid rgba(5,150,165,0.14)",
+    boxShadow: "0 14px 32px rgba(1,56,99,0.065)",
+    padding: 14,
+  };
+
+  const labelStyle: React.CSSProperties = {
+    color: deep,
+    fontSize: 9,
+    fontWeight: 950,
+    letterSpacing: "0.14em",
+    textTransform: "uppercase",
+  };
+
+  return (
+    <section
+      aria-label="Official trail production booking details"
+      style={{
+        margin: "12px auto 0",
+        width: "100%",
+        maxWidth: 430,
+        padding: "0 12px",
+        boxSizing: "border-box",
+      }}
+    >
+      <div style={{ display: "grid", gap: 10 }}>
+        <article aria-label="Description" style={blockStyle}>
+          <div style={labelStyle}>Description</div>
+          <h2
+            style={{
+              margin: "6px 0 0",
+              color: "#013863",
+              fontSize: 18,
+              lineHeight: 1.05,
+              fontWeight: 950,
+              letterSpacing: "-0.045em",
+            }}
+          >
+            {item.descriptionTitle}
+          </h2>
+          <p
+            style={{
+              margin: "7px 0 0",
+              color: "#50668B",
+              fontSize: 11.3,
+              lineHeight: 1.38,
+              fontWeight: 760,
+            }}
+          >
+            {item.description}
+          </p>
+
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 6,
+              marginTop: 10,
+            }}
+          >
+            {item.heroChips.map((chip) => (
+              <span
+                key={chip}
+                style={{
+                  borderRadius: 999,
+                  padding: "6px 8px",
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(1,56,99,0.08)",
+                  color: deep,
+                  fontSize: 8.8,
+                  fontWeight: 900,
+                }}
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
+        </article>
+
+        <article aria-label="Features" style={blockStyle}>
+          <div style={labelStyle}>Features</div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 7,
+              marginTop: 10,
+            }}
+          >
+            {item.featureCards.map((feature) => (
+              <div
+                key={feature.title}
+                style={{
+                  minHeight: 82,
+                  borderRadius: 18,
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(1,56,99,0.08)",
+                  padding: 10,
+                  display: "grid",
+                  alignContent: "start",
+                  gap: 6,
+                }}
+              >
+                <span
+                  style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: 12,
+                    background: "rgba(5,150,165,0.09)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 14,
+                  }}
+                >
+                  {feature.icon}
+                </span>
+                <strong
+                  style={{
+                    color: "#013863",
+                    fontSize: 10,
+                    lineHeight: 1.08,
+                    fontWeight: 950,
+                  }}
+                >
+                  {feature.title}
+                </strong>
+                <span
+                  style={{
+                    color: "#50668B",
+                    fontSize: 8.8,
+                    lineHeight: 1.22,
+                    fontWeight: 740,
+                  }}
+                >
+                  {feature.body}
+                </span>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article aria-label="Booking Flow" style={blockStyle}>
+          <div style={labelStyle}>Booking Flow</div>
+
+          <div
+            style={{
+              display: "grid",
+              gap: 7,
+              marginTop: 10,
+            }}
+          >
+            {item.bookingFields.map((field) => (
+              <div
+                key={field.label}
+                style={{
+                  borderRadius: 18,
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(1,56,99,0.08)",
+                  padding: 10,
+                  display: "grid",
+                  gridTemplateColumns: "74px 1fr",
+                  gap: 8,
+                  alignItems: "center",
+                }}
+              >
+                <span
+                  style={{
+                    color: deep,
+                    fontSize: 8.5,
+                    fontWeight: 950,
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {field.label}
+                </span>
+                <div>
+                  <strong
+                    style={{
+                      display: "block",
+                      color: "#013863",
+                      fontSize: 10.4,
+                      lineHeight: 1.08,
+                      fontWeight: 950,
+                    }}
+                  >
+                    {field.value}
+                  </strong>
+                  <span
+                    style={{
+                      display: "block",
+                      marginTop: 3,
+                      color: "#50668B",
+                      fontSize: 8.8,
+                      lineHeight: 1.2,
+                      fontWeight: 730,
+                    }}
+                  >
+                    {field.helper}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+              gap: 6,
+              marginTop: 9,
+            }}
+          >
+            {item.flowSteps.map((step, index) => (
+              <div
+                key={step}
+                style={{
+                  minHeight: 58,
+                  borderRadius: 15,
+                  padding: 7,
+                  background:
+                    index === 0
+                      ? "rgba(5,150,165,0.10)"
+                      : "rgba(255,255,255,0.94)",
+                  border:
+                    index === 0
+                      ? "1px solid rgba(5,150,165,0.20)"
+                      : "1px solid rgba(1,56,99,0.07)",
+                  display: "grid",
+                  alignContent: "start",
+                  gap: 5,
+                }}
+              >
+                <span
+                  style={{
+                    width: 21,
+                    height: 21,
+                    borderRadius: 999,
+                    background: index === 0 ? accent : "rgba(1,56,99,0.08)",
+                    color: index === 0 ? "#FFFFFF" : "#013863",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 9,
+                    fontWeight: 950,
+                  }}
+                >
+                  {index + 1}
+                </span>
+                <span
+                  style={{
+                    color: "#013863",
+                    fontSize: 8.6,
+                    lineHeight: 1.12,
+                    fontWeight: 860,
+                  }}
+                >
+                  {step}
+                </span>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article aria-label="Price and Pax Logic" style={blockStyle}>
+          <div style={labelStyle}>Price / Pax Logic</div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1.2fr",
+              gap: 8,
+              marginTop: 10,
+            }}
+          >
+            <div
+              style={{
+                borderRadius: 19,
+                padding: 12,
+                background: "#FFFFFF",
+                border: "1px solid rgba(1,56,99,0.08)",
+                display: "grid",
+                alignContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  color: "#013863",
+                  fontSize: 18,
+                  lineHeight: 1.02,
+                  fontWeight: 950,
+                  letterSpacing: "-0.04em",
+                }}
+              >
+                {item.priceHeadline}
+              </div>
+            </div>
+
+            <p
+              style={{
+                margin: 0,
+                borderRadius: 19,
+                padding: 12,
+                background: "rgba(255,248,232,0.74)",
+                border: "1px solid rgba(243,174,38,0.18)",
+                color: "#013863",
+                fontSize: 9.8,
+                lineHeight: 1.32,
+                fontWeight: 760,
+              }}
+            >
+              {item.priceBody}
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gap: 6,
+              marginTop: 8,
+            }}
+          >
+            {item.paxRows.map((row) => (
+              <div
+                key={row.pax}
+                style={{
+                  borderRadius: 15,
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(1,56,99,0.075)",
+                  padding: "8px 10px",
+                  display: "grid",
+                  gridTemplateColumns: "82px 1fr",
+                  gap: 8,
+                  alignItems: "center",
+                }}
+              >
+                <strong
+                  style={{
+                    color: deep,
+                    fontSize: 9.3,
+                    fontWeight: 950,
+                  }}
+                >
+                  {row.pax}
+                </strong>
+                <span
+                  style={{
+                    color: "#50668B",
+                    fontSize: 9,
+                    lineHeight: 1.18,
+                    fontWeight: 760,
+                  }}
+                >
+                  {row.rule}
+                </span>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article aria-label="Guide and Support Logic" style={blockStyle}>
+          <div style={labelStyle}>Guide / Support Logic</div>
+          <h3
+            style={{
+              margin: "6px 0 0",
+              color: "#013863",
+              fontSize: 15.5,
+              lineHeight: 1.05,
+              fontWeight: 950,
+              letterSpacing: "-0.035em",
+            }}
+          >
+            {item.supportHeadline}
+          </h3>
+
+          <div
+            style={{
+              display: "grid",
+              gap: 7,
+              marginTop: 9,
+            }}
+          >
+            {item.supportCards.map((support) => (
+              <div
+                key={support.title}
+                style={{
+                  borderRadius: 17,
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(1,56,99,0.08)",
+                  padding: 10,
+                }}
+              >
+                <strong
+                  style={{
+                    display: "block",
+                    color: "#013863",
+                    fontSize: 10,
+                    lineHeight: 1.08,
+                    fontWeight: 950,
+                  }}
+                >
+                  {support.title}
+                </strong>
+                <span
+                  style={{
+                    display: "block",
+                    marginTop: 4,
+                    color: "#50668B",
+                    fontSize: 9,
+                    lineHeight: 1.25,
+                    fontWeight: 740,
+                  }}
+                >
+                  {support.body}
+                </span>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article
+          aria-label="Payment CTA and Readiness State"
+          style={{
+            borderRadius: 28,
+            background:
+              "linear-gradient(145deg, rgba(255,255,255,0.99), rgba(244,252,250,0.96))",
+            border: "1px solid rgba(5,150,165,0.16)",
+            boxShadow: "0 18px 42px rgba(1,56,99,0.09)",
+            padding: 14,
+          }}
+        >
+          <div style={labelStyle}>Payment CTA / Readiness State</div>
+
+          <div
+            style={{
+              marginTop: 9,
+              borderRadius: 18,
+              padding: 11,
+              background: "rgba(234,251,250,0.76)",
+              border: "1px solid rgba(5,150,165,0.16)",
+            }}
+          >
+            <strong
+              style={{
+                display: "block",
+                color: "#013863",
+                fontSize: 12,
+                lineHeight: 1.15,
+                fontWeight: 950,
+              }}
+            >
+              {item.readinessLabel}
+            </strong>
+            <p
+              style={{
+                margin: "5px 0 0",
+                color: "#50668B",
+                fontSize: 10,
+                lineHeight: 1.32,
+                fontWeight: 750,
+              }}
+            >
+              {item.readinessBody}
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.3fr 1fr",
+              gap: 8,
+              marginTop: 10,
+            }}
+          >
+            <a
+              href={`/traveler/payments?source=passport-trails&trail=${encodeURIComponent(trailSlug)}&intent=request`}
+              style={{
+                minHeight: 48,
+                borderRadius: 17,
+                background: primaryGradient,
+                color: "#FFFFFF",
+                WebkitTextFillColor: "#FFFFFF",
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: "0 12px",
+                fontSize: 12,
+                fontWeight: 950,
+                boxShadow: "0 15px 32px rgba(5,150,165,0.18)",
+              }}
+            >
+              {item.primaryCta}
+            </a>
+
+            <a
+              href="/traveler/settings?panel=assistant&topic=passport-trails"
+              style={{
+                minHeight: 48,
+                borderRadius: 17,
+                background: "#FFFFFF",
+                color: deep,
+                WebkitTextFillColor: deep,
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                padding: "0 10px",
+                fontSize: 11,
+                fontWeight: 950,
+                border: "1px solid rgba(1,56,99,0.08)",
+              }}
+            >
+              {item.secondaryCta}
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+
+function TrailPaymentGatewayCta({
+  trailSlug,
+  trailTitle,
+}: {
+  trailSlug: string;
+  trailTitle: string;
+}) {
+  const encodedTrail = encodeURIComponent(trailSlug);
+
+  const DIRECT_SPM_OFFICIAL_TRAIL_PRICING: Record<
+    string,
+    {
+      source: "DIRECT_SPM";
+      productLabel: string;
+      priceLabel: string;
+      pricingModeLabel: string;
+      paxModeLabel: string;
+      paxTiers: Array<{ label: string; price: string; note: string }>;
+      includes: string[];
+      paymentStateLabel: string;
+      primaryCtaLabel: string;
+      toneBadge: string;
+      shortValueLine: string;
+    }
+  > = {
+    "island-hopping": {
+      source: "DIRECT_SPM",
+      productLabel: "Official Passport Trail",
+      priceLabel: "₱1,500 / person",
+      pricingModeLabel: "Joiner island-hopping package",
+      paxModeLabel: "Solo, joiner, and group pax pricing",
+      paxTiers: [
+        { label: "Solo", price: "₱1,500", note: "Joiner seat" },
+        { label: "2–3 pax", price: "₱1,500 / head", note: "Regular joiner rate" },
+        { label: "4–6 pax", price: "₱1,470 / head", note: "₱30 off per head" },
+        { label: "7–10 pax", price: "₱1,450 / head", note: "₱50 off per head" },
+      ],
+      includes: [
+        "GL Port island-hopping route",
+        "Guyam • Daku • Naked route flow",
+        "Approved local operator fulfillment",
+        "Passport progress available after verified records",
+      ],
+      paymentStateLabel: "Booking-backed checkout",
+      primaryCtaLabel: "Create Booking Record",
+      toneBadge: "Most Popular",
+      shortValueLine: "Classic one-day island-hopping route from General Luna Port.",
+    },
+    "sugba-lagoon": {
+      source: "DIRECT_SPM",
+      productLabel: "Official Passport Trail",
+      priceLabel: "Price to confirm",
+      pricingModeLabel: "Governed lagoon route request",
+      paxModeLabel: "Route and operator readiness required",
+      paxTiers: [
+        { label: "Solo", price: "Quote", note: "Route readiness review" },
+        { label: "2–3 pax", price: "Quote", note: "Operator availability" },
+        { label: "4–6 pax", price: "Quote", note: "Group handling review" },
+        { label: "7–10 pax", price: "Quote", note: "Capacity confirmation" },
+      ],
+      includes: [
+        "Del Carmen governed route logic",
+        "Sugba Lagoon official access readiness",
+        "Operator readiness required",
+        "Payment unlock after route confirmation",
+      ],
+      paymentStateLabel: "Operator/access confirmation required",
+      primaryCtaLabel: "Request Route Confirmation",
+      toneBadge: "DCS-linked",
+      shortValueLine: "Governed lagoon route connected to official access and departure readiness.",
+    },
+    "bucas-grande-sohoton": {
+      source: "DIRECT_SPM",
+      productLabel: "Future Official Passport Trail",
+      priceLabel: "Future-ready",
+      pricingModeLabel: "Dapa-side governed route",
+      paxModeLabel: "No live checkout until route activation",
+      paxTiers: [
+        { label: "Solo", price: "Pending", note: "Future activation" },
+        { label: "2–3 pax", price: "Pending", note: "Future operator readiness" },
+        { label: "4–6 pax", price: "Pending", note: "Future capacity rules" },
+        { label: "7–10 pax", price: "Pending", note: "Future group rules" },
+      ],
+      includes: [
+        "Bucas Grande / Sohoton route preview",
+        "Dapa-side future movement logic",
+        "Operator readiness required later",
+        "No fake live booking claim",
+      ],
+      paymentStateLabel: "Future route pending",
+      primaryCtaLabel: "View Future Route",
+      toneBadge: "Future Ready",
+      shortValueLine: "Reserved governed route. Do not claim bookable until operationally wired.",
+    },
+    "siargao-land-tour": {
+      source: "DIRECT_SPM",
+      productLabel: "Official Passport Trail",
+      priceLabel: "Price to confirm",
+      pricingModeLabel: "Guide / TukTuk / local operator request",
+      paxModeLabel: "South, North, or private DIY route affects pricing",
+      paxTiers: [
+        { label: "Solo", price: "Quote", note: "Private support likely" },
+        { label: "2–3 pax", price: "Quote", note: "TukTuk / motorcycle review" },
+        { label: "4–6 pax", price: "Quote", note: "Vehicle / guide review" },
+        { label: "7–10 pax", price: "Quote", note: "Van / group handling" },
+      ],
+      includes: [
+        "South or North one-day land route",
+        "Guide / driver / TukTuk / motorcycle support",
+        "Drone or no-drone package option",
+        "SPM / Operator / OTA source attribution required",
+      ],
+      paymentStateLabel: "Operator confirmation required",
+      primaryCtaLabel: "Choose Land Tour Mode",
+      toneBadge: "Guide support",
+      shortValueLine: "South or North can be one day. Full route is better split across days.",
+    },
+    "surf-explorer": {
+      source: "DIRECT_SPM",
+      productLabel: "Official Passport Trail",
+      priceLabel: "Price to confirm",
+      pricingModeLabel: "Surf lesson / surf support request",
+      paxModeLabel: "Lesson, coach, and timing affect pricing",
+      paxTiers: [
+        { label: "Solo", price: "Quote", note: "Lesson type required" },
+        { label: "2–3 pax", price: "Quote", note: "Coach availability" },
+        { label: "4–6 pax", price: "Quote", note: "Group session review" },
+        { label: "7–10 pax", price: "Quote", note: "Group handling required" },
+      ],
+      includes: [
+        "Cloud 9 surf trail context",
+        "Beginner-safe continue-later behavior",
+        "Surf school or lesson support where required",
+        "Progress can stay saved across days",
+      ],
+      paymentStateLabel: "Operator confirmation required",
+      primaryCtaLabel: "Request Surf Support",
+      toneBadge: "Continue Later",
+      shortValueLine: "Start with one surf stop or lesson. Progress can continue later.",
+    },
+    "culture-community": {
+      source: "DIRECT_SPM",
+      productLabel: "Official Passport Trail",
+      priceLabel: "Price to confirm",
+      pricingModeLabel: "Partner-approved local discovery",
+      paxModeLabel: "Partner capacity and consent required",
+      paxTiers: [
+        { label: "Solo", price: "Quote", note: "Partner approval required" },
+        { label: "2–3 pax", price: "Quote", note: "Small group experience" },
+        { label: "4–6 pax", price: "Quote", note: "Host capacity review" },
+        { label: "7–10 pax", price: "Quote", note: "Group consent/capacity" },
+      ],
+      includes: [
+        "Local stories and makers",
+        "Community stops and island experiences",
+        "Consent-first participation",
+        "Eligible Passport progress after approval",
+      ],
+      paymentStateLabel: "Partner pricing required",
+      primaryCtaLabel: "Explore Local Discovery",
+      toneBadge: "Local Discovery",
+      shortValueLine: "A one-day local discovery trail when partner readiness is approved.",
+    },
+    "food-wellness": {
+      source: "DIRECT_SPM",
+      productLabel: "Merchant Passport Trail",
+      priceLabel: "Free or merchant-priced",
+      pricingModeLabel: "Restaurant / wellness merchant logic",
+      paxModeLabel: "Merchant offer or stop-level pricing",
+      paxTiers: [
+        { label: "Solo", price: "Free/Pay", note: "Depends on merchant offer" },
+        { label: "2–3 pax", price: "Free/Pay", note: "Restaurant/wellness stop" },
+        { label: "4–6 pax", price: "Merchant", note: "Group/table availability" },
+        { label: "7–10 pax", price: "Merchant", note: "Merchant confirmation" },
+      ],
+      includes: [
+        "Restaurants and cafés",
+        "Spa / massage / wellness / recovery",
+        "Merchant-operated trail stops",
+        "Future rewards and local spend logic",
+      ],
+      paymentStateLabel: "Merchant payment logic required",
+      primaryCtaLabel: "Explore Food & Wellness",
+      toneBadge: "Merchant Trail",
+      shortValueLine: "Restaurant and wellness merchants operate this trail, not generic attractions.",
+    },
+    "return-traveler-continuity": {
+      source: "DIRECT_SPM",
+      productLabel: "Continuity Layer",
+      priceLabel: "No instant checkout",
+      pricingModeLabel: "Progress / retention layer",
+      paxModeLabel: "Not pax-priced",
+      paxTiers: [
+        { label: "Solo", price: "Progress", note: "Based on verified history" },
+        { label: "2–3 pax", price: "N/A", note: "Not group-priced" },
+        { label: "4–6 pax", price: "N/A", note: "Not group-priced" },
+        { label: "7–10 pax", price: "N/A", note: "Not group-priced" },
+      ],
+      includes: [
+        "Saved trail progress",
+        "Unfinished Passport stops",
+        "Return traveler memory",
+        "Cross-trip continuity",
+      ],
+      paymentStateLabel: "History-based unlock",
+      primaryCtaLabel: "Review Saved Progress",
+      toneBadge: "Progress Layer",
+      shortValueLine: "This is not a normal paid route. It protects progress across trips.",
+    },
+  };
+  const pricing = DIRECT_SPM_OFFICIAL_TRAIL_PRICING[trailSlug] ?? {
+    source: "DIRECT_SPM" as const,
+    productLabel: "Official Passport Trail",
+    priceLabel: "Price to confirm",
+    pricingModeLabel: "Request-based trail",
+    paxModeLabel: "Pax pricing reviewed after request",
+    paxTiers: [
+      { label: "Solo", price: "Quote", note: "Request required" },
+      { label: "2–3 pax", price: "Quote", note: "Small group review" },
+      { label: "4–6 pax", price: "Quote", note: "Group review" },
+      { label: "7–10 pax", price: "Quote", note: "Capacity review" },
+    ],
+    includes: [
+      "Official trail route",
+      "Approved partner support where required",
+      "Booking-backed payment flow",
+      "Passport stamps available",
+    ],
+    paymentStateLabel: "Request-based checkout",
+    primaryCtaLabel: "Request Trail Price",
+    toneBadge: "Official Trail",
+    shortValueLine: "A structured Passport Trail prepared through SPM.",
+  };
+
+  return (
+    <section
+      aria-label="Direct SPM official trail pricing"
+      style={{
+        margin: "12px auto 0",
+        width: "100%",
+        maxWidth: 430,
+        padding: "0 12px",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          borderRadius: 26,
+          background: "linear-gradient(135deg, #FFFFFF 0%, #FFF7E6 45%, #EAFBFA 100%)",
+          border: "1px solid rgba(243,174,38,0.34)",
+          boxShadow: "0 18px 42px rgba(1,56,99,0.12)",
+          padding: 14,
           boxSizing: "border-box",
         }}
       >
         <div
           style={{
-            borderRadius: 20,
-            background: "rgba(255,255,255,0.76)",
-            border: "1px solid rgba(5,150,165,0.14)",
-            padding: 12,
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: 10,
           }}
         >
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 950,
-              letterSpacing: "0.13em",
-              textTransform: "uppercase",
-              color: "#0596A5",
-            }}
-          >
-            Before You Confirm
+          <div style={{ minWidth: 0 }}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                borderRadius: 999,
+                background: "rgba(243,174,38,0.16)",
+                color: "#A95B00",
+                padding: "6px 9px",
+                fontSize: 9.5,
+                fontWeight: 950,
+                letterSpacing: "0.11em",
+                textTransform: "uppercase",
+              }}
+            >
+              {pricing.toneBadge}
+            </div>
+
+            <h2
+              style={{
+                margin: "8px 0 0",
+                fontSize: 24,
+                lineHeight: 1,
+                letterSpacing: "-0.06em",
+                fontWeight: 950,
+                color: "#013863",
+              }}
+            >
+              {pricing.priceLabel}
+            </h2>
+
+            <p
+              style={{
+                margin: "5px 0 0",
+                color: "#50668B",
+                fontSize: 11.7,
+                lineHeight: 1.32,
+                fontWeight: 760,
+              }}
+            >
+              {pricing.shortValueLine}
+            </p>
           </div>
 
-          <h2
+          <div
             style={{
-              margin: "6px 0 0",
-              fontSize: 20,
-              lineHeight: 1.03,
-              letterSpacing: "-0.055em",
-              fontWeight: 950,
-              color: "#013863",
+              flex: "0 0 auto",
+              width: 74,
+              minHeight: 70,
+              borderRadius: 20,
+              background: "linear-gradient(135deg, #F3AE26, #D97706)",
+              color: "#FFFFFF",
+              display: "grid",
+              placeItems: "center",
+              textAlign: "center",
+              boxShadow: "0 13px 28px rgba(217,119,6,0.24)",
+              padding: 8,
+              boxSizing: "border-box",
             }}
           >
-            Booking or payment may be needed for {trailTitle}.
-          </h2>
-
-          <p
-            style={{
-              margin: "7px 0 0",
-              fontSize: 12,
-              lineHeight: 1.38,
-              fontWeight: 720,
-              color: "#50668B",
-            }}
-          >
-            Some routes can be explored freely. Others may need operator confirmation, transport, guide support, manifest readiness, or payment before your trip is ready.
-          </p>
+            <div>
+              <div style={{ fontSize: 8.5, fontWeight: 950, opacity: 0.86 }}>
+                PAX
+              </div>
+              <div style={{ marginTop: 2, fontSize: 13, lineHeight: 1, fontWeight: 950 }}>
+                3–10
+              </div>
+            </div>
+          </div>
         </div>
 
         <div
           style={{
-            marginTop: 11,
+            marginTop: 12,
             display: "grid",
-            gridTemplateColumns: "1fr",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 8,
+          }}
+        >
+          <div
+            style={{
+              borderRadius: 16,
+              background: "rgba(255,255,255,0.80)",
+              border: "1px solid rgba(5,150,165,0.14)",
+              padding: "9px 10px",
+            }}
+          >
+            <div
+              style={{
+                color: "#0596A5",
+                fontSize: 8.5,
+                fontWeight: 950,
+                letterSpacing: "0.11em",
+                textTransform: "uppercase",
+              }}
+            >
+              Product
+            </div>
+            <div
+              style={{
+                marginTop: 3,
+                color: "#013863",
+                fontSize: 11.6,
+                lineHeight: 1.25,
+                fontWeight: 860,
+              }}
+            >
+              {pricing.productLabel}
+            </div>
+          </div>
+
+          <div
+            style={{
+              borderRadius: 16,
+              background: "rgba(255,255,255,0.80)",
+              border: "1px solid rgba(5,150,165,0.14)",
+              padding: "9px 10px",
+            }}
+          >
+            <div
+              style={{
+                color: "#0596A5",
+                fontSize: 8.5,
+                fontWeight: 950,
+                letterSpacing: "0.11em",
+                textTransform: "uppercase",
+              }}
+            >
+              Pricing
+            </div>
+            <div
+              style={{
+                marginTop: 3,
+                color: "#013863",
+                fontSize: 11.6,
+                lineHeight: 1.25,
+                fontWeight: 860,
+              }}
+            >
+              {pricing.pricingModeLabel}
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: 10,
+            borderRadius: 18,
+            background: "linear-gradient(135deg, #FFFDF7 0%, #FFFFFF 100%)",
+            border: "1px solid rgba(243,174,38,0.24)",
+            padding: 11,
+          }}
+        >
+          <div
+            style={{
+              color: "#A95B00",
+              fontSize: 9,
+              fontWeight: 950,
+              letterSpacing: "0.11em",
+              textTransform: "uppercase",
+            }}
+          >
+            {pricing.paxModeLabel}
+          </div>
+
+          <div
+            style={{
+              marginTop: 8,
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: 7,
+            }}
+          >
+            {pricing.paxTiers.map((tier) => (
+              <div
+                key={tier.label}
+                style={{
+                  borderRadius: 15,
+                  background: "rgba(255,255,255,0.86)",
+                  border: "1px solid rgba(5,150,165,0.13)",
+                  padding: "8px 9px",
+                }}
+              >
+                <div
+                  style={{
+                    color: "#50668B",
+                    fontSize: 8.4,
+                    fontWeight: 950,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {tier.label}
+                </div>
+                <div
+                  style={{
+                    marginTop: 3,
+                    color: "#013863",
+                    fontSize: 12.2,
+                    lineHeight: 1.05,
+                    fontWeight: 950,
+                  }}
+                >
+                  {tier.price}
+                </div>
+                <div
+                  style={{
+                    marginTop: 3,
+                    color: "#A95B00",
+                    fontSize: 9.5,
+                    lineHeight: 1.15,
+                    fontWeight: 780,
+                  }}
+                >
+                  {tier.note}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: 10,
+            borderRadius: 18,
+            background: "linear-gradient(135deg, #F4FEFF 0%, #FFFFFF 100%)",
+            border: "1px solid rgba(5,150,165,0.16)",
+            padding: 11,
+          }}
+        >
+          <div
+            style={{
+              color: "#047D8A",
+              fontSize: 9,
+              fontWeight: 950,
+              letterSpacing: "0.11em",
+              textTransform: "uppercase",
+            }}
+          >
+            Includes
+          </div>
+
+          <div
+            style={{
+              marginTop: 8,
+              display: "grid",
+              gap: 6,
+            }}
+          >
+            {pricing.includes.map((item) => (
+              <div
+                key={item}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 7,
+                  color: "#013863",
+                  fontSize: 11.5,
+                  lineHeight: 1.24,
+                  fontWeight: 780,
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    width: 17,
+                    height: 17,
+                    borderRadius: 999,
+                    background: "linear-gradient(135deg, #0596A5, #013863)",
+                    color: "#FFFFFF",
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 9,
+                    fontWeight: 950,
+                    flex: "0 0 auto",
+                  }}
+                >
+                  ✓
+                </span>
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: 10,
+            borderRadius: 17,
+            background: "rgba(255,255,255,0.82)",
+            border: "1px solid rgba(243,174,38,0.24)",
+            padding: "9px 10px",
+          }}
+        >
+          <div
+            style={{
+              color: "#A95B00",
+              fontSize: 8.5,
+              fontWeight: 950,
+              letterSpacing: "0.11em",
+              textTransform: "uppercase",
+            }}
+          >
+            Payment Status
+          </div>
+          <div
+            style={{
+              marginTop: 3,
+              color: "#013863",
+              fontSize: 11.8,
+              lineHeight: 1.28,
+              fontWeight: 880,
+            }}
+          >
+            {pricing.paymentStateLabel}
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: 12,
+            display: "grid",
             gap: 8,
           }}
         >
           <a
             href={`/traveler/payments?source=passport-trails&trail=${encodedTrail}&gateway=paymongo`}
             style={{
-              minHeight: 48,
-              borderRadius: 17,
+              minHeight: 50,
+              borderRadius: 18,
               background: "linear-gradient(135deg, #F3AE26 0%, #F9B320 52%, #D97706 100%)",
               color: "#FFFFFF",
               WebkitTextFillColor: "#FFFFFF",
@@ -1048,15 +5036,15 @@ function TrailPaymentGatewayCta({
               alignItems: "center",
               justifyContent: "center",
               textAlign: "center",
-              padding: "0 12px",
-              fontSize: 12,
+              padding: "0 14px",
+              fontSize: 12.5,
               lineHeight: 1.1,
               fontWeight: 950,
-              boxShadow: "0 14px 30px rgba(217,119,6,0.24)",
+              boxShadow: "0 15px 32px rgba(217,119,6,0.26)",
               boxSizing: "border-box",
             }}
           >
-            Pay / Confirm with PayMongo
+            {pricing.primaryCtaLabel}
           </a>
 
           <div
@@ -1067,9 +5055,9 @@ function TrailPaymentGatewayCta({
             }}
           >
             <a
-              href="/traveler/payments"
+              href="/traveler/passport-trails/diy-trail-builder/summary"
               style={{
-                minHeight: 46,
+                minHeight: 44,
                 borderRadius: 16,
                 background: "#FFFFFF",
                 color: "#013863",
@@ -1080,21 +5068,21 @@ function TrailPaymentGatewayCta({
                 justifyContent: "center",
                 textAlign: "center",
                 padding: "0 10px",
-                fontSize: 11.5,
+                fontSize: 11.2,
                 lineHeight: 1.1,
                 fontWeight: 950,
-                border: "1px solid rgba(5,150,165,0.22)",
+                border: "1px solid rgba(5,150,165,0.20)",
                 boxShadow: "0 10px 22px rgba(1,56,99,0.07)",
                 boxSizing: "border-box",
               }}
             >
-              Payments
+              Existing Request
             </a>
 
             <a
-              href="/traveler/trips"
+              href="/traveler/settings?panel=assistant&topic=payment"
               style={{
-                minHeight: 46,
+                minHeight: 44,
                 borderRadius: 16,
                 background: "#EAFBFA",
                 color: "#047D8A",
@@ -1105,14 +5093,14 @@ function TrailPaymentGatewayCta({
                 justifyContent: "center",
                 textAlign: "center",
                 padding: "0 10px",
-                fontSize: 11.5,
+                fontSize: 11.2,
                 lineHeight: 1.1,
                 fontWeight: 950,
                 border: "1px solid rgba(5,150,165,0.18)",
                 boxSizing: "border-box",
               }}
             >
-              Trip Readiness
+              Ask Kuya Tala™
             </a>
           </div>
         </div>
@@ -1190,78 +5178,26 @@ export default function PassportTrailDetailPage({
           </Link>
         </header>
 
-        <section
-          aria-label="Trail hero"
-          style={{
-            borderRadius: 22,
-            background:
-              "linear-gradient(135deg, rgba(10,115,145,0.94), rgba(19,168,183,0.88), rgba(132,184,101,0.86))",
-            color: "#ffffff",
-            padding: 20,
-            overflow: "hidden",
-            boxShadow: "0 18px 44px rgba(15,23,42,0.14)",
-          }}
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              borderRadius: 999,
-              padding: "6px 10px",
-              background: "rgba(255,255,255,0.16)",
-              fontSize: 9,
-              fontWeight: 820,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-            }}
-          >
-            {trail.statusLabel}
-          </div>
+        <OfficialTrailMediaPreview trailSlug={params.trailSlug} trailTitle={trail.title} />
 
-          <h2
-            style={{
-              margin: "12px 0 8px",
-              fontSize: 20,
-              lineHeight: 1.08,
-              fontWeight: 690,
-              letterSpacing: "-0.035em",
-            }}
-          >
-            Verify stops. Unlock stamps. Continue.
-          </h2>
+        {params.trailSlug === "siargao-land-tour" ? <LandTourMockupHeroHeader /> : null}
 
-          <p
-            style={{
-              margin: 0,
-              fontSize: 13,
-              lineHeight: 1.45,
-              fontWeight: 600,
-              color: "rgba(255,255,255,0.92)",
-            }}
-          >
-            {trail.subtitle}
-          </p>
+        <OfficialTrailCommercialExposurePanel trailSlug={params.trailSlug} />
 
-          <div
-            style={{
-              marginTop: 10,
-              display: "inline-flex",
-              borderRadius: 999,
-              padding: "7px 11px",
-              background: "rgba(255,255,255,0.68)",
-              color: "#14264b",
-              fontSize: 11,
-              fontWeight: 820,
-            }}
-          >
-            {trail.progressLabel}
-          </div>
-        </section>
+
 
         <SpmFunctionalJourneyMap trailSlug={params.trailSlug} />
 
+
+
+        {params.trailSlug !== "siargao-land-tour" ? (
+          <TrailPaymentGatewayCta trailSlug={params.trailSlug} trailTitle={trail.title} />
+        ) : null}
+
         {isReturnContinuity ? <ReturnContinuityPremiumPanel /> : null}
 
-        <section
+
+      <section
           aria-label="Scan site QR"
           style={{
             marginTop: 14,
@@ -1433,7 +5369,7 @@ export default function PassportTrailDetailPage({
 
               <Link
                 href="/traveler/settings?panel=assistant&topic=trail"
-                aria-label="✦ Ask Passport Assistant about this trail"
+                aria-label="Ask about this trail"
                 style={{
                   textDecoration: "none",
                   border: "1px solid rgba(191,231,238,0.92)",
@@ -1655,63 +5591,7 @@ export default function PassportTrailDetailPage({
             })}
           </div>
         </section>
-
-        <div style={{ marginTop: 16 }}>
-          <ShellCard ariaLabel="AI Passport Assistant trail detail prompt chips">
-            <SectionEyebrow>✦ ✦ Ask Passport Assistant</SectionEyebrow>
-            <div
-              style={{
-                marginTop: 8,
-                fontSize: 14.4,
-                fontWeight: 820,
-                lineHeight: 1.14,
-              }}
-            >
-              Need help at this trail?
-            </div>
-            <p
-              style={{
-                margin: "6px 0 0",
-                fontSize: 11.5,
-                lineHeight: 1.38,
-                fontWeight: 600,
-                color: "#53657d",
-              }}
-            >
-              Ask about stops, QR verification, stamp rules, and your next move. The assistant cannot confirm booking, payment, guide, or manifest status unless the system proves it.
-            </p>
-
-            <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 7 }}>
-              {[
-                "How do I verify this stop?",
-                "What stamp can I unlock?",
-                "Which Island Hopping node is next?",
-                "Why is this not yet stamped?",
-              ].map((prompt) => (
-                <Link
-                  key={prompt}
-                  href="/traveler/settings?panel=assistant&topic=trail"
-                  style={{
-                    textDecoration: "none",
-                    border: "1px solid rgba(11,151,166,0.18)",
-                    borderRadius: 999,
-                    background: "linear-gradient(135deg, #ffffff, #f4fdff)",
-                    padding: "8px 10px",
-                    boxShadow: "0 6px 14px rgba(8,61,103,0.045)",
-                    color: "#067889",
-                    fontSize: 10.2,
-                    fontWeight: 820,
-                    lineHeight: 1,
-                  }}
-                >
-                  {prompt}
-                </Link>
-              ))}
-            </div>
-          </ShellCard>
-        </div>
-
-        <div style={{ marginTop: 16 }}>
+<div style={{ marginTop: 16 }}>
           <ShellCard ariaLabel="Passport stamp rules">
             <SectionEyebrow>✦ Stamp Rules</SectionEyebrow>
             <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
@@ -1862,7 +5742,8 @@ export default function PassportTrailDetailPage({
           </Link>
         </nav>
       </div>
-      <TrailPaymentGatewayCta trailSlug={params.trailSlug} trailTitle={trail.title} />
+      <DiscoverOtherPassportTrails currentTrailSlug={params.trailSlug} />
+
       <PassportMapShortcut
         href="/traveler/settings?panel=assistant&topic=trail"
         eyebrow="Kuya Tala™"
