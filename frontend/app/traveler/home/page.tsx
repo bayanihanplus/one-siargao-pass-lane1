@@ -2833,7 +2833,7 @@ export default async function TravelerHomePage() {
 
             <TravelerBottomNavLink
               href="/traveler/trips"
-              label="Trips"
+              label="Trails"
               icon={
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
                   <rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="1.9" />
@@ -2867,8 +2867,8 @@ export default async function TravelerHomePage() {
             </a>
 
             <TravelerBottomNavLink
-              href="/traveler/payments"
-              label="Payments"
+              href="/traveler/explore"
+              label="Explore"
               icon={
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
                   <rect x="3" y="6" width="18" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.9" />
