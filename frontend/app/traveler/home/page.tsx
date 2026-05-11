@@ -2832,7 +2832,7 @@ export default async function TravelerHomePage() {
             />
 
             <TravelerBottomNavLink
-              href="/traveler/trips"
+              href="/traveler/passport-trails"
               label="Trails"
               icon={
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
