@@ -2734,6 +2734,8 @@ export default async function TravelerHomePage() {
           Start your OSP access first, then your pass, trip records, payment status, and QR actions will unlock after setup.
         </section>
 
+        <TravelerHomeQuickAccessGrid />
+
         <section style={{ width: "100%", maxWidth: 430, margin: "0 auto 14px" }}>
           <h2 style={{ margin: "0 0 10px", fontSize: 18, color: "#19305a" }}>
             Continue Your Journey
