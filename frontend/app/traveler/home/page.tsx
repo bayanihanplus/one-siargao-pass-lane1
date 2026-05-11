@@ -2492,7 +2492,7 @@ export default async function TravelerHomePage() {
                 padding: "20px 18px 18px",
                 color: "#ffffff",
                 backgroundImage:
-                  'linear-gradient(90deg, rgba(5,39,82,0.99) 0%, rgba(6,59,108,0.97) 33%, rgba(7,92,140,0.58) 53%, rgba(7,110,164,0.12) 69%), url("/osp/osp-hero-map.png")',
+                  'linear-gradient(90deg, rgba(1,24,52,1) 0%, rgba(3,45,82,0.99) 36%, rgba(4,73,113,0.74) 56%, rgba(4,102,149,0.24) 72%), url("/osp/osp-hero-map.png")',
                 backgroundSize: "cover",
                 backgroundPosition: "60% center",
                 backgroundRepeat: "no-repeat",
@@ -2559,10 +2559,13 @@ export default async function TravelerHomePage() {
                     margin: 0,
                     whiteSpace: "normal",
                     fontSize: 28,
-                    fontWeight: 720,
+                    fontWeight: 860,
                     lineHeight: 1.02,
                     letterSpacing: "-0.035em",
                     color: "#ffffff",
+                    WebkitTextFillColor: "#ffffff",
+                    textShadow:
+                      "0 5px 20px rgba(0, 18, 42, 0.72), 0 2px 6px rgba(0, 18, 42, 0.58), 0 1px 1px rgba(0, 18, 42, 0.82)",
                   }}
                 >
                   Start Your
@@ -2577,7 +2580,8 @@ export default async function TravelerHomePage() {
                     whiteSpace: "normal",
                     fontSize: 12.5,
                     lineHeight: 1.42,
-                    color: "rgba(255,255,255,0.9)",
+                    color: "rgba(255,255,255,0.96)",
+                    textShadow: "0 3px 12px rgba(0, 18, 42, 0.62), 0 1px 2px rgba(0, 18, 42, 0.58)",
                   }}
                 >
                   Create your official One Siargao Pass or continue an existing trip when you are ready.
