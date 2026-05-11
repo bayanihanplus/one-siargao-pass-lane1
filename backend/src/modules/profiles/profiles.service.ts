@@ -135,6 +135,43 @@ export class ProfilesService {
       });
     }
 
+
+    const emergencyContactName =
+      typeof dto.emergencyContactName === 'string' ? dto.emergencyContactName.trim() : '';
+    const emergencyContactMobile =
+      typeof dto.emergencyContactMobile === 'string' ? dto.emergencyContactMobile.trim() : '';
+    const emergencyContactRelationship =
+      typeof dto.emergencyContactRelationship === 'string' && dto.emergencyContactRelationship.trim()
+        ? dto.emergencyContactRelationship.trim()
+        : 'Emergency contact';
+
+    if (emergencyContactName && emergencyContactMobile) {
+      const existingEmergencyContact = await this.prisma.emergencyContact.findFirst({
+        where: { userId },
+        orderBy: { createdAt: 'asc' },
+      });
+
+      if (existingEmergencyContact) {
+        await this.prisma.emergencyContact.update({
+          where: { id: existingEmergencyContact.id },
+          data: {
+            contactName: emergencyContactName,
+            contactMobile: emergencyContactMobile,
+            relationship: emergencyContactRelationship,
+          },
+        });
+      } else {
+        await this.prisma.emergencyContact.create({
+          data: {
+            userId,
+            contactName: emergencyContactName,
+            contactMobile: emergencyContactMobile,
+            relationship: emergencyContactRelationship,
+          },
+        });
+      }
+    }
+
     return this.getMe(userId);
   }
 }

@@ -52,4 +52,16 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   contactMobile?: string;
+  @IsOptional()
+  @IsString()
+  emergencyContactName?: string;
+
+  @IsOptional()
+  @IsString()
+  emergencyContactMobile?: string;
+
+  @IsOptional()
+  @IsString()
+  emergencyContactRelationship?: string;
+
 }
