@@ -1375,11 +1375,12 @@ function TravelerShellFrame(props: {
   return (
     <header
       style={{
-        width: "100%",
-        maxWidth: 430,
+        width: "calc(100% - 20px)",
+        maxWidth: 410,
         margin: "0 auto 14px",
         overflow: "hidden",
         marginBottom: 16,
+            boxSizing: "border-box",
       }}
     >
       <div
@@ -2318,11 +2319,12 @@ export default async function TravelerHomePage() {
       >
         <header
           style={{
-            width: "100%",
-            maxWidth: 430,
+            width: "calc(100% - 20px)",
+            maxWidth: 410,
             margin: "0 auto 14px",
             overflow: "hidden",
             marginBottom: 16,
+            boxSizing: "border-box",
           }}
         >
           <div
