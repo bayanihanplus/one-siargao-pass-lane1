@@ -7,6 +7,16 @@ import PassportMapShortcut from "../../../src/components/traveler/PassportMapSho
 
 type PanelKey = "profile" | "language" | "currency" | "assistant" | "notifications";
 
+type TravelerNotification = {
+  id: string;
+  userId?: string;
+  notificationType?: string;
+  title: string;
+  body: string;
+  isRead?: boolean;
+  createdAt?: string;
+};
+
 type LanguageOption = {
   code: string;
   label: string;
@@ -757,10 +767,29 @@ function CurrencySelector(props: {
 
 
 
+
+function formatAlertDate(value?: string) {
+  if (!value) return "Now";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Now";
+
+  return date.toLocaleDateString("en-PH", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
 function AlertsPanel(props: {
   accent: string;
   border: string;
+  notifications: TravelerNotification[];
 }) {
+  const notifications = Array.isArray(props.notifications) ? props.notifications : [];
+  const unreadCount = notifications.filter((item) => !item.isRead).length;
+  const totalCount = notifications.length;
+  const readCount = Math.max(totalCount - unreadCount, 0);
+
   const alertCards = [
     {
       title: "Trip updates",
@@ -830,26 +859,32 @@ function AlertsPanel(props: {
     },
   ];
 
-  const recentAlerts = [
-    {
-      title: "No urgent alerts",
-      body: "Your important OSP updates will appear here as your journey moves forward.",
-      time: "Now",
-      icon: "✓",
-      bg: "#F4FCFA",
-      border: "rgba(153,226,218,0.72)",
-      color: "#078DA0",
-    },
-    {
-      title: "Trip updates ready",
-      body: "We will show trip, pass, payment, and safety updates in one clean feed.",
-      time: "Today",
-      icon: "✦",
-      bg: "#F8FCFF",
-      border: "rgba(219,232,239,0.95)",
-      color: "#19305A",
-    },
-  ];
+  const displayAlerts =
+    notifications.length > 0
+      ? notifications.slice(0, 5).map((item) => ({
+          id: item.id,
+          title: item.title,
+          body: item.body || "Open this update for more details.",
+          time: formatAlertDate(item.createdAt),
+          icon: item.isRead ? "✓" : "•",
+          isRead: Boolean(item.isRead),
+          bg: item.isRead ? "#F8FCFF" : "#F4FCFA",
+          border: item.isRead ? "rgba(219,232,239,0.95)" : "rgba(153,226,218,0.72)",
+          color: item.isRead ? "#19305A" : "#078DA0",
+        }))
+      : [
+          {
+            id: "",
+            title: "No urgent alerts",
+            body: "Your important OSP updates will appear here as your journey moves forward.",
+            time: "Now",
+            icon: "✓",
+            isRead: true,
+            bg: "#F4FCFA",
+            border: "rgba(153,226,218,0.72)",
+            color: "#078DA0",
+          },
+        ];
 
   return (
     <section
@@ -881,15 +916,9 @@ function AlertsPanel(props: {
             gap: 12,
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "space-between",
-              gap: 12,
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
             <div
+              aria-hidden="true"
               style={{
                 width: 54,
                 height: 54,
@@ -903,7 +932,6 @@ function AlertsPanel(props: {
                 flex: "0 0 auto",
                 boxShadow: "0 12px 26px rgba(7,141,160,0.12)",
               }}
-              aria-hidden="true"
             >
               ✓
             </div>
@@ -931,7 +959,7 @@ function AlertsPanel(props: {
                   fontWeight: 860,
                 }}
               >
-                No urgent alerts
+                {unreadCount > 0 ? `${unreadCount} new alert${unreadCount === 1 ? "" : "s"}` : "No urgent alerts"}
               </h3>
               <p
                 style={{
@@ -947,17 +975,11 @@ function AlertsPanel(props: {
             </div>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-              gap: 8,
-            }}
-          >
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 }}>
             {[
-              ["Trip", "0"],
-              ["Pass", "0"],
-              ["Pay", "0"],
+              ["New", String(unreadCount)],
+              ["Total", String(totalCount)],
+              ["Read", String(readCount)],
             ].map(([label, value]) => (
               <div
                 key={label}
@@ -969,38 +991,14 @@ function AlertsPanel(props: {
                   textAlign: "center",
                 }}
               >
-                <div
-                  style={{
-                    color: "#013863",
-                    fontSize: 18,
-                    lineHeight: 1,
-                    fontWeight: 950,
-                  }}
-                >
-                  {value}
-                </div>
-                <div
-                  style={{
-                    marginTop: 4,
-                    color: "#64748B",
-                    fontSize: 10,
-                    fontWeight: 850,
-                  }}
-                >
-                  {label}
-                </div>
+                <div style={{ color: "#013863", fontSize: 18, lineHeight: 1, fontWeight: 950 }}>{value}</div>
+                <div style={{ marginTop: 4, color: "#64748B", fontSize: 10, fontWeight: 850 }}>{label}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-            gap: 10,
-          }}
-        >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10 }}>
           {alertCards.map((item) => (
             <a
               key={item.title}
@@ -1020,14 +1018,7 @@ function AlertsPanel(props: {
                 boxShadow: "0 14px 34px rgba(15,23,42,0.055)",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  justifyContent: "space-between",
-                  gap: 10,
-                }}
-              >
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
                 <span
                   aria-hidden="true"
                   style={{
@@ -1100,20 +1091,13 @@ function AlertsPanel(props: {
           borderRadius: 30,
           background: "#FFFFFF",
           border: "1px solid rgba(219,232,239,0.95)",
-          boxShadow: "0 18px 42px rgba(1,56,99,0.075)",
+          boxShadow: "0 18px 46px rgba(1,56,99,0.08)",
           padding: 15,
           display: "grid",
-          gap: 11,
+          gap: 12,
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "space-between",
-            gap: 10,
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div>
             <div
               style={{
@@ -1122,171 +1106,204 @@ function AlertsPanel(props: {
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
                 color: "#078DA0",
-                marginBottom: 5,
               }}
             >
               Recent alerts
             </div>
             <h3
               style={{
-                margin: 0,
+                margin: "5px 0 0",
                 color: "#013863",
-                fontSize: 21,
+                fontSize: 20,
                 lineHeight: 1,
                 letterSpacing: "-0.045em",
                 fontWeight: 850,
               }}
             >
-              Your update feed
+              Latest updates
             </h3>
           </div>
 
           <span
             style={{
               borderRadius: 999,
-              background: "#F1FAFF",
-              border: "1px solid rgba(125,211,252,0.62)",
-              color: "#05788A",
+              background: "#F4FCFA",
+              border: "1px solid rgba(153,226,218,0.72)",
+              color: "#078DA0",
               padding: "7px 9px",
               fontSize: 10,
               fontWeight: 950,
               whiteSpace: "nowrap",
             }}
           >
-            Live view
+            {totalCount} total
           </span>
         </div>
 
-        <div style={{ display: "grid", gap: 8 }}>
-          {recentAlerts.map((alert) => (
+        <div style={{ display: "grid", gap: 9 }}>
+          {displayAlerts.map((alert) => (
             <div
-              key={alert.title}
+              key={alert.id || alert.title}
               style={{
-                minHeight: 72,
                 borderRadius: 22,
                 background: alert.bg,
                 border: `1px solid ${alert.border}`,
-                padding: 11,
-                display: "grid",
-                gridTemplateColumns: "auto 1fr auto",
-                alignItems: "center",
-                gap: 11,
+                padding: 12,
+                boxShadow: "0 12px 28px rgba(15,23,42,0.045)",
               }}
             >
-              <span
-                aria-hidden="true"
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: 16,
-                  background: "#FFFFFF",
-                  color: alert.color,
-                  display: "grid",
-                  placeItems: "center",
-                  fontSize: 16,
-                  fontWeight: 950,
-                  boxShadow: "0 8px 18px rgba(15,23,42,0.055)",
-                }}
-              >
-                {alert.icon}
-              </span>
-
-              <span style={{ minWidth: 0 }}>
-                <strong
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                <span
+                  aria-hidden="true"
                   style={{
-                    display: "block",
-                    color: "#013863",
-                    fontSize: 13.5,
-                    lineHeight: 1.08,
-                    fontWeight: 920,
-                    letterSpacing: "-0.015em",
+                    width: 34,
+                    height: 34,
+                    borderRadius: 15,
+                    background: "#FFFFFF",
+                    color: alert.color,
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 15,
+                    fontWeight: 950,
+                    flex: "0 0 auto",
                   }}
                 >
-                  {alert.title}
-                </strong>
+                  {alert.icon}
+                </span>
+
+                <span style={{ minWidth: 0, flex: 1 }}>
+                  <strong
+                    style={{
+                      display: "block",
+                      color: "#013863",
+                      fontSize: 13.4,
+                      lineHeight: 1.14,
+                      fontWeight: 920,
+                    }}
+                  >
+                    {alert.title}
+                  </strong>
+                  <span
+                    style={{
+                      display: "block",
+                      marginTop: 4,
+                      color: "#50668B",
+                      fontSize: 11.7,
+                      lineHeight: 1.38,
+                      fontWeight: 680,
+                    }}
+                  >
+                    {alert.body}
+                  </span>
+                </span>
+
                 <span
                   style={{
-                    display: "block",
-                    marginTop: 4,
-                    color: "#64748B",
-                    fontSize: 11.2,
-                    lineHeight: 1.32,
-                    fontWeight: 680,
+                    borderRadius: 999,
+                    background: "rgba(255,255,255,0.82)",
+                    border: `1px solid ${alert.border}`,
+                    color: alert.color,
+                    padding: "5px 8px",
+                    fontSize: 9.5,
+                    fontWeight: 950,
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  {alert.body}
+                  {alert.time}
                 </span>
-              </span>
+              </div>
 
-              <span
-                style={{
-                  color: "#94A3B8",
-                  fontSize: 10,
-                  fontWeight: 900,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {alert.time}
-              </span>
+              {alert.id && !alert.isRead ? (
+                <form action={markTravelerNotificationRead} style={{ marginTop: 10 }}>
+                  <input type="hidden" name="notificationId" value={alert.id} />
+                  <button
+                    type="submit"
+                    style={{
+                      minHeight: 38,
+                      width: "100%",
+                      borderRadius: 999,
+                      border: "1px solid rgba(153,226,218,0.72)",
+                      background: "#FFFFFF",
+                      color: "#078DA0",
+                      fontSize: 11,
+                      fontWeight: 950,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Mark as read
+                  </button>
+                </form>
+              ) : null}
             </div>
           ))}
         </div>
-      </div>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr",
-          gap: 9,
-        }}
-      >
-        <a
-          href="/traveler/emergency-safety"
-          style={{
-            minHeight: 52,
-            borderRadius: 20,
-            background: "#013863",
-            color: "#FFFFFF",
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 15px",
-            fontSize: 13,
-            fontWeight: 930,
-            boxShadow: "0 16px 34px rgba(1,56,99,0.18)",
-          }}
-        >
-          <span>Open Emergency & Safety</span>
-          <span aria-hidden="true">›</span>
-        </a>
-
-        <a
-          href="/traveler/trips"
-          style={{
-            minHeight: 52,
-            borderRadius: 20,
-            background: "#FFFFFF",
-            border: "1px solid rgba(219,232,239,0.95)",
-            color: "#013863",
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 15px",
-            fontSize: 13,
-            fontWeight: 930,
-            boxShadow: "0 12px 26px rgba(15,23,42,0.055)",
-          }}
-        >
-          <span>View Trip Updates</span>
-          <span aria-hidden="true">›</span>
-        </a>
       </div>
     </section>
   );
 }
 
+
+async function getTravelerNotifications(): Promise<TravelerNotification[]> {
+  try {
+    const token = await requireAccessToken();
+
+    const res = await fetch(`${getApiBaseUrl()}/notifications`, {
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) return [];
+
+    const payload = await res.json().catch(() => null);
+    const rows = Array.isArray(payload) ? payload : Array.isArray(payload?.notifications) ? payload.notifications : [];
+
+    return rows
+      .map((row: any) => ({
+        id: String(row?.id || ""),
+        userId: row?.userId ? String(row.userId) : undefined,
+        notificationType: row?.notificationType ? String(row.notificationType) : "GENERAL",
+        title: String(row?.title || "OSP update"),
+        body: String(row?.body || ""),
+        isRead: Boolean(row?.isRead),
+        createdAt: row?.createdAt ? String(row.createdAt) : undefined,
+      }))
+      .filter((row: TravelerNotification) => row.id && row.title);
+  } catch {
+    return [];
+  }
+}
+
+async function markTravelerNotificationRead(formData: FormData) {
+  "use server";
+
+  const notificationId = String(formData.get("notificationId") || "").trim();
+
+  if (!notificationId) {
+    redirect("/traveler/settings?panel=notifications");
+  }
+
+  try {
+    const token = await requireAccessToken();
+
+    await fetch(`${getApiBaseUrl()}/notifications/read`, {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ notificationId }),
+    });
+  } catch {
+    // Keep the traveler page stable if read-state update fails.
+  }
+
+  revalidatePath("/traveler/settings");
+  redirect("/traveler/settings?panel=notifications");
+}
 
 async function sendKuyaTalaChatMessage(formData: FormData) {
   "use server";
@@ -1754,6 +1771,7 @@ export default async function TravelerSettingsPage({
   const currentBirthDate = travelerProfile?.birthDate ? String(travelerProfile.birthDate).slice(0, 10) : "";
   const dictionary = await getTravelerDictionary(currentLanguage);
   const assistantData = activePanel === "assistant" ? await getKuyaTalaAssistantData() : null;
+  const notifications = activePanel === "notifications" ? await getTravelerNotifications() : [];
   const assistantStatus = getSingleSearchParam(searchParams, "assistantStatus");
   const assistantMessage = getSingleSearchParam(searchParams, "assistantMessage");
   const assistantTopic = getSingleSearchParam(searchParams, "topic");
@@ -2167,7 +2185,7 @@ export default async function TravelerSettingsPage({
             saved={saved}
           />
         ) : activePanel === "notifications" ? (
-          <AlertsPanel accent={copy.accent} border={copy.border} />
+          <AlertsPanel accent={copy.accent} border={copy.border} notifications={notifications} />
         ) : (
           <div
             style={{
