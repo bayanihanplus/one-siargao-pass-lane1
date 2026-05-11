@@ -23,12 +23,28 @@ const DISPLAY_CURRENCY_OPTIONS = [
   { code: "PHP", label: "Philippine Peso", note: "Settlement source" },
   { code: "USD", label: "US Dollar", note: "Display estimate" },
   { code: "EUR", label: "Euro", note: "Display estimate" },
+  { code: "GBP", label: "British Pound", note: "Display estimate" },
   { code: "JPY", label: "Japanese Yen", note: "Display estimate" },
   { code: "KRW", label: "Korean Won", note: "Display estimate" },
   { code: "CNY", label: "Chinese Yuan", note: "Display estimate" },
   { code: "HKD", label: "Hong Kong Dollar", note: "Display estimate" },
+  { code: "TWD", label: "Taiwan Dollar", note: "Display estimate" },
   { code: "AUD", label: "Australian Dollar", note: "Display estimate" },
+  { code: "NZD", label: "New Zealand Dollar", note: "Display estimate" },
   { code: "SGD", label: "Singapore Dollar", note: "Display estimate" },
+  { code: "CAD", label: "Canadian Dollar", note: "Display estimate" },
+  { code: "THB", label: "Thai Baht", note: "Display estimate" },
+  { code: "MYR", label: "Malaysian Ringgit", note: "Display estimate" },
+  { code: "IDR", label: "Indonesian Rupiah", note: "Display estimate" },
+  { code: "VND", label: "Vietnamese Dong", note: "Display estimate" },
+  { code: "INR", label: "Indian Rupee", note: "Display estimate" },
+  { code: "AED", label: "UAE Dirham", note: "Display estimate" },
+  { code: "SAR", label: "Saudi Riyal", note: "Display estimate" },
+  { code: "ILS", label: "Israeli New Shekel", note: "Display estimate" },
+  { code: "CHF", label: "Swiss Franc", note: "Display estimate" },
+  { code: "SEK", label: "Swedish Krona", note: "Display estimate" },
+  { code: "NOK", label: "Norwegian Krone", note: "Display estimate" },
+  { code: "DKK", label: "Danish Krone", note: "Display estimate" },
 ];
 
 async function getLanguagePacks(): Promise<LanguageOption[]> {
@@ -336,7 +352,7 @@ function panelCopy(panel: PanelKey, dictionary: Record<string, string>) {
       eyebrow: "Currency / FX",
       title: "Review traveler currency options",
       body: "Choose the currency used for traveler display estimates. PHP remains the booking, payment, and settlement source of truth.",
-      chips: ["PHP", "USD", "EUR", "JPY", "KRW", "CNY", "HKD", "AUD", "SGD"],
+      chips: ["PHP", "USD", "EUR", "GBP", "JPY", "KRW", "CNY", "HKD", "TWD", "AUD", "NZD", "SGD", "CAD", "THB", "MYR", "ILS"],
       accent: "#d97706",
       bg: "#fff8eb",
       border: "#f6e1b5",
@@ -549,93 +565,192 @@ function CurrencySelector(props: {
   border: string;
   saved: boolean;
 }) {
+  const normalizedCurrency = String(props.currentCurrency || "PHP").trim().toUpperCase();
+  const activeOption =
+    DISPLAY_CURRENCY_OPTIONS.find((option) => option.code === normalizedCurrency) ||
+    DISPLAY_CURRENCY_OPTIONS.find((option) => option.code === "PHP") ||
+    DISPLAY_CURRENCY_OPTIONS[0];
+
+  const settlementOption = DISPLAY_CURRENCY_OPTIONS.find((option) => option.code === "PHP") || DISPLAY_CURRENCY_OPTIONS[0];
+
   return (
     <div style={{ marginTop: 16, display: "grid", gap: 14 }}>
       {props.saved ? (
         <div
           style={{
-            borderRadius: 16,
-            border: "1px solid #cdeed7",
-            background: "#eefdf3",
-            color: "#11843d",
-            padding: "10px 12px",
+            borderRadius: 18,
+            border: "1px solid rgba(243,174,38,0.34)",
+            background: "linear-gradient(135deg, rgba(255,247,237,0.96), rgba(255,255,255,0.98))",
+            color: "#013863",
+            padding: "12px 14px",
             fontSize: 12,
             fontWeight: 900,
+            boxShadow: "0 12px 28px rgba(1,56,99,0.08)",
           }}
         >
           Currency display preference saved to your OSP profile.
         </div>
       ) : null}
 
-      <div
+      <section
         style={{
-          borderRadius: 18,
+          borderRadius: 24,
           border: `1px solid ${props.border}`,
-          background: "linear-gradient(135deg, #ffffff, #f4fdff)",
-          padding: 12,
+          background: "linear-gradient(180deg, #ffffff 0%, #fffaf0 100%)",
+          padding: 16,
+          boxShadow: "0 18px 42px rgba(1,56,99,0.10)",
+          display: "grid",
+          gap: 12,
         }}
       >
+        <div>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 950,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: props.accent,
+              marginBottom: 6,
+            }}
+          >
+            Active Display Currency
+          </div>
+
+          <div
+            style={{
+              borderRadius: 20,
+              border: "1px solid rgba(243,174,38,0.26)",
+              background: "linear-gradient(135deg, rgba(255,247,237,0.96), rgba(255,255,255,0.98))",
+              padding: "13px 14px",
+              display: "grid",
+              gap: 6,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+              <strong
+                style={{
+                  color: "#013863",
+                  fontSize: 22,
+                  lineHeight: 1,
+                  fontWeight: 950,
+                  letterSpacing: "-0.035em",
+                }}
+              >
+                {activeOption.code}
+              </strong>
+
+              <span
+                style={{
+                  borderRadius: 999,
+                  background: activeOption.code === "PHP" ? "rgba(243,174,38,0.24)" : "rgba(5,150,165,0.12)",
+                  color: activeOption.code === "PHP" ? "#7a4a00" : "#013863",
+                  padding: "6px 9px",
+                  fontSize: 10,
+                  fontWeight: 950,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {activeOption.note}
+              </span>
+            </div>
+
+            <span
+              style={{
+                color: "#50668B",
+                fontSize: 12,
+                lineHeight: 1.35,
+                fontWeight: 750,
+              }}
+            >
+              {activeOption.label}
+            </span>
+          </div>
+        </div>
+
+        <form action={updatePreferredDisplayCurrency} style={{ display: "grid", gap: 10 }}>
+          <label
+            style={{
+              display: "grid",
+              gap: 7,
+              color: "#013863",
+              fontSize: 13,
+              fontWeight: 900,
+            }}
+          >
+            Choose display currency
+            <select
+              name="preferredDisplayCurrencyCode"
+              defaultValue={activeOption.code}
+              aria-label="Choose traveler display currency"
+              style={{
+                width: "100%",
+                minHeight: 52,
+                borderRadius: 18,
+                border: `1px solid ${props.border}`,
+                background: "#ffffff",
+                color: "#013863",
+                padding: "0 14px",
+                fontSize: 15,
+                fontWeight: 850,
+                outline: "none",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.80)",
+              }}
+            >
+              {DISPLAY_CURRENCY_OPTIONS.map((option) => (
+                <option key={option.code} value={option.code}>
+                  {option.code} · {option.label} · {option.note}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <button
+            type="submit"
+            style={{
+              minHeight: 50,
+              border: 0,
+              borderRadius: 18,
+              background: "linear-gradient(135deg, #013863, #F3AE26)",
+              color: "#ffffff",
+              fontSize: 14,
+              fontWeight: 950,
+              cursor: "pointer",
+              boxShadow: "0 14px 30px rgba(1,56,99,0.18)",
+            }}
+          >
+            Save currency preference
+          </button>
+        </form>
+
         <div
           style={{
-            fontSize: 10,
-            fontWeight: 950,
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            color: props.accent,
-            marginBottom: 8,
+            borderRadius: 18,
+            border: "1px solid rgba(1,56,99,0.12)",
+            background: "rgba(255,255,255,0.78)",
+            padding: 12,
+            display: "grid",
+            gap: 6,
           }}
         >
-          Display Currency
+          <strong style={{ color: "#013863", fontSize: 12, fontWeight: 950 }}>
+            Settlement remains {settlementOption.code}
+          </strong>
+          <p
+            style={{
+              margin: 0,
+              color: "#64748b",
+              fontSize: 12,
+              lineHeight: 1.45,
+              fontWeight: 700,
+            }}
+          >
+            This changes traveler display estimates only. Booking totals, payment settlement, operator payout, and official receipts remain governed by PHP records and booking-time FX snapshots.
+          </p>
         </div>
-
-        <div style={{ display: "grid", gap: 8 }}>
-          {DISPLAY_CURRENCY_OPTIONS.map((option) => {
-            const active = option.code === props.currentCurrency;
-
-            return (
-              <form key={option.code} action={updatePreferredDisplayCurrency}>
-                <input type="hidden" name="preferredDisplayCurrencyCode" value={option.code} />
-                <button
-                  type="submit"
-                  aria-label={`Set display currency to ${option.code}`}
-                  style={{
-                    width: "100%",
-                    minHeight: 46,
-                    borderRadius: 14,
-                    border: active ? `1px solid ${props.accent}` : `1px solid ${props.border}`,
-                    background: active ? props.accent : "#ffffff",
-                    color: active ? "#ffffff" : "#19305a",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: 10,
-                    padding: "8px 12px",
-                    fontSize: 13,
-                    fontWeight: 950,
-                    textAlign: "left",
-                    boxShadow: active ? "0 10px 20px rgba(217,119,6,0.18)" : "none",
-                  }}
-                >
-                  <span>
-                    {active ? "✓ " : ""}
-                    {option.code}
-                    <span style={{ display: "block", fontSize: 11, fontWeight: 750, opacity: active ? 0.9 : 0.68 }}>
-                      {option.label}
-                    </span>
-                  </span>
-                  <span style={{ fontSize: 10, fontWeight: 900, opacity: active ? 0.9 : 0.66 }}>
-                    {option.note}
-                  </span>
-                </button>
-              </form>
-            );
-          })}
-        </div>
-
-        <p style={{ margin: "10px 0 0", color: "#64748b", fontSize: 12, lineHeight: 1.4, fontWeight: 700 }}>
-          This changes display estimates only. PHP remains the settlement amount for bookings and payments.
-        </p>
-      </div>
+      </section>
     </div>
   );
 }

@@ -258,6 +258,11 @@ function getLanguageHeaderLabel(languageCode: string | null | undefined) {
   return labels[normalized] || normalized.slice(0, 3).toUpperCase();
 }
 
+function getCurrencyHeaderLabel(currencyCode: string | null | undefined) {
+  const normalized = String(currencyCode || "PHP").trim().toUpperCase();
+  return normalized.length === 3 ? normalized : "PHP";
+}
+
 function getTripPass(trip: any) {
   return trip?.pass ?? null;
 }
@@ -1348,6 +1353,7 @@ function TravelerShellFrame(props: {
   latestTravelerTrip: any;
   dictionary: Record<string, string>;
   preferredLanguage?: string | null;
+  preferredDisplayCurrencyCode?: string | null;
 }) {
   const hero = getHeroState(props.latestTravelerTrip);
   const heroBaseKey = getHomeHeroDictionaryBase(hero.title);
@@ -1362,6 +1368,7 @@ function TravelerShellFrame(props: {
   const assistantAriaLabel = t(props.dictionary, "home.header.assistant.ariaLabel", "Open OSP Travel Assistant");
   const notificationsAriaLabel = t(props.dictionary, "home.header.notifications.ariaLabel", "Notifications");
   const languageLabel = getLanguageHeaderLabel(props.preferredLanguage);
+  const currencyLabel = getCurrencyHeaderLabel(props.preferredDisplayCurrencyCode);
   const rootPreview = isRootPreviewTrip(props.latestTravelerTrip);
 
   return (
@@ -1452,7 +1459,7 @@ function TravelerShellFrame(props: {
           }}
         >
           <HeaderControlButton label={languageLabel} ariaLabel={languageAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=language"} icon="language" />
-          <HeaderControlButton label="PHP" ariaLabel={currencyAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=currency"} icon="currency" />
+          <HeaderControlButton label={currencyLabel} ariaLabel={currencyAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=currency"} icon="currency" />
           <HeaderControlButton className="osp-phone-secondary-control" label="AI" ariaLabel={assistantAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=assistant"} icon="assistant" />
 
           <a
@@ -2278,6 +2285,7 @@ function TravelerShell(props: {
         latestTravelerTrip={props.latestTravelerTrip}
         dictionary={props.dictionary}
         preferredLanguage={props.user?.preferredLanguage}
+        preferredDisplayCurrencyCode={props.user?.preferredDisplayCurrencyCode}
       />
       <TravelerPassCard user={props.user} latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />
       <TravelerCompactStatusRow latestTravelerTrip={props.latestTravelerTrip} dictionary={props.dictionary} />

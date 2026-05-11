@@ -455,6 +455,7 @@ export class AuthService {
       accountStatus: user.accountStatus,
       primaryRole: user.primaryRole,
       preferredLanguage: user.preferredLanguage,
+      preferredDisplayCurrencyCode: user.preferredDisplayCurrencyCode,
       isEmailVerified: user.isEmailVerified,
       isMobileVerified: user.isMobileVerified,
       createdAt: user.createdAt,
