@@ -373,90 +373,175 @@ function LanguageSelector(props: {
   saved: boolean;
   languageOptions: LanguageOption[];
 }) {
-  const groups = Array.from(new Set(props.languageOptions.map((option) => option.group))).sort((a, b) => {
-    const aIndex = LANGUAGE_GROUP_ORDER.indexOf(a);
-    const bIndex = LANGUAGE_GROUP_ORDER.indexOf(b);
+  const normalizedOptions = props.languageOptions
+    .filter((option) => option?.code && option?.label)
+    .sort((a, b) => {
+      const aGroupIndex = LANGUAGE_GROUP_ORDER.indexOf(a.group);
+      const bGroupIndex = LANGUAGE_GROUP_ORDER.indexOf(b.group);
 
-    if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
-    if (aIndex === -1) return 1;
-    if (bIndex === -1) return -1;
-    return aIndex - bIndex;
-  });
+      if (aGroupIndex !== bGroupIndex) {
+        if (aGroupIndex === -1) return 1;
+        if (bGroupIndex === -1) return -1;
+        return aGroupIndex - bGroupIndex;
+      }
+
+      return a.label.localeCompare(b.label);
+    });
+
+  const activeOption =
+    normalizedOptions.find((option) => option.code === props.currentLanguage) ||
+    normalizedOptions[0] ||
+    FALLBACK_LANGUAGE_OPTIONS[0];
 
   return (
     <div style={{ marginTop: 16, display: "grid", gap: 14 }}>
       {props.saved ? (
         <div
           style={{
-            borderRadius: 16,
-            border: "1px solid #cdeed7",
-            background: "#eefdf3",
-            color: "#11843d",
-            padding: "10px 12px",
+            borderRadius: 18,
+            border: "1px solid rgba(5,150,165,0.20)",
+            background: "linear-gradient(135deg, #ecfeff, #ffffff)",
+            color: "#013863",
+            padding: "12px 14px",
             fontSize: 12,
             fontWeight: 900,
+            boxShadow: "0 12px 28px rgba(1,56,99,0.08)",
           }}
         >
           Language preference saved to your OSP profile.
         </div>
       ) : null}
 
-      {groups.map((group) => {
-        const options = props.languageOptions.filter((option) => option.group === group);
+      <section
+        style={{
+          borderRadius: 24,
+          border: `1px solid ${props.border}`,
+          background: "linear-gradient(180deg, #ffffff 0%, #f7fdff 100%)",
+          padding: 16,
+          boxShadow: "0 18px 42px rgba(1,56,99,0.10)",
+          display: "grid",
+          gap: 12,
+        }}
+      >
+        <div>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 950,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: props.accent,
+              marginBottom: 6,
+            }}
+          >
+            Active Travel Language
+          </div>
 
-        return (
-          <div key={group}>
-            <div
+          <div
+            style={{
+              borderRadius: 20,
+              border: "1px solid rgba(5,150,165,0.16)",
+              background: "linear-gradient(135deg, rgba(234,251,250,0.95), rgba(255,255,255,0.98))",
+              padding: "12px 14px",
+              display: "grid",
+              gap: 4,
+            }}
+          >
+            <strong
               style={{
-                fontSize: 10,
+                color: "#013863",
+                fontSize: 17,
+                lineHeight: 1.15,
                 fontWeight: 950,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: props.accent,
-                marginBottom: 8,
+                letterSpacing: "-0.025em",
               }}
             >
-              {group} Pack
-            </div>
-
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {options.map((option) => {
-                const active = option.code === props.currentLanguage;
-
-                return (
-                  <form key={option.code} action={updatePreferredLanguage}>
-                    <input type="hidden" name="preferredLanguage" value={option.code} />
-                    <button
-                      type="submit"
-                      aria-label={`Set language to ${option.label}`}
-                      style={{
-                        minHeight: 42,
-                        borderRadius: 999,
-                        border: active ? `1px solid ${props.accent}` : `1px solid ${props.border}`,
-                        background: active ? props.accent : "#ffffff",
-                        color: active ? "#ffffff" : "#19305a",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 6,
-                        padding: "0 12px",
-                        fontSize: 12,
-                        fontWeight: 950,
-                        boxShadow: active ? "0 10px 20px rgba(14,165,183,0.18)" : "none",
-                      }}
-                    >
-                      {active ? "✓ " : ""}
-                      {option.label}
-                    </button>
-                  </form>
-                );
-              })}
-            </div>
+              {activeOption.label}
+            </strong>
+            <span
+              style={{
+                color: "#50668B",
+                fontSize: 12,
+                lineHeight: 1.35,
+                fontWeight: 750,
+              }}
+            >
+              Current setting: {activeOption.code.toUpperCase()} · {activeOption.group || "Language Pack"}
+            </span>
           </div>
-        );
-      })}
+        </div>
+
+        <form action={updatePreferredLanguage} style={{ display: "grid", gap: 10 }}>
+          <label
+            style={{
+              display: "grid",
+              gap: 7,
+              color: "#013863",
+              fontSize: 13,
+              fontWeight: 900,
+            }}
+          >
+            Choose language pack
+            <select
+              name="preferredLanguage"
+              defaultValue={activeOption.code}
+              aria-label="Choose traveler language pack"
+              style={{
+                width: "100%",
+                minHeight: 52,
+                borderRadius: 18,
+                border: `1px solid ${props.border}`,
+                background: "#ffffff",
+                color: "#013863",
+                padding: "0 14px",
+                fontSize: 15,
+                fontWeight: 850,
+                outline: "none",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.80)",
+              }}
+            >
+              {normalizedOptions.map((option) => (
+                <option key={option.code} value={option.code}>
+                  {option.label} · {option.group || "Language Pack"}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <button
+            type="submit"
+            style={{
+              minHeight: 50,
+              border: 0,
+              borderRadius: 18,
+              background: "linear-gradient(135deg, #013863, #0596A5)",
+              color: "#ffffff",
+              fontSize: 14,
+              fontWeight: 950,
+              cursor: "pointer",
+              boxShadow: "0 14px 30px rgba(1,56,99,0.18)",
+            }}
+          >
+            Save language preference
+          </button>
+        </form>
+
+        <p
+          style={{
+            margin: 0,
+            color: "#64748b",
+            fontSize: 12,
+            lineHeight: 1.45,
+            fontWeight: 700,
+          }}
+        >
+          This controls traveler-facing labels where approved language pack dictionary values are available. Missing translations safely fall back to English.
+        </p>
+      </section>
     </div>
   );
 }
+
 
 function CurrencySelector(props: {
   currentCurrency: string;
