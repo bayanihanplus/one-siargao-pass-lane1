@@ -374,7 +374,7 @@ function panelCopy(panel: PanelKey, dictionary: Record<string, string>) {
   return {
     eyebrow: "Notifications",
     title: "Traveler alerts and updates",
-    body: "Notifications will support traveler attention and status awareness. Operational approvals still depend on governed backend records.",
+    body: "See important trip, pass, payment, safety, and Passport Trail updates in one place.",
     chips: ["Pass updates", "Trip alerts", "Payment updates", "Checkpoint notices"],
     accent: "#2563eb",
     bg: "#eff6ff",
@@ -757,6 +757,536 @@ function CurrencySelector(props: {
 
 
 
+function AlertsPanel(props: {
+  accent: string;
+  border: string;
+}) {
+  const alertCards = [
+    {
+      title: "Trip updates",
+      label: "Itinerary",
+      body: "Trip date changes, booking movement, and readiness updates appear here.",
+      icon: "✦",
+      href: "/traveler/trips",
+      bg: "#F1FAFF",
+      border: "rgba(125,211,252,0.62)",
+      iconBg: "#E0F7FF",
+      iconColor: "#05788A",
+    },
+    {
+      title: "Pass & QR",
+      label: "Credential",
+      body: "Pass status, QR readiness, and access reminders stay connected here.",
+      icon: "⌁",
+      href: "/traveler/pass",
+      bg: "#F4FCFA",
+      border: "rgba(153,226,218,0.72)",
+      iconBg: "#DDF8F3",
+      iconColor: "#078DA0",
+    },
+    {
+      title: "Payments",
+      label: "Receipts",
+      body: "Payment status, receipts, and settlement notes are grouped clearly.",
+      icon: "₱",
+      href: "/traveler/payments",
+      bg: "#FFF8EA",
+      border: "rgba(243,174,38,0.38)",
+      iconBg: "#FFF0C8",
+      iconColor: "#B96B00",
+    },
+    {
+      title: "Email alerts",
+      label: "Inbox",
+      body: "Important OSP updates can also be followed through your account email.",
+      icon: "@",
+      href: "/traveler/settings?panel=notifications",
+      bg: "#F8FAFF",
+      border: "rgba(191,219,254,0.68)",
+      iconBg: "#EAF2FF",
+      iconColor: "#2563EB",
+    },
+    {
+      title: "Safety & access",
+      label: "Priority",
+      body: "Emergency, safety, and access notices are kept close to your trip.",
+      icon: "!",
+      href: "/traveler/emergency-safety",
+      bg: "#FFF7F5",
+      border: "rgba(251,146,60,0.34)",
+      iconBg: "#FFE8DF",
+      iconColor: "#C2410C",
+    },
+    {
+      title: "Passport Trails",
+      label: "Journey",
+      body: "Trail progress, Passport Map reminders, and stop updates appear here.",
+      icon: "⌖",
+      href: "/traveler/passport-trails",
+      bg: "#F7F7FF",
+      border: "rgba(196,181,253,0.46)",
+      iconBg: "#ECE9FF",
+      iconColor: "#6D4AFF",
+    },
+  ];
+
+  const recentAlerts = [
+    {
+      title: "No urgent alerts",
+      body: "Your important OSP updates will appear here as your journey moves forward.",
+      time: "Now",
+      icon: "✓",
+      bg: "#F4FCFA",
+      border: "rgba(153,226,218,0.72)",
+      color: "#078DA0",
+    },
+    {
+      title: "Trip updates ready",
+      body: "We will show trip, pass, payment, and safety updates in one clean feed.",
+      time: "Today",
+      icon: "✦",
+      bg: "#F8FCFF",
+      border: "rgba(219,232,239,0.95)",
+      color: "#19305A",
+    },
+  ];
+
+  return (
+    <section
+      aria-label="Traveler alerts center"
+      style={{
+        marginTop: 16,
+        display: "grid",
+        gap: 14,
+      }}
+    >
+      <div
+        style={{
+          borderRadius: 32,
+          background: "#FFFFFF",
+          border: "1px solid rgba(219,232,239,0.95)",
+          boxShadow: "0 22px 58px rgba(1,56,99,0.10)",
+          padding: 16,
+          display: "grid",
+          gap: 14,
+        }}
+      >
+        <div
+          style={{
+            borderRadius: 28,
+            background: "#F4FCFA",
+            border: "1px solid rgba(153,226,218,0.72)",
+            padding: 16,
+            display: "grid",
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              gap: 12,
+            }}
+          >
+            <div
+              style={{
+                width: 54,
+                height: 54,
+                borderRadius: 22,
+                background: "#DDF8F3",
+                color: "#078DA0",
+                display: "grid",
+                placeItems: "center",
+                fontSize: 24,
+                fontWeight: 950,
+                flex: "0 0 auto",
+                boxShadow: "0 12px 26px rgba(7,141,160,0.12)",
+              }}
+              aria-hidden="true"
+            >
+              ✓
+            </div>
+
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 950,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: "#078DA0",
+                  marginBottom: 5,
+                }}
+              >
+                Alert status
+              </div>
+              <h3
+                style={{
+                  margin: 0,
+                  color: "#013863",
+                  fontSize: 24,
+                  lineHeight: 0.98,
+                  letterSpacing: "-0.055em",
+                  fontWeight: 860,
+                }}
+              >
+                No urgent alerts
+              </h3>
+              <p
+                style={{
+                  margin: "8px 0 0",
+                  color: "#50668B",
+                  fontSize: 12.8,
+                  lineHeight: 1.42,
+                  fontWeight: 680,
+                }}
+              >
+                Your OSP journey updates stay organized here, from trip movement to pass, payment, safety, and Passport Trail reminders.
+              </p>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+              gap: 8,
+            }}
+          >
+            {[
+              ["Trip", "0"],
+              ["Pass", "0"],
+              ["Pay", "0"],
+            ].map(([label, value]) => (
+              <div
+                key={label}
+                style={{
+                  borderRadius: 18,
+                  background: "rgba(255,255,255,0.82)",
+                  border: "1px solid rgba(153,226,218,0.42)",
+                  padding: "10px 8px",
+                  textAlign: "center",
+                }}
+              >
+                <div
+                  style={{
+                    color: "#013863",
+                    fontSize: 18,
+                    lineHeight: 1,
+                    fontWeight: 950,
+                  }}
+                >
+                  {value}
+                </div>
+                <div
+                  style={{
+                    marginTop: 4,
+                    color: "#64748B",
+                    fontSize: 10,
+                    fontWeight: 850,
+                  }}
+                >
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 10,
+          }}
+        >
+          {alertCards.map((item) => (
+            <a
+              key={item.title}
+              href={item.href}
+              style={{
+                minHeight: 148,
+                borderRadius: 26,
+                background: item.bg,
+                border: `1px solid ${item.border}`,
+                padding: 13,
+                color: "#10234A",
+                textDecoration: "none",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                gap: 11,
+                boxShadow: "0 14px 34px rgba(15,23,42,0.055)",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  gap: 10,
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 17,
+                    background: item.iconBg,
+                    color: item.iconColor,
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 18,
+                    fontWeight: 950,
+                    flex: "0 0 auto",
+                  }}
+                >
+                  {item.icon}
+                </span>
+
+                <span
+                  style={{
+                    borderRadius: 999,
+                    background: "rgba(255,255,255,0.82)",
+                    border: `1px solid ${item.border}`,
+                    color: item.iconColor,
+                    padding: "5px 8px",
+                    fontSize: 9.5,
+                    lineHeight: 1,
+                    fontWeight: 950,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {item.label}
+                </span>
+              </div>
+
+              <div>
+                <h4
+                  style={{
+                    margin: 0,
+                    color: "#013863",
+                    fontSize: 15.5,
+                    lineHeight: 1.05,
+                    fontWeight: 920,
+                    letterSpacing: "-0.025em",
+                  }}
+                >
+                  {item.title}
+                </h4>
+                <p
+                  style={{
+                    margin: "6px 0 0",
+                    color: "#50668B",
+                    fontSize: 11.6,
+                    lineHeight: 1.36,
+                    fontWeight: 680,
+                  }}
+                >
+                  {item.body}
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div
+        style={{
+          borderRadius: 30,
+          background: "#FFFFFF",
+          border: "1px solid rgba(219,232,239,0.95)",
+          boxShadow: "0 18px 42px rgba(1,56,99,0.075)",
+          padding: 15,
+          display: "grid",
+          gap: 11,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            gap: 10,
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 950,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#078DA0",
+                marginBottom: 5,
+              }}
+            >
+              Recent alerts
+            </div>
+            <h3
+              style={{
+                margin: 0,
+                color: "#013863",
+                fontSize: 21,
+                lineHeight: 1,
+                letterSpacing: "-0.045em",
+                fontWeight: 850,
+              }}
+            >
+              Your update feed
+            </h3>
+          </div>
+
+          <span
+            style={{
+              borderRadius: 999,
+              background: "#F1FAFF",
+              border: "1px solid rgba(125,211,252,0.62)",
+              color: "#05788A",
+              padding: "7px 9px",
+              fontSize: 10,
+              fontWeight: 950,
+              whiteSpace: "nowrap",
+            }}
+          >
+            Live view
+          </span>
+        </div>
+
+        <div style={{ display: "grid", gap: 8 }}>
+          {recentAlerts.map((alert) => (
+            <div
+              key={alert.title}
+              style={{
+                minHeight: 72,
+                borderRadius: 22,
+                background: alert.bg,
+                border: `1px solid ${alert.border}`,
+                padding: 11,
+                display: "grid",
+                gridTemplateColumns: "auto 1fr auto",
+                alignItems: "center",
+                gap: 11,
+              }}
+            >
+              <span
+                aria-hidden="true"
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 16,
+                  background: "#FFFFFF",
+                  color: alert.color,
+                  display: "grid",
+                  placeItems: "center",
+                  fontSize: 16,
+                  fontWeight: 950,
+                  boxShadow: "0 8px 18px rgba(15,23,42,0.055)",
+                }}
+              >
+                {alert.icon}
+              </span>
+
+              <span style={{ minWidth: 0 }}>
+                <strong
+                  style={{
+                    display: "block",
+                    color: "#013863",
+                    fontSize: 13.5,
+                    lineHeight: 1.08,
+                    fontWeight: 920,
+                    letterSpacing: "-0.015em",
+                  }}
+                >
+                  {alert.title}
+                </strong>
+                <span
+                  style={{
+                    display: "block",
+                    marginTop: 4,
+                    color: "#64748B",
+                    fontSize: 11.2,
+                    lineHeight: 1.32,
+                    fontWeight: 680,
+                  }}
+                >
+                  {alert.body}
+                </span>
+              </span>
+
+              <span
+                style={{
+                  color: "#94A3B8",
+                  fontSize: 10,
+                  fontWeight: 900,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {alert.time}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr",
+          gap: 9,
+        }}
+      >
+        <a
+          href="/traveler/emergency-safety"
+          style={{
+            minHeight: 52,
+            borderRadius: 20,
+            background: "#013863",
+            color: "#FFFFFF",
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 15px",
+            fontSize: 13,
+            fontWeight: 930,
+            boxShadow: "0 16px 34px rgba(1,56,99,0.18)",
+          }}
+        >
+          <span>Open Emergency & Safety</span>
+          <span aria-hidden="true">›</span>
+        </a>
+
+        <a
+          href="/traveler/trips"
+          style={{
+            minHeight: 52,
+            borderRadius: 20,
+            background: "#FFFFFF",
+            border: "1px solid rgba(219,232,239,0.95)",
+            color: "#013863",
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 15px",
+            fontSize: 13,
+            fontWeight: 930,
+            boxShadow: "0 12px 26px rgba(15,23,42,0.055)",
+          }}
+        >
+          <span>View Trip Updates</span>
+          <span aria-hidden="true">›</span>
+        </a>
+      </div>
+    </section>
+  );
+}
+
 
 async function sendKuyaTalaChatMessage(formData: FormData) {
   "use server";
@@ -1044,7 +1574,7 @@ function KuyaTalaAssistantPanel(props: {
               <span aria-hidden="true">›</span>
             </a>
             <a
-              href="/traveler/passport-map"
+              href="/traveler/trips"
               style={{
                 minHeight: 48,
                 borderRadius: 17,
@@ -1061,7 +1591,7 @@ function KuyaTalaAssistantPanel(props: {
                 boxShadow: "0 10px 24px rgba(15,23,42,0.06)",
               }}
             >
-              <span>Open Passport Map</span>
+              <span>View Trip Updates</span>
               <span aria-hidden="true">›</span>
             </a>
           </div>
@@ -1636,6 +2166,8 @@ export default async function TravelerSettingsPage({
             border={copy.border}
             saved={saved}
           />
+        ) : activePanel === "notifications" ? (
+          <AlertsPanel accent={copy.accent} border={copy.border} />
         ) : (
           <div
             style={{
@@ -1668,34 +2200,24 @@ export default async function TravelerSettingsPage({
         )}
       </section>
 
-      <section
-        style={{
-          marginTop: 14,
-          border: "1px solid #dbe8ef",
-          borderRadius: 20,
-          background: "linear-gradient(135deg, #ffffff, #f4fdff)",
-          padding: 16,
-          boxShadow: "0 10px 26px rgba(15,23,42,0.04)",
-        }}
-      >
-        <div style={{ fontSize: 12, fontWeight: 950, color: "#19305a", marginBottom: 6 }}>
-          Controlled access only
-        </div>
-                  {activePanel === "assistant" ? (
-            <KuyaTalaAssistantPanel
-              assistantData={assistantData}
-              submittedMessage={assistantMessage}
-              assistantStatus={assistantStatus}
-              topic={assistantTopic}
-            />
-          ) : null}
-
-<p style={{ margin: 0, color: "#64748b", fontSize: 13, lineHeight: 1.45 }}>
-          Language and currency display preferences can now be saved to your OSP profile. Live FX providers, settlement FX, and AI runtime remain controlled future layers.
-        </p>
-      </section>
+      {activePanel === "assistant" ? (
+        <section
+          style={{
+            marginTop: 14,
+          }}
+        >
+          <KuyaTalaAssistantPanel
+            assistantData={assistantData}
+            submittedMessage={assistantMessage}
+            assistantStatus={assistantStatus}
+            topic={assistantTopic}
+          />
+        </section>
+      ) : null}
       <div aria-hidden="true" style={{ height: 118 }} />
-            <PassportMapShortcut compact title="Open Siargao Passport Map" body="Go back to your journey map from Profile, Language, Currency, Alerts, or Kuya Tala settings." />
+            {activePanel !== "notifications" ? (
+        <PassportMapShortcut compact title="Open Siargao Passport Map" body="Go back to your journey map from Profile, Language, Currency, Alerts, or Kuya Tala settings." />
+      ) : null}
       <UniversalTravelerBottomTabBar activeTab="profile" fixed />
     </main>
   );
