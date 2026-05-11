@@ -953,8 +953,9 @@ function TravelerHomeQuickAccessGrid() {
       style={{
         gridColumn: "1 / -1",
         width: "100%",
+        maxWidth: 430,
         minWidth: 0,
-        marginTop: 8,
+        margin: "8px auto 14px",
         borderRadius: 24,
         padding: 12,
         background:
