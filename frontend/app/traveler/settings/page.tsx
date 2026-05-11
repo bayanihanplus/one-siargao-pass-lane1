@@ -1756,6 +1756,42 @@ function KuyaTalaAssistantPanel(props: {
 }
 
 
+function getSettingsKuyaTalaConfig(panel: string) {
+  if (panel === "language") {
+    return {
+      eyebrow: "Kuya Tala™ Settings Help",
+      title: "Choose the language you are comfortable using.",
+      body: "Language settings should help you navigate OSP clearly. This screen is for choosing the app language, not opening the Passport Map.",
+      primaryLabel: "Apply language setting",
+      primaryHref: "/traveler/settings?panel=language",
+      secondaryLabel: "Back to Settings",
+      secondaryHref: "/traveler/settings",
+    };
+  }
+
+  if (panel === "currency") {
+    return {
+      eyebrow: "Kuya Tala™ Settings Help",
+      title: "Choose how prices are displayed.",
+      body: "Currency settings affect how prices are shown while browsing and booking. Final payment amounts may still depend on provider, fees, and payment method.",
+      primaryLabel: "Apply currency setting",
+      primaryHref: "/traveler/settings?panel=currency",
+      secondaryLabel: "View payments",
+      secondaryHref: "/traveler/payments",
+    };
+  }
+
+  return {
+    eyebrow: "Kuya Tala™ Profile Help",
+    title: "Keep your traveler profile ready.",
+    body: "Your profile supports your OSP Pass, emergency details, trip records, and safer traveler assistance while in Siargao.",
+    primaryLabel: "View OSP Pass",
+    primaryHref: "/traveler/pass",
+    secondaryLabel: "Update emergency contact",
+    secondaryHref: "/traveler/emergency-safety",
+  };
+}
+
 export default async function TravelerSettingsPage({
   searchParams,
 }: {
@@ -1764,6 +1800,8 @@ export default async function TravelerSettingsPage({
   const user = await getCurrentUser();
   const languageOptions = await getLanguagePacks();
   const activePanel = getPanel(searchParams);
+  const kuyaTalaSettingsConfig = getSettingsKuyaTalaConfig(activePanel);
+
   const saved = getSaved(searchParams);
   const currentLanguage = user?.preferredLanguage || "en";
   const currentDisplayCurrency = user?.preferredDisplayCurrencyCode || "USD";
@@ -2232,9 +2270,20 @@ export default async function TravelerSettingsPage({
           />
         </section>
       ) : null}
-      <div aria-hidden="true" style={{ height: 118 }} />
-            {activePanel !== "notifications" ? (
-        <PassportMapShortcut compact title="Open Siargao Passport Map" body="Go back to your journey map from Profile, Language, Currency, Alerts, or Kuya Tala settings." />
+      {activePanel !== "notifications" ? (
+        <div
+          style={{
+            marginTop: 10,
+            paddingBottom: "calc(132px + env(safe-area-inset-bottom))",
+          }}
+        >
+          <PassportMapShortcut
+            compact
+            title={kuyaTalaSettingsConfig.primaryLabel}
+            body={kuyaTalaSettingsConfig.body}
+            href={kuyaTalaSettingsConfig.primaryHref}
+          />
+        </div>
       ) : null}
       <UniversalTravelerBottomTabBar activeTab="profile" fixed />
     </main>
