@@ -1,9 +1,13 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   fullName?: string;
+
+  @IsOptional()
+  @IsEmail()
+  email?: string;
 
   @IsOptional()
   @IsString()
@@ -16,6 +20,22 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsString()
   preferredDisplayCurrencyCode?: string;
+
+  @IsOptional()
+  @IsString()
+  mobileNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  nationalityCode?: string;
+
+  @IsOptional()
+  @IsString()
+  homeCountry?: string;
+
+  @IsOptional()
+  @IsString()
+  birthDate?: string;
 
   @IsOptional()
   @IsString()

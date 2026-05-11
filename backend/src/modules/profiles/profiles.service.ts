@@ -42,11 +42,42 @@ export class ProfilesService {
   }
 
   async updateMe(userId: string, dto: UpdateProfileDto) {
+    const normalizedEmail = dto.email ? dto.email.trim().toLowerCase() : null;
+    const normalizedBirthDate = dto.birthDate ? new Date(dto.birthDate) : null;
+
+    const currentUser = normalizedEmail
+      ? await this.prisma.user.findUnique({
+          where: { id: userId },
+          select: { email: true },
+        })
+      : null;
+
+    const emailChanged =
+      !!normalizedEmail &&
+      normalizedEmail !== (currentUser?.email || "").trim().toLowerCase();
+
+    if (normalizedEmail) {
+      const existingEmailOwner = await this.prisma.user.findFirst({
+        where: {
+          email: normalizedEmail,
+          NOT: { id: userId },
+        },
+        select: { id: true },
+      });
+
+      if (existingEmailOwner) {
+        throw new Error("Email address is already used by another account");
+      }
+    }
+
     const user = await this.prisma.user.update({
       where: { id: userId },
       data: {
         ...(dto.fullName ? { fullName: dto.fullName } : {}),
+        ...(normalizedEmail ? { email: normalizedEmail } : {}),
+        ...(emailChanged ? { isEmailVerified: false } : {}),
         ...(dto.displayName ? { displayName: dto.displayName } : {}),
+        ...(dto.mobileNumber ? { mobileNumber: dto.mobileNumber } : {}),
         ...(dto.preferredLanguage ? { preferredLanguage: dto.preferredLanguage } : {}),
         ...(dto.preferredDisplayCurrencyCode ? { preferredDisplayCurrencyCode: dto.preferredDisplayCurrencyCode.toUpperCase() } : {}),
       },
@@ -54,6 +85,28 @@ export class ProfilesService {
         operatorProfile: true,
       },
     });
+
+    const shouldUpdateTravelerProfile =
+      dto.nationalityCode ||
+      dto.homeCountry ||
+      dto.birthDate;
+
+    if (shouldUpdateTravelerProfile) {
+      await this.prisma.travelerProfile.upsert({
+        where: { userId },
+        create: {
+          userId,
+          nationalityCode: dto.nationalityCode ? dto.nationalityCode.toUpperCase() : null,
+          homeCountry: dto.homeCountry || null,
+          birthDate: normalizedBirthDate && !Number.isNaN(normalizedBirthDate.getTime()) ? normalizedBirthDate : null,
+        },
+        update: {
+          ...(dto.nationalityCode ? { nationalityCode: dto.nationalityCode.toUpperCase() } : {}),
+          ...(dto.homeCountry ? { homeCountry: dto.homeCountry } : {}),
+          ...(normalizedBirthDate && !Number.isNaN(normalizedBirthDate.getTime()) ? { birthDate: normalizedBirthDate } : {}),
+        },
+      });
+    }
 
     const shouldUpdateOperatorProfile =
       dto.businessName ||

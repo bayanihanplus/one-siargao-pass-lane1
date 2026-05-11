@@ -5,7 +5,7 @@ import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../src/
 import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
 import PassportMapShortcut from "../../../src/components/traveler/PassportMapShortcut";
 
-type PanelKey = "language" | "currency" | "assistant" | "notifications";
+type PanelKey = "profile" | "language" | "currency" | "assistant" | "notifications";
 
 type LanguageOption = {
   code: string;
@@ -157,10 +157,63 @@ async function updatePreferredDisplayCurrency(formData: FormData) {
   redirect("/traveler/settings?panel=currency&saved=1");
 }
 
+
+async function updateTravelerProfile(formData: FormData) {
+  "use server";
+
+  const fullName = String(formData.get("fullName") || "").trim();
+  const email = String(formData.get("email") || "").trim().toLowerCase();
+  const displayName = String(formData.get("displayName") || "").trim();
+  const mobileNumber = String(formData.get("mobileNumber") || "").trim();
+  const nationalityCode = String(formData.get("nationalityCode") || "").trim().toUpperCase();
+  const homeCountry = String(formData.get("homeCountry") || "").trim();
+  const birthDate = String(formData.get("birthDate") || "").trim();
+
+  if (!fullName) {
+    throw new Error("Full name is required");
+  }
+
+  const token = await requireAccessToken();
+
+  const body: Record<string, string> = {
+    fullName,
+    email,
+    displayName,
+    mobileNumber,
+    nationalityCode,
+    homeCountry,
+    birthDate,
+  };
+
+  Object.keys(body).forEach((key) => {
+    if (!body[key]) delete body[key];
+  });
+
+  const res = await fetch(`${getApiBaseUrl()}/profile`, {
+    method: "PATCH",
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Traveler profile update failed: HTTP ${res.status}`);
+  }
+
+  revalidatePath("/");
+  revalidatePath("/traveler/settings");
+  revalidatePath("/traveler/home");
+  redirect("/traveler/settings?panel=profile&saved=1");
+}
+
 function getPanel(searchParams?: { [key: string]: string | string[] | undefined }): PanelKey {
   const raw = searchParams?.panel;
   const value = Array.isArray(raw) ? raw[0] : raw;
 
+  if (value === "profile") return "profile";
   if (value === "currency") return "currency";
   if (value === "assistant") return "assistant";
   if (value === "notifications") return "notifications";
@@ -255,6 +308,18 @@ function PanelIcon(props: { panel: PanelKey }) {
 }
 
 function panelCopy(panel: PanelKey, dictionary: Record<string, string>) {
+  if (panel === "profile") {
+    return {
+      eyebrow: "OSP Identity Profile",
+      title: "Your traveler identity details",
+      body: "Manage the identity details connected to your official traveler QR, OSP Pass, trip records, and future verification flows.",
+      accent: "#0596A5",
+      border: "rgba(5,150,165,0.22)",
+      tone: "linear-gradient(135deg, rgba(234,251,250,0.96), rgba(255,255,255,0.98))",
+      chips: ["QR identity", "OSP Pass", "Trip records", "Verification ready"],
+    };
+  }
+
   if (panel === "language") {
     return {
       eyebrow: "Language Access",
@@ -955,6 +1020,8 @@ export default async function TravelerSettingsPage({
   const saved = getSaved(searchParams);
   const currentLanguage = user?.preferredLanguage || "en";
   const currentDisplayCurrency = user?.preferredDisplayCurrencyCode || "USD";
+  const travelerProfile = user?.travelerProfile || null;
+  const currentBirthDate = travelerProfile?.birthDate ? String(travelerProfile.birthDate).slice(0, 10) : "";
   const dictionary = await getTravelerDictionary(currentLanguage);
   const assistantData = activePanel === "assistant" ? await getKuyaTalaAssistantData() : null;
   const assistantStatus = getSingleSearchParam(searchParams, "assistantStatus");
@@ -963,6 +1030,7 @@ export default async function TravelerSettingsPage({
   const copy = panelCopy(activePanel, dictionary);
 
   const tabs: { key: PanelKey; label: string; href: string }[] = [
+    { key: "profile", label: "Profile", href: "/traveler/settings?panel=profile" },
     { key: "language", label: "Language", href: "/traveler/settings?panel=language" },
     { key: "currency", label: "Currency", href: "/traveler/settings?panel=currency" },
     { key: "assistant", label: "AI Guide", href: "/traveler/settings?panel=assistant" },
@@ -1027,7 +1095,7 @@ export default async function TravelerSettingsPage({
           {t(dictionary, "settings.title", "Traveler Controls")}
         </h1>
         <p style={{ marginTop: 9, marginBottom: 0, color: "#64748b", lineHeight: 1.4, fontSize: 14 }}>
-          Language, currency, assistant access, emergency safety, and alerts.
+          Profile, language, currency, assistant access, emergency safety, and alerts.
         </p>
       </header>
 
@@ -1204,6 +1272,155 @@ export default async function TravelerSettingsPage({
           {copy.body}
         </p>
 
+        {activePanel === "profile" ? (
+          <section
+            style={{
+              border: "1px solid rgba(5,150,165,0.20)",
+              background: "linear-gradient(180deg, #ffffff 0%, #f7fdff 100%)",
+              borderRadius: 30,
+              padding: 18,
+              boxShadow: "0 20px 48px rgba(1,56,99,0.12)",
+              display: "grid",
+              gap: 16,
+            }}
+          >
+            {saved ? (
+              <div
+                style={{
+                  border: "1px solid rgba(5,150,165,0.18)",
+                  background: "rgba(234,251,250,0.92)",
+                  borderRadius: 22,
+                  padding: 16,
+                  color: "#013863",
+                  fontWeight: 800,
+                }}
+              >
+                Traveler identity profile saved to your OSP account.
+              </div>
+            ) : null}
+
+            <div>
+              <p
+                style={{
+                  margin: 0,
+                  color: "#0596A5",
+                  fontSize: 12,
+                  fontWeight: 900,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                }}
+              >
+                OSP Identity Profile
+              </p>
+              <h2 style={{ margin: "6px 0 0", color: "#013863", fontSize: 22, lineHeight: 1.1 }}>
+                Your traveler identity details
+              </h2>
+              <p style={{ margin: "8px 0 0", color: "#50668B", lineHeight: 1.55 }}>
+                These details support your official traveler QR identity, OSP Pass, trip records, and future verification flows.
+              </p>
+            </div>
+
+            <form action={updateTravelerProfile} style={{ display: "grid", gap: 12 }}>
+              <label style={{ display: "grid", gap: 6, color: "#013863", fontWeight: 800 }}>
+                Full name
+                <input
+                  name="fullName"
+                  defaultValue={user?.fullName || ""}
+                  autoComplete="name"
+                  required
+                  style={{ border: "1px solid rgba(1,56,99,0.18)", borderRadius: 16, padding: "12px 14px", fontSize: 15 }}
+                />
+              </label>
+
+              <label style={{ display: "grid", gap: 6, color: "#013863", fontWeight: 800 }}>
+                Email address
+                <input
+                  type="email"
+                  name="email"
+                  defaultValue={user?.email || ""}
+                  placeholder="your@email.com"
+                  autoComplete="email"
+                  required
+                  style={{ border: "1px solid rgba(1,56,99,0.18)", borderRadius: 16, padding: "12px 14px", fontSize: 15 }}
+                />
+              </label>
+
+              <label style={{ display: "grid", gap: 6, color: "#013863", fontWeight: 800 }}>
+                Display name
+                <input
+                  name="displayName"
+                  defaultValue={user?.displayName || ""}
+                  style={{ border: "1px solid rgba(1,56,99,0.18)", borderRadius: 16, padding: "12px 14px", fontSize: 15 }}
+                />
+              </label>
+
+              <label style={{ display: "grid", gap: 6, color: "#013863", fontWeight: 800 }}>
+                Mobile number
+                <input
+                  name="mobileNumber"
+                  defaultValue={user?.mobileNumber || ""}
+                  autoComplete="tel"
+                  inputMode="tel"
+                  style={{ border: "1px solid rgba(1,56,99,0.18)", borderRadius: 16, padding: "12px 14px", fontSize: 15 }}
+                />
+              </label>
+
+              <div style={{ display: "grid", gap: 12, gridTemplateColumns: "1fr" }}>
+                <label style={{ display: "grid", gap: 6, color: "#013863", fontWeight: 800 }}>
+                  Nationality code
+                  <input
+                    name="nationalityCode"
+                    defaultValue={travelerProfile?.nationalityCode || "PH"}
+                    maxLength={3}
+                    style={{
+                      border: "1px solid rgba(1,56,99,0.18)",
+                      borderRadius: 16,
+                      padding: "12px 14px",
+                      fontSize: 15,
+                      textTransform: "uppercase",
+                    }}
+                  />
+                </label>
+
+                <label style={{ display: "grid", gap: 6, color: "#013863", fontWeight: 800 }}>
+                  Home country
+                  <input
+                    name="homeCountry"
+                    defaultValue={travelerProfile?.homeCountry || ""}
+                    style={{ border: "1px solid rgba(1,56,99,0.18)", borderRadius: 16, padding: "12px 14px", fontSize: 15 }}
+                  />
+                </label>
+              </div>
+
+              <label style={{ display: "grid", gap: 6, color: "#013863", fontWeight: 800 }}>
+                Birth date
+                <input
+                  type="date"
+                  name="birthDate"
+                  defaultValue={currentBirthDate}
+                  style={{ border: "1px solid rgba(1,56,99,0.18)", borderRadius: 16, padding: "12px 14px", fontSize: 15 }}
+                />
+              </label>
+
+              <button
+                type="submit"
+                style={{
+                  border: 0,
+                  borderRadius: 18,
+                  padding: "13px 16px",
+                  background: "linear-gradient(135deg, #013863, #0596A5)",
+                  color: "#ffffff",
+                  fontWeight: 900,
+                  cursor: "pointer",
+                  boxShadow: "0 14px 30px rgba(1,56,99,0.18)",
+                }}
+              >
+                Save traveler profile
+              </button>
+            </form>
+          </section>
+        ) : null}
+
         {activePanel === "language" ? (
           <LanguageSelector
             currentLanguage={currentLanguage}
@@ -1278,7 +1495,7 @@ export default async function TravelerSettingsPage({
         </p>
       </section>
       <div aria-hidden="true" style={{ height: 118 }} />
-            <PassportMapShortcut compact title="Open Siargao Passport Map" body="Go back to your journey map from Profile, Language, Currency, Notifications, or Kuya Tala settings." />
+            <PassportMapShortcut compact title="Open Siargao Passport Map" body="Go back to your journey map from Profile, Language, Currency, Alerts, or Kuya Tala settings." />
       <UniversalTravelerBottomTabBar activeTab="profile" fixed />
     </main>
   );
