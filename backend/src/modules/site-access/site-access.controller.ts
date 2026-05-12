@@ -5,6 +5,17 @@ import { Cloud9SiteAccessScanDto } from "./dto/cloud9-site-access-scan.dto";
 
 @Controller()
 export class SiteAccessController {
+
+  @Get("site-access/registry/points")
+  listPublicRegistryPoints() {
+    return this.siteAccessService.listPublicRegistryPoints();
+  }
+
+  @Get("site-access/registry/points/:siteAccessPointCode")
+  getPublicRegistryPoint(@Param("siteAccessPointCode") siteAccessPointCode: string) {
+    return this.siteAccessService.getPublicRegistryPoint(siteAccessPointCode);
+  }
+
   constructor(private readonly siteAccessService: SiteAccessService) {}
 
   @Post("site-access/cloud-9/intents")

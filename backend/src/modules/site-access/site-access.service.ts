@@ -477,4 +477,115 @@ export class SiteAccessService {
       },
     };
   }
+
+  async listPublicRegistryPoints() {
+    const points = await this.prisma.siteAccessPoint.findMany({
+      where: {
+        isActive: true,
+        isPublicVisible: true,
+        registryStatus: "ACTIVE",
+      },
+      orderBy: [
+        { municipalityCode: "asc" },
+        { displayName: "asc" },
+      ],
+      include: {
+        feeRules: {
+          where: { isActive: true },
+          take: 1,
+        },
+        qrDefinitions: {
+          where: { status: "ACTIVE" },
+          take: 1,
+        },
+      },
+    });
+
+    return {
+      items: points.map((point) => this.toPublicRegistryPoint(point)),
+    };
+  }
+
+  async getPublicRegistryPoint(siteAccessPointCode: string) {
+    const point = await this.prisma.siteAccessPoint.findFirst({
+      where: {
+        siteAccessPointCode,
+        isActive: true,
+        isPublicVisible: true,
+        registryStatus: "ACTIVE",
+      },
+      include: {
+        feeRules: {
+          where: { isActive: true },
+          take: 1,
+        },
+        qrDefinitions: {
+          where: { status: "ACTIVE" },
+          take: 1,
+        },
+      },
+    });
+
+    if (!point) {
+      return {
+        found: false,
+        item: null,
+      };
+    }
+
+    return {
+      found: true,
+      item: this.toPublicRegistryPoint(point),
+    };
+  }
+
+  private toPublicRegistryPoint(point: any) {
+    const feeRule = point.feeRules?.[0] || null;
+    const qrDefinition = point.qrDefinitions?.[0] || null;
+
+    return {
+      id: point.id,
+      siteAccessPointCode: point.siteAccessPointCode,
+      displayName: point.displayName,
+      siteType: point.siteType,
+      consumerModule: point.consumerModule,
+      accessRule: point.accessRule,
+      qrMode: point.qrMode,
+      municipalityCode: point.municipalityCode,
+      barangayCode: point.barangayCode,
+      physicalLocationLabel: point.physicalLocationLabel,
+      registryStatus: point.registryStatus,
+      isActive: point.isActive,
+      isPublicVisible: point.isPublicVisible,
+      metadataJson: point.metadataJson,
+      feeRule: feeRule
+        ? {
+            feeRequired: feeRule.feeRequired,
+            feeType: feeRule.feeType,
+            standardAmount: feeRule.standardAmount ? String(feeRule.standardAmount) : null,
+            residentAmount: feeRule.residentAmount ? String(feeRule.residentAmount) : null,
+            seniorAmount: feeRule.seniorAmount ? String(feeRule.seniorAmount) : null,
+            childAmount: feeRule.childAmount ? String(feeRule.childAmount) : null,
+            exemptAmount: feeRule.exemptAmount ? String(feeRule.exemptAmount) : null,
+            discountedAmount: feeRule.discountedAmount ? String(feeRule.discountedAmount) : null,
+            currencyCode: feeRule.currencyCode,
+            paymentProviderAllowed: feeRule.paymentProviderAllowed,
+            counterPaymentAllowed: feeRule.counterPaymentAllowed,
+            receiptRequired: feeRule.receiptRequired,
+            settlementSurface: feeRule.settlementSurface,
+          }
+        : null,
+      qrDefinition: qrDefinition
+        ? {
+            qrCode: qrDefinition.qrCode,
+            qrMode: qrDefinition.qrMode,
+            qrPurpose: qrDefinition.qrPurpose,
+            publicScanUrl: qrDefinition.publicScanUrl,
+            internalScanUrl: qrDefinition.internalScanUrl,
+            status: qrDefinition.status,
+          }
+        : null,
+    };
+  }
+
 }
