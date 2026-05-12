@@ -883,7 +883,75 @@ function TravelerStatusRowCard(props: {
   );
 }
 
-function TravelerHomeQuickAccessGrid() {
+
+type SiteAccessRegistryPoint = {
+  siteAccessPointCode: string;
+  displayName: string;
+  accessRule: string;
+  registryStatus: string;
+  isActive: boolean;
+  isPublicVisible: boolean;
+  feeRule?: {
+    feeRequired?: boolean;
+    feeType?: string;
+    standardAmount?: string | null;
+    paymentProviderAllowed?: boolean;
+    receiptRequired?: boolean;
+  } | null;
+  qrDefinition?: {
+    publicScanUrl?: string | null;
+    status?: string;
+  } | null;
+  metadataJson?: {
+    travelerHomeCard?: string;
+    commercialMode?: string;
+    noPaidClaim?: boolean;
+    noSpmStampClaim?: boolean;
+    scenicSiteVisit?: boolean;
+  } | null;
+};
+
+const SITE_ACCESS_REGISTRY_CODES = {
+  cloud9: "CLOUD_9_LGU_SITE_ACCESS",
+  mks: "MALINAO_SKATE_PARK_LGU_SITE_VISIT",
+  afam: "AFAM_CATANGNAN_BRIDGE_LGU_SITE_VISIT",
+} as const;
+
+async function fetchPublicSiteAccessRegistryPoints(): Promise<Record<string, SiteAccessRegistryPoint>> {
+  try {
+    const registryApiBaseUrl =
+      process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
+
+    const response = await fetch(`${registryApiBaseUrl}/site-access/registry/points`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return {};
+    }
+
+    const payload = await response.json();
+    const items = Array.isArray(payload?.items) ? payload.items : [];
+
+    return items.reduce((acc: Record<string, SiteAccessRegistryPoint>, item: SiteAccessRegistryPoint) => {
+      if (item?.siteAccessPointCode) {
+        acc[item.siteAccessPointCode] = item;
+      }
+
+      return acc;
+    }, {});
+  } catch {
+    return {};
+  }
+}
+
+async function TravelerHomeQuickAccessGrid() {
+  const registryPoints = await fetchPublicSiteAccessRegistryPoints();
+  const cloud9Point = registryPoints[SITE_ACCESS_REGISTRY_CODES.cloud9];
+  const cloud9AccessRule = cloud9Point?.accessRule || "PAID_SITE_ENTITLEMENT";
+  const mksPoint = registryPoints[SITE_ACCESS_REGISTRY_CODES.mks];
+  const afamPoint = registryPoints[SITE_ACCESS_REGISTRY_CODES.afam];
+
   const cards = [
     {
       title: "Passport Map",
@@ -911,9 +979,9 @@ function TravelerHomeQuickAccessGrid() {
       subtitleColor: "#50668B",
     },
     {
-      title: "Cloud 9 Access",
-      subtitle: "QR-linked General Luna site access.",
-      href: "/traveler/site-access/cloud-9",
+      title: cloud9Point?.displayName || "Cloud 9 Access",
+      subtitle: cloud9AccessRule === "PAID_SITE_ENTITLEMENT" ? "QR-linked General Luna site access." : "QR-linked General Luna site access.",
+      href: cloud9Point?.qrDefinition?.publicScanUrl || "/traveler/site-access/cloud-9",
       status: "Active",
       button: "Open Access",
       icon: (
@@ -936,10 +1004,10 @@ function TravelerHomeQuickAccessGrid() {
       subtitleColor: "#50668B",
     },
     {
-      title: "Malinao Skate Park",
+      title: mksPoint?.displayName || "Malinao Skate Park",
       subtitle: "Validated LGU site-visit access.",
-      href: "/traveler/passport-map",
-      status: "Validated",
+      href: mksPoint?.qrDefinition?.publicScanUrl || "/traveler/passport-map",
+      status: mksPoint?.accessRule === "SITE_VISIT_LOG" ? "Validated" : "Validated",
       button: "View Point",
       icon: (
         <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
@@ -962,10 +1030,10 @@ function TravelerHomeQuickAccessGrid() {
       subtitleColor: "#50668B",
     },
     {
-      title: "AFAM / Catangnan Bridge",
+      title: afamPoint?.displayName || "AFAM / Catangnan Bridge",
       subtitle: "Validated scenic LGU site-visit access.",
-      href: "/traveler/passport-map",
-      status: "Site Visit",
+      href: afamPoint?.qrDefinition?.publicScanUrl || "/traveler/passport-map",
+      status: afamPoint?.accessRule === "SITE_VISIT_LOG" ? "Site Visit" : "Site Visit",
       button: "View Point",
       icon: (
         <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
@@ -3156,6 +3224,7 @@ export default async function TravelerHomePage() {
   const travelerTripResult = await getTravelerHomeSummary();
 
   const latestTravelerTrip = travelerTripResult.trip;
+
 
   return (
     <main style={{ width: "100%", maxWidth: 960, margin: "0 auto", padding: "8px 0 24px", boxSizing: "border-box" }}>
