@@ -887,276 +887,300 @@ function TravelerHomeQuickAccessGrid() {
   const cards = [
     {
       title: "Passport Map",
-      subtitle: "Trails, stops, and stamp journey.",
+      subtitle: "Explore trails, local stops, and verified map points.",
       href: "/traveler/passport-map",
-      status: "Open",
+      status: "Map",
       button: "Open Map",
-      icon: "🗺️",
+      icon: (
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
+          <path d="M9 18l-5 2V6l5-2 6 2 5-2v14l-5 2-6-2Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+          <path d="M9 4v14M15 6v14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M6.8 8.8h.01M17.2 15.2h.01" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+        </svg>
+      ),
       active: true,
-      accent: "#013863",
-      iconBg: "linear-gradient(135deg, rgba(1,56,99,0.12), rgba(5,150,165,0.12))",
-      buttonBg: "linear-gradient(135deg, #EAFBFA, #FFFFFF)",
+      shell: "#EFF6FF",
+      border: "#BFDBFE",
+      iconBg: "#DBEAFE",
+      iconColor: "#2563EB",
+      badgeBg: "#DBEAFE",
+      badgeColor: "#2563EB",
+      buttonBg: "#FFFFFF",
       buttonColor: "#013863",
-      shell: "linear-gradient(145deg, #ffffff 0%, #eefbff 52%, #eafbfa 100%)",
-      glow: "radial-gradient(circle at 85% 8%, rgba(5,150,165,0.18), transparent 34%)",
+      titleColor: "#013863",
+      subtitleColor: "#50668B",
     },
     {
       title: "Cloud 9 Access",
-      subtitle: "QR-linked LGU site access flow.",
+      subtitle: "QR-linked General Luna site access.",
       href: "/traveler/site-access/cloud-9",
-      status: "Available",
+      status: "Active",
       button: "Open Access",
-      icon: "🏄",
+      icon: (
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
+          <path d="M3.5 15.5c2.8 0 3.4-2.2 5.8-2.2s3 2.2 5.7 2.2 3.4-2.2 5.5-2.2" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+          <path d="M4.5 18.7c2.4 0 3-1.5 5.1-1.5s2.7 1.5 5.1 1.5 3-1.5 4.8-1.5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+          <path d="M7.2 10.8c2.2-5.2 8.2-5.2 10.4 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      ),
       active: true,
-      accent: "#047f91",
-      iconBg: "linear-gradient(135deg, rgba(5,150,165,0.16), rgba(243,174,38,0.14))",
-      buttonBg: "linear-gradient(135deg, #EAFBFA, #FFF8E8)",
-      buttonColor: "#047f91",
-      shell: "linear-gradient(145deg, #ffffff 0%, #f4fcfa 50%, #fff8e8 100%)",
-      glow: "radial-gradient(circle at 85% 8%, rgba(243,174,38,0.22), transparent 34%)",
+      shell: "#ECFEFF",
+      border: "#A5F3FC",
+      iconBg: "#CFFAFE",
+      iconColor: "#0891B2",
+      badgeBg: "#CFFAFE",
+      badgeColor: "#0891B2",
+      buttonBg: "#FFFFFF",
+      buttonColor: "#0596A5",
+      titleColor: "#013863",
+      subtitleColor: "#50668B",
     },
     {
       title: "Malinao Skate Park",
-      subtitle: "LGU access lane pending.",
-      href: "",
-      status: "Soon",
-      button: "Pending",
-      icon: "🛹",
-      active: false,
-      accent: "#64748b",
-      iconBg: "linear-gradient(135deg, #f8fafc, #eef2f7)",
-      buttonBg: "#f8fafc",
-      buttonColor: "#64748b",
-      shell: "linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)",
-      glow: "radial-gradient(circle at 85% 8%, rgba(100,116,139,0.10), transparent 34%)",
+      subtitle: "Validated LGU site-visit access.",
+      href: "/traveler/passport-map",
+      status: "Validated",
+      button: "View Point",
+      icon: (
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
+          <path d="M6.2 13.4h9.1c1.5 0 2.8-.9 3.3-2.3l.3-.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M7.5 13.4l2.2-5.1M15.1 13.4l-1.2-5.1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M7.2 18.2a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8ZM16.6 18.2a1.4 1.4 0 1 0 0-2.8 1.4 1.4 0 0 0 0 2.8Z" stroke="currentColor" strokeWidth="1.7" />
+          <path d="M9.7 8.3h4.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      ),
+      active: true,
+      shell: "#FFF7ED",
+      border: "#FED7AA",
+      iconBg: "#FFEDD5",
+      iconColor: "#D97706",
+      badgeBg: "#F3AE26",
+      badgeColor: "#013863",
+      buttonBg: "#FFFFFF",
+      buttonColor: "#013863",
+      titleColor: "#013863",
+      subtitleColor: "#50668B",
     },
     {
-      title: "AFAM Bridge",
-      subtitle: "LGU access lane pending.",
-      href: "",
-      status: "Soon",
-      button: "Pending",
-      icon: "🌉",
-      active: false,
-      accent: "#64748b",
-      iconBg: "linear-gradient(135deg, #f8fafc, #eef2f7)",
-      buttonBg: "#f8fafc",
-      buttonColor: "#64748b",
-      shell: "linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)",
-      glow: "radial-gradient(circle at 85% 8%, rgba(100,116,139,0.10), transparent 34%)",
+      title: "AFAM / Catangnan Bridge",
+      subtitle: "Validated scenic LGU site-visit access.",
+      href: "/traveler/passport-map",
+      status: "Site Visit",
+      button: "View Point",
+      icon: (
+        <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
+          <path d="M4 15.5h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M6 15.5c.5-4.4 3-7.2 6-7.2s5.5 2.8 6 7.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M8 15.5V19M12 15.5V19M16 15.5V19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M5 19h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M8.8 11.8h6.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      ),
+      active: true,
+      shell: "#EAFBFA",
+      border: "rgba(5,150,165,0.30)",
+      iconBg: "#CCFBF1",
+      iconColor: "#0596A5",
+      badgeBg: "#FFFFFF",
+      badgeColor: "#0596A5",
+      buttonBg: "#FFFFFF",
+      buttonColor: "#0596A5",
+      titleColor: "#013863",
+      subtitleColor: "#50668B",
     },
   ];
 
   return (
     <section
-      data-osp-traveler-home-quick-access="premium-force"
       style={{
-        gridColumn: "1 / -1",
         width: "100%",
         maxWidth: 430,
-        minWidth: 0,
-        margin: "8px auto 14px",
-        borderRadius: 24,
-        padding: 12,
-        background:
-          "linear-gradient(145deg, rgba(234,251,250,0.92) 0%, rgba(255,255,255,0.98) 54%, rgba(255,248,232,0.88) 100%)",
-        border: "1px solid rgba(5,150,165,0.16)",
-        boxShadow: "0 16px 34px rgba(1,56,99,0.075)",
-        display: "grid",
-        gap: 11,
+        margin: "0 auto 14px",
+        borderRadius: 28,
+        padding: 16,
+        background: "#F4FCFA",
+        border: "1px solid rgba(5,150,165,0.20)",
+        boxShadow: "0 18px 44px rgba(1,56,99,0.10)",
         boxSizing: "border-box",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <div style={{ minWidth: 0 }}>
-          <div
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+        <div>
+          <p
             style={{
-              color: "#047f91",
-              fontSize: 9.4,
+              margin: 0,
+              fontSize: 10,
               fontWeight: 950,
               letterSpacing: "0.14em",
+              color: "#0596A5",
               textTransform: "uppercase",
             }}
           >
             Quick Access
-          </div>
-
+          </p>
           <h2
             style={{
-              margin: "4px 0 0",
+              margin: "5px 0 0",
+              fontSize: 19,
+              lineHeight: 1.08,
+              fontWeight: 850,
+              letterSpacing: "-0.035em",
               color: "#013863",
-              fontSize: 16.2,
-              lineHeight: 1.03,
-              letterSpacing: "-0.045em",
-              fontWeight: 950,
             }}
           >
-            Map & QR access
+            Map & QR Access
           </h2>
+          <p
+            style={{
+              margin: "8px 0 0",
+              maxWidth: 310,
+              fontSize: 12.5,
+              lineHeight: 1.45,
+              fontWeight: 700,
+              color: "#50668B",
+            }}
+          >
+            Use your OSP QR for supported Siargao map points and LGU site-visit access.
+          </p>
         </div>
 
-        <span
+        <div
+          aria-hidden="true"
           style={{
-            borderRadius: 999,
-            padding: "6px 9px",
-            background: "#ffffff",
-            border: "1px solid rgba(5,150,165,0.16)",
-            color: "#047f91",
-            fontSize: 9.3,
-            fontWeight: 950,
-            whiteSpace: "nowrap",
             flex: "0 0 auto",
-            boxShadow: "0 6px 16px rgba(1,56,99,0.045)",
+            width: 44,
+            height: 44,
+            borderRadius: 18,
+            background: "#FFFFFF",
+            border: "1px solid rgba(5,150,165,0.22)",
+            boxShadow: "0 10px 22px rgba(1,56,99,0.08)",
+            display: "grid",
+            placeItems: "center",
+            color: "#0596A5",
+            lineHeight: 1,
           }}
         >
-          OSP QR linked
-        </span>
+          <svg viewBox="0 0 24 24" width="23" height="23" fill="none" aria-hidden="true">
+            <path d="M12 21s6.5-5.2 6.5-11A6.5 6.5 0 0 0 5.5 10c0 5.8 6.5 11 6.5 11Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+            <path d="M12 12.2a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z" stroke="currentColor" strokeWidth="1.8" />
+          </svg>
+        </div>
       </div>
 
-      <div
-        aria-label="Traveler quick access cards"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-          gap: 10,
-        }}
-      >
-        {cards.map((card) => {
-          const content = (
-            <>
-              <div
-                aria-hidden="true"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: card.glow,
-                  pointerEvents: "none",
-                }}
-              />
+      <div style={{ display: "grid", gap: 10, marginTop: 15 }}>
+        {cards.map((card) => (
+          <a
+            key={card.title}
+            href={card.href}
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              minHeight: card.title === "Passport Map" ? 78 : 70,
+              padding: card.title === "Passport Map" ? "14px 14px" : "12px 14px",
+              borderRadius: 22,
+              background: card.shell,
+              border: `1px solid ${card.border}`,
+              boxShadow:
+                card.title === "Passport Map"
+                  ? "0 16px 34px rgba(1,56,99,0.12)"
+                  : "0 12px 26px rgba(1,56,99,0.08)",
+              color: "#013863",
+              textDecoration: "none",
+              overflow: "hidden",
+            }}
+          >
+            <span
+              aria-hidden="true"
+              style={{
+                width: card.title === "Passport Map" ? 44 : 40,
+                height: card.title === "Passport Map" ? 44 : 40,
+                borderRadius: 16,
+                background: card.iconBg,
+                border: "1px solid rgba(1,56,99,0.08)",
+                display: "grid",
+                placeItems: "center",
+                flex: "0 0 auto",
+                color: card.iconColor,
+                boxShadow: "0 8px 18px rgba(1,56,99,0.08)",
+              }}
+            >
+              {card.icon}
+            </span>
 
-              <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 6 }}>
+            <span style={{ flex: "1 1 auto", minWidth: 0 }}>
+              <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <span
-                  aria-hidden="true"
                   style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: 15,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: card.iconBg,
-                    border: card.active ? "1px solid rgba(5,150,165,0.20)" : "1px solid rgba(100,116,139,0.12)",
-                    color: card.accent,
-                    fontSize: 18,
-                    boxShadow: card.active ? "inset 0 1px 0 rgba(255,255,255,0.90), 0 8px 18px rgba(1,56,99,0.06)" : "inset 0 1px 0 rgba(255,255,255,0.86)",
-                    flex: "0 0 auto",
+                    fontSize: card.title === "Passport Map" ? 14.5 : 13.5,
+                    lineHeight: 1.15,
+                    fontWeight: 900,
+                    color: card.titleColor,
+                    letterSpacing: "-0.015em",
                   }}
                 >
-                  {card.icon}
+                  {card.title}
                 </span>
 
                 <span
                   style={{
+                    flex: "0 0 auto",
                     borderRadius: 999,
                     padding: "4px 7px",
-                    background: card.active ? "#ffffff" : "#f8fafc",
-                    color: card.active ? "#047f91" : "#64748b",
-                    fontSize: 8.4,
+                    background: card.badgeBg,
+                    border: "1px solid rgba(1,56,99,0.08)",
+                    color: card.badgeColor,
+                    fontSize: 8.5,
+                    lineHeight: 1,
                     fontWeight: 950,
-                    whiteSpace: "nowrap",
-                    border: card.active ? "1px solid rgba(5,150,165,0.12)" : "1px solid rgba(100,116,139,0.10)",
-                    boxShadow: card.active ? "0 5px 12px rgba(1,56,99,0.04)" : "none",
+                    letterSpacing: "0.07em",
+                    textTransform: "uppercase",
+                    boxShadow: "0 6px 14px rgba(1,56,99,0.06)",
                   }}
                 >
                   {card.status}
                 </span>
-              </div>
-
-              <div style={{ position: "relative", zIndex: 1 }}>
-                <strong
-                  style={{
-                    display: "block",
-                    color: "#013863",
-                    fontSize: 12.4,
-                    lineHeight: 1.05,
-                    fontWeight: 950,
-                    letterSpacing: "-0.035em",
-                  }}
-                >
-                  {card.title}
-                </strong>
-
-                <p
-                  style={{
-                    margin: "5px 0 0",
-                    color: "#50668B",
-                    fontSize: 9.4,
-                    lineHeight: 1.23,
-                    fontWeight: 750,
-                  }}
-                >
-                  {card.subtitle}
-                </p>
-              </div>
+              </span>
 
               <span
                 style={{
-                  position: "relative",
-                  zIndex: 1,
-                  width: "100%",
-                  minHeight: 30,
-                  borderRadius: 999,
-                  padding: "0 9px",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: card.buttonBg,
-                  border: card.active ? "1px solid rgba(5,150,165,0.18)" : "1px solid rgba(100,116,139,0.12)",
-                  color: card.buttonColor,
-                  fontSize: 9.4,
-                  fontWeight: 950,
-                  letterSpacing: "0.02em",
-                  boxSizing: "border-box",
-                  boxShadow: card.active ? "inset 0 1px 0 rgba(255,255,255,0.86)" : "none",
+                  display: "block",
+                  marginTop: 5,
+                  fontSize: 11.5,
+                  lineHeight: 1.35,
+                  fontWeight: 700,
+                  color: card.subtitleColor,
                 }}
               >
-                {card.button}{card.active ? " →" : ""}
+                {card.subtitle}
               </span>
-            </>
-          );
 
-          const style = {
-            minHeight: 132,
-            borderRadius: 22,
-            padding: 11,
-            background: card.shell,
-            border: card.active ? "1px solid rgba(5,150,165,0.18)" : "1px solid rgba(100,116,139,0.12)",
-            boxShadow: card.active ? "0 12px 28px rgba(1,56,99,0.075)" : "0 8px 18px rgba(15,23,42,0.035)",
-            display: "grid",
-            alignContent: "space-between",
-            gap: 9,
-            color: "inherit",
-            textDecoration: "none",
-            opacity: card.active ? 1 : 0.76,
-            boxSizing: "border-box",
-            position: "relative",
-            overflow: "hidden",
-          } as const;
-
-          if (card.active) {
-            return (
-              <a key={card.title} href={card.href} style={style} aria-label={`Open ${card.title}`}>
-                {content}
-              </a>
-            );
-          }
-
-          return (
-            <div key={card.title} style={style} aria-label={`${card.title} coming soon`}>
-              {content}
-            </div>
-          );
-        })}
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 5,
+                  marginTop: 8,
+                  borderRadius: 999,
+                  padding: "6px 9px",
+                  background: card.buttonBg,
+                  border: "1px solid rgba(1,56,99,0.10)",
+                  color: card.buttonColor,
+                  fontSize: 10.5,
+                  lineHeight: 1,
+                  fontWeight: 900,
+                  boxShadow: "0 6px 14px rgba(1,56,99,0.06)",
+                }}
+              >
+                {card.button}
+                <span aria-hidden="true" style={{ fontSize: 13, lineHeight: 1 }}>
+                  ›
+                </span>
+              </span>
+            </span>
+          </a>
+        ))}
       </div>
     </section>
   );
