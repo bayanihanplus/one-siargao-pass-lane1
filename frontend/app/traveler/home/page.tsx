@@ -2948,20 +2948,6 @@ export default async function TravelerHomePage() {
           </div>
         </section>
 
-        <section style={{ width: "100%", maxWidth: 430, margin: "0 auto 12px", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
-          {[
-            ["Trip Setup", "Start", "#dcfce7", "#16a34a"],
-            ["Payment", "Later", "#fef3c7", "#d97706"],
-            ["Pass", "After setup", "#cffafe", "#0891b2"],
-            ["Travel Dates", "To be added", "#dbeafe", "#2563eb"],
-          ].map(([label, value, bg, color]) => (
-            <div key={label} style={{ borderRadius: 14, background: bg, border: "1px solid rgba(15,23,42,0.08)", padding: 10, minHeight: 76 }}>
-              <div style={{ fontSize: 8.5, fontWeight: 900, color: "#64748b", textTransform: "uppercase" }}>{label}</div>
-              <div style={{ marginTop: 4, fontSize: 12, fontWeight: 900, color }}>{value}</div>
-            </div>
-          ))}
-        </section>
-
         <section
           style={{
             width: "100%",
