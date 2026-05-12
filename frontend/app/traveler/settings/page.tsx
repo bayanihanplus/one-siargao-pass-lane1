@@ -196,10 +196,16 @@ async function updateTravelerProfile(formData: FormData) {
   const birthDate = String(formData.get("birthDate") || "").trim();
 
   if (!fullName) {
-    throw new Error("Full name is required");
+    redirect("/traveler/settings?panel=profile&profileError=missing-name");
   }
 
-  const token = await requireAccessToken();
+  let token = "";
+
+  try {
+    token = await requireAccessToken();
+  } catch {
+    redirect("/login?mode=returning");
+  }
 
   const body: Record<string, string> = {
     fullName,
@@ -215,18 +221,26 @@ async function updateTravelerProfile(formData: FormData) {
     if (!body[key]) delete body[key];
   });
 
-  const res = await fetch(`${getApiBaseUrl()}/profile`, {
-    method: "PATCH",
-    cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(body),
-  });
+  try {
+    const res = await fetch(`${getApiBaseUrl()}/profile`, {
+      method: "PATCH",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    });
 
-  if (!res.ok) {
-    throw new Error(`Traveler profile update failed: HTTP ${res.status}`);
+    if (res.status === 401 || res.status === 403) {
+      redirect("/login?mode=returning");
+    }
+
+    if (!res.ok) {
+      redirect("/traveler/settings?panel=profile&profileError=save-failed");
+    }
+  } catch {
+    redirect("/traveler/settings?panel=profile&profileError=save-failed");
   }
 
   revalidatePath("/");
@@ -341,7 +355,7 @@ function panelCopy(panel: PanelKey, dictionary: Record<string, string>) {
       body: "Manage the identity details connected to your official traveler QR, OSP Pass, trip records, and future verification flows.",
       accent: "#0596A5",
       border: "rgba(5,150,165,0.22)",
-      tone: "linear-gradient(135deg, rgba(234,251,250,0.96), rgba(255,255,255,0.98))",
+      bg: "linear-gradient(135deg, rgba(234,251,250,0.96), rgba(255,255,255,0.98))",
       chips: ["QR identity", "OSP Pass", "Trip records", "Verification ready"],
     };
   }
@@ -1807,12 +1821,22 @@ export default async function TravelerSettingsPage({
   const currentDisplayCurrency = user?.preferredDisplayCurrencyCode || "USD";
   const travelerProfile = user?.travelerProfile || null;
   const currentBirthDate = travelerProfile?.birthDate ? String(travelerProfile.birthDate).slice(0, 10) : "";
+  const profileDefaults = {
+    fullName: user?.fullName || "",
+    email: user?.email || "",
+    displayName: user?.displayName || "",
+    mobileNumber: user?.mobileNumber || "",
+    nationalityCode: travelerProfile?.nationalityCode || "PH",
+    homeCountry: travelerProfile?.homeCountry || "",
+    birthDate: currentBirthDate,
+  };
   const dictionary = await getTravelerDictionary(currentLanguage);
   const assistantData = activePanel === "assistant" ? await getKuyaTalaAssistantData() : null;
   const notifications = activePanel === "notifications" ? await getTravelerNotifications() : [];
   const assistantStatus = getSingleSearchParam(searchParams, "assistantStatus");
   const assistantMessage = getSingleSearchParam(searchParams, "assistantMessage");
   const assistantTopic = getSingleSearchParam(searchParams, "topic");
+  const profileError = getSingleSearchParam(searchParams, "profileError");
   const copy = panelCopy(activePanel, dictionary);
 
   const tabs: { key: PanelKey; label: string; href: string }[] = [
@@ -2106,12 +2130,30 @@ export default async function TravelerSettingsPage({
               </p>
             </div>
 
+            {profileError ? (
+              <div
+                style={{
+                  border: "1px solid rgba(248,113,113,0.26)",
+                  background: "rgba(255,241,242,0.94)",
+                  borderRadius: 22,
+                  padding: 16,
+                  color: "#991b1b",
+                  fontWeight: 800,
+                  lineHeight: 1.4,
+                }}
+              >
+                {profileError === "missing-name"
+                  ? "Please enter your full name before saving."
+                  : "We could not save your profile yet. Please sign in again or try later."}
+              </div>
+            ) : null}
+
             <form action={updateTravelerProfile} style={{ display: "grid", gap: 12 }}>
               <label style={{ display: "grid", gap: 6, color: "#013863", fontWeight: 800 }}>
                 Full name
                 <input
                   name="fullName"
-                  defaultValue={user?.fullName || ""}
+                  defaultValue={profileDefaults.fullName}
                   autoComplete="name"
                   required
                   style={{ border: "1px solid rgba(1,56,99,0.18)", borderRadius: 16, padding: "12px 14px", fontSize: 15 }}
@@ -2123,7 +2165,7 @@ export default async function TravelerSettingsPage({
                 <input
                   type="email"
                   name="email"
-                  defaultValue={user?.email || ""}
+                  defaultValue={profileDefaults.email}
                   placeholder="your@email.com"
                   autoComplete="email"
                   required
@@ -2135,7 +2177,7 @@ export default async function TravelerSettingsPage({
                 Display name
                 <input
                   name="displayName"
-                  defaultValue={user?.displayName || ""}
+                  defaultValue={profileDefaults.displayName}
                   style={{ border: "1px solid rgba(1,56,99,0.18)", borderRadius: 16, padding: "12px 14px", fontSize: 15 }}
                 />
               </label>
@@ -2144,7 +2186,7 @@ export default async function TravelerSettingsPage({
                 Mobile number
                 <input
                   name="mobileNumber"
-                  defaultValue={user?.mobileNumber || ""}
+                  defaultValue={profileDefaults.mobileNumber}
                   autoComplete="tel"
                   inputMode="tel"
                   style={{ border: "1px solid rgba(1,56,99,0.18)", borderRadius: 16, padding: "12px 14px", fontSize: 15 }}
@@ -2156,7 +2198,7 @@ export default async function TravelerSettingsPage({
                   Nationality code
                   <input
                     name="nationalityCode"
-                    defaultValue={travelerProfile?.nationalityCode || "PH"}
+                    defaultValue={profileDefaults.nationalityCode}
                     maxLength={3}
                     style={{
                       border: "1px solid rgba(1,56,99,0.18)",
@@ -2172,7 +2214,7 @@ export default async function TravelerSettingsPage({
                   Home country
                   <input
                     name="homeCountry"
-                    defaultValue={travelerProfile?.homeCountry || ""}
+                    defaultValue={profileDefaults.homeCountry}
                     style={{ border: "1px solid rgba(1,56,99,0.18)", borderRadius: 16, padding: "12px 14px", fontSize: 15 }}
                   />
                 </label>
@@ -2183,7 +2225,7 @@ export default async function TravelerSettingsPage({
                 <input
                   type="date"
                   name="birthDate"
-                  defaultValue={currentBirthDate}
+                  defaultValue={profileDefaults.birthDate}
                   style={{ border: "1px solid rgba(1,56,99,0.18)", borderRadius: 16, padding: "12px 14px", fontSize: 15 }}
                 />
               </label>

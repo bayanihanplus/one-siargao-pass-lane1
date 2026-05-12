@@ -24,20 +24,24 @@ export async function requireAccessToken() {
 }
 
 export async function getCurrentUser() {
-  const token = await getAccessTokenFromCookie();
-  if (!token) return null;
+  try {
+    const token = await getAccessTokenFromCookie();
+    if (!token) return null;
 
-  const res = await fetch(`${getApiBaseUrl()}/auth/me`, {
-    cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+    const res = await fetch(`${getApiBaseUrl()}/auth/me`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  if (!res.ok) {
+    if (!res.ok) {
+      return null;
+    }
+
+    return await res.json();
+  } catch {
     return null;
   }
-
-  return res.json();
 }

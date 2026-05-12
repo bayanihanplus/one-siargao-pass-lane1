@@ -124,6 +124,11 @@ function normalizeTravelerReturnPath(value: string | null | undefined): string {
   return ospLoginNormalizeNext(value);
 }
 
+function getSingleLoginParam(searchParams: { [key: string]: string | string[] | undefined } | undefined, key: string) {
+  const raw = searchParams?.[key];
+  return Array.isArray(raw) ? raw[0] || "" : raw || "";
+}
+
 /*
  * OSP-LOGIN-01 LOCK:
  * /login is now the OSP Traveler Entry Gateway, not a generic dev login page.
@@ -149,34 +154,57 @@ async function safeReadLoginJson(response: Response) {
   }
 }
 
+function buildLoginErrorRedirect(mode: EntryMode, requestedNextPath: string, loginError: string) {
+  const params = new URLSearchParams({
+    mode,
+    loginError,
+  });
+
+  const normalizedNext = ospLoginNormalizeNext(requestedNextPath);
+
+  if (normalizedNext && normalizedNext !== "/traveler/home") {
+    params.set("next", normalizedNext);
+  }
+
+  return `/login?${params.toString()}`;
+}
+
 async function loginAction(formData: FormData) {
   "use server";
 
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "").trim();
   const requestedNextPath = String(formData.get("next") || "/traveler/home").trim() || "/traveler/home";
+  const mode = normalizeMode(String(formData.get("mode") || "returning"));
   const nextPath = ospLoginNormalizeNext(requestedNextPath);
 
   if (!email || !password) {
-    throw new Error("Email and password are required");
+    redirect(buildLoginErrorRedirect(mode, nextPath, "missing-fields"));
   }
 
-  const res = await fetch(`${getApiBaseUrl()}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    cache: "no-store",
-    body: JSON.stringify({
-      email,
-      password,
-    }),
-  });
+  let res: Response;
+  let json: any = null;
 
-  const json: any = await safeReadLoginJson(res);
+  try {
+    res = await fetch(`${getApiBaseUrl()}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    json = await safeReadLoginJson(res);
+  } catch {
+    redirect(buildLoginErrorRedirect(mode, nextPath, "login-unavailable"));
+  }
 
   if (!res.ok || !json?.accessToken) {
-    throw new Error(json?.message || json?.error || `Login failed: HTTP ${res.status}`);
+    redirect(buildLoginErrorRedirect(mode, nextPath, "invalid-credentials"));
   }
 
   const cookieStore = await cookies();
@@ -601,6 +629,7 @@ export default async function LoginPage({
 }) {
   const user = await getCurrentUser();
   const resolvedSearchParams = await searchParams;
+  const loginError = getSingleLoginParam(resolvedSearchParams, "loginError");
   const mode = normalizeMode(resolvedSearchParams?.mode);
   const copy = getModeCopy(mode);
   const requestedNextPath = resolvedSearchParams?.next || copy.next;
@@ -1055,6 +1084,27 @@ export default async function LoginPage({
               <p style={{ margin: "8px 0 0", fontSize: 12.8, lineHeight: 1.45, color: "rgba(80,102,139,0.86)", fontWeight: 720 }}>
                 {copy.formNote}
               </p>
+
+              {loginError ? (
+                <div
+                  style={{
+                    border: "1px solid rgba(248,113,113,0.26)",
+                    background: "rgba(255,241,242,0.96)",
+                    borderRadius: 18,
+                    padding: "12px 14px",
+                    color: "#991b1b",
+                    fontSize: 12,
+                    fontWeight: 850,
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {loginError === "missing-fields"
+                    ? "Please enter your email and password to continue."
+                    : loginError === "login-unavailable"
+                      ? "Login is temporarily unavailable. Please try again shortly."
+                      : "The email or password did not match an OSP traveler account."}
+                </div>
+              ) : null}
 
               <form action={loginAction} style={{ marginTop: 13, display: "grid", gap: 12 }}>
                 <input type="hidden" name="next" value={nextPath} />
