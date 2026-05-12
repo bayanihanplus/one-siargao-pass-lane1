@@ -132,12 +132,12 @@ const points = [
       qrCode: "SITE-VISIT-MALINAO-SKATE-PARK",
       qrMode: "SITE_SIGNAGE_QR",
       qrPurpose: "Malinao Skate Park LGU site-visit log",
-      publicScanUrl: "/traveler/passport-map",
+      publicScanUrl: "/traveler/site-access/malinao-skate-park",
       internalScanUrl: "/lgu/site-access/registry/scan",
       status: "ACTIVE",
       metadataJson: {
-        fallbackTravelerRoute: "/traveler/passport-map",
-        futureRegistryRoute: "/traveler/site-access/malinao-skate-park"
+        previousFallbackTravelerRoute: "/traveler/passport-map",
+        registryRoute: "/traveler/site-access/malinao-skate-park"
       }
     }
   },
@@ -203,12 +203,12 @@ const points = [
       qrCode: "SITE-VISIT-AFAM-CATANGNAN-BRIDGE",
       qrMode: "SITE_SIGNAGE_QR",
       qrPurpose: "AFAM / Catangnan Bridge LGU site-visit log",
-      publicScanUrl: "/traveler/passport-map",
+      publicScanUrl: "/traveler/site-access/afam-catangnan-bridge",
       internalScanUrl: "/lgu/site-access/registry/scan",
       status: "ACTIVE",
       metadataJson: {
-        fallbackTravelerRoute: "/traveler/passport-map",
-        futureRegistryRoute: "/traveler/site-access/afam-catangnan-bridge"
+        previousFallbackTravelerRoute: "/traveler/passport-map",
+        registryRoute: "/traveler/site-access/afam-catangnan-bridge"
       }
     }
   }
