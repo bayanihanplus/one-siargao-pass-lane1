@@ -833,7 +833,7 @@ function TravelerStatusRowCard(props: {
     <div
       style={{
         border: `1px solid ${borderColor}`,
-        borderRadius: 16,
+        borderRadius: 14,
         background: shellBg,
         minHeight: 78,
         padding: "7px 8px",
@@ -1233,8 +1233,8 @@ function TravelerJourneyCard(props: {
         </div>
         <div
           style={{
-            marginTop: 5,
-            fontSize: 8,
+            marginTop: 4,
+            fontSize: 7.1,
             fontWeight: 950,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
@@ -1264,7 +1264,7 @@ function TravelerBottomNavLink(props: {
       style={{
         minWidth: 54,
         minHeight: 54,
-        borderRadius: 16,
+        borderRadius: 14,
         padding: "6px 5px",
         display: "flex",
         flexDirection: "column",
@@ -1399,7 +1399,7 @@ function TravelerShellFrame(props: {
             style={{
               width: 44,
               height: 44,
-              borderRadius: 16,
+              borderRadius: 14,
               objectFit: "cover",
               flex: "0 0 auto",
               boxShadow: "0 8px 18px rgba(15,23,42,0.08)",
@@ -1425,7 +1425,7 @@ function TravelerShellFrame(props: {
                 marginTop: 7,
                 display: "flex",
                 alignItems: "center",
-                gap: 7,
+                gap: 5,
                 fontSize: 12,
                 fontWeight: 700,
                 color: "#64748b",
@@ -1688,6 +1688,131 @@ function TravelerShellFrame(props: {
               </a>
             </div>
           </div>
+
+          <div
+            aria-label="OSP hero compact status cards"
+            data-osp-main-hero-compact-cards="true"
+            style={{
+              position: "relative",
+              zIndex: 1,
+              marginTop: 16,
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+              gap: 5,
+            }}
+          >
+            {[
+              {
+                label: "Clearance",
+                value: (() => {
+                  const row: any = getStatusRowClearanceStatus(props.latestTravelerTrip);
+                  return row?.value || row?.status || row?.label || "Not needed";
+                })(),
+                helper: "LGU status",
+                bg: "rgba(255,255,255,0.17)",
+                accent: "rgba(145,240,207,0.95)",
+              },
+              {
+                label: "Payment",
+                value: (() => {
+                  const row: any = getStatusRowPaymentStatus(props.latestTravelerTrip);
+                  return row?.value || row?.status || row?.label || "Later";
+                })(),
+                helper: "Fees",
+                bg: "rgba(255,255,255,0.14)",
+                accent: "rgba(36,191,209,0.95)",
+              },
+              {
+                label: "Pass",
+                value: getPassCardPassStatus(props.latestTravelerTrip) || "Setup",
+                helper: "OSP status",
+                bg: "rgba(255,255,255,0.16)",
+                accent: "rgba(243,174,38,0.96)",
+              },
+              {
+                label: "Site Access",
+                value:
+                  props.latestTravelerTrip?.travelerHomeSummary?.siteAccessSummary?.label ||
+                  (props.latestTravelerTrip?.pass?.qrCredential?.qrToken ? "QR-linked" : "Pending"),
+                helper:
+                  props.latestTravelerTrip?.travelerHomeSummary?.siteAccessSummary?.helper ||
+                  "Cloud 9+",
+                bg: "rgba(255,255,255,0.13)",
+                accent: "rgba(255,255,255,0.82)",
+              },
+            ].map((card) => (
+              <div
+                key={card.label}
+                style={{
+                  minWidth: 0,
+                  minHeight: 60,
+                  borderRadius: 14,
+                  padding: "7px 6px 6px",
+                  background: card.bg,
+                  border: "1px solid rgba(255,255,255,0.22)",
+                  boxShadow: "0 8px 20px rgba(0,18,42,0.13)",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                }}
+              >
+                <div
+                  style={{
+                    width: 14,
+                    height: 3,
+                    borderRadius: 999,
+                    background: card.accent,
+                    marginBottom: 5,
+                  }}
+                />
+
+                <div
+                  style={{
+                    fontSize: 7.1,
+                    lineHeight: 1,
+                    fontWeight: 900,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.7)",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {card.label}
+                </div>
+
+                <div
+                  style={{
+                    marginTop: 4,
+                    fontSize: 9.1,
+                    lineHeight: 1.08,
+                    fontWeight: 900,
+                    color: "#ffffff",
+                    wordBreak: "break-word",
+                    textShadow: "0 2px 8px rgba(0,18,42,0.35)",
+                  }}
+                >
+                  {card.value}
+                </div>
+
+                <div
+                  style={{
+                    marginTop: 4,
+                    fontSize: 7.1,
+                    lineHeight: 1.08,
+                    fontWeight: 750,
+                    color: "rgba(255,255,255,0.66)",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {card.helper}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </header>
@@ -1903,7 +2028,7 @@ function TravelerCompactStatusRow(props: {
         marginTop: 10,
         display: "grid",
         gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-        gap: 7,
+        gap: 5,
       }}
     >
       <TravelerStatusRowCard
@@ -2006,7 +2131,7 @@ function TravelerReassuranceAndJourney(props: {
         style={{
           marginTop: 14,
           border: "1px solid #cfe8ef",
-          borderRadius: 16,
+          borderRadius: 14,
           background: "#e7f6fb",
           padding: "12px 14px",
         }}
@@ -2053,7 +2178,7 @@ function TravelerReassuranceAndJourney(props: {
             marginTop: 9,
             display: "grid",
             gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-            gap: 7,
+            gap: 5,
           }}
         >
           <TravelerJourneyCard
@@ -2343,7 +2468,7 @@ export default async function TravelerHomePage() {
                 style={{
                   width: 44,
                   height: 44,
-                  borderRadius: 16,
+                  borderRadius: 14,
                   objectFit: "cover",
                   flex: "0 0 auto",
                   boxShadow: "0 8px 18px rgba(15,23,42,0.08)",
@@ -2370,7 +2495,7 @@ export default async function TravelerHomePage() {
                     marginTop: 7,
                     display: "flex",
                     alignItems: "center",
-                    gap: 7,
+                    gap: 5,
                     fontSize: 12,
                     fontWeight: 700,
                     color: "#64748b",
@@ -2631,6 +2756,121 @@ export default async function TravelerHomePage() {
                   </a>
                 </div>
               </div>
+
+              <div
+                aria-label="OSP hero compact status cards"
+                data-osp-main-hero-compact-cards="true"
+                style={{
+                  position: "relative",
+                  zIndex: 1,
+                  marginTop: 16,
+                  width: "100%",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+                  gap: 5,
+                }}
+              >
+                {[
+                  {
+                    label: "Clearance",
+                    value: "Not needed",
+                    helper: "LGU status",
+                    bg: "rgba(255,255,255,0.17)",
+                    accent: "rgba(145,240,207,0.95)",
+                  },
+                  {
+                    label: "Payment",
+                    value: "Later",
+                    helper: "Fees",
+                    bg: "rgba(255,255,255,0.14)",
+                    accent: "rgba(36,191,209,0.95)",
+                  },
+                  {
+                    label: "Pass",
+                    value: "Setup",
+                    helper: "OSP status",
+                    bg: "rgba(255,255,255,0.16)",
+                    accent: "rgba(243,174,38,0.96)",
+                  },
+                  {
+                    label: "Site Access",
+                    value: "Pending",
+                    helper: "Cloud 9+",
+                    bg: "rgba(255,255,255,0.13)",
+                    accent: "rgba(255,255,255,0.82)",
+                  },
+                ].map((card) => (
+                  <div
+                    key={card.label}
+                    style={{
+                      minWidth: 0,
+                      minHeight: 60,
+                      borderRadius: 14,
+                      padding: "7px 6px 6px",
+                      background: card.bg,
+                      border: "1px solid rgba(255,255,255,0.22)",
+                      boxShadow: "0 8px 20px rgba(0,18,42,0.13)",
+                      backdropFilter: "blur(10px)",
+                      WebkitBackdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 14,
+                        height: 3,
+                        borderRadius: 999,
+                        background: card.accent,
+                        marginBottom: 5,
+                      }}
+                    />
+
+                    <div
+                      style={{
+                        fontSize: 7.1,
+                        lineHeight: 1,
+                        fontWeight: 900,
+                        letterSpacing: "0.08em",
+                        textTransform: "uppercase",
+                        color: "rgba(255,255,255,0.7)",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {card.label}
+                    </div>
+
+                    <div
+                      style={{
+                        marginTop: 4,
+                        fontSize: 9.1,
+                        lineHeight: 1.08,
+                        fontWeight: 900,
+                        color: "#ffffff",
+                        wordBreak: "break-word",
+                        textShadow: "0 2px 8px rgba(0,18,42,0.35)",
+                      }}
+                    >
+                      {card.value}
+                    </div>
+
+                    <div
+                      style={{
+                        marginTop: 4,
+                        fontSize: 7.1,
+                        lineHeight: 1.08,
+                        fontWeight: 750,
+                        color: "rgba(255,255,255,0.66)",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {card.helper}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
         </header>
@@ -2683,7 +2923,7 @@ export default async function TravelerHomePage() {
               </div>
 
               <div style={{ marginTop: 18, borderRadius: 24, background: "#ffffff", border: "1px solid #dbe8ef", padding: 12 }}>
-                <div style={{ fontSize: 10, fontWeight: 900, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
+                <div style={{ fontSize: 9.1, fontWeight: 900, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
                   Official Pass
                 </div>
 
@@ -2715,9 +2955,9 @@ export default async function TravelerHomePage() {
             ["Pass", "After setup", "#cffafe", "#0891b2"],
             ["Travel Dates", "To be added", "#dbeafe", "#2563eb"],
           ].map(([label, value, bg, color]) => (
-            <div key={label} style={{ borderRadius: 16, background: bg, border: "1px solid rgba(15,23,42,0.08)", padding: 10, minHeight: 76 }}>
+            <div key={label} style={{ borderRadius: 14, background: bg, border: "1px solid rgba(15,23,42,0.08)", padding: 10, minHeight: 76 }}>
               <div style={{ fontSize: 8.5, fontWeight: 900, color: "#64748b", textTransform: "uppercase" }}>{label}</div>
-              <div style={{ marginTop: 5, fontSize: 12, fontWeight: 900, color }}>{value}</div>
+              <div style={{ marginTop: 4, fontSize: 12, fontWeight: 900, color }}>{value}</div>
             </div>
           ))}
         </section>

@@ -554,6 +554,134 @@ export class TripsService {
     const paymentState = booking?.paymentState || null;
     const latestPaymentIntent = booking?.paymentIntents?.[0] || null;
 
+    const latestSiteAccessEntitlement = latestTrip
+      ? await this.prisma.siteAccessEntitlement.findFirst({
+          where: {
+            siteCode: 'CLOUD_9',
+            OR: [
+              { tripId: latestTrip.id },
+              ...(qrCredential?.id ? [{ qrCredentialId: qrCredential.id }] : []),
+            ],
+          },
+          orderBy: [{ createdAt: 'desc' }],
+        })
+      : null;
+
+    const latestSiteAccessIntent = latestTrip
+      ? await this.prisma.siteAccessIntent.findFirst({
+          where: {
+            siteCode: 'CLOUD_9',
+            OR: [
+              { tripId: latestTrip.id },
+              ...(qrCredential?.id ? [{ qrCredentialId: qrCredential.id }] : []),
+            ],
+          },
+          orderBy: [{ createdAt: 'desc' }],
+        })
+      : null;
+
+    const siteAccessSummary = (() => {
+      if (latestSiteAccessEntitlement?.status === 'ACTIVE') {
+        return {
+          siteCode: 'CLOUD_9',
+          status: 'AVAILABLE',
+          label: 'Available',
+          helper: 'Cloud 9+',
+          paymentStatus: latestSiteAccessIntent?.paymentStatus || null,
+          entitlementStatus: latestSiteAccessEntitlement.status,
+          intentId: latestSiteAccessIntent?.id || latestSiteAccessEntitlement.intentId || null,
+          entitlementId: latestSiteAccessEntitlement.id,
+          qrCredentialId: latestSiteAccessEntitlement.qrCredentialId || qrCredential?.id || null,
+        };
+      }
+
+      if (latestSiteAccessEntitlement?.status === 'USED') {
+        return {
+          siteCode: 'CLOUD_9',
+          status: 'USED',
+          label: 'Used',
+          helper: 'Cloud 9+',
+          paymentStatus: latestSiteAccessIntent?.paymentStatus || null,
+          entitlementStatus: latestSiteAccessEntitlement.status,
+          intentId: latestSiteAccessIntent?.id || latestSiteAccessEntitlement.intentId || null,
+          entitlementId: latestSiteAccessEntitlement.id,
+          qrCredentialId: latestSiteAccessEntitlement.qrCredentialId || qrCredential?.id || null,
+        };
+      }
+
+      if (latestSiteAccessEntitlement?.status) {
+        return {
+          siteCode: 'CLOUD_9',
+          status: latestSiteAccessEntitlement.status,
+          label: String(latestSiteAccessEntitlement.status).replace(/_/g, ' '),
+          helper: 'Cloud 9+',
+          paymentStatus: latestSiteAccessIntent?.paymentStatus || null,
+          entitlementStatus: latestSiteAccessEntitlement.status,
+          intentId: latestSiteAccessIntent?.id || latestSiteAccessEntitlement.intentId || null,
+          entitlementId: latestSiteAccessEntitlement.id,
+          qrCredentialId: latestSiteAccessEntitlement.qrCredentialId || qrCredential?.id || null,
+        };
+      }
+
+      if (
+        latestSiteAccessIntent?.paymentStatus === 'PAID' ||
+        latestSiteAccessIntent?.paymentStatus === 'COUNTER_CONFIRMED' ||
+        latestSiteAccessIntent?.entitlementStatus === 'ACTIVE'
+      ) {
+        return {
+          siteCode: 'CLOUD_9',
+          status: 'AVAILABLE',
+          label: 'Available',
+          helper: 'Cloud 9+',
+          paymentStatus: latestSiteAccessIntent.paymentStatus,
+          entitlementStatus: latestSiteAccessIntent.entitlementStatus,
+          intentId: latestSiteAccessIntent.id,
+          entitlementId: null,
+          qrCredentialId: latestSiteAccessIntent.qrCredentialId || qrCredential?.id || null,
+        };
+      }
+
+      if (latestSiteAccessIntent?.paymentStatus === 'PENDING') {
+        return {
+          siteCode: 'CLOUD_9',
+          status: 'PENDING',
+          label: 'Pending',
+          helper: 'Cloud 9+',
+          paymentStatus: latestSiteAccessIntent.paymentStatus,
+          entitlementStatus: latestSiteAccessIntent.entitlementStatus,
+          intentId: latestSiteAccessIntent.id,
+          entitlementId: null,
+          qrCredentialId: latestSiteAccessIntent.qrCredentialId || qrCredential?.id || null,
+        };
+      }
+
+      if (qrCredential?.id) {
+        return {
+          siteCode: 'CLOUD_9',
+          status: 'QR_LINKED',
+          label: 'QR-linked',
+          helper: 'Cloud 9+',
+          paymentStatus: null,
+          entitlementStatus: null,
+          intentId: null,
+          entitlementId: null,
+          qrCredentialId: qrCredential.id,
+        };
+      }
+
+      return {
+        siteCode: 'CLOUD_9',
+        status: 'PENDING',
+        label: 'Pending',
+        helper: 'Cloud 9+',
+        paymentStatus: null,
+        entitlementStatus: null,
+        intentId: null,
+        entitlementId: null,
+        qrCredentialId: null,
+      };
+    })();
+
     const arrivalDate = latestTrip?.arrivalDate ? new Date(latestTrip.arrivalDate) : null;
     const departureDate = latestTrip?.departureDate ? new Date(latestTrip.departureDate) : null;
 
@@ -691,6 +819,7 @@ export class TripsService {
             createdAt: qrCredential.createdAt,
           }
         : null,
+      siteAccessSummary,
       paymentSummary: {
         bookingId: booking?.id || null,
         paymentState: paymentState
