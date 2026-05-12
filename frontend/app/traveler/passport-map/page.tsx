@@ -24,6 +24,7 @@ export default async function TravelerPassportMapPage() {
     <main
       style={{
         minHeight: "100vh",
+        overflowX: "hidden",
         background: "linear-gradient(180deg, #f4fcfa 0%, #ffffff 68%, #fff8e8 100%)",
         color: "#14264b",
         fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
@@ -43,7 +44,7 @@ export default async function TravelerPassportMapPage() {
       >
         <div
           style={{
-            padding: "16px 14px 18px",
+            padding: "16px 14px 112px",
           }}
         >
           <header
@@ -54,7 +55,7 @@ export default async function TravelerPassportMapPage() {
               minHeight: 64,
               position: "relative",
               zIndex: 5,
-              paddingRight: 90,
+              paddingRight: 86,
             }}
           >
             <a
@@ -93,13 +94,13 @@ export default async function TravelerPassportMapPage() {
                 style={{
                   margin: 0,
                   fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
-                  fontSize: 24,
-                  lineHeight: 1.05,
+                  fontSize: 22,
+                  lineHeight: 1.04,
                   letterSpacing: "-0.045em",
                   color: "#013863",
                   fontWeight: 850,
-                  whiteSpace: "nowrap",
-                  overflow: "visible",
+                  whiteSpace: "normal",
+                  overflowWrap: "break-word",
                 }}
               >
                 Siargao Passport Map
@@ -110,10 +111,10 @@ export default async function TravelerPassportMapPage() {
                   margin: "6px 0 0",
                   color: "#5f6f87",
                   fontSize: 12.2,
-                  lineHeight: 1.16,
+                  lineHeight: 1.18,
                   fontWeight: 760,
-                  whiteSpace: "nowrap",
-                  overflow: "visible",
+                  whiteSpace: "normal",
+                  overflowWrap: "break-word",
                 }}
               >
                 Follow the Trails. Build the Journey.
@@ -237,7 +238,8 @@ export default async function TravelerPassportMapPage() {
           >
             <div
               style={{
-                height: 272,
+                minHeight: 248,
+                height: "auto",
                 borderRadius: 24,
                 background:
                   "radial-gradient(circle at 76% 16%, rgba(19,168,183,0.16) 0, transparent 78px), radial-gradient(circle at 22% 84%, rgba(242,183,5,0.15) 0, transparent 64px), linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(238,248,251,0.66) 52%, rgba(255,255,255,0.90) 100%)",
@@ -1247,11 +1249,12 @@ function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emp
         width: "100%",
         maxWidth: 210,
         borderRadius: 18,
-        border: "1px solid rgba(191,231,238,0.72)",
-        background: "linear-gradient(135deg, rgba(255,255,255,0.92), rgba(240,250,252,0.82))",
-        boxShadow: "0 12px 30px rgba(15,23,42,0.08)",
+        border: "1px solid rgba(255,255,255,0.22)",
+        background: "linear-gradient(145deg, rgba(255,255,255,0.10), rgba(234,251,250,0.035))",
+        boxShadow: "0 10px 24px rgba(1,56,99,0.04), inset 0 1px 0 rgba(255,255,255,0.10)",
         padding: "7px 7px 6px",
-        backdropFilter: "blur(10px)",
+        backdropFilter: "blur(3px)",
+        WebkitBackdropFilter: "blur(3px)",
       }}
     >
       <div
@@ -1269,12 +1272,13 @@ function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emp
             alignItems: "center",
             gap: 6,
             minWidth: 0,
-            color: "#14264b",
-            fontSize: 8.8,
-            fontWeight: 820,
+            color: "rgba(255,255,255,0.96)",
+            fontSize: 8.9,
+            fontWeight: 950,
             letterSpacing: "0.095em",
             textTransform: "uppercase",
             whiteSpace: "nowrap",
+            textShadow: "0 1px 4px rgba(1,36,64,0.62)",
           }}
         >
           <span
@@ -1293,9 +1297,10 @@ function SpmLegendAndStatus(props: { metrics?: SpmMetricsPreviewData | null; emp
         <div
           style={{
             fontSize: 9,
-            fontWeight: 780,
-            color: "#067889",
+            fontWeight: 950,
+            color: "rgba(255,255,255,0.92)",
             whiteSpace: "nowrap",
+            textShadow: "0 1px 4px rgba(1,36,64,0.58)",
           }}
         >
           Record-based
@@ -1344,23 +1349,27 @@ function HeroMetric(props: { value: string; label: string; tone: string }) {
       style={{
         minWidth: 0,
         minHeight: 44,
-        borderRadius: 12,
-        background: "rgba(255,255,255,0.72)",
-        border: "1px solid rgba(203,213,225,0.48)",
+        borderRadius: 14,
+        background: "linear-gradient(145deg, rgba(255,255,255,0.055), rgba(234,251,250,0.018))",
+        border: "1px solid rgba(255,255,255,0.16)",
         padding: "5px 3px",
         display: "grid",
         alignContent: "center",
         justifyItems: "center",
         gap: 2,
+        boxShadow: "0 5px 12px rgba(1,56,99,0.02), inset 0 1px 0 rgba(255,255,255,0.08)",
+        backdropFilter: "blur(2px)",
+        WebkitBackdropFilter: "blur(2px)",
       }}
     >
       <div
         style={{
-          color: props.tone,
+          color: "rgba(255,255,255,0.98)",
           fontSize: 11.8,
           lineHeight: 1,
-          fontWeight: 850,
+          fontWeight: 950,
           letterSpacing: "-0.025em",
+          textShadow: "0 1px 5px rgba(1,36,64,0.68)",
           maxWidth: "100%",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -1371,13 +1380,14 @@ function HeroMetric(props: { value: string; label: string; tone: string }) {
       </div>
       <div
         style={{
-          color: "#53657d",
+          color: "rgba(255,255,255,0.88)",
           fontSize: 7.2,
           lineHeight: 1,
-          fontWeight: 760,
+          fontWeight: 880,
           letterSpacing: "0.035em",
           textTransform: "uppercase",
           whiteSpace: "nowrap",
+          textShadow: "0 1px 4px rgba(1,36,64,0.62)",
         }}
       >
         {props.label}
@@ -1770,7 +1780,7 @@ function SpmJourneyHubEngagement() {
               }}
             >
               <div style={{ color: "#013863", fontSize: 12, fontWeight: 950, letterSpacing: "-0.02em" }}>
-                Siargao Passport Map Preview
+                Passport Map Preview
               </div>
               <div style={{ marginTop: 4, color: "#50668B", fontSize: 11.2, lineHeight: 1.32, fontWeight: 780 }}>
                 Pins preview verified stops and trail-ready zones. Full zoom and live pin behavior comes through the map engine lane.
@@ -1826,7 +1836,7 @@ function SpmJourneyHubEngagement() {
               boxShadow: "0 14px 30px rgba(0,0,0,0.14)",
             }}
           >
-            Open Full Passport Map
+            Open Passport Map
           </a>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9 }}>
