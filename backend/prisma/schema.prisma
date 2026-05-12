@@ -4578,3 +4578,225 @@ model SiteAccessAuditEvent {
   @@index([createdAt])
   @@map("site_access_audit_events")
 }
+
+enum SiteAccessPointType {
+  LGU_SITE_ACCESS
+  ENTRY_POINT
+  PORT_DEPARTURE_SITE
+  SPM_TRAIL_STOP
+  TOUR_OPERATOR_POINT
+  ACCOMMODATION_CHECKIN_POINT
+  BARANGAY_ARRIVAL_CHECKPOINT
+  MUNICIPAL_COUNTER
+  MERCHANT_STOP
+  STAFF_STATION
+  PUBLIC_INFO_POINT
+}
+
+enum SiteAccessConsumerModule {
+  SITE_ACCESS
+  ENTRY
+  SPM
+  DCS
+  TOUR_OPERATOR
+  ACCOMMODATION
+  BARANGAY_CONSOLE
+  MUNICIPAL_COUNTER
+  MERCHANT
+  STAFF_AUDIT
+  PUBLIC_INFO
+  INTELLIGENCE
+}
+
+enum SiteAccessAuthorityType {
+  LGU
+  BARANGAY
+  DOT
+  PORT_AUTHORITY
+  AIRPORT_AUTHORITY
+  OSP_PLATFORM
+  TOUR_OPERATOR
+  ACCOMMODATION_OPERATOR
+  MERCHANT_PARTNER
+  HEALTH_PARTNER
+  PUBLIC_INFORMATION
+  SUPER_ADMIN
+}
+
+enum SiteAccessRule {
+  PAID_SITE_ENTITLEMENT
+  ARRIVAL_CHECKIN
+  QR_ENTRY_POINT
+  QR_APPLICATION_FOR_ENTRY
+  ENVIRONMENTAL_FEE_VALIDATION
+  SPM_STAMP_CHECKIN
+  ACCOMMODATION_BOOKING_CHECKIN
+  TOUR_OPERATOR_FULFILLMENT
+  COUNTER_CONFIRMATION
+  TOURIST_ASSISTANCE
+  REGISTRATION
+  DCS_BOARDING_VALIDATION
+  DCS_MANIFEST_VALIDATION
+  FREE_VISIT_LOG
+  SITE_VISIT_LOG
+  MERCHANT_REWARD_SCAN
+  STAFF_ONLY_ACTION
+  PUBLIC_INFO_ONLY
+}
+
+enum SiteAccessQrMode {
+  SITE_SIGNAGE_QR
+  ENTRY_POINT_QR
+  SPM_STOP_QR
+  ACCOMMODATION_FRONT_DESK_QR
+  TOUR_OPERATOR_POINT_QR
+  BARANGAY_CHECKPOINT_QR
+  MUNICIPAL_COUNTER_QR
+  STAFF_STATION_QR
+  PUBLIC_INFO_QR
+}
+
+enum SiteAccessFeeType {
+  NO_FEE
+  LGU_ENTRANCE_FEE
+  BARANGAY_ENVIRONMENTAL_FEE
+  MUNICIPAL_ENVIRONMENTAL_FEE
+  DOT_COUNTER_FEE
+  PORT_FEE
+  ENTRY_QR_APPLICATION_FEE
+  TOUR_OPERATOR_FEE
+  ACCOMMODATION_BOOKING_PAYMENT
+  SPM_TRAIL_PASS_FEE
+  MERCHANT_REWARD_REDEMPTION
+  COUNTER_CONFIRMED_FEE
+}
+
+enum SiteAccessRegistryStatus {
+  DRAFT
+  PENDING_REVIEW
+  APPROVED
+  ACTIVE
+  SUSPENDED
+  RETIRED
+  ARCHIVED
+}
+
+enum SiteAccessApiReadinessStatus {
+  NOT_API_READY
+  API_READY_FUTURE
+  API_CONNECTED
+  API_SUSPENDED
+}
+
+model SiteAccessPoint {
+  id                     String                       @id @default(cuid())
+  siteAccessPointCode    String                       @unique
+  displayName            String
+
+  siteType               SiteAccessPointType
+  consumerModule         SiteAccessConsumerModule
+  accessRule             SiteAccessRule
+  qrMode                 SiteAccessQrMode
+
+  governingAuthorityType SiteAccessAuthorityType
+  governingAuthorityCode String?
+  operatingAuthorityType SiteAccessAuthorityType?
+  operatingAuthorityCode String?
+
+  municipalityCode       String?
+  barangayCode           String?
+  physicalLocationLabel  String?
+
+  visibilityScope        String?
+  operationScope         String?
+  scanPermissionScope    String?
+  payoutVisibilityScope  String?
+
+  registryStatus         SiteAccessRegistryStatus      @default(DRAFT)
+  apiReadinessStatus     SiteAccessApiReadinessStatus  @default(NOT_API_READY)
+
+  isActive               Boolean                      @default(false)
+  isPublicVisible        Boolean                      @default(false)
+  isSuperAdminVisible    Boolean                      @default(true)
+
+  metadataJson           Json?
+  createdAt              DateTime                     @default(now())
+  updatedAt              DateTime                     @updatedAt
+
+  feeRules               SiteAccessFeeRule[]
+  qrDefinitions          SiteAccessQrDefinition[]
+
+  @@index([siteType])
+  @@index([consumerModule])
+  @@index([governingAuthorityType, governingAuthorityCode])
+  @@index([municipalityCode])
+  @@index([registryStatus, isActive, isPublicVisible])
+  @@map("site_access_points")
+}
+
+model SiteAccessFeeRule {
+  id                     String                  @id @default(cuid())
+  siteAccessPointId      String
+
+  siteAccessPoint        SiteAccessPoint         @relation(fields: [siteAccessPointId], references: [id], onDelete: Cascade)
+
+  feeRequired            Boolean                 @default(false)
+  feeType                SiteAccessFeeType       @default(NO_FEE)
+
+  feeOwnerType           SiteAccessAuthorityType?
+  feeOwnerCode           String?
+  feeCollectorType       SiteAccessAuthorityType?
+  feeCollectorCode       String?
+  payoutRecipientType    SiteAccessAuthorityType?
+  payoutRecipientCode    String?
+
+  standardAmount         Decimal?                @db.Decimal(12, 2)
+  residentAmount         Decimal?                @db.Decimal(12, 2)
+  seniorAmount           Decimal?                @db.Decimal(12, 2)
+  childAmount            Decimal?                @db.Decimal(12, 2)
+  exemptAmount           Decimal?                @db.Decimal(12, 2)
+  discountedAmount       Decimal?                @db.Decimal(12, 2)
+  currencyCode           String                  @default("PHP")
+
+  paymentProviderAllowed Boolean                 @default(false)
+  counterPaymentAllowed  Boolean                 @default(true)
+  receiptRequired        Boolean                 @default(true)
+  settlementSurface      String?
+
+  isActive               Boolean                 @default(true)
+  metadataJson           Json?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+
+  @@index([siteAccessPointId])
+  @@index([feeType])
+  @@index([payoutRecipientType, payoutRecipientCode])
+  @@map("site_access_fee_rules")
+}
+
+model SiteAccessQrDefinition {
+  id                   String                     @id @default(cuid())
+  siteAccessPointId    String
+
+  siteAccessPoint      SiteAccessPoint            @relation(fields: [siteAccessPointId], references: [id], onDelete: Cascade)
+
+  qrCode               String                     @unique
+  qrMode               SiteAccessQrMode
+  qrPurpose            String
+  publicScanUrl        String?
+  internalScanUrl      String?
+
+  status               SiteAccessRegistryStatus   @default(DRAFT)
+  issuedAt             DateTime?
+  revokedAt            DateTime?
+
+  metadataJson         Json?
+  createdAt            DateTime                   @default(now())
+  updatedAt            DateTime                   @updatedAt
+
+  @@index([siteAccessPointId])
+  @@index([qrMode])
+  @@index([status])
+  @@map("site_access_qr_definitions")
+}
+
