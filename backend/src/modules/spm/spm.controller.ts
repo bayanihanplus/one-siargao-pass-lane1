@@ -313,4 +313,10 @@ export class SpmController {
   getTravelerPreview(@CurrentUserId() userId: string) {
     return this.spmService.getTravelerPreview(userId);
   }
+
+  @Get('land-tour/rate-card')
+  getLandTourMvpRateCard() {
+    return this.spmService.getLandTourMvpRateCard();
+  }
+
 }

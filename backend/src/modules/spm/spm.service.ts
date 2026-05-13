@@ -3641,4 +3641,130 @@ export class SpmService {
     return { ok: true, data: updated };
   }
 
+
+  getLandTourMvpRateCard() {
+    const rateCard = {
+      productCode: 'SPM_LAND_TOUR_PRIVATE_MVP',
+      pricingVersion: 'LAND_TOUR_MVP_2026_05',
+      trailSlug: 'siargao-land-tour',
+      productName: 'Siargao Land Tour Private MVP',
+      pricingMode: 'PAX_TIERED_PER_HEAD',
+      currencyCode: 'PHP',
+      paymentTiming: 'AFTER_OPERATOR_CONFIRMATION',
+      commissionInclusivePricing: true,
+      travelerPricingNotice:
+        'Estimated total is pax-tier based. Transport, media, and guide/support selections are confirmation-based unless priced by Admin later.',
+      paxTiers: [
+        { minPax: 1, maxPax: 1, publicPricePerHead: 3200, tierLabel: 'solo tier' },
+        { minPax: 2, maxPax: 3, publicPricePerHead: 2200, tierLabel: '2–3 pax tier' },
+        { minPax: 4, maxPax: 6, publicPricePerHead: 1800, tierLabel: '4–6 pax tier' },
+        { minPax: 7, maxPax: 10, publicPricePerHead: 1500, tierLabel: '7–10 pax tier' },
+      ],
+      transportModes: [
+        {
+          code: 'TUKTUK',
+          label: 'TukTuk',
+          priceMode: 'INCLUDED_OR_CONFIRMATION_BASED',
+          travelerLabel: 'TukTuk',
+        },
+        {
+          code: 'MOTORCYCLE',
+          label: 'Motorcycle',
+          priceMode: 'INCLUDED_OR_CONFIRMATION_BASED',
+          travelerLabel: 'Motorcycle',
+        },
+        {
+          code: 'VAN_GROUP_TRANSPORT',
+          label: 'Van / group transport',
+          priceMode: 'REQUEST_TO_CONFIRM',
+          travelerLabel: 'Van / group transport',
+        },
+      ],
+      mediaAddOns: [
+        {
+          code: 'NONE',
+          label: 'No media add-on',
+          priceMode: 'INCLUDED_OR_CONFIRMATION_BASED',
+          travelerLabel: 'No media add-on',
+        },
+        {
+          code: 'MOBILE_PHOTOGRAPHER',
+          label: 'Mobile photographer',
+          priceMode: 'INCLUDED_OR_CONFIRMATION_BASED',
+          travelerLabel: 'Mobile photographer',
+        },
+        {
+          code: 'DRONE',
+          label: 'Drone',
+          priceMode: 'INCLUDED_OR_CONFIRMATION_BASED',
+          travelerLabel: 'Drone',
+        },
+        {
+          code: 'PHOTO_DRONE',
+          label: 'Photo + drone',
+          priceMode: 'INCLUDED_OR_CONFIRMATION_BASED',
+          travelerLabel: 'Photo + drone',
+        },
+      ],
+      guideSupportOptions: [
+        {
+          code: 'DRIVER_LOCAL_SUPPORT',
+          label: 'Driver + local support',
+          priceMode: 'INCLUDED_OR_CONFIRMATION_BASED',
+          travelerLabel: 'Driver + local support',
+        },
+        {
+          code: 'LICENSED_LOCAL_GUIDE',
+          label: 'Licensed local guide',
+          priceMode: 'REQUEST_TO_CONFIRM',
+          travelerLabel: 'Licensed local guide',
+        },
+        {
+          code: 'OPERATOR_RECOMMENDED',
+          label: 'Operator recommended',
+          priceMode: 'REQUEST_TO_CONFIRM',
+          travelerLabel: 'Operator recommended',
+        },
+        {
+          code: 'NO_SEPARATE_GUIDE',
+          label: 'No separate guide',
+          priceMode: 'REQUEST_TO_CONFIRM',
+          travelerLabel: 'No separate guide',
+        },
+      ],
+      supportLevels: [
+        { code: 'STANDARD', label: 'Standard route support' },
+        { code: 'ASSISTED_ROUTE_PLANNING', label: 'Assisted route planning' },
+        { code: 'PREMIUM_GUIDED_SUPPORT', label: 'Premium guided support' },
+        { code: 'CUSTOM_OPERATOR_REVIEW', label: 'Custom operator review' },
+      ],
+      commercialSnapshotFields: [
+        'productCode',
+        'pricingVersion',
+        'trailSlug',
+        'routeChoice',
+        'pax',
+        'unitPrice',
+        'estimatedTotal',
+        'transportMode',
+        'mediaAddOn',
+        'guideSupport',
+        'supportLevel',
+        'pickupArea',
+        'preferredDate',
+        'paymentTiming',
+      ],
+      hardRules: [
+        'Do not collect payment before operator confirmation.',
+        'Do not invent transport/media/guide surcharges without Admin pricing.',
+        'Persist confirmed bookings with a pricing snapshot before payment.',
+      ],
+    };
+
+    return {
+      ok: true,
+      data: rateCard,
+    };
+  }
+
 }

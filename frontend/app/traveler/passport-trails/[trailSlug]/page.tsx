@@ -142,31 +142,31 @@ const TRAILS: Record<string, TrailDetail> = {
     eyebrow: "PASSPORT TRAILS™ · LOCAL OPERATOR SUPPORT",
     title: "Siargao Land Tour Passport Trail",
     subtitle:
-      "Choose South Highlights or North Highlights as a one-day land tour. Complete both across separate days or through a private DIY arrangement with local operator support.",
+      "Choose South or North as a one-day route. Do both on separate days or request a custom private route.",
     progressLabel: "South / North one-day options",
     statusLabel: "Local operator support",
     nextStop: "Choose South or North route",
     nextStopReason:
-      "South Tour can be one day. North Tour can be one day. Full South + North should not be presented as one normal-day route unless it is a private custom DIY arrangement.",
+      "South and North are separate one-day options. Combine them only as a custom private route.",
     stops: [
       {
         name: "South Tour Highlights",
         shortCode: "ST",
-        note: "Mountain / Coconut Trees View Deck, Coconut Road, Maasin River, Magpupungko, Canijugan Peak, Secret Beach, and Malinao Skate Road. Sugba Lagoon should cross-link to its governed official route.",
+        note: "Scenic inland route with coconut views, Maasin River, Magpupungko, Secret Beach, and Malinao Skate Road.",
         status: "READY_TO_VERIFY",
         source: "Pending",
       },
       {
         name: "North Tour Highlights",
         shortCode: "NT",
-        note: "Pacifico Beach, Trogon’s Perch, Little Hawaii, Alegria Beach, Somyot Cave, Taktak Falls, and Pasikon / Pasicon Beach pending local spelling validation.",
+        note: "North-coast route with Pacifico, Alegria, Taktak Falls, caves, beach stops, and scenic viewpoints.",
         status: "READY_TO_VERIFY",
         source: "Pending",
       },
       {
         name: "Guided Private DIY Option",
         shortCode: "GD",
-        note: "Guide, driver, TukTuk, motorcycle, van, mobile photographer, drone/no-drone variant, and local tour operator support must be selectable later.",
+        note: "Custom route support with guide, driver, vehicle, pickup, and optional photo or drone add-ons.",
         status: "LOCKED",
         source: "Pending",
       },
@@ -1213,11 +1213,11 @@ function OfficialTrailMediaPreview({
     },
     "siargao-land-tour": {
       badge: "Guide support",
-      headline: "Siargao Land Tour Passport Trail Preview",
-      subline: "South and North land tour media appears after Admin and approved local operator readiness.",
+      headline: "Land Tour Preview",
+      subline: "Preview South or North route media before booking.",
       primaryFrame: "South or North route preview",
       secondaryFrames: ["Guide support", "TukTuk / motorcycle", "Drone/no-drone option"],
-      proofLine: "Approved land tour media only",
+      proofLine: "Verified route media",
     },
     "surf-explorer": {
       badge: "Continue-later surf trail",
@@ -1276,10 +1276,10 @@ function OfficialTrailMediaPreview({
         style={{
           borderRadius: 28,
           background: "linear-gradient(135deg, #FFFFFF 0%, #F4FCFA 58%, #EAFBFA 100%)",
-          border: "1px solid rgba(255,255,255,0.16)",
+          border: "1px solid rgba(1,56,99,0.10)",
           boxShadow: "0 22px 48px rgba(1,56,99,0.22)",
           padding: 14,
-          color: "#FFFFFF",
+          color: "#013863",
           boxSizing: "border-box",
           overflow: "hidden",
           position: "relative",
@@ -1321,6 +1321,7 @@ function OfficialTrailMediaPreview({
             }}
           >
             <div
+              data-osp-lock="OSP_MEDIA_TEXT_CONTRAST_LOCK"
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -1333,8 +1334,8 @@ function OfficialTrailMediaPreview({
                   display: "inline-flex",
                   alignItems: "center",
                   borderRadius: 999,
-                  background: "rgba(255,255,255,0.16)",
-                  border: "1px solid rgba(255,255,255,0.18)",
+                  background: "rgba(255,255,255,0.90)",
+                  border: "1px solid rgba(1,56,99,0.10)",
                   padding: "6px 9px",
                   fontSize: 9.5,
                   fontWeight: 950,
@@ -1352,7 +1353,7 @@ function OfficialTrailMediaPreview({
                   height: 46,
                   borderRadius: 999,
                   background: "linear-gradient(135deg, #F3AE26, #D97706)",
-                  color: "#FFFFFF",
+                  color: "#013863",
                   display: "grid",
                   placeItems: "center",
                   fontSize: 18,
@@ -1384,7 +1385,7 @@ function OfficialTrailMediaPreview({
                   marginTop: 10,
                   height: 5,
                   borderRadius: 999,
-                  background: "rgba(255,255,255,0.18)",
+                  background: "rgba(255,255,255,0.92)",
                   overflow: "hidden",
                 }}
               >
@@ -1407,7 +1408,7 @@ function OfficialTrailMediaPreview({
                 alignItems: "center",
                 borderRadius: 999,
                 background: "rgba(243,174,38,0.18)",
-                color: "#FFF3D1",
+                color: "#9A6A08",
                 padding: "6px 9px",
                 fontSize: 9.2,
                 fontWeight: 950,
@@ -1425,9 +1426,9 @@ function OfficialTrailMediaPreview({
                 lineHeight: 1.02,
                 letterSpacing: "-0.055em",
                 fontWeight: 950,
-                color: "#FFFFFF",
-                WebkitTextFillColor: "#FFFFFF",
-                textShadow: "0 2px 12px rgba(1,56,99,0.22)",
+                color: "#013863",
+                WebkitTextFillColor: "#013863",
+                textShadow: "none",
               }}
             >
               {media.headline}
@@ -1436,7 +1437,7 @@ function OfficialTrailMediaPreview({
             <p
               style={{
                 margin: "6px 0 0",
-                color: "rgba(255,255,255,0.82)",
+                color: "#50668B",
                 fontSize: 11.8,
                 lineHeight: 1.34,
                 fontWeight: 720,
@@ -1485,7 +1486,7 @@ function OfficialTrailMediaPreview({
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    color: "#FFFFFF",
+                    color: "#013863",
                     fontSize: 10.5,
                     lineHeight: 1.12,
                     fontWeight: 850,
@@ -1499,7 +1500,7 @@ function OfficialTrailMediaPreview({
                       width: 22,
                       height: 22,
                       borderRadius: 9,
-                      background: "rgba(255,255,255,0.16)",
+                      background: "rgba(255,255,255,0.90)",
                       border: "1px solid rgba(255,255,255,0.14)",
                       display: "grid",
                       placeItems: "center",
@@ -1519,7 +1520,6 @@ function OfficialTrailMediaPreview({
     </section>
   );
 }
-
 
 
 
@@ -1608,28 +1608,28 @@ function OfficialTrailCommercialExposurePanel({
     "siargao-land-tour": {
       descriptionTitle: "Siargao Land Tour Passport Trail",
       description:
-        "Choose a South Tour or North Tour route with local operator support. This trail is designed for guided island movement by road, with clear pax, pickup, vehicle, and support options before confirmation.",
+        "Choose South or North, set pax and pickup, then request local operator confirmation.",
       heroChips: ["South Tour", "North Tour", "Guide support", "Drone option"],
       featureCards: [
         {
           icon: "🛺",
           title: "South or North route",
-          body: "South and North are handled as separate one-day land tour choices.",
+          body: "South and North are separate one-day routes.",
         },
         {
           icon: "👥",
           title: "Pax-aware request",
-          body: "Solo, couple, family, or group size affects vehicle and support.",
+          body: "Pax affects vehicle and support.",
         },
         {
           icon: "📍",
           title: "Pickup + route support",
-          body: "Pickup point, route timing, and operator availability are checked.",
+          body: "Pickup and timing are checked.",
         },
         {
           icon: "📸",
           title: "Photo / drone option",
-          body: "Mobile photographer or drone pilot can be selected when available.",
+          body: "Photo or drone add-on if available.",
         },
       ],
       bookingFields: [
@@ -1657,7 +1657,7 @@ function OfficialTrailCommercialExposurePanel({
       flowSteps: ["Pick route", "Set your pax", "Choose support", "Request confirmation"],
       priceHeadline: "Price to confirm",
       priceBody:
-        "Final price depends on route choice, pax count, pickup area, vehicle type, guide support, and photo/drone add-ons.",
+        "Final price depends on route, pax, pickup, vehicle, and add-ons.",
       paxRows: [
         { pax: "Solo", rule: "Private support quote" },
         { pax: "2–3 pax", rule: "TukTuk / motorcycle review" },
@@ -1668,7 +1668,7 @@ function OfficialTrailCommercialExposurePanel({
       supportCards: [
         {
           title: "Guide / driver",
-          body: "Route timing, stops, and local movement are handled by approved support.",
+          body: "Route timing and stops are supported locally.",
         },
         {
           title: "Transport",
@@ -1676,13 +1676,13 @@ function OfficialTrailCommercialExposurePanel({
         },
         {
           title: "Media support",
-          body: "Mobile photographer or drone pilot is optional and availability-based.",
+          body: "Photo or drone support is optional.",
         },
       ],
-      readinessLabel: "Request confirmation before payment",
+      readinessLabel: "Confirm before payment",
       readinessBody:
-        "Payment should open only after the selected route, pax, pickup, vehicle, and operator support are confirmed.",
-      primaryCta: "Request Land Tour Confirmation",
+        "Payment opens after route and support are confirmed.",
+      primaryCta: "Start Land Tour Booking",
       secondaryCta: "Ask Kuya Tala™",
       tone: "gold",
     },
@@ -2274,7 +2274,16 @@ function OfficialTrailCommercialExposurePanel({
                 margin: 0,
               }}
             >
-              <fieldset
+              
+              <input type="hidden" name="productCode" value="SPM_LAND_TOUR_PRIVATE_MVP" />
+              <input type="hidden" name="pricingVersion" value="LAND_TOUR_MVP_2026_05" />
+              <input type="hidden" name="pricingMode" value="PAX_TIERED_PER_HEAD" />
+              <input type="hidden" name="paymentTiming" value="AFTER_OPERATOR_CONFIRMATION" />
+              <input type="hidden" name="currencyCode" value="PHP" />
+              <input type="hidden" id="landTourSnapshotUnitPrice" name="unitPrice" value="1500" />
+              <input type="hidden" id="landTourSnapshotEstimatedTotal" name="estimatedTotal" value="10500" />
+              <input type="hidden" id="landTourSnapshotTierLabel" name="tierLabel" value="7–10 pax tier" />
+<fieldset
                 style={{
                   border: 0,
                   padding: 0,
@@ -2291,8 +2300,56 @@ function OfficialTrailCommercialExposurePanel({
                   </legend>
 
                   <div
+                    aria-label="Land Tour route setup summary"
                     style={{
-                      display: "grid",
+                      marginBottom: 10,
+                      borderRadius: 20,
+                      padding: 12,
+                      background: "#F4FCFA",
+                      border: "1px solid rgba(5,150,165,0.14)",
+                      boxShadow: "0 10px 24px rgba(1,56,99,0.05)",
+                    }}
+                  >
+                    <div
+                      style={{
+                        color: "#0596A5",
+                        fontSize: 9,
+                        lineHeight: 1,
+                        fontWeight: 900,
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Route preview below
+                    </div>
+                    <strong
+                      style={{
+                        display: "block",
+                        marginTop: 7,
+                        color: "#013863",
+                        fontSize: 14,
+                        lineHeight: 1.12,
+                        fontWeight: 930,
+                      }}
+                    >
+                      Choose South or North in Choose Your Route.
+                    </strong>
+                    <p
+                      style={{
+                        margin: "7px 0 0",
+                        color: "#50668B",
+                        fontSize: 10.6,
+                        lineHeight: 1.35,
+                        fontWeight: 760,
+                      }}
+                    >
+                      Review the route highlights first, then confirm pax and total below.
+                    </p>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "none",
                       gridTemplateColumns: "1fr 1fr",
                       gap: 8,
                     }}
@@ -2551,65 +2608,228 @@ function OfficialTrailCommercialExposurePanel({
                 </div>
               </fieldset>
 
-              <div
-                aria-label="Estimated total summary"
+                    <article
+            aria-label="Siargao Land Tour trail stops"
+            data-osp-marker="land-tour-stops-switch-06K"
+            style={{
+              ...card,
+              borderRadius: 24,
+              background: "#FFFFFF",
+              boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
+              border: "1px solid rgba(5,150,165,0.12)",
+              padding: 16,
+            }}
+          >
+            <style
+              dangerouslySetInnerHTML={{
+                __html: `
+                  #land-tour-route-south-06k:checked ~ .land-tour-route-toggle-row label[for="land-tour-route-south-06k"],
+                  #land-tour-route-north-06k:checked ~ .land-tour-route-toggle-row label[for="land-tour-route-north-06k"] {
+                    background: #013863 !important;
+                    color: #ffffff !important;
+                    border-color: rgba(1,56,99,0.20) !important;
+                    box-shadow: 0 12px 24px rgba(1,56,99,0.14) !important;
+                  }
+
+                  #land-tour-route-south-06k:checked ~ .land-tour-route-stops .land-tour-south-stops-06k {
+                    display: block !important;
+                  }
+
+                  #land-tour-route-south-06k:checked ~ .land-tour-route-stops .land-tour-north-stops-06k {
+                    display: none !important;
+                  }
+
+                  #land-tour-route-north-06k:checked ~ .land-tour-route-stops .land-tour-south-stops-06k {
+                    display: none !important;
+                  }
+
+                  #land-tour-route-north-06k:checked ~ .land-tour-route-stops .land-tour-north-stops-06k {
+                    display: block !important;
+                  }
+                `,
+              }}
+            />
+
+            <div style={sectionHead}>
+              <span style={sectionIcon}>🗺️</span>
+              Choose Route
+            </div>
+
+            <p
+              style={{
+                margin: "8px 0 0",
+                color: "#50668B",
+                fontSize: 10.8,
+                lineHeight: 1.35,
+                fontWeight: 760,
+              }}
+            >
+              Pick a route, then review the total.
+            </p>
+
+            <input
+              id="land-tour-route-south-06k"
+              name="land-tour-route-switch-06K"
+              type="radio"
+              defaultChecked
+              style={{ position: "absolute", opacity: 0, pointerEvents: "none" }}
+            />
+            <input
+              id="land-tour-route-north-06k"
+              name="land-tour-route-switch-06K"
+              type="radio"
+              style={{ position: "absolute", opacity: 0, pointerEvents: "none" }}
+            />
+
+            <div
+              className="land-tour-route-toggle-row"
+              style={{
+                marginTop: 12,
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 8,
+              }}
+            >
+              <label
+                htmlFor="land-tour-route-south-06k"
                 style={{
-                  borderRadius: 22,
-                  background: "linear-gradient(135deg, #013863 0%, #045E78 100%)",
-                  border: "1px solid rgba(5,150,165,0.16)",
-                  boxShadow: "0 16px 30px rgba(1,56,99,0.16)",
-                  padding: "13px 14px",
-                  display: "grid",
-                  gridTemplateColumns: "minmax(0, 1fr) auto",
-                  gap: 12,
+                  minHeight: 46,
+                  borderRadius: 16,
+                  padding: "10px 9px",
+                  background: "#F4FCFA",
+                  border: "1px solid rgba(5,150,165,0.14)",
+                  color: "#013863",
+                  cursor: "pointer",
+                  display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  fontSize: 11,
+                  lineHeight: 1.1,
+                  fontWeight: 900,
                 }}
               >
-                <div>
-                  <span
-                    style={{
-                      display: "block",
-                      color: "rgba(255,255,255,0.72)",
-                      fontSize: 9,
-                      lineHeight: 1.05,
-                      fontWeight: 900,
-                      letterSpacing: "0.08em",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Estimated total
-                  </span>
-                  <strong
-                    id="landTourFormulaLabel"
-                    style={{
-                      display: "block",
-                      marginTop: 5,
-                      color: "#FFFFFF",
-                      fontSize: 12.4,
-                      lineHeight: 1.15,
-                      fontWeight: 850,
-                    }}
-                  >
-                    7 pax × ₱1,500 / pax
-                  </strong>
-                </div>
+                South Route
+              </label>
 
+              <label
+                htmlFor="land-tour-route-north-06k"
+                style={{
+                  minHeight: 46,
+                  borderRadius: 16,
+                  padding: "10px 9px",
+                  background: "#F4FCFA",
+                  border: "1px solid rgba(5,150,165,0.14)",
+                  color: "#013863",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  fontSize: 11,
+                  lineHeight: 1.1,
+                  fontWeight: 900,
+                }}
+              >
+                North Route
+              </label>
+            </div>
+
+            <div className="land-tour-route-stops" style={{ marginTop: 10 }}>
+              <div
+                className="land-tour-south-stops-06k"
+                style={{
+                  display: "block",
+                  borderRadius: 20,
+                  background: "#F4FCFA",
+                  border: "1px solid rgba(5,150,165,0.12)",
+                  padding: 12,
+                }}
+              >
                 <strong
-                  id="landTourTotalPrice"
                   style={{
-                    color: "#F3AE26",
-                    fontSize: 24,
+                    display: "block",
+                    color: "#013863",
+                    fontSize: 13,
                     lineHeight: 1,
-                    fontWeight: 950,
-                    letterSpacing: "-0.04em",
-                    whiteSpace: "nowrap",
+                    fontWeight: 930,
                   }}
                 >
-                  ₱10,500
+                  South Route
                 </strong>
+                <p
+                  style={{
+                    margin: "9px 0 0",
+                    color: "#50668B",
+                    fontSize: 11,
+                    lineHeight: 1.45,
+                    fontWeight: 760,
+                  }}
+                >
+                  Coconut views · Maasin River · Magpupungko · Secret Beach
+                </p>
+                <p
+                  style={{
+                    margin: "7px 0 0",
+                    color: "#50668B",
+                    fontSize: 10.2,
+                    lineHeight: 1.35,
+                    fontWeight: 760,
+                  }}
+                >
+                  Sugba Lagoon is handled as a separate official trail.
+                </p>
               </div>
 
               <div
+                className="land-tour-north-stops-06k"
+                style={{
+                  display: "none",
+                  borderRadius: 20,
+                  background: "#F4FCFA",
+                  border: "1px solid rgba(5,150,165,0.12)",
+                  padding: 12,
+                }}
+              >
+                <strong
+                  style={{
+                    display: "block",
+                    color: "#013863",
+                    fontSize: 13,
+                    lineHeight: 1,
+                    fontWeight: 930,
+                  }}
+                >
+                  North Route
+                </strong>
+                <p
+                  style={{
+                    margin: "9px 0 0",
+                    color: "#50668B",
+                    fontSize: 11,
+                    lineHeight: 1.45,
+                    fontWeight: 760,
+                  }}
+                >
+                  Pacifico · Alegria · Taktak Falls · caves · beach stops
+                </p>
+              </div>
+            </div>
+
+            <p
+              style={{
+                margin: "11px 0 0",
+                color: "#50668B",
+                fontSize: 10.2,
+                lineHeight: 1.35,
+                fontWeight: 760,
+              }}
+            >
+              Stamps unlock after verified stop visits.
+            </p>
+          </article>
+
+<div
                 aria-label="Pax tier reference"
                 style={{
                   display: "grid",
@@ -2681,7 +2901,7 @@ function OfficialTrailCommercialExposurePanel({
                   <select
                     name="landTourTransport"
                     aria-label="Choose transport mode"
-                    defaultValue="tuktuk"
+                    defaultValue="TUKTUK"
                     style={{
                       ...input,
                       minHeight: 47,
@@ -2691,10 +2911,9 @@ function OfficialTrailCommercialExposurePanel({
                       background: "#FFFFFF",
                     }}
                   >
-                    <option value="tuktuk">🛺 TukTuk</option>
-                    <option value="motorcycle">🏍️ Motorcycle</option>
-                    <option value="van">🚐 Van</option>
-                    <option value="operator-recommend">⭐ Operator recommendation</option>
+                    <option value="TUKTUK">🛺 TukTuk</option>
+                    <option value="MOTORCYCLE">🏍️ Motorcycle</option>
+                    <option value="VAN_GROUP_TRANSPORT">🚐 Van / group transport</option>
                   </select>
                 </label>
 
@@ -2705,7 +2924,7 @@ function OfficialTrailCommercialExposurePanel({
                   <select
                     name="landTourMedia"
                     aria-label="Choose photo or drone option"
-                    defaultValue="mobile-photo"
+                    defaultValue="MOBILE_PHOTOGRAPHER"
                     style={{
                       ...input,
                       minHeight: 47,
@@ -2715,12 +2934,95 @@ function OfficialTrailCommercialExposurePanel({
                       background: "#FFFFFF",
                     }}
                   >
-                    <option value="none">No media</option>
-                    <option value="mobile-photo">📷 Mobile photographer</option>
-                    <option value="drone">🚁 Drone</option>
-                    <option value="photo-drone">📷 Photo + drone</option>
+                    <option value="NONE">No media add-on</option>
+                    <option value="MOBILE_PHOTOGRAPHER">📷 Mobile photographer</option>
+                    <option value="DRONE">🚁 Drone</option>
+                    <option value="PHOTO_DRONE">📷 Photo + drone</option>
                   </select>
                 </label>
+
+                <label>
+                  <span style={label}>
+                    Guide support <span style={info}>i</span>
+                  </span>
+                  <select
+                    name="landTourGuideSupport"
+                    aria-label="Choose guide support"
+                    defaultValue="DRIVER_LOCAL_SUPPORT"
+                    style={{
+                      ...input,
+                      minHeight: 48,
+                      borderRadius: 16,
+                      fontSize: 12.8,
+                      fontWeight: 850,
+                      background: "#FFFFFF",
+                    }}
+                  >
+                    <option value="DRIVER_LOCAL_SUPPORT">🧭 Driver + local support</option>
+                    <option value="LICENSED_LOCAL_GUIDE">Licensed local guide</option>
+                    <option value="OPERATOR_RECOMMENDED">Operator recommended</option>
+                    <option value="NO_SEPARATE_GUIDE">No separate guide</option>
+                  </select>
+                </label>
+              </div>
+
+              <div
+                data-osp-marker="land-tour-estimated-total-after-support-07A-R2"
+                aria-label="Estimated total summary"
+                style={{
+                  borderRadius: 22,
+                  background: "linear-gradient(135deg, #013863 0%, #045E78 100%)",
+                  border: "1px solid rgba(5,150,165,0.16)",
+                  boxShadow: "0 16px 30px rgba(1,56,99,0.16)",
+                  padding: "13px 14px",
+                  display: "grid",
+                  gridTemplateColumns: "minmax(0, 1fr) auto",
+                  gap: 12,
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <span
+                    style={{
+                      display: "block",
+                      color: "rgba(255,255,255,0.72)",
+                      fontSize: 9,
+                      lineHeight: 1.05,
+                      fontWeight: 900,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Estimated total
+                  </span>
+                  <strong
+                    id="landTourFormulaLabel"
+                    style={{
+                      display: "block",
+                      marginTop: 5,
+                      color: "#FFFFFF",
+                      fontSize: 12.4,
+                      lineHeight: 1.15,
+                      fontWeight: 850,
+                    }}
+                  >
+                    7 pax × ₱1,500 / pax
+                  </strong>
+                </div>
+
+                <strong
+                  id="landTourTotalPrice"
+                  style={{
+                    color: "#F3AE26",
+                    fontSize: 24,
+                    lineHeight: 1,
+                    fontWeight: 950,
+                    letterSpacing: "-0.04em",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  ₱10,500
+                </strong>
               </div>
 
               <div
@@ -2736,7 +3038,7 @@ function OfficialTrailCommercialExposurePanel({
                   fontWeight: 720,
                 }}
               >
-                Estimated total is based on pax range. Final amount is confirmed after operator review, route timing, vehicle, and support options.
+                Estimate updates by pax. Final amount is confirmed before payment.
               </div>
             </form>
 
@@ -2753,6 +3055,12 @@ function OfficialTrailCommercialExposurePanel({
                     const tierLabel = document.getElementById("landTourTierLabel");
                     const formulaLabel = document.getElementById("landTourFormulaLabel");
                     const totalPrice = document.getElementById("landTourTotalPrice");
+                    const snapshotUnitPrice = document.getElementById("landTourSnapshotUnitPrice");
+                    const snapshotEstimatedTotal = document.getElementById("landTourSnapshotEstimatedTotal");
+                    const snapshotTierLabel = document.getElementById("landTourSnapshotTierLabel");
+                    const transportSelect = root.querySelector('[name="landTourTransport"]');
+                    const mediaSelect = root.querySelector('[name="landTourMedia"]');
+                    const guideSupportSelect = root.querySelector('[name="landTourGuideSupport"]');
 
                     const fmt = new Intl.NumberFormat("en-PH");
 
@@ -2770,271 +3078,43 @@ function OfficialTrailCommercialExposurePanel({
 
                       const price = resolvePrice(pax);
                       const total = pax * price.unit;
+                      const transport = transportSelect?.value || "TUKTUK";
+                      const media = mediaSelect?.value || "MOBILE_PHOTOGRAPHER";
+                      const guideSupport = guideSupportSelect?.value || "DRIVER_LOCAL_SUPPORT";
 
                       if (unitPrice) unitPrice.textContent = "₱" + fmt.format(price.unit) + " / pax";
                       if (tierLabel) tierLabel.textContent = price.tier;
                       if (formulaLabel) formulaLabel.textContent = pax + " pax × ₱" + fmt.format(price.unit) + " / pax";
                       if (totalPrice) totalPrice.textContent = "₱" + fmt.format(total);
+                      if (snapshotUnitPrice) snapshotUnitPrice.value = String(price.unit);
+                      if (snapshotEstimatedTotal) snapshotEstimatedTotal.value = String(total);
+                      if (snapshotTierLabel) snapshotTierLabel.value = price.tier;
+                      root.dataset.landTourSnapshot = JSON.stringify({
+                        productCode: "SPM_LAND_TOUR_PRIVATE_MVP",
+                        pricingVersion: "LAND_TOUR_MVP_2026_05",
+                        pricingMode: "PAX_TIERED_PER_HEAD",
+                        currencyCode: "PHP",
+                        paymentTiming: "AFTER_OPERATOR_CONFIRMATION",
+                        pax,
+                        unitPrice: price.unit,
+                        estimatedTotal: total,
+                        tierLabel: price.tier,
+                        transportMode: transport,
+                        mediaAddOn: media,
+                        guideSupport,
+                      });
                     }
 
                     paxInput?.addEventListener("input", update);
                     paxInput?.addEventListener("change", update);
+                    transportSelect?.addEventListener("change", update);
+                    mediaSelect?.addEventListener("change", update);
+                    guideSupportSelect?.addEventListener("change", update);
                     update();
                   })();
                 `,
               }}
             />
-          </article>
-
-          <article
-            aria-label="Trail Stops and Stamp Readiness"
-            style={{
-              ...card,
-              borderRadius: 24,
-              background: "linear-gradient(145deg, #FFFFFF 0%, rgba(234,251,250,0.70) 100%)",
-              boxShadow: "0 16px 36px rgba(1,56,99,0.085)",
-              border: "1px solid rgba(5,150,165,0.12)",
-              padding: 16,
-            }}
-          >
-            <div style={sectionHead}>
-              <span style={sectionIcon}>🗺️</span>
-              Trail Stops & Stamp Readiness
-            </div>
-
-            <div
-              style={{
-                display: "grid",
-                gap: 11,
-              }}
-            >
-              <div
-                style={{
-                  borderRadius: 20,
-                  background: "linear-gradient(135deg, rgba(5,150,165,0.11), rgba(255,255,255,0.94))",
-                  border: "1px solid rgba(5,150,165,0.16)",
-                  padding: 11,
-                  display: "grid",
-                  gap: 4,
-                }}
-              >
-                <strong
-                  style={{
-                    color: "#013863",
-                    fontSize: 12.4,
-                    lineHeight: 1.1,
-                    fontWeight: 950,
-                  }}
-                >
-                  South or North can be done in one day
-                </strong>
-                <span
-                  style={{
-                    color: "#50668B",
-                    fontSize: 10.2,
-                    lineHeight: 1.32,
-                    fontWeight: 720,
-                  }}
-                >
-                  Complete both across separate days or through a private DIY arrangement with local operator support.
-                </span>
-              </div>
-
-              {[
-                {
-                  group: "South Tour Highlights",
-                  tint: "teal",
-                  stops: [
-                    ["Mountain / Coconut Trees View Deck", "Scenic stop", "Stamp-ready"],
-                    ["Coconut Road", "Photo stop", "Stamp-ready"],
-                    ["Maasin River", "Barangay / LGU stop", "Verify stop"],
-                    ["Magpupungko", "Coastal pool stop", "Stamp-ready"],
-                    ["Sugba Lagoon", "Access-ready route cross-link", "Use Sugba Lagoon trail"],
-                    ["Canijugan Peak", "Viewpoint stop", "Stamp-ready"],
-                    ["Secret Beach", "Beach stop", "Stamp-ready"],
-                    ["Malinao Skate Road", "Road / skate stop", "Verify stop"],
-                  ],
-                },
-                {
-                  group: "North Tour Highlights",
-                  tint: "gold",
-                  stops: [
-                    ["Pacifico Beach", "Beach / surf area", "Stamp-ready"],
-                    ["Trogon’s Perch", "Scenic stop", "Stamp-ready"],
-                    ["Little Hawaii", "Must-stop highlight", "Verify stop"],
-                    ["Alegria Beach", "Beach stop", "Stamp-ready"],
-                    ["Somyot Cave", "Must-stop cave", "Verify stop"],
-                    ["Taktak Falls", "Must-stop falls", "Verify stop"],
-                    ["Pasikon / Pasicon Beach", "Name to verify locally", "Local spelling check"],
-                  ],
-                },
-              ].map((routeGroup) => (
-                <div
-                  key={routeGroup.group}
-                  style={{
-                    borderRadius: 22,
-                    background: "#FFFFFF",
-                    border: "1px solid rgba(1,56,99,0.08)",
-                    boxShadow: "0 10px 22px rgba(1,56,99,0.055)",
-                    padding: 12,
-                    display: "grid",
-                    gap: 9,
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "minmax(0, 1fr) auto",
-                      gap: 8,
-                      alignItems: "center",
-                    }}
-                  >
-                    <strong
-                      style={{
-                        color: "#013863",
-                        fontSize: 12.8,
-                        lineHeight: 1.12,
-                        fontWeight: 950,
-                        letterSpacing: "-0.015em",
-                      }}
-                    >
-                      {routeGroup.group}
-                    </strong>
-                    <span
-                      style={{
-                        borderRadius: 999,
-                        background:
-                          routeGroup.tint === "teal"
-                            ? "rgba(5,150,165,0.11)"
-                            : "rgba(243,174,38,0.16)",
-                        color: routeGroup.tint === "teal" ? "#047F91" : "#A26200",
-                        border:
-                          routeGroup.tint === "teal"
-                            ? "1px solid rgba(5,150,165,0.18)"
-                            : "1px solid rgba(243,174,38,0.24)",
-                        padding: "5px 8px",
-                        fontSize: 8.4,
-                        lineHeight: 1,
-                        fontWeight: 950,
-                        letterSpacing: "0.05em",
-                        textTransform: "uppercase",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      One-day branch
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "grid",
-                      gap: 7,
-                    }}
-                  >
-                    {routeGroup.stops.map(([stopName, stopType, status], index) => {
-                      const isAccessReady = status === "Use Sugba Lagoon trail";
-                      const needsVerify = status === "Verify stop" || status === "Local spelling check";
-                      return (
-                        <div
-                          key={stopName}
-                          style={{
-                            minHeight: 54,
-                            borderRadius: 17,
-                            background:
-                              isAccessReady
-                                ? "linear-gradient(135deg, rgba(255,248,232,0.94), #FFFFFF)"
-                                : "rgba(244,252,250,0.82)",
-                            border:
-                              isAccessReady
-                                ? "1px solid rgba(243,174,38,0.24)"
-                                : "1px solid rgba(5,150,165,0.11)",
-                            padding: "9px 10px",
-                            display: "grid",
-                            gridTemplateColumns: "30px minmax(0, 1fr) auto",
-                            gap: 9,
-                            alignItems: "center",
-                          }}
-                        >
-                          <span
-                            aria-hidden="true"
-                            style={{
-                              width: 30,
-                              height: 30,
-                              borderRadius: 999,
-                              background: isAccessReady
-                                ? "linear-gradient(135deg, #F3AE26, #F59E0B)"
-                                : "linear-gradient(135deg, #0596A5, #047F91)",
-                              color: "#FFFFFF",
-                              display: "grid",
-                              placeItems: "center",
-                              fontSize: 11,
-                              fontWeight: 950,
-                              boxShadow: "0 8px 16px rgba(1,56,99,0.08)",
-                            }}
-                          >
-                            {index + 1}
-                          </span>
-
-                          <span style={{ minWidth: 0 }}>
-                            <strong
-                              style={{
-                                display: "block",
-                                color: "#013863",
-                                fontSize: 11.8,
-                                lineHeight: 1.13,
-                                fontWeight: 920,
-                              }}
-                            >
-                              {stopName}
-                            </strong>
-                            <span
-                              style={{
-                                display: "block",
-                                marginTop: 3,
-                                color: "#50668B",
-                                fontSize: 9.4,
-                                lineHeight: 1.12,
-                                fontWeight: 720,
-                              }}
-                            >
-                              {stopType}
-                            </span>
-                          </span>
-
-                          <span
-                            style={{
-                              borderRadius: 999,
-                              background: isAccessReady
-                                ? "rgba(243,174,38,0.14)"
-                                : needsVerify
-                                  ? "rgba(255,248,232,0.92)"
-                                  : "rgba(5,150,165,0.10)",
-                              color: isAccessReady
-                                ? "#A26200"
-                                : needsVerify
-                                  ? "#A26200"
-                                  : "#047F91",
-                              border: isAccessReady
-                                ? "1px solid rgba(243,174,38,0.22)"
-                                : needsVerify
-                                  ? "1px solid rgba(243,174,38,0.22)"
-                                  : "1px solid rgba(5,150,165,0.16)",
-                              padding: "5px 7px",
-                              fontSize: 8.4,
-                              lineHeight: 1,
-                              fontWeight: 900,
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {status}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
           </article>
 
           <article
@@ -3218,7 +3298,7 @@ function OfficialTrailCommercialExposurePanel({
                     fontWeight: 720,
                   }}
                 >
-                  Your route, pax, pickup, vehicle, media option, support package, and notes will be used to request local operator confirmation before payment opens.
+                  Your choices are sent for confirmation before payment opens.
                 </span>
               </div>
             </form>
@@ -3617,7 +3697,7 @@ function OfficialTrailCommercialExposurePanel({
                       letterSpacing: "-0.01em",
                     }}
                   >
-                    Guide, transport, and photo/drone support are reviewed by the local operator before payment opens.
+                    Support options are confirmed before payment.
                   </strong>
 
                   <span
@@ -3758,7 +3838,7 @@ function OfficialTrailCommercialExposurePanel({
                     fontWeight: 720,
                   }}
                 >
-                  Send your route, pax, pickup, vehicle, guide/support, and media choices for operator confirmation. Once accepted, payment opens for your confirmed Land Tour slot.
+                  Send your choices for confirmation. Pay once your Land Tour slot is accepted.
                 </p>
               </div>
             </div>
@@ -3773,8 +3853,8 @@ function OfficialTrailCommercialExposurePanel({
               }}
             >
               <a
-                href="/traveler/passport-trails/siargao-land-tour?request=confirm-land-tour-slot"
-                aria-label="Confirm My Land Tour Slot"
+                href="/traveler/passport-trails/siargao-land-tour/book?productCode=SPM_LAND_TOUR_PRIVATE_MVP&pricingVersion=LAND_TOUR_MVP_2026_05&pricingMode=PAX_TIERED_PER_HEAD&paymentTiming=AFTER_OPERATOR_CONFIRMATION"
+                aria-label="Start Land Tour Booking"
                 style={{
                   minHeight: 54,
                   borderRadius: 18,
@@ -3792,7 +3872,7 @@ function OfficialTrailCommercialExposurePanel({
                   border: "1px solid rgba(255,255,255,0.44)",
                 }}
               >
-                ✅ Confirm My Land Tour Slot
+                Start Land Tour Booking
               </a>
 
               <a
@@ -5825,107 +5905,14 @@ export default function PassportTrailDetailPage({
 
         {isReturnContinuity ? <ReturnContinuityPremiumPanel /> : null}
 
-
-      <section
-          aria-label="Scan site QR"
-          style={{
-            marginTop: 14,
-            border: "1px solid #bfe7ee",
-            borderRadius: 22,
-            background: "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(232,251,255,0.92))",
-            padding: 14,
-            display: isReturnContinuity ? "none" : "grid",
-            gridTemplateColumns: "auto 1fr auto",
-            gap: 12,
-            alignItems: "center",
-            boxShadow: "0 14px 34px rgba(8,61,103,0.08)",
-          }}
-        >
-          <div
-            aria-hidden="true"
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: 18,
-              background: "linear-gradient(135deg, #14b8c6, #013863)",
-              color: "#ffffff",
-              display: "grid",
-              placeItems: "center",
-              fontSize: 24,
-              fontWeight: 950,
-              boxShadow: "0 10px 22px rgba(7,141,160,0.18)",
-            }}
-          >
-            ▣
-          </div>
-
-          <div style={{ minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 10,
-                fontWeight: 950,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "#0891b2",
-              }}
-            >
-              At Operator Site
-            </div>
-            <div
-              style={{
-                marginTop: 3,
-                fontSize: 16,
-                lineHeight: 1.08,
-                fontWeight: 950,
-                color: "#14264b",
-              }}
-            >
-              Scan site QR
-            </div>
-            <div
-              style={{
-                marginTop: 4,
-                fontSize: 12,
-                lineHeight: 1.3,
-                fontWeight: 720,
-                color: "#53657d",
-              }}
-            >
-              Use governed QR validation when available. Stamps count only after approved OSP/SPM records.
-            </div>
-          </div>
-
-          <Link
-            href={`/traveler/scan?source=passport-trails&trail=${params.trailSlug}`}
-            style={{
-              minHeight: 46,
-              borderRadius: 17,
-              background: "linear-gradient(135deg, #14b8c6, #013863)",
-              color: "#ffffff",
-              display: "grid",
-              placeItems: "center",
-              textDecoration: "none",
-              padding: "0 15px",
-              fontSize: 13,
-              fontWeight: 950,
-              whiteSpace: "nowrap",
-              boxShadow: "0 8px 18px rgba(7,141,160,0.18)",
-            }}
-          >
-            Scan
-          </Link>
-        </section>
-
-
-
-        <div
+<div
           style={{
             marginTop: 16,
-            display: isReturnContinuity ? "none" : "block",
+            display: isReturnContinuity || params.trailSlug === "siargao-land-tour" ? "none" : "block",
           }}
         >
           <ShellCard ariaLabel="Trail verification actions">
-            <SectionEyebrow>Verify Your Stop</SectionEyebrow>
+            <SectionEyebrow>Stop Verification</SectionEyebrow>
             <h2
               style={{
                 margin: "7px 0 8px",
@@ -5935,7 +5922,7 @@ export default function PassportTrailDetailPage({
                 letterSpacing: "-0.035em",
               }}
             >
-              Use your OSP QR for Passport Stamp validation.
+              Use your OSP QR at verified stops.
             </h2>
             <p
               style={{
@@ -5946,9 +5933,8 @@ export default function PassportTrailDetailPage({
                 color: "#53657d",
               }}
             >
-              At each verified stop, open your OSP Pass QR and present it for
-              validation. A stamp only counts after the stop is verified by
-              OSP/SPM records.
+              Show your OSP QR only when a verified partner stop asks for it.
+              Stamps appear after partner validation.
             </p>
 
             <div
@@ -5981,7 +5967,7 @@ export default function PassportTrailDetailPage({
                     lineHeight: 1.12,
                   }}
                 >
-                  ▣ Show QR
+                  Open My QR
                 </div>
                 <div
                   style={{
@@ -5992,7 +5978,7 @@ export default function PassportTrailDetailPage({
                     lineHeight: 1.25,
                   }}
                 >
-                  Open your OSP Pass.
+                  Show your official OSP QR.
                 </div>
               </Link>
 
@@ -6019,7 +6005,7 @@ export default function PassportTrailDetailPage({
                     lineHeight: 1.12,
                   }}
                 >
-                  Ask Assistant
+                  Ask Kuya Tala
                 </div>
                 <div
                   style={{
@@ -6030,14 +6016,14 @@ export default function PassportTrailDetailPage({
                     lineHeight: 1.25,
                   }}
                 >
-                  Ask route and stamp questions.
+                  Need help choosing stops?
                 </div>
               </Link>
             </div>
           </ShellCard>
         </div>
 
-        <section style={{ marginTop: 18 }}>
+        <section style={{ marginTop: 18, display: params.trailSlug === "siargao-land-tour" ? "none" : "block" }}>
           <div
             style={{
               display: "flex",
@@ -6062,12 +6048,12 @@ export default function PassportTrailDetailPage({
               >
                 {isReturnContinuity
                   ? "Follow the return lifecycle."
-                  : "Verify each stop."}
+                  : "South or North Tour"}
               </h2>
             </div>
           </div>
 
-          <div style={{ display: "grid", gap: 12 }}>
+          <div style={{ display: "grid", gap: params.trailSlug === "siargao-land-tour" ? 8 : 12 }}>
             {trail.stops.map((stop, index) => {
               const tone = statusTone(stop.status);
 
@@ -6076,9 +6062,9 @@ export default function PassportTrailDetailPage({
                   key={stop.name}
                   style={{
                     border: tone.shellBorder,
-                    borderRadius: 22,
+                    borderRadius: params.trailSlug === "siargao-land-tour" ? 18 : 22,
                     background: tone.shell,
-                    padding: 13,
+                    padding: params.trailSlug === "siargao-land-tour" ? 10 : 13,
                     boxShadow: tone.glow,
                     position: "relative",
                     overflow: "hidden",
@@ -6096,7 +6082,7 @@ export default function PassportTrailDetailPage({
                     <div>
                       <div
                         style={{
-                          fontSize: 9,
+                          fontSize: params.trailSlug === "siargao-land-tour" ? 8.2 : 9,
                           fontWeight: 820,
                           letterSpacing: "0.13em",
                           textTransform: "uppercase",
@@ -6109,8 +6095,8 @@ export default function PassportTrailDetailPage({
                       </div>
                       <h3
                         style={{
-                          margin: "5px 0 0",
-                          fontSize: 18,
+                          margin: params.trailSlug === "siargao-land-tour" ? "3px 0 0" : "5px 0 0",
+                          fontSize: params.trailSlug === "siargao-land-tour" ? 16.2 : 18,
                           lineHeight: 1.1,
                           fontWeight: 820,
                         }}
@@ -6121,6 +6107,7 @@ export default function PassportTrailDetailPage({
 
                     <span
                       style={{
+                        display: params.trailSlug === "siargao-land-tour" ? "none" : "inline-flex",
                         borderRadius: 999,
                         padding: "6px 9px",
                         background: tone.background,
@@ -6150,7 +6137,7 @@ export default function PassportTrailDetailPage({
                   <div
                     style={{
                       marginTop: 10,
-                      display: "grid",
+                      display: params.trailSlug === "siargao-land-tour" ? "none" : "grid",
                       gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
                       gap: 8,
                     }}
@@ -6220,15 +6207,15 @@ export default function PassportTrailDetailPage({
             })}
           </div>
         </section>
-<div style={{ marginTop: 16 }}>
+<div style={{ marginTop: 16, display: params.trailSlug === "siargao-land-tour" ? "none" : "block" }}>
           <ShellCard ariaLabel="Passport stamp rules">
             <SectionEyebrow>✦ Stamp Rules</SectionEyebrow>
             <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
               {[
-                "Unlocked stamps must come from verified OSP/SPM records.",
-                "Ready-to-verify stops are not counted until validation is complete.",
-                "Your OSP QR is your traveler identity for stop validation.",
-                "Payment, booking, guide, and trip record status are not changed on this page.",
+                "Stamps come from verified visits.",
+                "Stops count after validation.",
+                "Use your QR only when a verified stop asks.",
+                "",
               ].map((rule) => (
                 <div
                   key={rule}
@@ -6377,7 +6364,7 @@ export default function PassportTrailDetailPage({
         href="/traveler/settings?panel=assistant&topic=trail"
         eyebrow="Kuya Tala™"
         title="Talk to Kuya Tala"
-        body="Ask about route readiness, payment, stamps, and your next best move."
+        body="Ask about route, payment, or next step."
       />
     </main>
   );
