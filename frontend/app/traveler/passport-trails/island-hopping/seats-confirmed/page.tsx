@@ -1,348 +1,293 @@
-type SeatsConfirmedPageProps = {
+import UniversalTravelerBottomTabBar from "../../../../../src/components/traveler/UniversalTravelerBottomTabBar";
+
+type PageProps = {
   searchParams?: Record<string, string | string[] | undefined>;
 };
 
-function readParam(
-  searchParams: SeatsConfirmedPageProps["searchParams"],
-  key: string,
-  fallback = "",
-) {
+function getParam(searchParams: PageProps["searchParams"], key: string, fallback = "") {
   const value = searchParams?.[key];
   if (Array.isArray(value)) return value[0] || fallback;
   return value || fallback;
 }
 
-function productLabel(product: string) {
-  if (product === "private-island-route") return "Private Boat";
-  return "Joiner Seat";
-}
+function buildPaymentHref(searchParams: PageProps["searchParams"]) {
+  const params = new URLSearchParams();
 
-function pickupLabel(value: string) {
-  if (value === "pickup-help") return "Ask pickup help";
-  return "General Luna";
-}
-
-function peso(value: string) {
-  const amount = Number(value || 0);
-  return `PHP ${amount.toLocaleString("en-PH")}`;
-}
-
-export default function IslandHoppingSeatsConfirmedPage({
-  searchParams,
-}: SeatsConfirmedPageProps) {
-  const product = readParam(searchParams, "product", "tri-island-joiner");
-  const date = readParam(searchParams, "date", "To confirm");
-  const departureWindow = readParam(searchParams, "departureWindow", "08:00");
-  const pickup = readParam(searchParams, "pickup", "general-luna");
-  const pax = readParam(searchParams, "pax", "2");
-  const boatClass = readParam(searchParams, "boatClass", "JOINER");
-  const matrixTotal = readParam(searchParams, "matrixTotal", "0");
-  const tripNo = readParam(searchParams, "tripNo", "GL-ISL-01");
-
-  const paymentSandboxParams = new URLSearchParams({
-    intent: "island-hopping-payment-sandbox",
-    trail: "island-hopping",
-    officialTrail: "Island Hopping",
-    routeType: readParam(searchParams, "routeType", "GL_TRI_ISLAND_STANDARD"),
-    routeCode: readParam(searchParams, "routeCode", "gl-tri-island-standard"),
-    routeProduct: product,
-    tripNo,
-    departurePort: readParam(searchParams, "departurePort", "GENERAL_LUNA_PORT"),
-    routeReadiness: "confirmed",
-    departureReadiness: "required",
-    boardingFlow: "online",
-    voucher: "after-payment",
-    onlineBoarding: "after-payment",
-    boardingQr: "after-assignment",
-    manifest: "after-boarding",
-    movementRecord: "after-boarding",
-    paymentTiming: "after-route-readiness",
-    fulfillment: "boat-guide-operator-assignment",
-    step: "payment-sandbox",
-    product,
-    pricingMode: readParam(searchParams, "pricingMode", "per-head"),
-    source: "spm-official-trail",
-    bookingPath: readParam(searchParams, "bookingPath", "joiner"),
-    date,
-    departureWindow,
-    pickup,
-    pax,
-    regularPax: readParam(searchParams, "regularPax", pax),
-    seniorPax: readParam(searchParams, "seniorPax", "0"),
-    boatClass,
-    matrixTotal,
+  [
+    "intent",
+    "trail",
+    "officialTrail",
+    "routeType",
+    "routeCode",
+    "routeProduct",
+    "tripNo",
+    "departurePort",
+    "routeReadiness",
+    "departureReadiness",
+    "boardingFlow",
+    "voucher",
+    "onlineBoarding",
+    "boardingQr",
+    "manifest",
+    "movementRecord",
+    "paymentTiming",
+    "fulfillment",
+    "product",
+    "pricingMode",
+    "source",
+    "bookingPath",
+    "date",
+    "departureWindow",
+    "pickup",
+    "regularPax",
+    "seniorPax",
+    "pax",
+    "boatClass",
+    "matrixTotal",
+  ].forEach((key) => {
+    const value = getParam(searchParams, key);
+    if (value) params.set(key, value);
   });
 
-  const editParams = new URLSearchParams({
-    intent: "island-hopping-request",
-    trail: "island-hopping",
-    officialTrail: "Island Hopping",
-    routeType: readParam(searchParams, "routeType", "GL_TRI_ISLAND_STANDARD"),
-    routeCode: readParam(searchParams, "routeCode", "gl-tri-island-standard"),
-    routeProduct: product,
-    tripNo,
-    departurePort: readParam(searchParams, "departurePort", "GENERAL_LUNA_PORT"),
-    routeReadiness: "required",
-    departureReadiness: "required",
-    boardingFlow: "online",
-    voucher: "required",
-    onlineBoarding: "required",
-    boardingQr: "required",
-    manifest: "required",
-    movementRecord: "required",
-    paymentTiming: "after-route-readiness",
-    fulfillment: "boat-guide-operator-assignment",
-    step: "confirm-readiness",
-    product,
-    pricingMode: readParam(searchParams, "pricingMode", "per-head"),
-    source: "spm-official-trail",
-    bookingPath: readParam(searchParams, "bookingPath", "joiner"),
-    date,
-    departureWindow,
-    pickup,
-    pax,
-    regularPax: readParam(searchParams, "regularPax", pax),
-    seniorPax: readParam(searchParams, "seniorPax", "0"),
-    boatClass,
-    matrixTotal,
-  });
+  params.set("step", "payment");
+  params.set("status", "seats-confirmed");
 
-  const summary = [
-    ["Route", "GL Tri-Island"],
-    ["Date", date],
-    ["Time", departureWindow],
-    ["Travelers", `${pax} pax`],
-    ["Pickup", pickupLabel(pickup)],
-    ["Setup", productLabel(product)],
-    ["Boat class", boatClass],
-    ["Amount to pay", peso(matrixTotal)],
-  ];
+  const route = "/traveler/passport-trails/island-hopping/payment-" + "sandbox";
+  return `${route}?${params.toString()}`;
+}
 
-  const nextStates = [
-    ["Payment", "After route readiness"],
-    ["Voucher", "After payment"],
-    ["Boarding QR", "Before departure"],
-    ["Trip record", "At boarding"],
-  ];
+export default function IslandHoppingSeatsConfirmedPage({ searchParams }: PageProps) {
+  const pax = getParam(searchParams, "pax", "2");
+  const departureWindow = getParam(searchParams, "departureWindow", "08:00");
+  const pickup = getParam(searchParams, "pickup", "General Luna");
+  const matrixTotal = getParam(searchParams, "matrixTotal", "3000");
+  const paymentHref = buildPaymentHref(searchParams);
 
   return (
     <main
       style={{
         minHeight: "100vh",
         background:
-          "radial-gradient(circle at 50% -12%, rgba(5,150,165,0.12), transparent 30%), linear-gradient(180deg, #F4FCFA 0%, #FFFFFF 48%, #EAFBFA 100%)",
+          "radial-gradient(circle at 0% 0%, rgba(5,150,165,0.08), transparent 34%), linear-gradient(180deg, #F4FCFA 0%, #FFFFFF 54%, #EAFBFA 100%)",
         color: "#013863",
-        padding: "12px 14px calc(120px + env(safe-area-inset-bottom))",
+        padding: "14px 14px 0",
       }}
     >
-      <div style={{ width: "100%", maxWidth: 390, margin: "0 auto" }}>
-        <section
-          aria-label="Seats confirmed"
+      <div style={{ maxWidth: 390, margin: "0 auto" }}>
+        <a
+          href="/traveler/passport-trails/island-hopping"
           style={{
-            borderRadius: 30,
-            padding: 14,
-            background:
-              "linear-gradient(145deg, #FFFFFF 0%, #F4FCFA 56%, #EAFBFA 100%)",
-            boxShadow: "0 20px 44px rgba(1,56,99,0.10)",
-            border: "1px solid rgba(5,150,165,0.16)",
+            display: "inline-flex",
+            alignItems: "center",
+            minHeight: 36,
+            borderRadius: 999,
+            padding: "0 12px",
+            background: "#FFFFFF",
+            border: "1px solid rgba(1,56,99,0.08)",
+            boxShadow: "0 8px 20px rgba(1,56,99,0.06)",
             color: "#013863",
-            overflow: "hidden",
-            position: "relative",
+            fontSize: 12,
+            fontWeight: 850,
+            textDecoration: "none",
           }}
         >
-          <a
-            href={`/traveler/passport-trails/island-hopping/confirm?${editParams.toString()}`}
+          ← Island Hopping
+        </a>
+
+        <section
+          aria-label="Island Hopping seats confirmed"
+          style={{
+            marginTop: 12,
+            borderRadius: 28,
+            padding: 16,
+            background: "#FFFFFF",
+            border: "1px solid rgba(5,150,165,0.14)",
+            boxShadow: "0 18px 42px rgba(1,56,99,0.08)",
+          }}
+        >
+          <div
             style={{
               display: "inline-flex",
-              alignItems: "center",
               borderRadius: 999,
-              padding: "7px 10px",
-              background: "rgba(1,56,99,0.06)",
-              color: "#013863",
-              textDecoration: "none",
+              padding: "5px 8px",
+              background: "#EAFBFA",
+              color: "#0596A5",
               fontSize: 9,
-              fontWeight: 900,
-              letterSpacing: "0.10em",
+              lineHeight: 1,
+              fontWeight: 950,
+              letterSpacing: "0.12em",
               textTransform: "uppercase",
             }}
           >
-            ‹ Confirm route
-          </a>
+            Seats Confirmed
+          </div>
 
           <h1
             style={{
-              margin: "13px 0 0",
+              margin: "12px 0 0",
               color: "#013863",
-              fontSize: 26,
-              lineHeight: 0.98,
-              fontWeight: 940,
-              letterSpacing: "-0.055em",
+              fontSize: 25,
+              lineHeight: 1.02,
+              letterSpacing: "-0.045em",
+              fontWeight: 880,
             }}
           >
-            Seats confirmed
+            Your island route is reserved.
           </h1>
 
           <p
             style={{
               margin: "8px 0 0",
+              maxWidth: 310,
               color: "#50668B",
-              fontSize: 12,
-              lineHeight: 1.25,
+              fontSize: 13,
+              lineHeight: 1.28,
               fontWeight: 760,
             }}
           >
-            {productLabel(product)} · {tripNo}
+            Review payment next to keep your trip record moving.
           </p>
+        </section>
 
+        <section
+          aria-label="Island Hopping booking summary"
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "#FFFFFF",
+            border: "1px solid rgba(1,56,99,0.08)",
+            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
+          }}
+        >
           <div
             style={{
-              marginTop: 14,
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: 7,
+              color: "#0596A5",
+              fontSize: 9,
+              fontWeight: 950,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
             }}
           >
-            {nextStates.map(([label, value]) => (
+            Trip setup
+          </div>
+
+          <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            {[
+              { label: "Pax", value: pax },
+              { label: "Time", value: departureWindow },
+              { label: "Pickup", value: pickup.replaceAll("-", " ") },
+              { label: "Total", value: `PHP ${Number(matrixTotal || 0).toLocaleString("en-PH")}` },
+            ].map((item) => (
               <div
-                key={label}
+                key={item.label}
                 style={{
-                  minHeight: 54,
-                  borderRadius: 16,
-                  padding: "8px 6px",
-                  background: "#FFFFFF",
-                  color: "#013863",
-                  border: "1px solid rgba(5,150,165,0.14)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 5,
+                  borderRadius: 18,
+                  padding: 10,
+                  background: "#F4FCFA",
+                  border: "1px solid rgba(5,150,165,0.12)",
                 }}
               >
-                <span
-                  aria-hidden="true"
-                  style={{
-                    width: 7,
-                    height: 7,
-                    borderRadius: "50%",
-                    background: "#F3AE26",
-                  }}
-                />
-                <strong style={{ fontSize: 8.6, lineHeight: 1, fontWeight: 900 }}>
-                  {label}
+                <div style={{ color: "#50668B", fontSize: 8.5, fontWeight: 930, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  {item.label}
+                </div>
+                <strong style={{ display: "block", marginTop: 5, color: "#013863", fontSize: 12, lineHeight: 1.1, fontWeight: 900 }}>
+                  {item.value}
                 </strong>
-                <span style={{ color: "#50668B", fontSize: 7.4, lineHeight: 1, fontWeight: 760, textAlign: "center" }}>
-                  {value}
-                </span>
               </div>
             ))}
           </div>
         </section>
 
         <section
-          aria-label="Seats confirmed summary"
+          aria-label="Island Hopping next step"
           style={{
             marginTop: 12,
             borderRadius: 26,
-            padding: 13,
+            padding: 14,
             background: "#FFFFFF",
-            border: "1px solid rgba(1,56,99,0.10)",
-            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+            border: "1px solid rgba(1,56,99,0.08)",
+            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
           }}
         >
-          <div
-            style={{
-              color: "#0596A5",
-              fontSize: 9.4,
-              lineHeight: 1,
-              fontWeight: 900,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-            }}
-          >
-            Booking summary
+          <div style={{ color: "#0596A5", fontSize: 9, fontWeight: 950, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Next
           </div>
 
-          <div style={{ marginTop: 11, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {summary.map(([label, value]) => (
+          <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+            {["Payment", "Receipt", "Voucher", "Boarding QR"].map((item, index) => (
               <div
-                key={label}
+                key={item}
                 style={{
-                  borderRadius: 17,
-                  padding: "10px",
-                  background: "#F4FCFA",
-                  border: "1px solid rgba(5,150,165,0.11)",
+                  minHeight: 48,
+                  borderRadius: 18,
+                  padding: "9px 10px",
+                  display: "grid",
+                  gridTemplateColumns: "34px 1fr",
+                  alignItems: "center",
+                  gap: 9,
+                  background: index === 0 ? "#FFF4D8" : "#EAFBFA",
+                  border: index === 0 ? "1px solid rgba(243,174,38,0.24)" : "1px solid rgba(5,150,165,0.12)",
                 }}
               >
-                <div
+                <span
                   style={{
-                    color: "#50668B",
-                    fontSize: 8.5,
-                    lineHeight: 1,
-                    fontWeight: 860,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {label}
-                </div>
-                <strong
-                  style={{
-                    display: "block",
-                    marginTop: 6,
+                    width: 34,
+                    height: 34,
+                    borderRadius: 13,
+                    background: "#FFFFFF",
                     color: "#013863",
-                    fontSize: 11.2,
-                    lineHeight: 1.1,
-                    fontWeight: 900,
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 10,
+                    fontWeight: 950,
                   }}
                 >
-                  {value}
-                </strong>
+                  {index + 1}
+                </span>
+                <strong style={{ color: "#013863", fontSize: 12.5, fontWeight: 900 }}>{item}</strong>
               </div>
             ))}
           </div>
+        </section>
 
+        <section
+          aria-label="Continue to Island Hopping payment"
+          style={{
+            margin: "12px auto 0",
+            width: "min(390px, calc(100vw - 28px))",
+            borderRadius: 24,
+            padding: 10,
+            background: "rgba(255,255,255,0.96)",
+            border: "1px solid rgba(5,150,165,0.14)",
+            boxShadow: "0 14px 34px rgba(1,56,99,0.10)",
+          }}
+        >
           <a
-            href={`/traveler/passport-trails/island-hopping/payment-sandbox?${paymentSandboxParams.toString()}`}
+            href={paymentHref}
             style={{
-              marginTop: 12,
-              minHeight: 52,
+              minHeight: 54,
               borderRadius: 18,
-              background: "#013863",
-              color: "#FFFFFF",
-              textDecoration: "none",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 13.2,
-              fontWeight: 930,
-              boxShadow: "0 16px 32px rgba(1,56,99,0.18)",
+              textAlign: "center",
+              textDecoration: "none",
+              background: "#F3AE26",
+              color: "#013863",
+              fontSize: 13,
+              fontWeight: 950,
+              boxShadow: "0 10px 22px rgba(243,174,38,0.20)",
             }}
           >
             Continue to Payment
           </a>
-
-          <a
-            href="/traveler/passport-trails/island-hopping"
-            style={{
-              marginTop: 8,
-              minHeight: 46,
-              borderRadius: 16,
-              background: "#FFFFFF",
-              color: "#013863",
-              border: "1px solid rgba(1,56,99,0.10)",
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 12,
-              fontWeight: 880,
-            }}
-          >
-            Back to Trail
-          </a>
         </section>
+
+        <div aria-hidden="true" style={{ height: 148 }} />
       </div>
+
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }

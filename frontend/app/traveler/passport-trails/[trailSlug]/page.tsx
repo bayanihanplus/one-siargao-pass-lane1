@@ -431,7 +431,7 @@ function ReturnContinuityPremiumPanel() {
     gold: {
       shell: "linear-gradient(145deg, rgba(255,248,231,0.98), rgba(255,255,255,0.96))",
       border: "rgba(253,224,138,0.9)",
-      icon: "linear-gradient(135deg, #f59e0b, #14b8a6)",
+      icon: "linear-gradient(135deg, #f59e0b, #0596A5)",
       shadow: "0 16px 34px rgba(245,158,11,0.13)",
     },
     teal2: {
@@ -4599,7 +4599,7 @@ function TrailPaymentGatewayCta({
           }}
         >
           <a
-            href={`/traveler/payments?source=passport-trails&trail=${encodedTrail}&gateway=paymongo`}
+            href={`/traveler/payments?source=passport-trails&trail=${encodedTrail}`}
             style={{
               minHeight: 50,
               borderRadius: 18,
@@ -4766,6 +4766,533 @@ const islandHoppingPaxUrl = islandHoppingDcsParams({
   step: "pax",
   product: "tri-island-joiner",
 });
+
+
+const officialDcsTrailFlowConfig = {
+  "island-hopping": {
+    trailSlug: "island-hopping",
+    officialTrail: "Island Hopping",
+    dcsMode: "CONFIRMED_SEAT_FLOW",
+    operationalStatus: "BOOKABLE",
+    routeType: "GL_TRI_ISLAND_STANDARD",
+    routeCode: "gl-tri-island-standard",
+    routeProduct: "tri-island-joiner",
+    departurePort: "GENERAL_LUNA_PORT",
+    focus: "tri-island",
+    tripNo: "GL-ISL-01",
+    paymentTiming: "after-route-readiness",
+    fulfillment: "boat-guide-operator-assignment",
+    primaryCtaLabel: "Start Island Hopping Booking",
+    bookingStep: "availability",
+    pricingMode: "per-head",
+    routeReadiness: "required",
+    departureReadiness: "required",
+    boardingFlow: "online",
+    voucher: "required",
+    onlineBoarding: "required",
+    boardingQr: "required",
+    manifest: "required",
+    movementRecord: "required",
+  },
+  "sugba-lagoon": {
+    trailSlug: "sugba-lagoon",
+    officialTrail: "Sugba Lagoon",
+    dcsMode: "CONFIRMED_SEAT_FLOW",
+    operationalStatus: "SEAT_CONFIRMATION_READY",
+    routeType: "DEL_CARMEN_SUGBA_LAGOON",
+    routeCode: "del-carmen-sugba-lagoon",
+    routeProduct: "sugba-lagoon-seat",
+    departurePort: "DEL_CARMEN_PORT",
+    focus: "sugba-lagoon",
+    tripNo: "DC-SUGBA-01",
+    paymentTiming: "after-route-readiness",
+    fulfillment: "boat-guide-operator-assignment",
+    primaryCtaLabel: "Start Sugba Lagoon Seat Confirmation",
+    bookingStep: "seat-confirmation",
+    pricingMode: "route-product-plus-entrance-fees",
+    routeReadiness: "required",
+    departureReadiness: "required",
+    boardingFlow: "online",
+    voucher: "required",
+    onlineBoarding: "required",
+    boardingQr: "required",
+    manifest: "required",
+    movementRecord: "required",
+  },
+  "bucas-grande-sohoton": {
+    trailSlug: "bucas-grande-sohoton",
+    officialTrail: "Bucas Grande / Sohoton",
+    dcsMode: "REQUEST_TO_CONFIRM_FLOW",
+    operationalStatus: "ROUTE_CONFIRMATION_REQUIRED",
+    routeType: "DAPA_BUCAS_GRANDE_SOHOTON",
+    routeCode: "dapa-bucas-grande-sohoton",
+    routeProduct: "sohoton-bucas-grande-route",
+    departurePort: "DAPA_PORT",
+    focus: "bucas-grande-sohoton",
+    tripNo: "DAPA-SOHOTON-01",
+    paymentTiming: "after-admin-or-operator-confirmation",
+    fulfillment: "operator-confirmation-required",
+    primaryCtaLabel: "Request Sohoton Route Confirmation",
+    bookingStep: "route-confirmation",
+    pricingMode: "admin-confirmed-price",
+    routeReadiness: "required",
+    departureReadiness: "required",
+    boardingFlow: "online",
+    voucher: "required-after-confirmation",
+    onlineBoarding: "required-after-confirmation",
+    boardingQr: "required-after-confirmation",
+    manifest: "required-after-confirmation",
+    movementRecord: "required-after-confirmation",
+  },
+} as const;
+
+type OfficialDcsTrailSlug = keyof typeof officialDcsTrailFlowConfig;
+
+function getOfficialDcsTrailFlowConfig(trailSlug: string) {
+  return officialDcsTrailFlowConfig[trailSlug as OfficialDcsTrailSlug] || null;
+}
+
+function buildOfficialDcsTrailBookingHref(trailSlug: OfficialDcsTrailSlug) {
+  const flow = officialDcsTrailFlowConfig[trailSlug];
+  const params = new URLSearchParams({
+    intent: `${flow.trailSlug}-request`,
+    trail: flow.trailSlug,
+    officialTrail: flow.officialTrail,
+    routeType: flow.routeType,
+    routeCode: flow.routeCode,
+    routeProduct: flow.routeProduct,
+    tripNo: flow.tripNo,
+    departurePort: flow.departurePort,
+    routeReadiness: flow.routeReadiness,
+    departureReadiness: flow.departureReadiness,
+    boardingFlow: flow.boardingFlow,
+    voucher: flow.voucher,
+    onlineBoarding: flow.onlineBoarding,
+    boardingQr: flow.boardingQr,
+    manifest: flow.manifest,
+    movementRecord: flow.movementRecord,
+    paymentTiming: flow.paymentTiming,
+    fulfillment: flow.fulfillment,
+    step: flow.bookingStep,
+    product: flow.routeProduct,
+  });
+
+  if (flow.trailSlug === "island-hopping") {
+    return `/traveler/passport-trails/island-hopping/book?${params.toString()}`;
+  }
+
+  return `/traveler/passport-trails/${flow.trailSlug}?${params.toString()}`;
+}
+
+
+// OSP_DCS_PREMIUM_DETAIL_COMPONENT_START
+function OfficialDcsPremiumTrailDetail({
+  flow,
+}: {
+  flow: (typeof officialDcsTrailFlowConfig)[OfficialDcsTrailSlug];
+}) {
+  const isSugba = flow.trailSlug === "sugba-lagoon";
+
+  const routeTitle = isSugba ? "Sugba Lagoon" : "Bucas Grande / Sohoton";
+  const routeSubtitle = isSugba
+    ? "Confirmed seat flow from Del Carmen."
+    : "Route confirmation from Dapa.";
+  const routeLabel = isSugba ? "Del Carmen route" : "Dapa-side route";
+  const readinessLabel = isSugba ? "Seat confirmation" : "Route confirmation";
+  const statusLine = isSugba ? "Seats move through route setup." : "Confirm route before payment.";
+  const supportLine = isSugba ? "Pax, pickup, slot, and route product." : "Timing, operator, route, and conditions.";
+  const ctaHref = buildOfficialDcsTrailBookingHref(flow.trailSlug);
+
+  const stops = isSugba
+    ? [
+        { no: "01", name: "Del Carmen Port", meta: "Departure" },
+        { no: "02", name: "Mangrove route", meta: "Access path" },
+        { no: "03", name: "Sugba Lagoon", meta: "Main stop" },
+      ]
+    : [
+        { no: "01", name: "Dapa Port", meta: "Departure" },
+        { no: "02", name: "Bucas Grande", meta: "Route area" },
+        { no: "03", name: "Sohoton Cove", meta: "Confirm first" },
+      ];
+
+  const inclusions = isSugba
+    ? ["Seat flow", "Route support", "Port movement", "Local handling"]
+    : ["Route request", "Operator check", "Timing support", "Protected access"];
+
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        background:
+          "radial-gradient(circle at 0% 0%, rgba(5,150,165,0.08), transparent 32%), linear-gradient(180deg, #F4FCFA 0%, #FFFFFF 52%, #EAFBFA 100%)",
+        padding: "14px 14px 0",
+        color: "#013863",
+      }}
+    >
+      <div style={{ maxWidth: 390, margin: "0 auto" }}>
+        <a
+          href="/traveler/passport-trails"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            minHeight: 36,
+            borderRadius: 999,
+            padding: "0 12px",
+            background: "#FFFFFF",
+            border: "1px solid rgba(1,56,99,0.08)",
+            boxShadow: "0 8px 20px rgba(1,56,99,0.06)",
+            color: "#013863",
+            fontSize: 12,
+            fontWeight: 850,
+            textDecoration: "none",
+          }}
+        >
+          ← Trails
+        </a>
+
+        <section
+          aria-label={`${routeTitle} official trail`}
+          style={{
+            marginTop: 12,
+            borderRadius: 28,
+            padding: 16,
+            background: "#FFFFFF",
+            border: "1px solid rgba(5,150,165,0.14)",
+            boxShadow: "0 18px 42px rgba(1,56,99,0.08)",
+          }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              borderRadius: 999,
+              padding: "5px 8px",
+              background: "#EAFBFA",
+              color: "#0596A5",
+              fontSize: 9,
+              lineHeight: 1,
+              fontWeight: 950,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+            }}
+          >
+            Official Trail
+          </div>
+
+          <h1
+            style={{
+              margin: "12px 0 0",
+              color: "#013863",
+              fontSize: 25,
+              lineHeight: 1.02,
+              letterSpacing: "-0.045em",
+              fontWeight: 880,
+            }}
+          >
+            {routeTitle}
+          </h1>
+
+          <p
+            style={{
+              margin: "8px 0 0",
+              maxWidth: 310,
+              color: "#50668B",
+              fontSize: 13,
+              lineHeight: 1.28,
+              fontWeight: 760,
+            }}
+          >
+            {routeSubtitle}
+          </p>
+
+          <div
+            style={{
+              marginTop: 14,
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 8,
+            }}
+          >
+            {[
+              { label: "Port", value: flow.departurePort.replaceAll("_", " ") },
+              { label: "Flow", value: readinessLabel },
+            ].map((item) => (
+              <div
+                key={item.label}
+                style={{
+                  borderRadius: 18,
+                  padding: 10,
+                  background: "#F4FCFA",
+                  border: "1px solid rgba(5,150,165,0.12)",
+                }}
+              >
+                <div
+                  style={{
+                    color: "#50668B",
+                    fontSize: 8.5,
+                    fontWeight: 930,
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {item.label}
+                </div>
+                <strong
+                  style={{
+                    display: "block",
+                    marginTop: 5,
+                    color: "#013863",
+                    fontSize: 11.5,
+                    lineHeight: 1.12,
+                    fontWeight: 900,
+                  }}
+                >
+                  {item.value}
+                </strong>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-label={`${routeTitle} route stops`}
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "#FFFFFF",
+            border: "1px solid rgba(1,56,99,0.08)",
+            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
+          }}
+        >
+          <div
+            style={{
+              color: "#0596A5",
+              fontSize: 9,
+              fontWeight: 950,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+            }}
+          >
+            Route stops
+          </div>
+
+          <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+            {stops.map((stop, index) => (
+              <div
+                key={stop.name}
+                aria-label={`${routeTitle} stop ${index + 1}`}
+                style={{
+                  minHeight: 66,
+                  borderRadius: 20,
+                  padding: 10,
+                  display: "grid",
+                  gridTemplateColumns: "44px 1fr",
+                  alignItems: "center",
+                  gap: 10,
+                  background: index === 1 ? "#FFF4D8" : "#EAFBFA",
+                  border:
+                    index === 1
+                      ? "1px solid rgba(243,174,38,0.24)"
+                      : "1px solid rgba(5,150,165,0.12)",
+                  cursor: "default",
+                }}
+              >
+                <span
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 16,
+                    display: "grid",
+                    placeItems: "center",
+                    background: "#FFFFFF",
+                    color: "#013863",
+                    fontSize: 11,
+                    fontWeight: 950,
+                    boxShadow: "0 8px 18px rgba(1,56,99,0.06)",
+                  }}
+                >
+                  {stop.no}
+                </span>
+                <span>
+                  <strong
+                    style={{
+                      display: "block",
+                      color: "#013863",
+                      fontSize: 13,
+                      lineHeight: 1,
+                      fontWeight: 900,
+                    }}
+                  >
+                    {stop.name}
+                  </strong>
+                  <span
+                    style={{
+                      display: "block",
+                      marginTop: 5,
+                      color: "#50668B",
+                      fontSize: 10.5,
+                      lineHeight: 1.18,
+                      fontWeight: 760,
+                    }}
+                  >
+                    {stop.meta}
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-label={`${routeTitle} readiness`}
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "#FFFFFF",
+            border: "1px solid rgba(1,56,99,0.08)",
+            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
+          }}
+        >
+          <div
+            style={{
+              color: "#0596A5",
+              fontSize: 9,
+              fontWeight: 950,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+            }}
+          >
+            Readiness
+          </div>
+
+          <div
+            style={{
+              marginTop: 10,
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 8,
+            }}
+          >
+            <div
+              style={{
+                borderRadius: 18,
+                padding: 11,
+                background: "#F4FCFA",
+                border: "1px solid rgba(5,150,165,0.12)",
+              }}
+            >
+              <strong style={{ display: "block", color: "#013863", fontSize: 13, fontWeight: 900 }}>
+                {statusLine}
+              </strong>
+              <span style={{ display: "block", marginTop: 5, color: "#50668B", fontSize: 10.5, lineHeight: 1.2, fontWeight: 740 }}>
+                {routeLabel}
+              </span>
+            </div>
+
+            <div
+              style={{
+                borderRadius: 18,
+                padding: 11,
+                background: "#FFF4D8",
+                border: "1px solid rgba(243,174,38,0.22)",
+              }}
+            >
+              <strong style={{ display: "block", color: "#013863", fontSize: 13, fontWeight: 900 }}>
+                Support check
+              </strong>
+              <span style={{ display: "block", marginTop: 5, color: "#50668B", fontSize: 10.5, lineHeight: 1.2, fontWeight: 740 }}>
+                {supportLine}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <section
+          aria-label={`${routeTitle} included support`}
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "#FFFFFF",
+            border: "1px solid rgba(1,56,99,0.08)",
+            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
+          }}
+        >
+          <div
+            style={{
+              color: "#0596A5",
+              fontSize: 9,
+              fontWeight: 950,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+            }}
+          >
+            Included support
+          </div>
+
+          <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 7 }}>
+            {inclusions.map((item) => (
+              <span
+                key={item}
+                style={{
+                  borderRadius: 999,
+                  padding: "7px 9px",
+                  background: "#EAFBFA",
+                  border: "1px solid rgba(5,150,165,0.12)",
+                  color: "#013863",
+                  fontSize: 10,
+                  fontWeight: 850,
+                }}
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-label={`${routeTitle} primary action`}
+          style={{
+            margin: "12px auto 0",
+            width: "min(390px, calc(100vw - 28px))",
+            borderRadius: 24,
+            padding: 10,
+            background: "rgba(255,255,255,0.96)",
+            border: "1px solid rgba(5,150,165,0.14)",
+            boxShadow: "0 14px 34px rgba(1,56,99,0.10)",
+          }}
+        >
+          <a
+            href={ctaHref}
+            style={{
+              minHeight: 54,
+              borderRadius: 18,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+              textDecoration: "none",
+              background: "#F3AE26",
+              color: "#013863",
+              fontSize: 13,
+              fontWeight: 950,
+              boxShadow: "0 10px 22px rgba(243,174,38,0.20)",
+            }}
+          >
+            {flow.primaryCtaLabel}
+          </a>
+        </section>
+
+        <div aria-hidden="true" style={{ height: 148 }} />
+      </div>
+
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
+    </main>
+  );
+}
+// OSP_DCS_PREMIUM_DETAIL_COMPONENT_END
+
 
 const islandHoppingPickupUrl = islandHoppingDcsParams({
   step: "pickup",
@@ -5286,12 +5813,12 @@ function IslandHoppingCommercialTemplate() {
 
           <div style={{ marginTop: 10, display: "grid", gap: 9 }}>
             {islandHoppingStops.map((stop, index) => (
-              <a
+              <div
                 key={stop.name}
-                href={islandHoppingStopMapHref[stop.name as keyof typeof islandHoppingStopMapHref]}
                 style={{
                   display: "grid",
                   textDecoration: "none",
+                  cursor: "default",
                   gridTemplateColumns: "48px 1fr",
                   gap: 10,
                   alignItems: "center",
@@ -5329,7 +5856,7 @@ function IslandHoppingCommercialTemplate() {
                     {stop.note}
                   </span>
                 </span>
-              </a>
+              </div>
             ))}
           </div>
         </section>
@@ -5751,12 +6278,12 @@ function IslandHoppingCommercialTemplate() {
       <div
         aria-label="Island Hopping bottom booking action"
         style={{
-          position: "fixed",
+          position: "sticky",
+          bottom: "calc(96px + env(safe-area-inset-bottom))",
           left: "50%",
-          bottom: "calc(78px + env(safe-area-inset-bottom))",
           transform: "translateX(-50%)",
           width: "min(390px, calc(100vw - 28px))",
-          zIndex: 40,
+          zIndex: 35,
           pointerEvents: "none",
         }}
       >
@@ -5806,6 +6333,9 @@ function IslandHoppingCommercialTemplate() {
       </div>
 
       
+    
+      <div aria-hidden="true" style={{ height: 148 }} />
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }
@@ -5819,6 +6349,14 @@ export default function PassportTrailDetailPage({
   params: { trailSlug: string };
 }) {
   const activeTrailSlug = params.trailSlug;
+
+  if (activeTrailSlug === "sugba-lagoon" || activeTrailSlug === "bucas-grande-sohoton") {
+    const officialDcsFlow = getOfficialDcsTrailFlowConfig(activeTrailSlug);
+
+    if (officialDcsFlow) {
+      return <OfficialDcsPremiumTrailDetail flow={officialDcsFlow} />;
+    }
+  }
 
   if (activeTrailSlug === "island-hopping") {
     return <IslandHoppingCommercialTemplate />;

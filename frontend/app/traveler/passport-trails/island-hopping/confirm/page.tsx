@@ -1,3 +1,4 @@
+import UniversalTravelerBottomTabBar from "../../../../../src/components/traveler/UniversalTravelerBottomTabBar";
 type IslandHoppingConfirmPageProps = {
   searchParams?: Record<string, string | string[] | undefined>;
 };
@@ -289,6 +290,9 @@ export default function IslandHoppingConfirmPage({
           </a>
         </section>
       </div>
+    
+      <div aria-hidden="true" style={{ height: 120 }} />
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }

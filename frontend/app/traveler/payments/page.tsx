@@ -1,4 +1,5 @@
 import Link from "next/link";
+import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
 import KuyaTalaEntryButton from "../../../src/traveler-assistant/KuyaTalaEntryButton";
 
 type PaymentSectionProps = {
@@ -15,6 +16,17 @@ type TravelerPaymentsPageProps = {
 function getSearchValue(value: string | string[] | undefined) {
   if (Array.isArray(value)) return value[0] || "";
   return value || "";
+}
+
+
+function getPaymentParam(
+  searchParams: Record<string, string | string[] | undefined>,
+  key: string,
+  fallback = "",
+) {
+  const value = searchParams[key];
+  if (Array.isArray(value)) return value[0] || fallback;
+  return value || fallback;
 }
 
 function prettifyTrailSlug(slug: string) {
@@ -44,7 +56,7 @@ function PaymentSection(props: PaymentSectionProps) {
             height: 42,
             borderRadius: 16,
             background: "linear-gradient(135deg, #e0f7fb, #eff6ff)",
-            color: "#0f7890",
+            color: "#0596A5",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -59,7 +71,7 @@ function PaymentSection(props: PaymentSectionProps) {
           <p
             style={{
               margin: 0,
-              color: "#0f7890",
+              color: "#0596A5",
               fontSize: 11,
               fontWeight: 950,
               letterSpacing: "0.12em",
@@ -85,7 +97,7 @@ function PaymentSection(props: PaymentSectionProps) {
               margin: "7px 0 0",
               color: "rgba(16,35,63,0.72)",
               fontSize: 13,
-              lineHeight: 1.45,
+              lineHeight: 1.24,
               fontWeight: 700,
             }}
           >
@@ -118,7 +130,7 @@ function ActionLink(props: {
         color: primary ? "#ffffff" : "#0b355f",
         border: primary ? "1px solid rgba(255,255,255,0.24)" : "1px solid rgba(47,127,178,0.16)",
         boxShadow: primary ? "0 14px 30px rgba(19,79,127,0.20)" : "0 10px 24px rgba(15,23,42,0.06)",
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: 950,
       }}
     >
@@ -137,219 +149,280 @@ export default async function TravelerPaymentsPage({ searchParams }: TravelerPay
   const trailLabel = decodedTrail ? prettifyTrailSlug(decodedTrail) : "Passport Trail";
 
   if (isPassportTrailGateway) {
+    const amountValue = getPaymentParam(resolvedSearchParams, "amount") || getPaymentParam(resolvedSearchParams, "matrixTotal") || "3000";
+    const amountLabel = `PHP ${Number(amountValue || 0).toLocaleString("en-PH")}`;
+    const tripNo = getPaymentParam(resolvedSearchParams, "tripNo") || "GL-ISL-01";
+    const routeCode = getPaymentParam(resolvedSearchParams, "routeCode") || "gl-tri-island-standard";
+    const routeProduct = getPaymentParam(resolvedSearchParams, "routeProduct") || "tri-island-joiner";
+    const trailSlug = decodedTrail || "island-hopping";
+    const safeTrailLabel = trailLabel || "Island Hopping";
+    const checkoutHref = `/traveler/payments/tour_sandbox_${routeProduct}?source=passport-trails&trail=${encodeURIComponent(trailSlug)}&slug=${encodeURIComponent(routeProduct)}&amount=${encodeURIComponent(amountValue)}&tripNo=${encodeURIComponent(tripNo)}&routeCode=${encodeURIComponent(routeCode)}`;
+
     return (
       <main
-        data-state="PASSPORT_TRAILS_PAYMENT_GATEWAY_STATE"
         style={{
           minHeight: "100vh",
           background:
-            "radial-gradient(circle at top left, rgba(243,174,38,0.18), transparent 34%), radial-gradient(circle at 90% 0%, rgba(5,150,165,0.14), transparent 30%), linear-gradient(180deg, #fffaf0 0%, #f4fcfa 52%, #ffffff 100%)",
-          padding: "18px 14px 34px",
+            "radial-gradient(circle at 0% 0%, rgba(5,150,165,0.08), transparent 34%), linear-gradient(180deg, #F4FCFA 0%, #FFFFFF 54%, #EAFBFA 100%)",
+          color: "#013863",
+          padding: "14px 14px 0",
           boxSizing: "border-box",
         }}
       >
-        <div style={{ width: "100%", maxWidth: 430, margin: "0 auto" }}>
-          <div style={{ marginBottom: 14 }}>
-            <Link
-              href={decodedTrail ? `/traveler/passport-trails/${encodeURIComponent(decodedTrail)}` : "/traveler/passport-trails"}
+        <div style={{ width: "100%", maxWidth: 390, margin: "0 auto" }}>
+          <Link
+            href={`/traveler/passport-trails/${encodeURIComponent(trailSlug)}`}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              minHeight: 36,
+              padding: "0 12px",
+              borderRadius: 999,
+              background: "#FFFFFF",
+              border: "1px solid rgba(1,56,99,0.08)",
+              color: "#013863",
+              textDecoration: "none",
+              fontSize: 12,
+              fontWeight: 850,
+              boxShadow: "0 8px 20px rgba(1,56,99,0.06)",
+            }}
+          >
+            ← Trail
+          </Link>
+
+          <section
+            aria-label="Passport Trails payment handoff"
+            style={{
+              marginTop: 12,
+              borderRadius: 28,
+              padding: 16,
+              background: "#FFFFFF",
+              border: "1px solid rgba(5,150,165,0.14)",
+              boxShadow: "0 18px 42px rgba(1,56,99,0.08)",
+            }}
+          >
+            <div
               style={{
                 display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                minHeight: 40,
-                padding: "0 14px",
                 borderRadius: 999,
-                background: "rgba(255,255,255,0.94)",
-                border: "1px solid rgba(5,150,165,0.18)",
-                color: "#013863",
-                textDecoration: "none",
-                fontSize: 13,
-                fontWeight: 900,
-                boxShadow: "0 8px 18px rgba(1,56,99,0.06)",
-              }}
-            >
-              ← Back to Trail
-            </Link>
-          </div>
-
-          <KuyaTalaEntryButton
-            topic="payment"
-            title="Ask Kuya Tala™ about this trail payment"
-            note="Get help understanding why a booking record is required before PayMongo checkout."
-          />
-
-          <section
-            style={{
-              marginTop: 14,
-              borderRadius: 30,
-              background: "linear-gradient(135deg, #013863 0%, #0596A5 62%, #F3AE26 100%)",
-              color: "#ffffff",
-              padding: 22,
-              boxShadow: "0 24px 54px rgba(1,56,99,0.24)",
-              overflow: "hidden",
-              position: "relative",
-            }}
-          >
-            <p
-              style={{
-                margin: 0,
-                fontSize: 11,
-                fontWeight: 950,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                color: "rgba(255,255,255,0.86)",
-              }}
-            >
-              Passport Trail Payment Gateway
-            </p>
-            <h1
-              style={{
-                margin: "8px 0 0",
-                fontSize: 30,
+                padding: "5px 8px",
+                background: "#EAFBFA",
+                color: "#0596A5",
+                fontSize: 9,
                 lineHeight: 1,
-                letterSpacing: "-0.055em",
-                fontWeight: 950,
-              }}
-            >
-              Secure your trail payment record first.
-            </h1>
-            <p
-              style={{
-                margin: "10px 0 0",
-                maxWidth: 340,
-                fontSize: 14,
-                lineHeight: 1.45,
-                fontWeight: 760,
-                color: "rgba(255,255,255,0.88)",
-              }}
-            >
-              {trailLabel} is payment-aware, but PayMongo checkout needs a booking-linked payment intent before it can open.
-            </p>
-          </section>
-
-          <section
-            style={{
-              marginTop: 14,
-              border: "1px solid rgba(243,174,38,0.32)",
-              borderRadius: 26,
-              background: "linear-gradient(135deg, #FFF7E6 0%, #FFFFFF 52%, #EAFBFA 100%)",
-              padding: 18,
-              boxShadow: "0 18px 42px rgba(1,56,99,0.10)",
-            }}
-          >
-            <p
-              style={{
-                margin: 0,
-                color: "#B76A00",
-                fontSize: 11,
                 fontWeight: 950,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
               }}
             >
-              Booking record required
-            </p>
-            <h2
+              Payment ready
+            </div>
+
+            <h1
               style={{
-                margin: "7px 0 0",
+                margin: "12px 0 0",
                 color: "#013863",
-                fontSize: 22,
-                lineHeight: 1.08,
-                fontWeight: 950,
-                letterSpacing: "-0.035em",
+                fontSize: 25,
+                lineHeight: 1.02,
+                letterSpacing: "-0.045em",
+                fontWeight: 880,
               }}
             >
-              PayMongo opens after OSP creates your trail payment intent.
-            </h2>
+              {safeTrailLabel} Payment
+            </h1>
+
             <p
               style={{
-                margin: "9px 0 0",
-                color: "rgba(1,56,99,0.72)",
-                fontSize: 14,
-                lineHeight: 1.48,
-                fontWeight: 730,
+                margin: "8px 0 0",
+                maxWidth: 310,
+                color: "#50668B",
+                fontSize: 13,
+                lineHeight: 1.28,
+                fontWeight: 760,
               }}
             >
-              A trail slug alone is not enough for checkout. OSP must first create or reuse a trail booking record, attach pricing, then generate a payment intent.
+              Complete checkout to keep your receipt and trip records connected.
             </p>
-
-            <div
-              style={{
-                marginTop: 16,
-                display: "grid",
-                gap: 10,
-              }}
-            >
-              <ActionLink
-                href={decodedTrail ? `/traveler/passport-trails/diy-trail-builder?source=${encodeURIComponent(decodedTrail)}&gateway=${encodeURIComponent(gateway || "paymongo")}` : "/traveler/passport-trails/diy-trail-builder"}
-              >
-                Create Trail Booking Record
-              </ActionLink>
-
-              <ActionLink
-                href="/traveler/passport-trails/diy-trail-builder/summary"
-                variant="secondary"
-              >
-                Continue Existing Trail Request
-              </ActionLink>
-
-              <ActionLink
-                href="/traveler/settings?panel=assistant&topic=trail-payment"
-                variant="secondary"
-              >
-                Talk to Kuya Tala™
-              </ActionLink>
-            </div>
           </section>
 
           <section
+            aria-label="Passport Trails payment summary"
             style={{
-              marginTop: 14,
-              border: "1px solid rgba(5,150,165,0.18)",
-              borderRadius: 24,
-              background: "rgba(255,255,255,0.94)",
-              padding: 16,
+              marginTop: 12,
+              borderRadius: 26,
+              padding: 14,
+              background: "#FFFFFF",
+              border: "1px solid rgba(1,56,99,0.08)",
               boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
             }}
           >
-            <p
+            <div
               style={{
-                margin: 0,
                 color: "#0596A5",
-                fontSize: 11,
+                fontSize: 9,
                 fontWeight: 950,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
               }}
             >
-              Payment contract
-            </p>
-            <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+              Summary
+            </div>
+
+            <div
+              style={{
+                marginTop: 10,
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 8,
+              }}
+            >
               {[
-                "Trail selection creates the traveler intent.",
-                "Booking record locks the commercial context.",
-                "Payment intent opens the PayMongo checkout page.",
-                "Receipt and payment state remain booking-linked.",
+                { label: "Trail", value: safeTrailLabel },
+                { label: "Trip", value: tripNo },
+                { label: "Route", value: routeCode.replaceAll("-", " ") },
+                { label: "Amount", value: amountLabel },
               ].map((item) => (
                 <div
-                  key={item}
+                  key={item.label}
                   style={{
-                    borderRadius: 16,
-                    background: "linear-gradient(135deg, #F4FCFA, #FFFFFF)",
-                    border: "1px solid rgba(5,150,165,0.14)",
-                    padding: "10px 12px",
-                    color: "#013863",
-                    fontSize: 13,
-                    fontWeight: 800,
-                    lineHeight: 1.35,
+                    borderRadius: 18,
+                    padding: 10,
+                    background: item.label === "Amount" ? "#FFF4D8" : "#F4FCFA",
+                    border:
+                      item.label === "Amount"
+                        ? "1px solid rgba(243,174,38,0.24)"
+                        : "1px solid rgba(5,150,165,0.12)",
                   }}
                 >
-                  {item}
+                  <div
+                    style={{
+                      color: "#50668B",
+                      fontSize: 8.5,
+                      fontWeight: 930,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {item.label}
+                  </div>
+                  <strong
+                    style={{
+                      display: "block",
+                      marginTop: 5,
+                      color: "#013863",
+                      fontSize: 12,
+                      lineHeight: 1.1,
+                      fontWeight: 900,
+                    }}
+                  >
+                    {item.value}
+                  </strong>
                 </div>
               ))}
             </div>
           </section>
+
+          <section
+            aria-label="Passport Trails payment next records"
+            style={{
+              marginTop: 12,
+              borderRadius: 26,
+              padding: 14,
+              background: "#FFFFFF",
+              border: "1px solid rgba(1,56,99,0.08)",
+              boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
+            }}
+          >
+            <div
+              style={{
+                color: "#0596A5",
+                fontSize: 9,
+                fontWeight: 950,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+              }}
+            >
+              After checkout
+            </div>
+
+            <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+              {["Receipt", "Voucher", "Boarding QR", "Trip record"].map((item, index) => (
+                <div
+                  key={item}
+                  style={{
+                    minHeight: 48,
+                    borderRadius: 18,
+                    padding: "9px 10px",
+                    display: "grid",
+                    gridTemplateColumns: "34px 1fr",
+                    alignItems: "center",
+                    gap: 9,
+                    background: index === 0 ? "#FFF4D8" : "#EAFBFA",
+                    border:
+                      index === 0
+                        ? "1px solid rgba(243,174,38,0.24)"
+                        : "1px solid rgba(5,150,165,0.12)",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: 13,
+                      background: "#FFFFFF",
+                      color: "#013863",
+                      display: "grid",
+                      placeItems: "center",
+                      fontSize: 10,
+                      fontWeight: 950,
+                    }}
+                  >
+                    {index + 1}
+                  </span>
+                  <strong style={{ color: "#013863", fontSize: 12.5, fontWeight: 900 }}>{item}</strong>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section
+            aria-label="Continue checkout"
+            style={{
+              margin: "12px auto 0",
+              width: "min(390px, calc(100vw - 28px))",
+              borderRadius: 24,
+              padding: 10,
+              background: "rgba(255,255,255,0.96)",
+              border: "1px solid rgba(5,150,165,0.14)",
+              boxShadow: "0 14px 34px rgba(1,56,99,0.10)",
+            }}
+          >
+            <Link
+              href={checkoutHref}
+              style={{
+                minHeight: 54,
+                borderRadius: 18,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                textDecoration: "none",
+                background: "#F3AE26",
+                color: "#013863",
+                fontSize: 13,
+                fontWeight: 950,
+                boxShadow: "0 10px 22px rgba(243,174,38,0.20)",
+              }}
+            >
+              Continue Checkout
+            </Link>
+          </section>
+
+          <div aria-hidden="true" style={{ height: 148 }} />
         </div>
+
+        <UniversalTravelerBottomTabBar activeTab="trails" fixed />
       </main>
     );
   }
@@ -390,17 +463,17 @@ export default async function TravelerPaymentsPage({ searchParams }: TravelerPay
 
         <KuyaTalaEntryButton
           topic="payment"
-          title="Ask Kuya Tala™ about payments"
-          note="Get guided help understanding payment status, receipts, and trip-linked payment actions."
+          title="Need help?"
+          note="Ask about receipts or next steps."
         />
 
         <header
           style={{
             marginTop: 14,
-            borderRadius: 30,
-            background: "linear-gradient(135deg, #073b63 0%, #0f7890 58%, #24bfd1 100%)",
-            color: "#ffffff",
-            padding: 22,
+            borderRadius: 22,
+            background: "linear-gradient(180deg, #FFFFFF 0%, #F4FCFA 100%)",
+            color: "#013863",
+            padding: 18,
             boxShadow: "0 22px 50px rgba(7,59,99,0.24)",
             overflow: "hidden",
             position: "relative",
@@ -420,26 +493,26 @@ export default async function TravelerPaymentsPage({ searchParams }: TravelerPay
           </p>
           <h1
             style={{
-              margin: "8px 0 0",
-              fontSize: 30,
+              margin: "6px 0 0",
+              fontSize: 23,
               lineHeight: 1,
               letterSpacing: "-0.055em",
               fontWeight: 950,
             }}
           >
-            Payments & Receipts
+            Payments
           </h1>
           <p
             style={{
-              margin: "10px 0 0",
+              margin: "7px 0 0",
               maxWidth: 330,
-              fontSize: 14,
-              lineHeight: 1.45,
+              fontSize: 13,
+              lineHeight: 1.24,
               fontWeight: 750,
               color: "rgba(255,255,255,0.86)",
             }}
           >
-            Your confirmed bookings, trip payments, and receipts will appear here once you start booking through One Siargao Pass.
+            Pay. Track. Keep receipts.
           </p>
         </header>
 
@@ -456,14 +529,14 @@ export default async function TravelerPaymentsPage({ searchParams }: TravelerPay
           <p
             style={{
               margin: 0,
-              color: "#0f7890",
+              color: "#0596A5",
               fontSize: 11,
               fontWeight: 950,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
             }}
           >
-            Empty State
+            Wallet Ready
           </p>
           <h2
             style={{
@@ -475,68 +548,38 @@ export default async function TravelerPaymentsPage({ searchParams }: TravelerPay
               letterSpacing: "-0.035em",
             }}
           >
-            No payments yet.
+            Ready when you book
           </h2>
           <p
             style={{
-              margin: "8px 0 0",
+              margin: "6px 0 0",
               color: "rgba(16,35,63,0.72)",
-              fontSize: 14,
-              lineHeight: 1.45,
+              fontSize: 13,
+              lineHeight: 1.24,
               fontWeight: 700,
             }}
           >
-            Payment records are created only after a booking or trip action generates a real payment intent. No simulated receipts or placeholder transactions are shown here.
+            Checkout and receipts will appear here.
           </p>
 
           <div style={{ marginTop: 16, display: "grid", gap: 10 }}>
-            <ActionLink href="/traveler/explore">Explore Siargao</ActionLink>
-            <ActionLink href="/traveler/trips" variant="secondary">View Trips</ActionLink>
+            <ActionLink href="/traveler/explore">Explore</ActionLink>
+            <ActionLink href="/traveler/trips" variant="secondary">Trips</ActionLink>
           </div>
         </section>
 
         <div style={{ marginTop: 14, display: "grid", gap: 12 }}>
-          <PaymentSection eyebrow="Summary" title="Payment Summary" body="A real summary will appear after your traveler account has booking-linked payment records." icon="₱" />
-          <PaymentSection eyebrow="Action Needed" title="Pending Payments" body="Open payment actions from your trip details when a booking is ready for checkout." icon="⌛" />
-          <PaymentSection eyebrow="Records" title="Recent Receipts" body="Paid and issued receipts will be listed here once verified by the payment and booking records." icon="🧾" />
-          <PaymentSection eyebrow="Trip Linkage" title="Linked Trips" body="Payments remain tied to the booking or trip that created them, so records stay auditable." icon="🧭" />
-          <PaymentSection eyebrow="Support" title="Payment Help" body="For issues, open the trip record first so support can trace the exact booking and payment intent." icon="💬" />
+          <PaymentSection eyebrow="Summary" title="Summary" body="Totals appear here." icon="₱" />
+          <PaymentSection eyebrow="Action" title="Pending" body="Checkout requests." icon="⌛" />
+          <PaymentSection eyebrow="Receipts" title="Receipts" body="Saved after payment." icon="🧾" />
+          <PaymentSection eyebrow="Trips" title="Linked Trips" body="Matched to bookings." icon="🧭" />
+          <PaymentSection eyebrow="Support" title="Support" body="Open a trip for help." icon="💬" />
         </div>
 
-        <nav
-          style={{
-            marginTop: 18,
-            border: "1px solid #dbe8ef",
-            borderRadius: 26,
-            background: "rgba(255,255,255,0.98)",
-            padding: "10px 12px",
-            boxShadow: "0 14px 36px rgba(15,23,42,0.08)",
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 8,
-            textAlign: "center",
-          }}
-        >
-          <Link href="/traveler/home" style={bottomNavLinkStyle}>Home</Link>
-          <Link href="/traveler/trips" style={bottomNavLinkStyle}>Trips</Link>
-          <Link href="/traveler/pass" style={bottomNavLinkStyle}>My Pass</Link>
-          <Link href="/traveler/settings" style={bottomNavLinkStyle}>Profile</Link>
-        </nav>
+        <div aria-hidden="true" style={{ height: 120 }} />
+        <UniversalTravelerBottomTabBar activeTab="trails" fixed />
       </div>
     </main>
   );
 }
 
-const bottomNavLinkStyle = {
-  minHeight: 42,
-  borderRadius: 16,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  textDecoration: "none",
-  color: "#0b355f",
-  background: "#f8fafc",
-  border: "1px solid rgba(47,127,178,0.10)",
-  fontSize: 12,
-  fontWeight: 900,
-} as const;

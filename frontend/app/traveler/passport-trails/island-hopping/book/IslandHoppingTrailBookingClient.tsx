@@ -1,5 +1,6 @@
 "use client";
 
+import UniversalTravelerBottomTabBar from "../../../../../src/components/traveler/UniversalTravelerBottomTabBar";
 import { useMemo, useState } from "react";
 
 type BookingState = {
@@ -615,6 +616,43 @@ export default function IslandHoppingTrailBookingClient({ initialState }: Props)
           </a>
         </div>
       </div>
+    
+      
+      <section
+        aria-label="Continue Island Hopping booking"
+        style={{
+          margin: "10px auto 0",
+          width: "min(390px, calc(100vw - 28px))",
+          borderRadius: 24,
+          padding: 10,
+          background: "rgba(255,255,255,0.96)",
+          border: "1px solid rgba(5,150,165,0.14)",
+          boxShadow: "0 14px 34px rgba(1,56,99,0.10)",
+        }}
+      >
+        <a
+          href={confirmHref}
+          style={{
+            minHeight: 54,
+            borderRadius: 18,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            textDecoration: "none",
+            background: "#F3AE26",
+            color: "#013863",
+            fontSize: 13,
+            fontWeight: 950,
+            boxShadow: "0 10px 22px rgba(243,174,38,0.20)",
+          }}
+        >
+          Continue to Review
+        </a>
+      </section>
+
+      <div aria-hidden="true" style={{ height: 148 }} />
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }
