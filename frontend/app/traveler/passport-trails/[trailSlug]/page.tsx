@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SpmFunctionalJourneyMap } from "../../../../src/spm/functional-map/SpmFunctionalJourneyMap";
 import { notFound } from "next/navigation";
 import PassportMapShortcut from "../../../../src/components/traveler/PassportMapShortcut";
+import UniversalTravelerBottomTabBar from "../../../../src/components/traveler/UniversalTravelerBottomTabBar";
 
 type StopStatus = "STAMP_UNLOCKED" | "READY_TO_VERIFY" | "LOCKED";
 
@@ -72,8 +73,8 @@ const TRAILS: Record<string, TrailDetail> = {
     title: "Sugba Lagoon Island Hopping",
     subtitle:
       "A governed lagoon route connected to official access, departure readiness, operator availability, and scheduled movement.",
-    progressLabel: "Governed one-day route",
-    statusLabel: "DCS-linked / route-governed",
+    progressLabel: "Access-ready one-day route",
+    statusLabel: "Route-supported",
     nextStop: "Del Carmen access readiness",
     nextStopReason:
       "Sugba Lagoon must not be treated as a casual land-tour stop. It may appear as a cross-linked highlight inside the land tour, but the deeper route should point to this official governed flow.",
@@ -88,7 +89,7 @@ const TRAILS: Record<string, TrailDetail> = {
       {
         name: "Sugba Lagoon",
         shortCode: "SL",
-        note: "Governed lagoon stop. Operator readiness, official access, and booking/payment readiness must be confirmed before live movement.",
+        note: "Access-ready lagoon stop. Operator readiness, official access, and booking/payment readiness must be confirmed before live movement.",
         status: "READY_TO_VERIFY",
         source: "Pending",
       },
@@ -863,7 +864,7 @@ function DiscoverOtherPassportTrails({
       slug: "sugba-lagoon",
       label: "Sugba Lagoon",
       meta: "Del Carmen • governed route",
-      badge: "DCS-linked",
+      badge: "Route-supported",
     },
     {
       slug: "bucas-grande-sohoton",
@@ -1096,7 +1097,7 @@ function DiscoverOtherPassportTrails({
                         color: "#50668B",
                       }}
                     >
-                      Approved media slot from Admin Console
+                      Approved media slot
                     </div>
                   </div>
                 </div>
@@ -1195,7 +1196,7 @@ function OfficialTrailMediaPreview({
       proofLine: "Admin-approved island-hopping media only",
     },
     "sugba-lagoon": {
-      badge: "Governed lagoon route",
+      badge: "Access-ready lagoon route",
       headline: "Sugba Lagoon Island Hopping Preview",
       subline: "Del Carmen route photos and operator/access media appear after governed route readiness.",
       primaryFrame: "Sugba Lagoon route preview",
@@ -1727,7 +1728,7 @@ function OfficialTrailCommercialExposurePanel({
       descriptionTitle: "Sugba Lagoon Island Hopping",
       description:
         "A governed Del Carmen lagoon route connected to official access, operator readiness, and scheduled movement.",
-      heroChips: ["Del Carmen", "Governed", "Lagoon route", "DCS-linked"],
+      heroChips: ["Del Carmen", "Access-ready", "Lagoon route", "Route-supported"],
       featureCards: [
         { icon: "🛶", title: "Lagoon route", body: "Handled as an official route, not a casual land stop." },
         { icon: "✅", title: "Access readiness", body: "Route access must be confirmed first." },
@@ -1735,7 +1736,7 @@ function OfficialTrailCommercialExposurePanel({
         { icon: "🎫", title: "Route-backed", body: "Booking and payment depend on readiness." },
       ],
       bookingFields: [
-        { label: "Route", value: "Sugba Lagoon", helper: "Governed route flow." },
+        { label: "Route", value: "Sugba Lagoon", helper: "Access-ready route flow." },
         { label: "Access", value: "To confirm", helper: "Official readiness first." },
         { label: "Operator", value: "Required", helper: "Capacity must be checked." },
         { label: "Payment", value: "After confirmation", helper: "No premature checkout." },
@@ -1749,7 +1750,7 @@ function OfficialTrailCommercialExposurePanel({
         { pax: "4–6 pax", rule: "Capacity review" },
         { pax: "7–10 pax", rule: "Group confirmation" },
       ],
-      supportHeadline: "Governed route support",
+      supportHeadline: "Access-ready route support",
       supportCards: [
         { title: "Access flow", body: "Official route readiness must be checked." },
         { title: "Operator readiness", body: "Operator capacity controls fulfillment." },
@@ -1789,7 +1790,7 @@ function OfficialTrailCommercialExposurePanel({
       ],
       supportHeadline: "Future operator readiness",
       supportCards: [
-        { title: "Route rules", body: "Governed movement must be configured." },
+        { title: "Route rules", body: "Access-ready movement must be configured." },
         { title: "Operator capacity", body: "Fulfillment must be confirmed later." },
         { title: "Payment guard", body: "No checkout until route is operational." },
       ],
@@ -2848,7 +2849,7 @@ function OfficialTrailCommercialExposurePanel({
                     ["Coconut Road", "Photo stop", "Stamp-ready"],
                     ["Maasin River", "Barangay / LGU stop", "Verify stop"],
                     ["Magpupungko", "Coastal pool stop", "Stamp-ready"],
-                    ["Sugba Lagoon", "Governed route cross-link", "Use Sugba Lagoon trail"],
+                    ["Sugba Lagoon", "Access-ready route cross-link", "Use Sugba Lagoon trail"],
                     ["Canijugan Peak", "Viewpoint stop", "Stamp-ready"],
                     ["Secret Beach", "Beach stop", "Stamp-ready"],
                     ["Malinao Skate Road", "Road / skate stop", "Verify stop"],
@@ -2931,7 +2932,7 @@ function OfficialTrailCommercialExposurePanel({
                     }}
                   >
                     {routeGroup.stops.map(([stopName, stopType, status], index) => {
-                      const isGoverned = status === "Use Sugba Lagoon trail";
+                      const isAccessReady = status === "Use Sugba Lagoon trail";
                       const needsVerify = status === "Verify stop" || status === "Local spelling check";
                       return (
                         <div
@@ -2940,11 +2941,11 @@ function OfficialTrailCommercialExposurePanel({
                             minHeight: 54,
                             borderRadius: 17,
                             background:
-                              isGoverned
+                              isAccessReady
                                 ? "linear-gradient(135deg, rgba(255,248,232,0.94), #FFFFFF)"
                                 : "rgba(244,252,250,0.82)",
                             border:
-                              isGoverned
+                              isAccessReady
                                 ? "1px solid rgba(243,174,38,0.24)"
                                 : "1px solid rgba(5,150,165,0.11)",
                             padding: "9px 10px",
@@ -2960,7 +2961,7 @@ function OfficialTrailCommercialExposurePanel({
                               width: 30,
                               height: 30,
                               borderRadius: 999,
-                              background: isGoverned
+                              background: isAccessReady
                                 ? "linear-gradient(135deg, #F3AE26, #F59E0B)"
                                 : "linear-gradient(135deg, #0596A5, #047F91)",
                               color: "#FFFFFF",
@@ -3003,17 +3004,17 @@ function OfficialTrailCommercialExposurePanel({
                           <span
                             style={{
                               borderRadius: 999,
-                              background: isGoverned
+                              background: isAccessReady
                                 ? "rgba(243,174,38,0.14)"
                                 : needsVerify
                                   ? "rgba(255,248,232,0.92)"
                                   : "rgba(5,150,165,0.10)",
-                              color: isGoverned
+                              color: isAccessReady
                                 ? "#A26200"
                                 : needsVerify
                                   ? "#A26200"
                                   : "#047F91",
-                              border: isGoverned
+                              border: isAccessReady
                                 ? "1px solid rgba(243,174,38,0.22)"
                                 : needsVerify
                                   ? "1px solid rgba(243,174,38,0.22)"
@@ -4487,7 +4488,7 @@ function TrailPaymentGatewayCta({
       source: "DIRECT_SPM",
       productLabel: "Official Passport Trail",
       priceLabel: "Price to confirm",
-      pricingModeLabel: "Governed lagoon route request",
+      pricingModeLabel: "Access-ready lagoon route request",
       paxModeLabel: "Route and operator readiness required",
       paxTiers: [
         { label: "Solo", price: "Quote", note: "Route readiness review" },
@@ -4503,8 +4504,8 @@ function TrailPaymentGatewayCta({
       ],
       paymentStateLabel: "Operator/access confirmation required",
       primaryCtaLabel: "Request Route Confirmation",
-      toneBadge: "DCS-linked",
-      shortValueLine: "Governed lagoon route connected to official access and departure readiness.",
+      toneBadge: "Route-supported",
+      shortValueLine: "Access-ready lagoon route connected to official access and departure readiness.",
     },
     "bucas-grande-sohoton": {
       source: "DIRECT_SPM",
@@ -5109,11 +5110,1283 @@ function TrailPaymentGatewayCta({
   );
 }
 
+
+
+
+const ISLAND_HOPPING_TEMPLATE_OSP = {
+  navy: "#013863",
+  deepNavy: "#003B66",
+  teal: "#0596A5",
+  gold: "#F3AE26",
+  goldSoft: "#FFF4D8",
+  white: "#FFFFFF",
+  mist: "#EAFBFA",
+  mistSoft: "#F4FCFA",
+  slate: "#50668B",
+  line: "rgba(1,56,99,0.12)",
+};
+
+
+const islandHoppingDcsTruth = {
+  trailSlug: "island-hopping",
+  officialTrail: "Island Hopping",
+  routeProductMapping: "Tri-Island Joiner fulfills Island Hopping Passport Trail",
+  departureControl: true,
+  dcsLinked: true,
+  routeType: "GL_TRI_ISLAND_STANDARD",
+  routeCode: "gl-tri-island-standard",
+  defaultRouteProduct: "tri-island-joiner",
+  tripNo: "GL-ISL-01",
+  departurePort: "GENERAL_LUNA_PORT",
+  departurePortLabel: "General Luna Port",
+  movementLayer: "OSP_QR_COMPLIANCE_MOVEMENT",
+  voucherRequired: true,
+  onlineBoardingRequired: true,
+  boardingQrRequired: true,
+  manifestRequired: true,
+  movementRecordRequired: true,
+  paymentTiming: "PAY_AFTER_ROUTE_READINESS",
+  fulfillment: "BOAT_GUIDE_OPERATOR_ASSIGNMENT",
+  publicSrpMode: "COMMISSION_INCLUSIVE_PUBLIC_SRP",
+} as const;
+
+function islandHoppingDcsParams(extra: Record<string, string> = {}) {
+  const params = new URLSearchParams({
+    intent: "island-hopping-request",
+    trail: islandHoppingDcsTruth.trailSlug,
+    officialTrail: islandHoppingDcsTruth.officialTrail,
+    routeType: islandHoppingDcsTruth.routeType,
+    routeCode: islandHoppingDcsTruth.routeCode,
+    routeProduct: islandHoppingDcsTruth.defaultRouteProduct,
+    tripNo: islandHoppingDcsTruth.tripNo,
+    departurePort: islandHoppingDcsTruth.departurePort,
+    routeReadiness: "required",
+    departureReadiness: "required",
+    boardingFlow: "online",
+    voucher: "required",
+    onlineBoarding: "required",
+    boardingQr: "required",
+    manifest: "required",
+    movementRecord: "required",
+    paymentTiming: "after-route-readiness",
+    fulfillment: "boat-guide-operator-assignment",
+    ...extra,
+  });
+
+  return `/traveler/explore/tours/general-luna-island-hopping/${islandHoppingDcsTruth.routeCode}/book?${params.toString()}`;
+}
+
+const islandHoppingBookingBaseUrl = islandHoppingDcsParams();
+
+const islandHoppingAvailabilityUrl = islandHoppingDcsParams({
+  step: "availability",
+  product: "tri-island-joiner",
+});
+
+const islandHoppingDateUrl = islandHoppingDcsParams({
+  step: "date",
+  product: "tri-island-joiner",
+});
+
+const islandHoppingPaxUrl = islandHoppingDcsParams({
+  step: "pax",
+  product: "tri-island-joiner",
+});
+
+const islandHoppingPickupUrl = islandHoppingDcsParams({
+  step: "pickup",
+  product: "tri-island-joiner",
+});
+
+const islandHoppingProductUrl = islandHoppingDcsParams({
+  step: "product",
+  product: "tri-island-joiner",
+});
+
+const islandHoppingMapUrl =
+  `/traveler/passport-map?trail=${islandHoppingDcsTruth.trailSlug}&routeType=${islandHoppingDcsTruth.routeType}&routeCode=${islandHoppingDcsTruth.routeCode}&departurePort=${islandHoppingDcsTruth.departurePort}&focus=tri-island`;
+
+const islandHoppingKuyaTalaUrl =
+  `/traveler/settings?panel=assistant&topic=island-hopping-booking&trail=${islandHoppingDcsTruth.trailSlug}&routeType=${islandHoppingDcsTruth.routeType}&departurePort=${islandHoppingDcsTruth.departurePort}`;
+
+const islandHoppingInputTargets = {
+  Date: islandHoppingDateUrl,
+  Pax: islandHoppingPaxUrl,
+  Pickup: islandHoppingPickupUrl,
+  Product: islandHoppingProductUrl,
+};
+
+const islandHoppingProductHref = {
+  "Tri-Island Joiner": islandHoppingDcsParams({
+    step: "product",
+    product: "tri-island-joiner",
+    routeProduct: "tri-island-joiner",
+    pricingMode: "per-head",
+  }),
+  "Private Island Route": islandHoppingDcsParams({
+    step: "product",
+    product: "private-island-route",
+    routeProduct: "private-island-route",
+    pricingMode: "pax-tiered",
+  }),
+  "Premium Private": islandHoppingDcsParams({
+    step: "product",
+    product: "premium-private",
+    routeProduct: "premium-private",
+    pricingMode: "pax-tiered-premium",
+  }),
+  "VVIP Party Boat": islandHoppingDcsParams({
+    step: "product",
+    product: "vvip-party-boat",
+    routeProduct: "vvip-party-boat",
+    pricingMode: "flat-package",
+  }),
+};
+
+const islandHoppingStopMapHref = {
+  "Naked Island": `${islandHoppingMapUrl}&stop=naked-island&movement=trail-stop`,
+  "Daku Island": `${islandHoppingMapUrl}&stop=daku-island&movement=trail-stop`,
+  "Guyam Island": `${islandHoppingMapUrl}&stop=guyam-island&movement=trail-stop`,
+};
+
+const islandHoppingStatusChain = [
+  { title: "Voucher", note: "Issued after payment readiness" },
+  { title: "Boarding QR", note: "Used for port boarding validation" },
+  { title: "Manifest", note: "Trip record after boarding" },
+];
+
+
+const islandHoppingMedia = [
+  { label: "Boat route", hint: "Video slot" },
+  { label: "Daku lunch", hint: "Photo" },
+  { label: "Sandbar", hint: "Photo" },
+];
+
+const islandHoppingProducts = [
+  {
+    title: "Tri-Island Joiner",
+    price: "From ₱1,500",
+    meta: "Per traveler",
+    note: "Shared island-hopping slot.",
+    badge: "Best start",
+  },
+  {
+    title: "Private Island Route",
+    price: "Pax-tiered",
+    meta: "Private boat",
+    note: "Price adjusts by group size.",
+    badge: "Flexible",
+  },
+  {
+    title: "Premium Private",
+    price: "From ₱2,000",
+    meta: "10+ pax rate",
+    note: "Richer food route option.",
+    badge: "Upgrade",
+  },
+  {
+    title: "VVIP Party Boat",
+    price: "₱60,000",
+    meta: "Flat package",
+    note: "Private premium island day.",
+    badge: "VVIP",
+  },
+];
+
+const islandHoppingReasons = [
+  { title: "Classic island route", note: "Guyam, Naked, Daku, plus Secret Island when tide allows." },
+  { title: "Easy tour day", note: "Typical 9 AM–4 PM island schedule." },
+  { title: "Pickup support", note: "Poblacion / General Luna pickup boundary shown clearly." },
+  { title: "Commercial package ready", note: "Joiner, private, premium, and VVIP can be sold cleanly." },
+];
+
+const islandHoppingInclusions = [
+  "Boat",
+  "Guide",
+  "Drone shots",
+  "Entrance fees",
+  "Boodle fight lunch",
+  "Cottages",
+  "Docking fees",
+  "Environmental fees",
+  "GL pickup",
+];
+
+const islandHoppingExclusions = [
+  "Snorkels not included",
+  "Paddle boards not included",
+  "Outside GL pickup may add charge",
+];
+
+const islandHoppingBookingInputs = [
+  { label: "Date", value: "Select day", icon: "📅" },
+  { label: "Pax", value: "Choose group", icon: "👥" },
+  { label: "Pickup", value: "General Luna", icon: "📍" },
+  { label: "Product", value: "Joiner / Private", icon: "🛥️" },
+];
+
+const islandHoppingFlow = [
+  { title: "Pick date", note: "Trip day and timing." },
+  { title: "Set pax", note: "Price depends on group size." },
+  { title: "Choose product", note: "Joiner, private, premium, or VVIP." },
+  { title: "Confirm route", note: "Boat, guide, pickup, and tide-sensitive stop." },
+  { title: "Pay to secure", note: "Checkout opens after route readiness." },
+];
+
+const islandHoppingStops = [
+  {
+    name: "Naked Island",
+    tag: "Sandbar",
+    time: "Morning stop",
+    note: "Open sandbar photo stop. Secret Island can be added when tide allows.",
+  },
+  {
+    name: "Daku Island",
+    tag: "Lunch stop",
+    time: "Midday stop",
+    note: "Main beach stop for boodle fight lunch, cottage time, and rest.",
+  },
+  {
+    name: "Guyam Island",
+    tag: "Final island",
+    time: "Afternoon stop",
+    note: "Compact island stop before return to General Luna.",
+  },
+];
+
+const islandHoppingOtherTrails = [
+  { title: "Corregidor + Tri-Island", href: "/traveler/partner-tours?focus=corregidor-tri-island", note: "Extended island route" },
+  { title: "Sugba Lagoon", href: "/traveler/passport-trails/sugba-lagoon", note: "Lagoon route" },
+];
+
+function IslandHoppingCommercialTemplate() {
+  const OSP = ISLAND_HOPPING_TEMPLATE_OSP;
+
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        background:
+          "radial-gradient(circle at 50% -10%, rgba(5,150,165,0.13), transparent 34%), linear-gradient(180deg, #F4FCFA 0%, #FFFFFF 42%, #F4FCFA 100%)",
+        color: OSP.navy,
+        padding: "12px 14px calc(126px + env(safe-area-inset-bottom))",
+      }}
+    >
+      <div style={{ width: "100%", maxWidth: 390, margin: "0 auto" }}>
+        <header
+          aria-label="Island Hopping media detail"
+          style={{
+            borderRadius: 30,
+            padding: 10,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 18px 44px rgba(1,56,99,0.10)",
+          }}
+        >
+          <div
+            style={{
+              height: 238,
+              borderRadius: 24,
+              overflow: "hidden",
+              position: "relative",
+              background:
+                "linear-gradient(145deg, rgba(1,56,99,0.88), rgba(5,150,165,0.66)), url('/osp/spm/maps/osp-spm-passport-map-preview-v1.png') center/cover",
+              border: "1px solid rgba(255,255,255,0.56)",
+            }}
+          >
+            <div
+              aria-hidden="true"
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(180deg, rgba(1,56,99,0.02), rgba(1,56,99,0.66))",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                top: 11,
+                left: 11,
+                right: 11,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 8,
+              }}
+            >
+              <a
+                href="/traveler/passport-trails"
+                aria-label="Back to Passport Trails"
+                style={{
+                  width: 39,
+                  height: 39,
+                  borderRadius: 999,
+                  background: "rgba(255,255,255,0.94)",
+                  color: OSP.navy,
+                  display: "grid",
+                  placeItems: "center",
+                  textDecoration: "none",
+                  fontSize: 23,
+                  fontWeight: 900,
+                  boxShadow: "0 10px 22px rgba(1,56,99,0.16)",
+                }}
+              >
+                ‹
+              </a>
+
+              <div style={{ display: "flex", gap: 7 }}>
+                <span
+                  style={{
+                    minHeight: 39,
+                    borderRadius: 999,
+                    padding: "0 13px",
+                    background: "rgba(255,255,255,0.94)",
+                    color: OSP.navy,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    fontSize: 11.5,
+                    fontWeight: 900,
+                    boxShadow: "0 10px 22px rgba(1,56,99,0.14)",
+                  }}
+                >
+                  PHP
+                </span>
+              </div>
+            </div>
+
+            <div
+              style={{
+                position: "absolute",
+                left: 12,
+                right: 12,
+                bottom: 12,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    borderRadius: 999,
+                    padding: "6px 9px",
+                    background: "rgba(255,255,255,0.93)",
+                    color: OSP.navy,
+                    fontSize: 9,
+                    lineHeight: 1,
+                    fontWeight: 900,
+                    letterSpacing: "0.10em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: "50%", background: OSP.gold }} />
+                  Official Trail
+                </span>
+
+                <span
+                  style={{
+                    borderRadius: 999,
+                    padding: "6px 9px",
+                    background: OSP.gold,
+                    color: OSP.navy,
+                    fontSize: 9.5,
+                    lineHeight: 1,
+                    fontWeight: 900,
+                  }}
+                >
+                  Route coordination
+                </span>
+              </div>
+
+              <h1
+                style={{
+                  margin: "10px 0 0",
+                  color: "#FFFFFF",
+                  fontSize: 31,
+                  lineHeight: 0.96,
+                  letterSpacing: "-0.058em",
+                  fontWeight: 900,
+                  textShadow: "0 8px 22px rgba(1,56,99,0.34)",
+                }}
+              >
+                Island Hopping
+              </h1>
+
+              <p
+                style={{
+                  margin: "6px 0 0",
+                  color: "rgba(255,255,255,0.86)",
+                  fontSize: 11.8,
+                  lineHeight: 1.2,
+                  fontWeight: 740,
+                  maxWidth: 286,
+                }}
+              >
+                Tri-Island packages mapped to the official Passport Trail.
+              </p>
+            </div>
+
+            <div
+              aria-label="Video preview placeholder"
+              style={{
+                position: "absolute",
+                right: 12,
+                bottom: 12,
+                borderRadius: 13,
+                padding: "7px 9px",
+                background: "rgba(1,56,99,0.80)",
+                color: "#FFFFFF",
+                fontSize: 10,
+                lineHeight: 1,
+                fontWeight: 850,
+              }}
+            >
+              ▶ Video
+            </div>
+          </div>
+
+          <div
+            aria-label="Photo preview strip"
+            style={{
+              marginTop: 9,
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gap: 7,
+            }}
+          >
+            {islandHoppingMedia.map((item) => (
+              <div
+                key={item.label}
+                style={{
+                  minHeight: 56,
+                  borderRadius: 17,
+                  background:
+                    "linear-gradient(145deg, rgba(5,150,165,0.17), rgba(243,174,38,0.12))",
+                  border: "1px solid rgba(1,56,99,0.08)",
+                  padding: 8,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span style={{ color: OSP.slate, fontSize: 8.5, fontWeight: 850, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                  {item.hint}
+                </span>
+                <strong style={{ color: OSP.navy, fontSize: 10.6, lineHeight: 1, fontWeight: 880 }}>
+                  {item.label}
+                </strong>
+              </div>
+            ))}
+          </div>
+        </header>
+
+        <section
+          aria-label="Quick booking inputs"
+          style={{
+            marginTop: 12,
+            borderRadius: 28,
+            padding: 13,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 16px 38px rgba(1,56,99,0.09)",
+          }}
+        >
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            {islandHoppingBookingInputs.map((item) => (
+              <a
+                key={item.label}
+                href={islandHoppingInputTargets[item.label as keyof typeof islandHoppingInputTargets]}
+                style={{
+                  minHeight: 56,
+                  borderRadius: 18,
+                  background: OSP.mistSoft,
+                  border: "1px solid rgba(5,150,165,0.12)",
+                  color: OSP.navy,
+                  textDecoration: "none",
+                  display: "grid",
+                  gridTemplateColumns: "26px 1fr",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "9px 10px",
+                }}
+              >
+                <span style={{ fontSize: 16, lineHeight: 1 }}>{item.icon}</span>
+                <span style={{ minWidth: 0 }}>
+                  <span style={{ display: "block", color: OSP.slate, fontSize: 8.6, fontWeight: 820, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    {item.label}
+                  </span>
+                  <strong style={{ display: "block", marginTop: 4, color: OSP.navy, fontSize: 11.5, lineHeight: 1, fontWeight: 880 }}>
+                    {item.value}
+                  </strong>
+                </span>
+              </a>
+            ))}
+          </div>
+
+          <a
+            href={islandHoppingAvailabilityUrl}
+            style={{
+              marginTop: 10,
+              minHeight: 50,
+              borderRadius: 18,
+              background: OSP.navy,
+              color: "#FFFFFF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none",
+              fontSize: 13.4,
+              fontWeight: 920,
+            }}
+          >
+            Check availability
+          </a>
+        </section>
+
+        <section
+          aria-label="Tour product options"
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 12,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+          }}
+        >
+          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Choose route setup
+          </div>
+
+          <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+            {islandHoppingProducts.map((product, index) => (
+              <a
+                key={product.title}
+                href={islandHoppingProductHref[product.title as keyof typeof islandHoppingProductHref]}
+                style={{
+                  minHeight: 68,
+                  borderRadius: 20,
+                  padding: 10,
+                  background: index === 0 ? OSP.goldSoft : OSP.mistSoft,
+                  border: index === 0 ? "1px solid rgba(243,174,38,0.26)" : "1px solid rgba(5,150,165,0.12)",
+                  color: OSP.navy,
+                  textDecoration: "none",
+                  display: "grid",
+                  gridTemplateColumns: "1fr auto",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <span style={{ minWidth: 0 }}>
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      borderRadius: 999,
+                      padding: "4px 7px",
+                      background: "#FFFFFF",
+                      color: OSP.slate,
+                      fontSize: 8.2,
+                      fontWeight: 850,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.07em",
+                    }}
+                  >
+                    {product.badge}
+                  </span>
+                  <strong style={{ display: "block", marginTop: 7, color: OSP.navy, fontSize: 13.4, lineHeight: 1, fontWeight: 890 }}>
+                    {product.title}
+                  </strong>
+                  <span style={{ display: "block", marginTop: 5, color: OSP.slate, fontSize: 10.2, lineHeight: 1.15, fontWeight: 700 }}>
+                    {product.note}
+                  </span>
+                </span>
+
+                <span style={{ textAlign: "right", flexShrink: 0 }}>
+                  <strong style={{ display: "block", color: OSP.navy, fontSize: 14.4, lineHeight: 1, fontWeight: 930 }}>
+                    {product.price}
+                  </strong>
+                  <span style={{ display: "block", marginTop: 5, color: OSP.slate, fontSize: 9.2, lineHeight: 1, fontWeight: 740 }}>
+                    {product.meta}
+                  </span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-label="Route description"
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+          }}
+        >
+          <h2 style={{ margin: 0, color: OSP.navy, fontSize: 19, lineHeight: 1, letterSpacing: "-0.04em", fontWeight: 880 }}>
+            Classic General Luna island route.
+          </h2>
+          <p style={{ margin: "7px 0 0", color: OSP.slate, fontSize: 12.2, lineHeight: 1.36, fontWeight: 710 }}>
+            This official trail is fulfilled by commercial tour offers such as joiner, private, premium private, and VVIP island-hopping packages.
+          </p>
+        </section>
+
+        <section
+          aria-label="Features and highlights"
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 12,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+          }}
+        >
+          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Top reasons
+          </div>
+
+          <div style={{ marginTop: 10, display: "grid", gap: 9 }}>
+            {islandHoppingReasons.map((item, index) => (
+              <div key={item.title} style={{ display: "grid", gridTemplateColumns: "38px 1fr", gap: 10, alignItems: "center" }}>
+                <span
+                  aria-hidden="true"
+                  style={{
+                    width: 38,
+                    height: 38,
+                    borderRadius: 16,
+                    background: index === 0 ? OSP.goldSoft : OSP.mist,
+                    color: OSP.navy,
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 16,
+                    fontWeight: 900,
+                  }}
+                >
+                  {index + 1}
+                </span>
+                <span>
+                  <strong style={{ display: "block", color: OSP.navy, fontSize: 13, lineHeight: 1.05, fontWeight: 880 }}>
+                    {item.title}
+                  </strong>
+                  <span style={{ display: "block", marginTop: 4, color: OSP.slate, fontSize: 10.6, lineHeight: 1.12, fontWeight: 700 }}>
+                    {item.note}
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-label="Inclusions and exclusions"
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+          }}
+        >
+          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Included support
+          </div>
+
+          <div style={{ marginTop: 11, display: "flex", flexWrap: "wrap", gap: 7 }}>
+            {islandHoppingInclusions.map((item) => (
+              <span
+                key={item}
+                style={{
+                  borderRadius: 999,
+                  padding: "7px 9px",
+                  background: OSP.mistSoft,
+                  border: "1px solid rgba(5,150,165,0.12)",
+                  color: OSP.navy,
+                  fontSize: 10,
+                  lineHeight: 1,
+                  fontWeight: 820,
+                }}
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 12, display: "grid", gap: 7 }}>
+            {islandHoppingExclusions.map((item) => (
+              <div
+                key={item}
+                style={{
+                  borderRadius: 16,
+                  padding: "9px 10px",
+                  background: OSP.goldSoft,
+                  border: "1px solid rgba(243,174,38,0.20)",
+                  color: OSP.navy,
+                  fontSize: 10.5,
+                  lineHeight: 1.15,
+                  fontWeight: 760,
+                }}
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-label="Guide and support logic"
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "linear-gradient(145deg, #FFFFFF 0%, #FFF8E8 100%)",
+            border: "1px solid rgba(243,174,38,0.24)",
+            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
+          }}
+        >
+          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Guide support
+          </div>
+          <h2 style={{ margin: "7px 0 0", color: OSP.navy, fontSize: 18.5, lineHeight: 1, letterSpacing: "-0.04em", fontWeight: 880 }}>
+            Confirm route conditions first.
+          </h2>
+          <p style={{ margin: "7px 0 0", color: OSP.slate, fontSize: 11.5, lineHeight: 1.3, fontWeight: 700 }}>
+            Local support checks pickup, pax, boat readiness, product type, tide-sensitive stops, and departure timing.
+          </p>
+        </section>
+
+        <section
+          aria-label="Booking flow"
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+          }}
+        >
+          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Booking flow
+          </div>
+
+          <div style={{ marginTop: 12, display: "grid", gap: 8 }}>
+            {islandHoppingFlow.map((step, index) => (
+              <div
+                key={step.title}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "34px 1fr auto",
+                  alignItems: "center",
+                  gap: 9,
+                  minHeight: 52,
+                  borderRadius: 19,
+                  padding: "9px 10px",
+                  background: index === 4 ? OSP.goldSoft : OSP.mistSoft,
+                  border: index === 4 ? "1px solid rgba(243,174,38,0.26)" : "1px solid rgba(5,150,165,0.12)",
+                }}
+              >
+                <span
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 14,
+                    background: index === 4 ? OSP.gold : OSP.navy,
+                    color: index === 4 ? OSP.navy : "#FFFFFF",
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 11,
+                    fontWeight: 900,
+                  }}
+                >
+                  {index + 1}
+                </span>
+                <span style={{ minWidth: 0 }}>
+                  <strong style={{ display: "block", color: OSP.navy, fontSize: 12.2, lineHeight: 1, fontWeight: 880 }}>
+                    {step.title}
+                  </strong>
+                  <span style={{ display: "block", marginTop: 4, color: OSP.slate, fontSize: 9.8, lineHeight: 1, fontWeight: 710 }}>
+                    {step.note}
+                  </span>
+                </span>
+                <span style={{ color: OSP.slate, fontSize: 17, fontWeight: 900 }}>›</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-label="Voucher boarding and manifest chain"
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+          }}
+        >
+          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            After payment
+          </div>
+
+          <div style={{ marginTop: 11, display: "grid", gap: 8 }}>
+            {islandHoppingStatusChain.map((item, index) => (
+              <div
+                key={item.title}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "32px 1fr",
+                  gap: 9,
+                  alignItems: "center",
+                  minHeight: 48,
+                  borderRadius: 18,
+                  padding: "9px 10px",
+                  background: index === 1 ? OSP.goldSoft : OSP.mistSoft,
+                  border: index === 1 ? "1px solid rgba(243,174,38,0.24)" : "1px solid rgba(5,150,165,0.12)",
+                }}
+              >
+                <span
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 13,
+                    background: index === 1 ? OSP.gold : OSP.navy,
+                    color: index === 1 ? OSP.navy : "#FFFFFF",
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 10.5,
+                    fontWeight: 900,
+                  }}
+                >
+                  {index + 1}
+                </span>
+
+                <span style={{ minWidth: 0 }}>
+                  <strong style={{ display: "block", color: OSP.navy, fontSize: 12.1, lineHeight: 1, fontWeight: 880 }}>
+                    {item.title}
+                  </strong>
+                  <span style={{ display: "block", marginTop: 4, color: OSP.slate, fontSize: 9.8, lineHeight: 1.12, fontWeight: 710 }}>
+                    {item.note}
+                  </span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-label="Price pax and payment logic"
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+          }}
+        >
+          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Price / Pax
+          </div>
+
+          <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            <div style={{ borderRadius: 18, padding: 11, background: OSP.mistSoft, border: "1px solid rgba(5,150,165,0.12)" }}>
+              <div style={{ color: OSP.slate, fontSize: 9, fontWeight: 820 }}>JOINER</div>
+              <strong style={{ display: "block", marginTop: 6, color: OSP.navy, fontSize: 17, lineHeight: 1, fontWeight: 900 }}>
+                ₱1,500/head
+              </strong>
+            </div>
+            <div style={{ borderRadius: 18, padding: 11, background: OSP.goldSoft, border: "1px solid rgba(243,174,38,0.24)" }}>
+              <div style={{ color: OSP.slate, fontSize: 9, fontWeight: 820 }}>PRIVATE</div>
+              <strong style={{ display: "block", marginTop: 6, color: OSP.navy, fontSize: 17, lineHeight: 1, fontWeight: 900 }}>
+                Pax-tiered
+              </strong>
+            </div>
+          </div>
+
+          <p style={{ margin: "10px 0 0", color: OSP.slate, fontSize: 11.2, lineHeight: 1.28, fontWeight: 700 }}>
+            Traveler sees clean public SRP. Final checkout depends on product, pax, pickup boundary, and route readiness.
+          </p>
+
+          <div
+            aria-label="Departure control handoff"
+            style={{
+              marginTop: 10,
+              borderRadius: 17,
+              padding: "10px 11px",
+              background: OSP.mistSoft,
+              border: "1px solid rgba(5,150,165,0.12)",
+              color: OSP.navy,
+              fontSize: 10.8,
+              lineHeight: 1.25,
+              fontWeight: 760,
+            }}
+          >
+            Voucher → Boarding QR → Manifest record after route and payment readiness.
+          </div>
+
+          <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            <a
+              href={islandHoppingPaxUrl}
+              style={{
+                minHeight: 44,
+                borderRadius: 16,
+                background: OSP.navy,
+                color: "#FFFFFF",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textDecoration: "none",
+                fontSize: 11.8,
+                fontWeight: 860,
+              }}
+            >
+              Set pax
+            </a>
+
+            <a
+              href={islandHoppingProductUrl}
+              style={{
+                minHeight: 44,
+                borderRadius: 16,
+                background: OSP.gold,
+                color: OSP.navy,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textDecoration: "none",
+                fontSize: 11.8,
+                fontWeight: 900,
+              }}
+            >
+              Choose setup
+            </a>
+          </div>
+        </section>
+
+        <section
+          aria-label="Primary commercial action"
+          style={{
+            marginTop: 12,
+            borderRadius: 28,
+            padding: 14,
+            background: `linear-gradient(145deg, ${OSP.navy} 0%, ${OSP.deepNavy} 100%)`,
+            color: "#FFFFFF",
+            boxShadow: "0 18px 44px rgba(1,56,99,0.18)",
+          }}
+        >
+          <h2 style={{ margin: 0, color: "#FFFFFF", fontSize: 22, lineHeight: 1, letterSpacing: "-0.045em", fontWeight: 900 }}>
+            Check availability.
+          </h2>
+          <p style={{ margin: "7px 0 0", color: "rgba(255,255,255,0.76)", fontSize: 11.6, lineHeight: 1.3, fontWeight: 700 }}>
+            Select date, pax, pickup, and route setup before checkout.
+          </p>
+
+          <a
+            href={islandHoppingAvailabilityUrl}
+            style={{
+              marginTop: 13,
+              minHeight: 52,
+              borderRadius: 18,
+              background: OSP.gold,
+              color: OSP.navy,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none",
+              fontSize: 14,
+              fontWeight: 930,
+            }}
+          >
+            Check availability
+          </a>
+        </section>
+
+        <section
+          aria-label="Trail stops compact"
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+          }}
+        >
+          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Trail stops
+          </div>
+
+          <div style={{ marginTop: 10, display: "grid", gap: 9 }}>
+            {islandHoppingStops.map((stop, index) => (
+              <a
+                key={stop.name}
+                href={islandHoppingStopMapHref[stop.name as keyof typeof islandHoppingStopMapHref]}
+                style={{
+                  display: "grid",
+                  textDecoration: "none",
+                  gridTemplateColumns: "48px 1fr",
+                  gap: 10,
+                  alignItems: "center",
+                  minHeight: 74,
+                  borderRadius: 21,
+                  padding: "10px",
+                  background: index === 1 ? OSP.goldSoft : OSP.mistSoft,
+                  border: index === 1 ? "1px solid rgba(243,174,38,0.24)" : "1px solid rgba(5,150,165,0.12)",
+                }}
+              >
+                <span
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 18,
+                    background: "#FFFFFF",
+                    color: OSP.navy,
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 12,
+                    fontWeight: 900,
+                    boxShadow: "0 8px 18px rgba(1,56,99,0.06)",
+                  }}
+                >
+                  {index + 1}
+                </span>
+                <span style={{ minWidth: 0 }}>
+                  <span style={{ display: "inline-flex", marginBottom: 5, borderRadius: 999, padding: "4px 7px", background: "#FFFFFF", color: OSP.slate, fontSize: 8.4, fontWeight: 840 }}>
+                    {stop.tag} · {stop.time}
+                  </span>
+                  <strong style={{ display: "block", color: OSP.navy, fontSize: 13.4, lineHeight: 1, fontWeight: 890 }}>
+                    {stop.name}
+                  </strong>
+                  <span style={{ display: "block", marginTop: 5, color: OSP.slate, fontSize: 10.2, lineHeight: 1.18, fontWeight: 700 }}>
+                    {stop.note}
+                  </span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-label="Discover other trails"
+          style={{
+            marginTop: 12,
+            borderRadius: 24,
+            padding: 12,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 12px 28px rgba(1,56,99,0.065)",
+          }}
+        >
+          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Discover other trails
+          </div>
+
+          <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            {islandHoppingOtherTrails.map((trail) => (
+              <a
+                key={trail.href}
+                href={trail.href}
+                style={{
+                  minHeight: 54,
+                  borderRadius: 17,
+                  background: OSP.mist,
+                  color: OSP.navy,
+                  border: "1px solid rgba(5,150,165,0.12)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  textAlign: "center",
+                  gap: 4,
+                }}
+              >
+                <strong style={{ fontSize: 11.3, lineHeight: 1, fontWeight: 880 }}>{trail.title}</strong>
+                <span style={{ fontSize: 9.2, lineHeight: 1, fontWeight: 720, color: OSP.slate }}>{trail.note}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section
+          aria-label="Secondary support and map action"
+          style={{
+            marginTop: 12,
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 8,
+          }}
+        >
+          <a
+            href={islandHoppingMapUrl}
+            style={{
+              minHeight: 48,
+              borderRadius: 17,
+              background: OSP.mist,
+              color: OSP.navy,
+              border: "1px solid rgba(5,150,165,0.13)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none",
+              fontSize: 12,
+              fontWeight: 860,
+            }}
+          >
+            View map
+          </a>
+
+          <a
+            href="/traveler/passport-trails"
+            style={{
+              minHeight: 48,
+              borderRadius: 17,
+              background: "#FFFFFF",
+              color: OSP.navy,
+              border: "1px solid rgba(1,56,99,0.10)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textDecoration: "none",
+              fontSize: 12,
+              fontWeight: 860,
+            }}
+          >
+            All trails
+          </a>
+        </section>
+
+        <section
+          aria-label="Kuya Tala support"
+          style={{
+            marginTop: 12,
+            borderRadius: 24,
+            padding: 12,
+            background: "linear-gradient(145deg, #FFFFFF 0%, #FFF8E8 100%)",
+            border: "1px solid rgba(243,174,38,0.24)",
+            boxShadow: "0 12px 28px rgba(1,56,99,0.065)",
+          }}
+        >
+          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Kuya Tala™
+          </div>
+
+          <div style={{ marginTop: 9, display: "grid", gridTemplateColumns: "1fr auto", gap: 10, alignItems: "center" }}>
+            <div>
+              <div style={{ color: OSP.navy, fontSize: 14.8, lineHeight: 1.05, letterSpacing: "-0.035em", fontWeight: 880 }}>
+                Need help before booking?
+              </div>
+              <div style={{ marginTop: 4, color: OSP.slate, fontSize: 10.2, lineHeight: 1.15, fontWeight: 700 }}>
+                Ask about route, product type, pickup, or pax.
+              </div>
+            </div>
+
+            <a
+              href={islandHoppingKuyaTalaUrl}
+              style={{
+                minHeight: 40,
+                borderRadius: 15,
+                background: OSP.navy,
+                color: "#FFFFFF",
+                padding: "0 13px",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textDecoration: "none",
+                fontSize: 11.5,
+                fontWeight: 860,
+                whiteSpace: "nowrap",
+              }}
+            >
+              Ask
+            </a>
+          </div>
+        </section>
+      </div>
+
+      <div
+        aria-label="Island Hopping bottom booking action"
+        style={{
+          position: "fixed",
+          left: "50%",
+          bottom: "calc(78px + env(safe-area-inset-bottom))",
+          transform: "translateX(-50%)",
+          width: "min(390px, calc(100vw - 28px))",
+          zIndex: 40,
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            borderRadius: 24,
+            padding: 9,
+            background: "rgba(255,255,255,0.94)",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 18px 44px rgba(1,56,99,0.16)",
+            display: "grid",
+            gridTemplateColumns: "1fr auto",
+            gap: 9,
+            alignItems: "center",
+            pointerEvents: "auto",
+          }}
+        >
+          <div style={{ minWidth: 0, paddingLeft: 5 }}>
+            <div style={{ color: OSP.slate, fontSize: 9, lineHeight: 1, fontWeight: 820 }}>
+              Island Hopping
+            </div>
+            <div style={{ marginTop: 4, color: OSP.navy, fontSize: 13, lineHeight: 1, fontWeight: 900 }}>
+              From ₱1,500/head
+            </div>
+          </div>
+
+          <a
+            href={islandHoppingAvailabilityUrl}
+            style={{
+              minHeight: 42,
+              borderRadius: 16,
+              background: OSP.gold,
+              color: OSP.navy,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 16px",
+              textDecoration: "none",
+              fontSize: 12.2,
+              fontWeight: 920,
+              whiteSpace: "nowrap",
+            }}
+          >
+            Check availability
+          </a>
+        </div>
+      </div>
+
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
+    </main>
+  );
+}
+
+
+
 export default function PassportTrailDetailPage({
+
   params,
 }: {
   params: { trailSlug: string };
 }) {
+  const activeTrailSlug = params.trailSlug;
+
+  if (activeTrailSlug === "island-hopping") {
+    return <IslandHoppingCommercialTemplate />;
+  }
+
+
   const trail = TRAILS[params.trailSlug];
 
   if (!trail) {
