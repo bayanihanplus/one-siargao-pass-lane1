@@ -1275,7 +1275,7 @@ function OfficialTrailMediaPreview({
       <div
         style={{
           borderRadius: 28,
-          background: "linear-gradient(135deg, #013863 0%, #035F79 54%, #0596A5 100%)",
+          background: "linear-gradient(135deg, #FFFFFF 0%, #F4FCFA 58%, #EAFBFA 100%)",
           border: "1px solid rgba(255,255,255,0.16)",
           boxShadow: "0 22px 48px rgba(1,56,99,0.22)",
           padding: 14,
@@ -1654,7 +1654,7 @@ function OfficialTrailCommercialExposurePanel({
           helper: "Optional support confirmed by operator.",
         },
       ],
-      flowSteps: ["Pick route", "Set pax", "Choose support", "Request confirmation"],
+      flowSteps: ["Pick route", "Set your pax", "Choose support", "Request confirmation"],
       priceHeadline: "Price to confirm",
       priceBody:
         "Final price depends on route choice, pax count, pickup area, vehicle type, guide support, and photo/drone add-ons.",
@@ -3924,515 +3924,7 @@ function OfficialTrailCommercialExposurePanel({
     textTransform: "uppercase",
   };
 
-  return (
-    <section
-      aria-label="Official trail production booking details"
-      style={{
-        margin: "12px auto 0",
-        width: "100%",
-        maxWidth: 430,
-        padding: "0 12px",
-        boxSizing: "border-box",
-      }}
-    >
-      <div style={{ display: "grid", gap: 10 }}>
-        <article aria-label="Description" style={blockStyle}>
-          <div style={labelStyle}>Description</div>
-          <h2
-            style={{
-              margin: "6px 0 0",
-              color: "#013863",
-              fontSize: 18,
-              lineHeight: 1.05,
-              fontWeight: 950,
-              letterSpacing: "-0.045em",
-            }}
-          >
-            {item.descriptionTitle}
-          </h2>
-          <p
-            style={{
-              margin: "7px 0 0",
-              color: "#50668B",
-              fontSize: 11.3,
-              lineHeight: 1.38,
-              fontWeight: 760,
-            }}
-          >
-            {item.description}
-          </p>
-
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 6,
-              marginTop: 10,
-            }}
-          >
-            {item.heroChips.map((chip) => (
-              <span
-                key={chip}
-                style={{
-                  borderRadius: 999,
-                  padding: "6px 8px",
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(1,56,99,0.08)",
-                  color: deep,
-                  fontSize: 8.8,
-                  fontWeight: 900,
-                }}
-              >
-                {chip}
-              </span>
-            ))}
-          </div>
-        </article>
-
-        <article aria-label="Features" style={blockStyle}>
-          <div style={labelStyle}>Features</div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 7,
-              marginTop: 10,
-            }}
-          >
-            {item.featureCards.map((feature) => (
-              <div
-                key={feature.title}
-                style={{
-                  minHeight: 82,
-                  borderRadius: 18,
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(1,56,99,0.08)",
-                  padding: 10,
-                  display: "grid",
-                  alignContent: "start",
-                  gap: 6,
-                }}
-              >
-                <span
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: 12,
-                    background: "rgba(5,150,165,0.09)",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 14,
-                  }}
-                >
-                  {feature.icon}
-                </span>
-                <strong
-                  style={{
-                    color: "#013863",
-                    fontSize: 10,
-                    lineHeight: 1.08,
-                    fontWeight: 950,
-                  }}
-                >
-                  {feature.title}
-                </strong>
-                <span
-                  style={{
-                    color: "#50668B",
-                    fontSize: 8.8,
-                    lineHeight: 1.22,
-                    fontWeight: 740,
-                  }}
-                >
-                  {feature.body}
-                </span>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article aria-label="Booking Flow" style={blockStyle}>
-          <div style={labelStyle}>Booking Flow</div>
-
-          <div
-            style={{
-              display: "grid",
-              gap: 7,
-              marginTop: 10,
-            }}
-          >
-            {item.bookingFields.map((field) => (
-              <div
-                key={field.label}
-                style={{
-                  borderRadius: 18,
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(1,56,99,0.08)",
-                  padding: 10,
-                  display: "grid",
-                  gridTemplateColumns: "74px 1fr",
-                  gap: 8,
-                  alignItems: "center",
-                }}
-              >
-                <span
-                  style={{
-                    color: deep,
-                    fontSize: 8.5,
-                    fontWeight: 950,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {field.label}
-                </span>
-                <div>
-                  <strong
-                    style={{
-                      display: "block",
-                      color: "#013863",
-                      fontSize: 10.4,
-                      lineHeight: 1.08,
-                      fontWeight: 950,
-                    }}
-                  >
-                    {field.value}
-                  </strong>
-                  <span
-                    style={{
-                      display: "block",
-                      marginTop: 3,
-                      color: "#50668B",
-                      fontSize: 8.8,
-                      lineHeight: 1.2,
-                      fontWeight: 730,
-                    }}
-                  >
-                    {field.helper}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-              gap: 6,
-              marginTop: 9,
-            }}
-          >
-            {item.flowSteps.map((step, index) => (
-              <div
-                key={step}
-                style={{
-                  minHeight: 58,
-                  borderRadius: 15,
-                  padding: 7,
-                  background:
-                    index === 0
-                      ? "rgba(5,150,165,0.10)"
-                      : "rgba(255,255,255,0.94)",
-                  border:
-                    index === 0
-                      ? "1px solid rgba(5,150,165,0.20)"
-                      : "1px solid rgba(1,56,99,0.07)",
-                  display: "grid",
-                  alignContent: "start",
-                  gap: 5,
-                }}
-              >
-                <span
-                  style={{
-                    width: 21,
-                    height: 21,
-                    borderRadius: 999,
-                    background: index === 0 ? accent : "rgba(1,56,99,0.08)",
-                    color: index === 0 ? "#FFFFFF" : "#013863",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 9,
-                    fontWeight: 950,
-                  }}
-                >
-                  {index + 1}
-                </span>
-                <span
-                  style={{
-                    color: "#013863",
-                    fontSize: 8.6,
-                    lineHeight: 1.12,
-                    fontWeight: 860,
-                  }}
-                >
-                  {step}
-                </span>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article aria-label="Price and Pax Logic" style={blockStyle}>
-          <div style={labelStyle}>Price / Pax Logic</div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1.2fr",
-              gap: 8,
-              marginTop: 10,
-            }}
-          >
-            <div
-              style={{
-                borderRadius: 19,
-                padding: 12,
-                background: "#FFFFFF",
-                border: "1px solid rgba(1,56,99,0.08)",
-                display: "grid",
-                alignContent: "center",
-              }}
-            >
-              <div
-                style={{
-                  color: "#013863",
-                  fontSize: 18,
-                  lineHeight: 1.02,
-                  fontWeight: 950,
-                  letterSpacing: "-0.04em",
-                }}
-              >
-                {item.priceHeadline}
-              </div>
-            </div>
-
-            <p
-              style={{
-                margin: 0,
-                borderRadius: 19,
-                padding: 12,
-                background: "rgba(255,248,232,0.74)",
-                border: "1px solid rgba(243,174,38,0.18)",
-                color: "#013863",
-                fontSize: 9.8,
-                lineHeight: 1.32,
-                fontWeight: 760,
-              }}
-            >
-              {item.priceBody}
-            </p>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gap: 6,
-              marginTop: 8,
-            }}
-          >
-            {item.paxRows.map((row) => (
-              <div
-                key={row.pax}
-                style={{
-                  borderRadius: 15,
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(1,56,99,0.075)",
-                  padding: "8px 10px",
-                  display: "grid",
-                  gridTemplateColumns: "82px 1fr",
-                  gap: 8,
-                  alignItems: "center",
-                }}
-              >
-                <strong
-                  style={{
-                    color: deep,
-                    fontSize: 9.3,
-                    fontWeight: 950,
-                  }}
-                >
-                  {row.pax}
-                </strong>
-                <span
-                  style={{
-                    color: "#50668B",
-                    fontSize: 9,
-                    lineHeight: 1.18,
-                    fontWeight: 760,
-                  }}
-                >
-                  {row.rule}
-                </span>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article aria-label="Guide and Support Logic" style={blockStyle}>
-          <div style={labelStyle}>Guide / Support Logic</div>
-          <h3
-            style={{
-              margin: "6px 0 0",
-              color: "#013863",
-              fontSize: 15.5,
-              lineHeight: 1.05,
-              fontWeight: 950,
-              letterSpacing: "-0.035em",
-            }}
-          >
-            {item.supportHeadline}
-          </h3>
-
-          <div
-            style={{
-              display: "grid",
-              gap: 7,
-              marginTop: 9,
-            }}
-          >
-            {item.supportCards.map((support) => (
-              <div
-                key={support.title}
-                style={{
-                  borderRadius: 17,
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(1,56,99,0.08)",
-                  padding: 10,
-                }}
-              >
-                <strong
-                  style={{
-                    display: "block",
-                    color: "#013863",
-                    fontSize: 10,
-                    lineHeight: 1.08,
-                    fontWeight: 950,
-                  }}
-                >
-                  {support.title}
-                </strong>
-                <span
-                  style={{
-                    display: "block",
-                    marginTop: 4,
-                    color: "#50668B",
-                    fontSize: 9,
-                    lineHeight: 1.25,
-                    fontWeight: 740,
-                  }}
-                >
-                  {support.body}
-                </span>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article
-          aria-label="Payment CTA and Readiness State"
-          style={{
-            borderRadius: 28,
-            background:
-              "linear-gradient(145deg, rgba(255,255,255,0.99), rgba(244,252,250,0.96))",
-            border: "1px solid rgba(5,150,165,0.16)",
-            boxShadow: "0 18px 42px rgba(1,56,99,0.09)",
-            padding: 14,
-          }}
-        >
-          <div style={labelStyle}>Payment CTA / Readiness State</div>
-
-          <div
-            style={{
-              marginTop: 9,
-              borderRadius: 18,
-              padding: 11,
-              background: "rgba(234,251,250,0.76)",
-              border: "1px solid rgba(5,150,165,0.16)",
-            }}
-          >
-            <strong
-              style={{
-                display: "block",
-                color: "#013863",
-                fontSize: 12,
-                lineHeight: 1.15,
-                fontWeight: 950,
-              }}
-            >
-              {item.readinessLabel}
-            </strong>
-            <p
-              style={{
-                margin: "5px 0 0",
-                color: "#50668B",
-                fontSize: 10,
-                lineHeight: 1.32,
-                fontWeight: 750,
-              }}
-            >
-              {item.readinessBody}
-            </p>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1.3fr 1fr",
-              gap: 8,
-              marginTop: 10,
-            }}
-          >
-            <a
-              href={`/traveler/payments?source=passport-trails&trail=${encodeURIComponent(trailSlug)}&intent=request`}
-              style={{
-                minHeight: 48,
-                borderRadius: 17,
-                background: primaryGradient,
-                color: "#FFFFFF",
-                WebkitTextFillColor: "#FFFFFF",
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-                padding: "0 12px",
-                fontSize: 12,
-                fontWeight: 950,
-                boxShadow: "0 15px 32px rgba(5,150,165,0.18)",
-              }}
-            >
-              {item.primaryCta}
-            </a>
-
-            <a
-              href="/traveler/settings?panel=assistant&topic=passport-trails"
-              style={{
-                minHeight: 48,
-                borderRadius: 17,
-                background: "#FFFFFF",
-                color: deep,
-                WebkitTextFillColor: deep,
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-                padding: "0 10px",
-                fontSize: 11,
-                fontWeight: 950,
-                border: "1px solid rgba(1,56,99,0.08)",
-              }}
-            >
-              {item.secondaryCta}
-            </a>
-          </div>
-        </article>
-      </div>
-    </section>
-  );
+  return null;
 }
 
 
@@ -5173,7 +4665,7 @@ function islandHoppingDcsParams(extra: Record<string, string> = {}) {
     ...extra,
   });
 
-  return `/traveler/explore/tours/general-luna-island-hopping/${islandHoppingDcsTruth.routeCode}/book?${params.toString()}`;
+  return `/traveler/passport-trails/island-hopping/book?${params.toString()}`;
 }
 
 const islandHoppingBookingBaseUrl = islandHoppingDcsParams();
@@ -5214,6 +4706,7 @@ const islandHoppingInputTargets = {
   Pax: islandHoppingPaxUrl,
   Pickup: islandHoppingPickupUrl,
   Product: islandHoppingProductUrl,
+  Setup: islandHoppingProductUrl,
 };
 
 const islandHoppingProductHref = {
@@ -5249,11 +4742,6 @@ const islandHoppingStopMapHref = {
   "Guyam Island": `${islandHoppingMapUrl}&stop=guyam-island&movement=trail-stop`,
 };
 
-const islandHoppingStatusChain = [
-  { title: "Voucher", note: "Issued after payment readiness" },
-  { title: "Boarding QR", note: "Used for port boarding validation" },
-  { title: "Manifest", note: "Trip record after boarding" },
-];
 
 
 const islandHoppingMedia = [
@@ -5262,9 +4750,16 @@ const islandHoppingMedia = [
   { label: "Sandbar", hint: "Photo" },
 ];
 
+const islandHoppingConfidence = [
+  { label: "Route-ready", value: "GL Tri-Island" },
+  { label: "Voucher", value: "After booking" },
+  { label: "Support", value: "Boarding help" },
+];
+
 const islandHoppingProducts = [
   {
     title: "Tri-Island Joiner",
+    cta: "Choose Joiner Seat",
     price: "From ₱1,500",
     meta: "Per traveler",
     note: "Shared island-hopping slot.",
@@ -5272,6 +4767,7 @@ const islandHoppingProducts = [
   },
   {
     title: "Private Island Route",
+    cta: "Choose Private Boat",
     price: "Pax-tiered",
     meta: "Private boat",
     note: "Price adjusts by group size.",
@@ -5279,6 +4775,7 @@ const islandHoppingProducts = [
   },
   {
     title: "Premium Private",
+    cta: "View Premium Setup",
     price: "From ₱2,000",
     meta: "10+ pax rate",
     note: "Richer food route option.",
@@ -5286,6 +4783,7 @@ const islandHoppingProducts = [
   },
   {
     title: "VVIP Party Boat",
+    cta: "View VVIP Package",
     price: "₱60,000",
     meta: "Flat package",
     note: "Private premium island day.",
@@ -5319,19 +4817,12 @@ const islandHoppingExclusions = [
 ];
 
 const islandHoppingBookingInputs = [
-  { label: "Date", value: "Select day", icon: "📅" },
-  { label: "Pax", value: "Choose group", icon: "👥" },
+  { label: "Date", value: "Choose on next step", icon: "📅" },
+  { label: "Pax", value: "Set during booking", icon: "👥" },
   { label: "Pickup", value: "General Luna", icon: "📍" },
-  { label: "Product", value: "Joiner / Private", icon: "🛥️" },
+  { label: "Setup", value: "Joiner / Private", icon: "🛥️" },
 ];
 
-const islandHoppingFlow = [
-  { title: "Pick date", note: "Trip day and timing." },
-  { title: "Set pax", note: "Price depends on group size." },
-  { title: "Choose product", note: "Joiner, private, premium, or VVIP." },
-  { title: "Confirm route", note: "Boat, guide, pickup, and tide-sensitive stop." },
-  { title: "Pay to secure", note: "Checkout opens after route readiness." },
-];
 
 const islandHoppingStops = [
   {
@@ -5582,7 +5073,7 @@ function IslandHoppingCommercialTemplate() {
         </header>
 
         <section
-          aria-label="Quick booking inputs"
+          aria-label="Island Hopping quick summary"
           style={{
             marginTop: 12,
             borderRadius: 28,
@@ -5594,9 +5085,8 @@ function IslandHoppingCommercialTemplate() {
         >
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {islandHoppingBookingInputs.map((item) => (
-              <a
+              <div
                 key={item.label}
-                href={islandHoppingInputTargets[item.label as keyof typeof islandHoppingInputTargets]}
                 style={{
                   minHeight: 56,
                   borderRadius: 18,
@@ -5620,7 +5110,7 @@ function IslandHoppingCommercialTemplate() {
                     {item.value}
                   </strong>
                 </span>
-              </a>
+              </div>
             ))}
           </div>
 
@@ -5640,11 +5130,128 @@ function IslandHoppingCommercialTemplate() {
               fontWeight: 920,
             }}
           >
-            Check availability
+            Start Island Hopping Booking
           </a>
         </section>
 
         <section
+          aria-label="Island Hopping confidence"
+          style={{
+            marginTop: 10,
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: 7,
+          }}
+        >
+          {islandHoppingConfidence.map((item) => (
+            <div
+              key={item.label}
+              style={{
+                minHeight: 52,
+                borderRadius: 17,
+                padding: "9px 8px",
+                background: "#FFFFFF",
+                border: "1px solid rgba(1,56,99,0.08)",
+                boxShadow: "0 10px 22px rgba(1,56,99,0.055)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                gap: 5,
+              }}
+            >
+              <span
+                style={{
+                  color: "#50668B",
+                  fontSize: 8.2,
+                  lineHeight: 1,
+                  fontWeight: 860,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {item.label}
+              </span>
+              <strong
+                style={{
+                  color: "#013863",
+                  fontSize: 10.6,
+                  lineHeight: 1,
+                  fontWeight: 900,
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                {item.value}
+              </strong>
+            </div>
+          ))}
+        </section>
+
+
+        <section
+          aria-label="Trail stops compact"
+          style={{
+            marginTop: 12,
+            borderRadius: 26,
+            padding: 14,
+            background: "#FFFFFF",
+            border: `1px solid ${OSP.line}`,
+            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+          }}
+        >
+          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Trail stops
+          </div>
+
+          <div style={{ marginTop: 10, display: "grid", gap: 9 }}>
+            {islandHoppingStops.map((stop, index) => (
+              <a
+                key={stop.name}
+                href={islandHoppingStopMapHref[stop.name as keyof typeof islandHoppingStopMapHref]}
+                style={{
+                  display: "grid",
+                  textDecoration: "none",
+                  gridTemplateColumns: "48px 1fr",
+                  gap: 10,
+                  alignItems: "center",
+                  minHeight: 74,
+                  borderRadius: 21,
+                  padding: "10px",
+                  background: index === 1 ? OSP.goldSoft : OSP.mistSoft,
+                  border: index === 1 ? "1px solid rgba(243,174,38,0.24)" : "1px solid rgba(5,150,165,0.12)",
+                }}
+              >
+                <span
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 18,
+                    background: "#FFFFFF",
+                    color: OSP.navy,
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 12,
+                    fontWeight: 900,
+                    boxShadow: "0 8px 18px rgba(1,56,99,0.06)",
+                  }}
+                >
+                  {index + 1}
+                </span>
+                <span style={{ minWidth: 0 }}>
+                  <span style={{ display: "inline-flex", marginBottom: 5, borderRadius: 999, padding: "4px 7px", background: "#FFFFFF", color: OSP.slate, fontSize: 8.4, fontWeight: 840 }}>
+                    {stop.tag} · {stop.time}
+                  </span>
+                  <strong style={{ display: "block", color: OSP.navy, fontSize: 13.4, lineHeight: 1, fontWeight: 890 }}>
+                    {stop.name}
+                  </strong>
+                  <span style={{ display: "block", marginTop: 5, color: OSP.slate, fontSize: 10.2, lineHeight: 1.18, fontWeight: 700 }}>
+                    {stop.note}
+                  </span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+<section
           aria-label="Tour product options"
           style={{
             marginTop: 12,
@@ -5699,6 +5306,22 @@ function IslandHoppingCommercialTemplate() {
                   </strong>
                   <span style={{ display: "block", marginTop: 5, color: OSP.slate, fontSize: 10.2, lineHeight: 1.15, fontWeight: 700 }}>
                     {product.note}
+                  </span>
+
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      marginTop: 9,
+                      borderRadius: 999,
+                      padding: "7px 9px",
+                      background: "#013863",
+                      color: "#FFFFFF",
+                      fontSize: 9.8,
+                      lineHeight: 1,
+                      fontWeight: 900,
+                    }}
+                  >
+                    {product.cta}
                   </span>
                 </span>
 
@@ -5859,215 +5482,11 @@ function IslandHoppingCommercialTemplate() {
           </p>
         </section>
 
-        <section
-          aria-label="Booking flow"
-          style={{
-            marginTop: 12,
-            borderRadius: 26,
-            padding: 14,
-            background: "#FFFFFF",
-            border: `1px solid ${OSP.line}`,
-            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
-          }}
-        >
-          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-            Booking flow
-          </div>
+        
 
-          <div style={{ marginTop: 12, display: "grid", gap: 8 }}>
-            {islandHoppingFlow.map((step, index) => (
-              <div
-                key={step.title}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "34px 1fr auto",
-                  alignItems: "center",
-                  gap: 9,
-                  minHeight: 52,
-                  borderRadius: 19,
-                  padding: "9px 10px",
-                  background: index === 4 ? OSP.goldSoft : OSP.mistSoft,
-                  border: index === 4 ? "1px solid rgba(243,174,38,0.26)" : "1px solid rgba(5,150,165,0.12)",
-                }}
-              >
-                <span
-                  style={{
-                    width: 34,
-                    height: 34,
-                    borderRadius: 14,
-                    background: index === 4 ? OSP.gold : OSP.navy,
-                    color: index === 4 ? OSP.navy : "#FFFFFF",
-                    display: "grid",
-                    placeItems: "center",
-                    fontSize: 11,
-                    fontWeight: 900,
-                  }}
-                >
-                  {index + 1}
-                </span>
-                <span style={{ minWidth: 0 }}>
-                  <strong style={{ display: "block", color: OSP.navy, fontSize: 12.2, lineHeight: 1, fontWeight: 880 }}>
-                    {step.title}
-                  </strong>
-                  <span style={{ display: "block", marginTop: 4, color: OSP.slate, fontSize: 9.8, lineHeight: 1, fontWeight: 710 }}>
-                    {step.note}
-                  </span>
-                </span>
-                <span style={{ color: OSP.slate, fontSize: 17, fontWeight: 900 }}>›</span>
-              </div>
-            ))}
-          </div>
-        </section>
+        
 
-        <section
-          aria-label="Voucher boarding and manifest chain"
-          style={{
-            marginTop: 12,
-            borderRadius: 26,
-            padding: 14,
-            background: "#FFFFFF",
-            border: `1px solid ${OSP.line}`,
-            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
-          }}
-        >
-          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-            After payment
-          </div>
-
-          <div style={{ marginTop: 11, display: "grid", gap: 8 }}>
-            {islandHoppingStatusChain.map((item, index) => (
-              <div
-                key={item.title}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "32px 1fr",
-                  gap: 9,
-                  alignItems: "center",
-                  minHeight: 48,
-                  borderRadius: 18,
-                  padding: "9px 10px",
-                  background: index === 1 ? OSP.goldSoft : OSP.mistSoft,
-                  border: index === 1 ? "1px solid rgba(243,174,38,0.24)" : "1px solid rgba(5,150,165,0.12)",
-                }}
-              >
-                <span
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 13,
-                    background: index === 1 ? OSP.gold : OSP.navy,
-                    color: index === 1 ? OSP.navy : "#FFFFFF",
-                    display: "grid",
-                    placeItems: "center",
-                    fontSize: 10.5,
-                    fontWeight: 900,
-                  }}
-                >
-                  {index + 1}
-                </span>
-
-                <span style={{ minWidth: 0 }}>
-                  <strong style={{ display: "block", color: OSP.navy, fontSize: 12.1, lineHeight: 1, fontWeight: 880 }}>
-                    {item.title}
-                  </strong>
-                  <span style={{ display: "block", marginTop: 4, color: OSP.slate, fontSize: 9.8, lineHeight: 1.12, fontWeight: 710 }}>
-                    {item.note}
-                  </span>
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section
-          aria-label="Price pax and payment logic"
-          style={{
-            marginTop: 12,
-            borderRadius: 26,
-            padding: 14,
-            background: "#FFFFFF",
-            border: `1px solid ${OSP.line}`,
-            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
-          }}
-        >
-          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-            Price / Pax
-          </div>
-
-          <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <div style={{ borderRadius: 18, padding: 11, background: OSP.mistSoft, border: "1px solid rgba(5,150,165,0.12)" }}>
-              <div style={{ color: OSP.slate, fontSize: 9, fontWeight: 820 }}>JOINER</div>
-              <strong style={{ display: "block", marginTop: 6, color: OSP.navy, fontSize: 17, lineHeight: 1, fontWeight: 900 }}>
-                ₱1,500/head
-              </strong>
-            </div>
-            <div style={{ borderRadius: 18, padding: 11, background: OSP.goldSoft, border: "1px solid rgba(243,174,38,0.24)" }}>
-              <div style={{ color: OSP.slate, fontSize: 9, fontWeight: 820 }}>PRIVATE</div>
-              <strong style={{ display: "block", marginTop: 6, color: OSP.navy, fontSize: 17, lineHeight: 1, fontWeight: 900 }}>
-                Pax-tiered
-              </strong>
-            </div>
-          </div>
-
-          <p style={{ margin: "10px 0 0", color: OSP.slate, fontSize: 11.2, lineHeight: 1.28, fontWeight: 700 }}>
-            Traveler sees clean public SRP. Final checkout depends on product, pax, pickup boundary, and route readiness.
-          </p>
-
-          <div
-            aria-label="Departure control handoff"
-            style={{
-              marginTop: 10,
-              borderRadius: 17,
-              padding: "10px 11px",
-              background: OSP.mistSoft,
-              border: "1px solid rgba(5,150,165,0.12)",
-              color: OSP.navy,
-              fontSize: 10.8,
-              lineHeight: 1.25,
-              fontWeight: 760,
-            }}
-          >
-            Voucher → Boarding QR → Manifest record after route and payment readiness.
-          </div>
-
-          <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <a
-              href={islandHoppingPaxUrl}
-              style={{
-                minHeight: 44,
-                borderRadius: 16,
-                background: OSP.navy,
-                color: "#FFFFFF",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textDecoration: "none",
-                fontSize: 11.8,
-                fontWeight: 860,
-              }}
-            >
-              Set pax
-            </a>
-
-            <a
-              href={islandHoppingProductUrl}
-              style={{
-                minHeight: 44,
-                borderRadius: 16,
-                background: OSP.gold,
-                color: OSP.navy,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textDecoration: "none",
-                fontSize: 11.8,
-                fontWeight: 900,
-              }}
-            >
-              Choose setup
-            </a>
-          </div>
-        </section>
+        
 
         <section
           aria-label="Primary commercial action"
@@ -6081,7 +5500,7 @@ function IslandHoppingCommercialTemplate() {
           }}
         >
           <h2 style={{ margin: 0, color: "#FFFFFF", fontSize: 22, lineHeight: 1, letterSpacing: "-0.045em", fontWeight: 900 }}>
-            Check availability.
+            Start your Island Hopping booking.
           </h2>
           <p style={{ margin: "7px 0 0", color: "rgba(255,255,255,0.76)", fontSize: 11.6, lineHeight: 1.3, fontWeight: 700 }}>
             Select date, pax, pickup, and route setup before checkout.
@@ -6103,74 +5522,11 @@ function IslandHoppingCommercialTemplate() {
               fontWeight: 930,
             }}
           >
-            Check availability
+            Start Island Hopping Booking
           </a>
         </section>
 
-        <section
-          aria-label="Trail stops compact"
-          style={{
-            marginTop: 12,
-            borderRadius: 26,
-            padding: 14,
-            background: "#FFFFFF",
-            border: `1px solid ${OSP.line}`,
-            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
-          }}
-        >
-          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-            Trail stops
-          </div>
-
-          <div style={{ marginTop: 10, display: "grid", gap: 9 }}>
-            {islandHoppingStops.map((stop, index) => (
-              <a
-                key={stop.name}
-                href={islandHoppingStopMapHref[stop.name as keyof typeof islandHoppingStopMapHref]}
-                style={{
-                  display: "grid",
-                  textDecoration: "none",
-                  gridTemplateColumns: "48px 1fr",
-                  gap: 10,
-                  alignItems: "center",
-                  minHeight: 74,
-                  borderRadius: 21,
-                  padding: "10px",
-                  background: index === 1 ? OSP.goldSoft : OSP.mistSoft,
-                  border: index === 1 ? "1px solid rgba(243,174,38,0.24)" : "1px solid rgba(5,150,165,0.12)",
-                }}
-              >
-                <span
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 18,
-                    background: "#FFFFFF",
-                    color: OSP.navy,
-                    display: "grid",
-                    placeItems: "center",
-                    fontSize: 12,
-                    fontWeight: 900,
-                    boxShadow: "0 8px 18px rgba(1,56,99,0.06)",
-                  }}
-                >
-                  {index + 1}
-                </span>
-                <span style={{ minWidth: 0 }}>
-                  <span style={{ display: "inline-flex", marginBottom: 5, borderRadius: 999, padding: "4px 7px", background: "#FFFFFF", color: OSP.slate, fontSize: 8.4, fontWeight: 840 }}>
-                    {stop.tag} · {stop.time}
-                  </span>
-                  <strong style={{ display: "block", color: OSP.navy, fontSize: 13.4, lineHeight: 1, fontWeight: 890 }}>
-                    {stop.name}
-                  </strong>
-                  <span style={{ display: "block", marginTop: 5, color: OSP.slate, fontSize: 10.2, lineHeight: 1.18, fontWeight: 700 }}>
-                    {stop.note}
-                  </span>
-                </span>
-              </a>
-            ))}
-          </div>
-        </section>
+        
 
         <section
           aria-label="Discover other trails"
@@ -6362,7 +5718,7 @@ function IslandHoppingCommercialTemplate() {
               whiteSpace: "nowrap",
             }}
           >
-            Check availability
+            Start Island Hopping Booking
           </a>
         </div>
       </div>
@@ -6872,7 +6228,7 @@ export default function PassportTrailDetailPage({
                 "Unlocked stamps must come from verified OSP/SPM records.",
                 "Ready-to-verify stops are not counted until validation is complete.",
                 "Your OSP QR is your traveler identity for stop validation.",
-                "Payment, booking, guide, and manifest status are not changed on this page.",
+                "Payment, booking, guide, and trip record status are not changed on this page.",
               ].map((rule) => (
                 <div
                   key={rule}
@@ -6960,7 +6316,7 @@ export default function PassportTrailDetailPage({
               height: 58,
               margin: "-18px auto 0",
               borderRadius: 22,
-              background: "linear-gradient(135deg, #013863 0%, #0596A5 100%)",
+              background: "linear-gradient(135deg, #FFFFFF 0%, #F4FCFA 58%, #EAFBFA 100%)",
               color: "#FFFFFF",
               WebkitTextFillColor: "#FFFFFF",
               textDecoration: "none",
