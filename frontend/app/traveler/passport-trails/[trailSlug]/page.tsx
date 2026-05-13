@@ -624,8 +624,8 @@ function ReturnContinuityPremiumPanel() {
             </Link>
 
             <Link
-              href="/traveler/trips"
-              aria-label="View my trips"
+              href="/traveler/passport-trails"
+              aria-label="View Passport Trails"
               style={{
                 minHeight: 52,
                 borderRadius: 18,
@@ -643,7 +643,7 @@ function ReturnContinuityPremiumPanel() {
                 boxShadow: "inset 0 1px 0 rgba(255,255,255,0.25)",
               }}
             >
-              <span>View Trip Status</span>
+              <span>View Passport Trails</span>
               <span aria-hidden="true">›</span>
             </Link>
           </div>
@@ -3954,7 +3954,9 @@ function OfficialTrailCommercialExposurePanel({
             </div>
           </article>
         </div>
-      </section>
+      
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
+</section>
     );
   }
 
@@ -5803,7 +5805,7 @@ function IslandHoppingCommercialTemplate() {
         </div>
       </div>
 
-      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
+      
     </main>
   );
 }
@@ -6237,126 +6239,9 @@ export default function PassportTrailDetailPage({
           </ShellCard>
         </div>
 
-        <nav
-          aria-label="Universal Traveler Bottom Tab"
-          style={{
-            position: "fixed",
-            left: "50%",
-            bottom: 18,
-            transform: "translateX(-50%)",
-            width: "min(404px, calc(100vw - 24px))",
-            border: "1px solid rgba(5,150,165,0.18)",
-            borderRadius: 26,
-            background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,253,255,0.96))",
-            boxShadow: "0 16px 42px rgba(1,56,99,0.14)",
-            padding: "9px 10px",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 64px 1fr 1fr",
-            gap: 7,
-            alignItems: "center",
-            zIndex: 60,
-          }}
-        >
-          <Link
-            href="/traveler/home"
-            style={{
-              textDecoration: "none",
-              borderRadius: 18,
-              padding: "8px 4px",
-              textAlign: "center",
-              color: "#50668B",
-              WebkitTextFillColor: "#50668B",
-              background: "transparent",
-              fontSize: 10,
-              fontWeight: 880,
-              lineHeight: 1,
-            }}
-          >
-            <div style={{ fontSize: 17, lineHeight: 1 }}>⌂</div>
-            <div style={{ marginTop: 4 }}>Home</div>
-          </Link>
+        
 
-          <Link
-            href="/traveler/trips"
-            style={{
-              textDecoration: "none",
-              borderRadius: 18,
-              padding: "8px 4px",
-              textAlign: "center",
-              color: "#50668B",
-              WebkitTextFillColor: "#50668B",
-              background: "transparent",
-              fontSize: 10,
-              fontWeight: 880,
-              lineHeight: 1,
-            }}
-          >
-            <div style={{ fontSize: 17, lineHeight: 1 }}>⌁</div>
-            <div style={{ marginTop: 4 }}>Trips</div>
-          </Link>
 
-          <Link
-            href="/traveler/scan"
-            aria-label="Open QR scanner"
-            style={{
-              width: 58,
-              height: 58,
-              margin: "-18px auto 0",
-              borderRadius: 22,
-              background: "linear-gradient(135deg, #FFFFFF 0%, #F4FCFA 58%, #EAFBFA 100%)",
-              color: "#FFFFFF",
-              WebkitTextFillColor: "#FFFFFF",
-              textDecoration: "none",
-              display: "grid",
-              placeItems: "center",
-              boxShadow: "0 16px 34px rgba(1,56,99,0.24)",
-              border: "3px solid rgba(255,255,255,0.96)",
-              fontSize: 24,
-              fontWeight: 950,
-              lineHeight: 1,
-            }}
-          >
-            ▣
-          </Link>
-
-          <Link
-            href="/traveler/explore"
-            style={{
-              textDecoration: "none",
-              borderRadius: 18,
-              padding: "8px 4px",
-              textAlign: "center",
-              color: "#50668B",
-              WebkitTextFillColor: "#50668B",
-              background: "transparent",
-              fontSize: 10,
-              fontWeight: 880,
-              lineHeight: 1,
-            }}
-          >
-            <div style={{ fontSize: 17, lineHeight: 1 }}>⌕</div>
-            <div style={{ marginTop: 4 }}>Explore</div>
-          </Link>
-
-          <Link
-            href="/traveler/settings"
-            style={{
-              textDecoration: "none",
-              borderRadius: 18,
-              padding: "8px 4px",
-              textAlign: "center",
-              color: "#50668B",
-              WebkitTextFillColor: "#50668B",
-              background: "transparent",
-              fontSize: 10,
-              fontWeight: 880,
-              lineHeight: 1,
-            }}
-          >
-            <div style={{ fontSize: 17, lineHeight: 1 }}>◉</div>
-            <div style={{ marginTop: 4 }}>Profile</div>
-          </Link>
-        </nav>
       </div>
       <DiscoverOtherPassportTrails currentTrailSlug={params.trailSlug} />
 

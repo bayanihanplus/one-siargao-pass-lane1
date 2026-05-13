@@ -1,138 +1,259 @@
-import React from "react";
+"use client";
 
-type TravelerTabKey = "home" | "trails" | "pass" | "explore" | "profile";
+type TravelerBottomTabKey = "home" | "trails" | "pass" | "explore" | "profile";
 
-type TravelerTab = {
-  key: TravelerTabKey;
-  label: string;
-  href: string;
-  icon: string;
-  ariaLabel: string;
+type UniversalTravelerBottomTabBarProps = {
+  activeTab?: TravelerBottomTabKey;
+  fixed?: boolean;
 };
 
-const TRAVELER_TABS: TravelerTab[] = [
-  { key: "home", label: "Home", href: "/traveler/home", icon: "⌂", ariaLabel: "Open OSP traveler home" },
-  { key: "trails", label: "Trails", href: "/traveler/passport-trails", icon: "◇", ariaLabel: "Open Passport Trails" },
-  { key: "pass", label: "QR", href: "/traveler/scan", icon: "▦", ariaLabel: "Open scanner camera" },
-  { key: "explore", label: "Explore", href: "/traveler/explore", icon: "✦", ariaLabel: "Open Explore Siargao discovery hub" },
-  { key: "profile", label: "Profile", href: "/traveler/settings", icon: "♙", ariaLabel: "Open traveler profile and settings" },
+type TabItem = {
+  key: Exclude<TravelerBottomTabKey, "pass">;
+  label: string;
+  href: string;
+};
+
+const TABS: TabItem[] = [
+  { key: "home", label: "Home", href: "/traveler/home" },
+  { key: "trails", label: "Trails", href: "/traveler/passport-trails" },
+  { key: "explore", label: "Explore", href: "/traveler/explore" },
+  { key: "profile", label: "Profile", href: "/traveler/settings" },
 ];
 
-export default function UniversalTravelerBottomTabBar(props: {
-  activeTab?: TravelerTabKey;
-  fixed?: boolean;
-}) {
-  const resolvedTabs = TRAVELER_TABS.map((tab) => {
-    if (tab.key !== "home") return tab;
+const OSP = {
+  navy: "#013863",
+  teal: "#0596A5",
+  gold: "#F3AE26",
+  mist: "#EAFBFA",
+  slate: "#50668B",
+  white: "#FFFFFF",
+};
 
-    return {
-      ...tab,
-      href: props.activeTab === "home" ? "/traveler/passport-map" : "/traveler/home",
-      ariaLabel:
-        props.activeTab === "home"
-          ? "Open Siargao Passport Map"
-          : "Open OSP traveler home",
-    };
-  });
+export default function UniversalTravelerBottomTabBar({
+  activeTab = "home",
+  fixed = true,
+}: UniversalTravelerBottomTabBarProps) {
+  const passActive = activeTab === "pass";
 
-  const positionStyle: React.CSSProperties = props.fixed
-    ? {
-        position: "fixed",
+  return (
+    <nav
+      aria-label="Universal traveler bottom tab"
+      data-osp-component="universal-traveler-bottom-tab"
+      data-osp-lock="HOME_TRAILS_QR_EXPLORE_PROFILE"
+      style={{
+        position: fixed ? "fixed" : "sticky",
         left: "50%",
-        bottom: 12,
+        bottom: fixed ? "calc(10px + env(safe-area-inset-bottom))" : 10,
         transform: "translateX(-50%)",
-        zIndex: 50,
-        width: "min(404px, calc(100vw - 34px))",
-      }
-    : {
-        position: "relative",
-        width: "100%",
-      };
-
-  return React.createElement(
-    "nav",
-    {
-      "aria-label": "Universal traveler bottom navigation",
-      style: {
-        ...positionStyle,
-        borderRadius: 22,
-        padding: "6px 8px",
-        background: "rgba(255,255,255,0.96)",
-        border: "1px solid rgba(203,213,225,0.95)",
-        boxShadow: "0 14px 34px rgba(15,23,42,0.14)",
+        width: "min(430px, calc(100vw - 20px))",
+        minWidth: 330,
+        minHeight: 76,
+        zIndex: 90,
+        borderRadius: 30,
+        background: "rgba(255,255,255,0.99)",
+        border: "1px solid rgba(5,150,165,0.18)",
+        boxShadow: "0 18px 46px rgba(1,56,99,0.18)",
         backdropFilter: "blur(18px)",
-        overflow: "hidden",
-      } satisfies React.CSSProperties,
-    },
-    React.createElement(
-      "div",
-      {
-        style: {
-          display: "grid",
-          gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
-          gap: 3,
-          alignItems: "center",
-        } satisfies React.CSSProperties,
-      },
-      resolvedTabs.map((tab) => {
-        const active = props.activeTab === tab.key;
-        const isMainQr = tab.key === "pass";
+        WebkitBackdropFilter: "blur(18px)",
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 76px 1fr 1fr",
+        alignItems: "center",
+        gap: 5,
+        padding: "8px 10px 9px",
+        boxSizing: "border-box",
+      }}
+    >
+      {TABS.slice(0, 2).map((tab) => (
+        <BottomTabItem key={tab.key} tab={tab} active={activeTab === tab.key} />
+      ))}
 
-        return React.createElement(
-          "a",
-          {
-            key: tab.key,
-            href: tab.href,
-            "aria-label": tab.ariaLabel,
-            "aria-current": active ? "page" : undefined,
-            style: {
-              minHeight: isMainQr ? 54 : 48,
-              borderRadius: isMainQr ? 999 : 17,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 3,
-              textDecoration: "none",
-              background: isMainQr
-                ? "linear-gradient(135deg, #10b8b2 0%, #0794ad 100%)"
-                : active
-                  ? "rgba(20,184,166,0.12)"
-                  : "transparent",
-              color: isMainQr ? "#ffffff" : active ? "#0f766e" : "#475569",
-              border: isMainQr ? "3px solid rgba(255,255,255,0.98)" : "1px solid transparent",
-              boxShadow: isMainQr
-                ? "0 10px 24px rgba(8,145,178,0.25)"
-                : active
-                  ? "0 6px 14px rgba(20,184,166,0.10)"
-                  : "none",
-              fontSize: 10.5,
-              fontWeight: 900,
-              letterSpacing: "-0.02em",
-              WebkitTapHighlightColor: "transparent",
-              transform: isMainQr ? "translateY(-4px)" : "none",
-            } satisfies React.CSSProperties,
-          },
-          React.createElement(
-            "span",
-            {
-              "aria-hidden": "true",
-              style: {
-                width: isMainQr ? 24 : 18,
-                height: isMainQr ? 24 : 18,
-                borderRadius: isMainQr ? 9 : 999,
-                display: "grid",
-                placeItems: "center",
-                fontSize: isMainQr ? 21 : 17,
-                lineHeight: 1,
-                color: isMainQr ? "#ffffff" : active ? "#0f766e" : "#64748b",
-              } satisfies React.CSSProperties,
-            },
-            tab.icon,
-          ),
-          React.createElement("span", null, tab.label),
-        );
-      }),
-    ),
+      <a
+        href="/traveler/pass"
+        aria-label="Open official Traveler QR"
+        aria-current={passActive ? "page" : undefined}
+        data-osp-bottom-tab-center-qr="true"
+        style={{
+          width: 64,
+          height: 64,
+          borderRadius: 25,
+          margin: "0 auto",
+          transform: "translateY(-13px)",
+          display: "grid",
+          placeItems: "center",
+          textDecoration: "none",
+          color: OSP.white,
+          background: passActive
+            ? "linear-gradient(135deg, #013863 0%, #0596A5 100%)"
+            : "linear-gradient(135deg, #0596A5 0%, #013863 100%)",
+          border: passActive
+            ? "2px solid rgba(243,174,38,0.96)"
+            : "2px solid rgba(255,255,255,1)",
+          boxShadow: passActive
+            ? "0 18px 38px rgba(1,56,99,0.30), 0 0 0 5px rgba(243,174,38,0.15)"
+            : "0 16px 34px rgba(1,56,99,0.24)",
+          boxSizing: "border-box",
+        }}
+      >
+        <QrIcon active={passActive} />
+      </a>
+
+      {TABS.slice(2).map((tab) => (
+        <BottomTabItem key={tab.key} tab={tab} active={activeTab === tab.key} />
+      ))}
+    </nav>
+  );
+}
+
+function BottomTabItem({
+  tab,
+  active,
+}: {
+  tab: TabItem;
+  active: boolean;
+}) {
+  return (
+    <a
+      href={tab.href}
+      aria-label={tab.label}
+      aria-current={active ? "page" : undefined}
+      data-osp-bottom-tab-item={tab.key}
+      style={{
+        minHeight: 58,
+        minWidth: 0,
+        borderRadius: 21,
+        display: "grid",
+        gridTemplateRows: "30px 17px",
+        alignContent: "center",
+        justifyItems: "center",
+        rowGap: 3,
+        textDecoration: "none",
+        color: active ? OSP.navy : OSP.slate,
+        background: active
+          ? "linear-gradient(180deg, rgba(234,251,250,1) 0%, rgba(255,255,255,0.98) 100%)"
+          : "transparent",
+        border: active ? "1px solid rgba(5,150,165,0.26)" : "1px solid transparent",
+        boxShadow: active ? "0 9px 20px rgba(1,56,99,0.09)" : "none",
+        boxSizing: "border-box",
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
+      {active ? (
+        <span
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 5,
+            width: 20,
+            height: 3,
+            borderRadius: 999,
+            background: OSP.gold,
+            boxShadow: "0 2px 8px rgba(243,174,38,0.30)",
+          }}
+        />
+      ) : null}
+
+      <span
+        aria-hidden="true"
+        style={{
+          width: 28,
+          height: 28,
+          borderRadius: 14,
+          display: "grid",
+          placeItems: "center",
+          color: active ? OSP.white : OSP.slate,
+          background: active ? OSP.teal : "rgba(234,251,250,0.82)",
+          border: active ? "1px solid rgba(5,150,165,0.34)" : "1px solid rgba(5,150,165,0.14)",
+          boxSizing: "border-box",
+        }}
+      >
+        <TabIcon icon={tab.key} active={active} />
+      </span>
+
+      <span
+        style={{
+          maxWidth: "100%",
+          color: active ? OSP.navy : OSP.slate,
+          fontSize: 11,
+          lineHeight: "15px",
+          fontWeight: active ? 960 : 900,
+          letterSpacing: "-0.01em",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {tab.label}
+      </span>
+    </a>
+  );
+}
+
+function TabIcon({
+  icon,
+  active,
+}: {
+  icon: TabItem["key"];
+  active: boolean;
+}) {
+  const color = active ? OSP.white : OSP.slate;
+  const strokeWidth = active ? 2.45 : 2.2;
+
+  if (icon === "home") {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4.5 11.2 12 4.8l7.5 6.4" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M6.9 10.4v7.8c0 .8.5 1.3 1.3 1.3h7.6c.8 0 1.3-.5 1.3-1.3v-7.8" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+        <path d="M10 19.5v-5.2h4v5.2" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  if (icon === "trails") {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M5.4 18.4c3.9-6.9 8.9-5.4 13.2-12.8" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+        <circle cx="6" cy="18" r="1.9" fill={color} />
+        <circle cx="11.8" cy="12" r="1.7" fill={color} />
+        <circle cx="18.3" cy="5.8" r="1.9" fill={color} />
+      </svg>
+    );
+  }
+
+  if (icon === "explore") {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="11" cy="11" r="5.7" stroke={color} strokeWidth={strokeWidth} />
+        <path d="m15.3 15.3 3.9 3.9" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+        <path d="M11 8.2v3l2.1 1.2" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="8.2" r="3.5" stroke={color} strokeWidth={strokeWidth} />
+      <path d="M5.8 19.2c.9-3.4 3.2-5.2 6.2-5.2s5.3 1.8 6.2 5.2" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function QrIcon({ active }: { active: boolean }) {
+  const color = OSP.white;
+  const glow = active ? "rgba(243,174,38,0.22)" : "rgba(255,255,255,0.16)";
+
+  return (
+    <svg width="34" height="34" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <circle cx="16" cy="16" r="14.5" fill={glow} />
+      <rect x="4" y="4" width="9" height="9" rx="2" stroke={color} strokeWidth="2.6" />
+      <rect x="19" y="4" width="9" height="9" rx="2" stroke={color} strokeWidth="2.6" />
+      <rect x="4" y="19" width="9" height="9" rx="2" stroke={color} strokeWidth="2.6" />
+      <rect x="7.2" y="7.2" width="2.7" height="2.7" rx="0.5" fill={color} />
+      <rect x="22.2" y="7.2" width="2.7" height="2.7" rx="0.5" fill={color} />
+      <rect x="7.2" y="22.2" width="2.7" height="2.7" rx="0.5" fill={color} />
+      <path d="M18.5 18.5h4.4v4.4h-4.4v-4.4Z" fill={color} />
+      <path d="M25.3 18.5H29v9.5h-3.7v-3.5h-3.8" stroke={color} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 16h3M16 24h2.8M23.5 16H29" stroke={color} strokeWidth="2.6" strokeLinecap="round" />
+    </svg>
   );
 }
