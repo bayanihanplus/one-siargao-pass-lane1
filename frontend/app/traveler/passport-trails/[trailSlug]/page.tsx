@@ -1654,7 +1654,7 @@ function OfficialTrailCommercialExposurePanel({
           helper: "Optional support confirmed by operator.",
         },
       ],
-      flowSteps: ["Pick route", "Set your pax", "Choose support", "Request confirmation"],
+      flowSteps: ["Choose tour type", "Set pax", "Confirm seats", "Continue checkout"],
       priceHeadline: "Price to confirm",
       priceBody:
         "Final price depends on route, pax, pickup, vehicle, and add-ons.",
@@ -4832,7 +4832,7 @@ const officialDcsTrailFlowConfig = {
     tripNo: "DAPA-SOHOTON-01",
     paymentTiming: "after-admin-or-operator-confirmation",
     fulfillment: "operator-confirmation-required",
-    primaryCtaLabel: "Request Sohoton Route Confirmation",
+    primaryCtaLabel: "Start Sohoton Seat Confirmation",
     bookingStep: "route-confirmation",
     pricingMode: "admin-confirmed-price",
     routeReadiness: "required",
@@ -4885,7 +4885,11 @@ function buildOfficialDcsTrailBookingHref(trailSlug: OfficialDcsTrailSlug) {
     return `/traveler/passport-trails/sugba-lagoon/book?${params.toString()}`;
   }
 
-  return `/traveler/passport-trails/${flow.trailSlug}?${params.toString()}`;
+  if (flow.trailSlug === "bucas-grande-sohoton") {
+    return `/traveler/passport-trails/bucas-grande-sohoton/book?${params.toString()}`;
+  }
+
+  return `/traveler/passport-trails?${params.toString()}`;
 }
 
 
@@ -4915,20 +4919,20 @@ function OfficialDcsPremiumTrailDetail({
         eyebrow: "PASSPORT TRAILS™ · DEL CARMEN",
         title: "Sugba Lagoon Island Hopping",
         subtitle:
-          "A Del Carmen lagoon route with clear pickup, route product, entrance fee, and checkout readiness.",
+          "A calm Del Carmen lagoon escape shaped by turquoise water, limestone scenery, and soft island adventure.",
         mediaTitle: "Sugba Lagoon route preview",
         mediaBody:
-          "Del Carmen route media, pickup points, lagoon access, and operator photos appear here once approved.",
+          "Lagoon views, sandbar scenes, Del Carmen access, and approved operator media appear here once enabled.",
         descriptionTitle: "Description",
         description:
-          "Choose a Sugba Lagoon route product, confirm your pickup zone, review the entrance fee, then continue to checkout when the route is ready.",
+          "Glide into one of Siargao’s most iconic lagoon landscapes — quiet water, mangrove edges, sandbar options, and a scenic Del Carmen route designed for a full island-day experience.",
         features: [
-          "Route A: Sugba Lagoon",
-          "Route B: Sugba + Kawhagan or Pamomoan",
-          "Route B+: Sugba + Kawhagan + Pamomoan",
-          "₱100 entrance fee per pax",
-          "GL / Poblacion pickup zone",
-          "Snorkels and paddle boards excluded",
+          "Turquoise lagoon scenery",
+          "Del Carmen access route",
+          "Kawhagan / Pamomoan options",
+          "Mangrove-side journey",
+          "Boodle lunch package context",
+          "Pickup from GL / Poblacion",
         ],
         bookingSteps: [
           ["01", "Choose route", "A, B, or B+."],
@@ -4938,7 +4942,7 @@ function OfficialDcsPremiumTrailDetail({
         ],
         guideTitle: "Guide / Support Logic",
         guideBody:
-          "Guide, boat, entrance handling, lunch, cottages, docking, and environmental fees belong in the confirmed product. Snorkels and paddle boards stay excluded unless the package says otherwise.",
+          "Boat support, guide handling, lunch, cottages, docking, and environmental fees follow the selected Sugba product. Add-ons stay package-specific.",
         routeFacts: [
           ["Route A", "₱2,750"],
           ["Route B", "₱3,300"],
@@ -4957,12 +4961,14 @@ function OfficialDcsPremiumTrailDetail({
           "Future-ready route context only. This route must not unlock instant booking until official pricing, capacity, and operator readiness are confirmed.",
         descriptionTitle: "Description",
         description:
-          "Bucas Grande / Sohoton remains a request-to-confirm route. It should not inherit General Luna boat classes or Del Carmen route-product pricing.",
+          "Sail beyond Siargao into Bucas Grande’s world-class water landscape — Sohoton Cove, cave passages, jellyfish sanctuary waters, quiet lakes, and limestone scenery built for a full-day island adventure.",
         features: [
-          "Dapa-side route confirmation",
-          "Operator readiness required",
-          "Official matrix pending",
-          "No instant payment until confirmed",
+          "Sohoton Cove passage",
+          "Hagukan cave glow",
+          "Magkukuob cliff exit",
+          "Jellyfish sanctuary waters",
+          "Tiktikan Lake scenery",
+          "Crystal Cave stop",
         ],
         bookingSteps: [
           ["01", "Request route confirmation", "Submit preferred timing and pax."],
@@ -4978,7 +4984,7 @@ function OfficialDcsPremiumTrailDetail({
           ["Pricing", "Request to confirm"],
           ["Status", "Future-ready"],
         ],
-        ctaLabel: flow.primaryCtaLabel,
+        ctaLabel: "Start Sohoton Seat Confirmation",
       };
 
   const cardStyle = {
@@ -5152,7 +5158,7 @@ function OfficialDcsPremiumTrailDetail({
                     maxWidth: 320,
                   }}
                 >
-                  Video and photos are managed from Super Admin.
+                  
                 </p>
               </div>
             </div>
@@ -5206,21 +5212,6 @@ function OfficialDcsPremiumTrailDetail({
                   </span>
                 </div>
               ))}
-            </div>
-
-            <div
-              style={{
-                borderRadius: 16,
-                padding: "9px 10px",
-                background: "#FFFFFF",
-                border: "1px solid rgba(5,150,165,0.14)",
-                color: OSP.slate,
-                fontSize: 11.2,
-                lineHeight: 1.3,
-                fontWeight: 720,
-              }}
-            >
-              Media is managed from Super Admin.
             </div>
           </div>
         </section>
