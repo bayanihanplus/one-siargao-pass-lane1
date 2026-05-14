@@ -153,10 +153,24 @@ export default async function TravelerPaymentsPage({ searchParams }: TravelerPay
     const amountLabel = `PHP ${Number(amountValue || 0).toLocaleString("en-PH")}`;
     const tripNo = getPaymentParam(resolvedSearchParams, "tripNo") || "GL-ISL-01";
     const routeCode = getPaymentParam(resolvedSearchParams, "routeCode") || "gl-tri-island-standard";
+    const routeType = getPaymentParam(resolvedSearchParams, "routeType") || "GL_TRI_ISLAND_STANDARD";
     const routeProduct = getPaymentParam(resolvedSearchParams, "routeProduct") || "tri-island-joiner";
+    const departurePort = getPaymentParam(resolvedSearchParams, "departurePort") || "GENERAL_LUNA_PORT";
     const trailSlug = decodedTrail || "island-hopping";
     const safeTrailLabel = trailLabel || "Island Hopping";
-    const checkoutHref = `/traveler/payments/tour_sandbox_${routeProduct}?source=passport-trails&trail=${encodeURIComponent(trailSlug)}&slug=${encodeURIComponent(routeProduct)}&amount=${encodeURIComponent(amountValue)}&tripNo=${encodeURIComponent(tripNo)}&routeCode=${encodeURIComponent(routeCode)}`;
+    const checkoutParams = new URLSearchParams({
+      source: "passport-trails",
+      trail: trailSlug,
+      officialTrail: safeTrailLabel,
+      slug: routeProduct,
+      amount: amountValue,
+      tripNo,
+      routeCode,
+      routeType,
+      routeProduct,
+      departurePort,
+    });
+    const checkoutHref = `/traveler/payments/tour_sandbox_${routeProduct}?${checkoutParams.toString()}`;
 
     return (
       <main

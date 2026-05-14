@@ -4881,6 +4881,10 @@ function buildOfficialDcsTrailBookingHref(trailSlug: OfficialDcsTrailSlug) {
     return `/traveler/passport-trails/island-hopping/book?${params.toString()}`;
   }
 
+  if (flow.trailSlug === "sugba-lagoon") {
+    return `/traveler/passport-trails/sugba-lagoon/book?${params.toString()}`;
+  }
+
   return `/traveler/passport-trails/${flow.trailSlug}?${params.toString()}`;
 }
 
@@ -4892,399 +4896,602 @@ function OfficialDcsPremiumTrailDetail({
   flow: (typeof officialDcsTrailFlowConfig)[OfficialDcsTrailSlug];
 }) {
   const isSugba = flow.trailSlug === "sugba-lagoon";
-
-  const routeTitle = isSugba ? "Sugba Lagoon" : "Bucas Grande / Sohoton";
-  const routeSubtitle = isSugba
-    ? "Confirmed seat flow from Del Carmen."
-    : "Route confirmation from Dapa.";
-  const routeLabel = isSugba ? "Del Carmen route" : "Dapa-side route";
-  const readinessLabel = isSugba ? "Seat confirmation" : "Route confirmation";
-  const statusLine = isSugba ? "Seats move through route setup." : "Confirm route before payment.";
-  const supportLine = isSugba ? "Pax, pickup, slot, and route product." : "Timing, operator, route, and conditions.";
   const ctaHref = buildOfficialDcsTrailBookingHref(flow.trailSlug);
 
-  const stops = isSugba
-    ? [
-        { no: "01", name: "Del Carmen Port", meta: "Departure" },
-        { no: "02", name: "Mangrove route", meta: "Access path" },
-        { no: "03", name: "Sugba Lagoon", meta: "Main stop" },
-      ]
-    : [
-        { no: "01", name: "Dapa Port", meta: "Departure" },
-        { no: "02", name: "Bucas Grande", meta: "Route area" },
-        { no: "03", name: "Sohoton Cove", meta: "Confirm first" },
-      ];
+  const OSP = {
+    navy: "#013863",
+    deepNavy: "#003B66",
+    teal: "#0596A5",
+    gold: "#F3AE26",
+    white: "#FFFFFF",
+    mist: "#EAFBFA",
+    mistSoft: "#F4FCFA",
+    slate: "#50668B",
+    line: "rgba(1,56,99,0.12)",
+  };
 
-  const inclusions = isSugba
-    ? ["Seat flow", "Route support", "Port movement", "Local handling"]
-    : ["Route request", "Operator check", "Timing support", "Protected access"];
+  const content = isSugba
+    ? {
+        eyebrow: "PASSPORT TRAILS™ · DEL CARMEN",
+        title: "Sugba Lagoon Island Hopping",
+        subtitle:
+          "A Del Carmen lagoon route with clear pickup, route product, entrance fee, and checkout readiness.",
+        mediaTitle: "Sugba Lagoon route preview",
+        mediaBody:
+          "Del Carmen route media, pickup points, lagoon access, and operator photos appear here once approved.",
+        descriptionTitle: "Description",
+        description:
+          "Choose a Sugba Lagoon route product, confirm your pickup zone, review the entrance fee, then continue to checkout when the route is ready.",
+        features: [
+          "Route A: Sugba Lagoon",
+          "Route B: Sugba + Kawhagan or Pamomoan",
+          "Route B+: Sugba + Kawhagan + Pamomoan",
+          "₱100 entrance fee per pax",
+          "GL / Poblacion pickup zone",
+          "Snorkels and paddle boards excluded",
+        ],
+        bookingSteps: [
+          ["01", "Choose route", "A, B, or B+."],
+          ["02", "Confirm pickup", "GL / Poblacion zone first."],
+          ["03", "Review total", "Route price + ₱100 entrance."],
+          ["04", "Continue checkout", "Payment opens after route readiness."],
+        ],
+        guideTitle: "Guide / Support Logic",
+        guideBody:
+          "Guide, boat, entrance handling, lunch, cottages, docking, and environmental fees belong in the confirmed product. Snorkels and paddle boards stay excluded unless the package says otherwise.",
+        routeFacts: [
+          ["Route A", "₱2,750"],
+          ["Route B", "₱3,300"],
+          ["Route B+", "₱3,650"],
+          ["Pickup", "GL / Poblacion"],
+        ],
+        ctaLabel: "Start Sugba Lagoon Booking",
+      }
+    : {
+        eyebrow: "PASSPORT TRAILS™ · DAPA-SIDE",
+        title: "Bucas Grande / Sohoton Official Trail",
+        subtitle:
+          "A reserved governed route for future Dapa-side confirmation, operator readiness, and protected access.",
+        mediaTitle: "Bucas Grande / Sohoton route preview",
+        mediaBody:
+          "Future-ready route context only. This route must not unlock instant booking until official pricing, capacity, and operator readiness are confirmed.",
+        descriptionTitle: "Description",
+        description:
+          "Bucas Grande / Sohoton remains a request-to-confirm route. It should not inherit General Luna boat classes or Del Carmen route-product pricing.",
+        features: [
+          "Dapa-side route confirmation",
+          "Operator readiness required",
+          "Official matrix pending",
+          "No instant payment until confirmed",
+        ],
+        bookingSteps: [
+          ["01", "Request route confirmation", "Submit preferred timing and pax."],
+          ["02", "Operator/admin review", "Confirm route, availability, and official price."],
+          ["03", "Payment later", "Checkout should unlock only after confirmation."],
+        ],
+        guideTitle: "Guide / Support Logic",
+        guideBody:
+          "Guide, vessel, timing, and route readiness must be confirmed before payment. This page must remain future-ready, not fake-bookable.",
+        routeFacts: [
+          ["Route type", "DAPA BUCAS GRANDE SOHOTON"],
+          ["Port", "DAPA PORT"],
+          ["Pricing", "Request to confirm"],
+          ["Status", "Future-ready"],
+        ],
+        ctaLabel: flow.primaryCtaLabel,
+      };
+
+  const cardStyle = {
+    background: "rgba(255,255,255,0.96)",
+    border: `1px solid ${OSP.line}`,
+    borderRadius: 28,
+    boxShadow: "0 18px 50px rgba(1,56,99,0.08)",
+  };
 
   return (
     <main
       style={{
         minHeight: "100vh",
         background:
-          "radial-gradient(circle at 0% 0%, rgba(5,150,165,0.08), transparent 32%), linear-gradient(180deg, #F4FCFA 0%, #FFFFFF 52%, #EAFBFA 100%)",
-        padding: "14px 14px 0",
-        color: "#013863",
+          "radial-gradient(circle at 0% 0%, rgba(5,150,165,0.10), transparent 32%), linear-gradient(180deg, #F4FCFA 0%, #FFFFFF 52%, #EAFBFA 100%)",
+        color: OSP.navy,
+        padding: "14px 14px 128px",
+        fontFamily: '"Source Sans 3", "Source Sans Pro", "Noto Sans", Arial, sans-serif',
       }}
     >
-      <div style={{ maxWidth: 390, margin: "0 auto" }}>
-        <a
-          href="/traveler/passport-trails"
+      <div style={{ width: "100%", maxWidth: 430, margin: "0 auto" }}>
+        <header
           style={{
-            display: "inline-flex",
+            display: "flex",
             alignItems: "center",
-            minHeight: 36,
-            borderRadius: 999,
-            padding: "0 12px",
-            background: "#FFFFFF",
-            border: "1px solid rgba(1,56,99,0.08)",
-            boxShadow: "0 8px 20px rgba(1,56,99,0.06)",
-            color: "#013863",
-            fontSize: 12,
-            fontWeight: 850,
-            textDecoration: "none",
+            justifyContent: "space-between",
+            gap: 10,
+            marginBottom: 14,
           }}
         >
-          ← Trails
-        </a>
-
-        <section
-          aria-label={`${routeTitle} official trail`}
-          style={{
-            marginTop: 12,
-            borderRadius: 28,
-            padding: 16,
-            background: "#FFFFFF",
-            border: "1px solid rgba(5,150,165,0.14)",
-            boxShadow: "0 18px 42px rgba(1,56,99,0.08)",
-          }}
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              borderRadius: 999,
-              padding: "5px 8px",
-              background: "#EAFBFA",
-              color: "#0596A5",
-              fontSize: 9,
-              lineHeight: 1,
-              fontWeight: 950,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-            }}
-          >
-            Official Trail
+          <div>
+            <div
+              style={{
+                color: OSP.teal,
+                fontSize: 10.5,
+                fontWeight: 900,
+                letterSpacing: "0.13em",
+                textTransform: "uppercase",
+              }}
+            >
+              {content.eyebrow}
+            </div>
+            <h1
+              style={{
+                margin: "6px 0 0",
+                color: OSP.deepNavy,
+                fontSize: 25,
+                lineHeight: 1.02,
+                fontWeight: 760,
+                letterSpacing: "-0.045em",
+              }}
+            >
+              {content.title}
+            </h1>
           </div>
 
-          <h1
+          <Link
+            href="/traveler/passport-trails"
             style={{
-              margin: "12px 0 0",
-              color: "#013863",
-              fontSize: 25,
-              lineHeight: 1.02,
-              letterSpacing: "-0.045em",
-              fontWeight: 880,
+              textDecoration: "none",
+              border: `1px solid ${OSP.line}`,
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.92)",
+              color: OSP.teal,
+              padding: "10px 13px",
+              fontSize: 11.5,
+              fontWeight: 850,
+              whiteSpace: "nowrap",
             }}
           >
-            {routeTitle}
-          </h1>
+            Trails
+          </Link>
+        </header>
 
-          <p
-            style={{
-              margin: "8px 0 0",
-              maxWidth: 310,
-              color: "#50668B",
-              fontSize: 13,
-              lineHeight: 1.28,
-              fontWeight: 760,
-            }}
-          >
-            {routeSubtitle}
-          </p>
-
+        {/* Media */}
+        <section
+          aria-label="Sugba Lagoon media"
+          style={{
+            ...cardStyle,
+            overflow: "hidden",
+            background: "#F4FCFA",
+            color: OSP.deepNavy,
+          }}
+        >
           <div
             style={{
-              marginTop: 14,
+              padding: 12,
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 8,
+              gap: 9,
             }}
           >
-            {[
-              { label: "Port", value: flow.departurePort.replaceAll("_", " ") },
-              { label: "Flow", value: readinessLabel },
-            ].map((item) => (
+            <div
+              aria-label="Main video placeholder"
+              style={{
+                minHeight: 212,
+                borderRadius: 24,
+                padding: 16,
+                display: "grid",
+                alignContent: "space-between",
+                background:
+                  "linear-gradient(180deg, #FFFFFF 0%, #EAFBFA 100%)",
+                border: "1px solid rgba(1,56,99,0.10)",
+                boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+              }}
+            >
               <div
-                key={item.label}
                 style={{
-                  borderRadius: 18,
-                  padding: 10,
-                  background: "#F4FCFA",
-                  border: "1px solid rgba(5,150,165,0.12)",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  gap: 10,
                 }}
               >
                 <div
                   style={{
-                    color: "#50668B",
-                    fontSize: 8.5,
-                    fontWeight: 930,
+                    display: "inline-flex",
+                    width: "fit-content",
+                    alignItems: "center",
+                    gap: 8,
+                    borderRadius: 999,
+                    padding: "7px 10px",
+                    background: "#FFFFFF",
+                    border: "1px solid rgba(5,150,165,0.18)",
+                    color: OSP.teal,
+                    fontSize: 10,
+                    fontWeight: 900,
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
                   }}
                 >
-                  {item.label}
+                  Main video
                 </div>
-                <strong
-                  style={{
-                    display: "block",
-                    marginTop: 5,
-                    color: "#013863",
-                    fontSize: 11.5,
-                    lineHeight: 1.12,
-                    fontWeight: 900,
-                  }}
-                >
-                  {item.value}
-                </strong>
-              </div>
-            ))}
-          </div>
-        </section>
 
-        <section
-          aria-label={`${routeTitle} route stops`}
-          style={{
-            marginTop: 12,
-            borderRadius: 26,
-            padding: 14,
-            background: "#FFFFFF",
-            border: "1px solid rgba(1,56,99,0.08)",
-            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
-          }}
-        >
-          <div
-            style={{
-              color: "#0596A5",
-              fontSize: 9,
-              fontWeight: 950,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-            }}
-          >
-            Route stops
-          </div>
-
-          <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
-            {stops.map((stop, index) => (
-              <div
-                key={stop.name}
-                aria-label={`${routeTitle} stop ${index + 1}`}
-                style={{
-                  minHeight: 66,
-                  borderRadius: 20,
-                  padding: 10,
-                  display: "grid",
-                  gridTemplateColumns: "44px 1fr",
-                  alignItems: "center",
-                  gap: 10,
-                  background: index === 1 ? "#FFF4D8" : "#EAFBFA",
-                  border:
-                    index === 1
-                      ? "1px solid rgba(243,174,38,0.24)"
-                      : "1px solid rgba(5,150,165,0.12)",
-                  cursor: "default",
-                }}
-              >
-                <span
+                <div
                   style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 16,
+                    width: 42,
+                    height: 42,
+                    borderRadius: 999,
                     display: "grid",
                     placeItems: "center",
-                    background: "#FFFFFF",
-                    color: "#013863",
-                    fontSize: 11,
+                    background: "#F3AE26",
+                    color: OSP.deepNavy,
+                    fontSize: 15,
                     fontWeight: 950,
-                    boxShadow: "0 8px 18px rgba(1,56,99,0.06)",
+                    boxShadow: "0 10px 24px rgba(243,174,38,0.24)",
                   }}
                 >
-                  {stop.no}
-                </span>
-                <span>
-                  <strong
-                    style={{
-                      display: "block",
-                      color: "#013863",
-                      fontSize: 13,
-                      lineHeight: 1,
-                      fontWeight: 900,
-                    }}
-                  >
-                    {stop.name}
-                  </strong>
+                  ▶
+                </div>
+              </div>
+
+              <div>
+                <h2
+                  style={{
+                    margin: 0,
+                    color: OSP.deepNavy,
+                    fontSize: 26,
+                    lineHeight: 1,
+                    fontWeight: 760,
+                    letterSpacing: "-0.045em",
+                  }}
+                >
+                  {content.mediaTitle}
+                </h2>
+                <p
+                  style={{
+                    margin: "8px 0 0",
+                    color: OSP.slate,
+                    fontSize: 13.2,
+                    lineHeight: 1.34,
+                    maxWidth: 320,
+                  }}
+                >
+                  Video and photos are managed from Super Admin.
+                </p>
+              </div>
+            </div>
+
+            <div
+              aria-label="Compact photo placeholders"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: 8,
+              }}
+            >
+              {[
+                ["Photo 01", isSugba ? "Access" : "Route"],
+                ["Photo 02", isSugba ? "Lagoon" : "Operator"],
+                ["Photo 03", isSugba ? "Support" : "Access"],
+              ].map(([label, caption]) => (
+                <div
+                  key={label}
+                  style={{
+                    minHeight: 78,
+                    borderRadius: 17,
+                    padding: 9,
+                    display: "grid",
+                    alignContent: "space-between",
+                    background: "#FFFFFF",
+                    border: "1px solid rgba(1,56,99,0.10)",
+                    boxShadow: "0 10px 24px rgba(1,56,99,0.06)",
+                  }}
+                >
                   <span
                     style={{
-                      display: "block",
-                      marginTop: 5,
-                      color: "#50668B",
-                      fontSize: 10.5,
-                      lineHeight: 1.18,
-                      fontWeight: 760,
+                      color: OSP.teal,
+                      fontSize: 8.6,
+                      fontWeight: 900,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
                     }}
                   >
-                    {stop.meta}
+                    {label}
                   </span>
-                </span>
-              </div>
-            ))}
+                  <span
+                    style={{
+                      color: OSP.deepNavy,
+                      fontSize: 11.2,
+                      lineHeight: 1.05,
+                      fontWeight: 850,
+                    }}
+                  >
+                    {caption}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div
+              style={{
+                borderRadius: 16,
+                padding: "9px 10px",
+                background: "#FFFFFF",
+                border: "1px solid rgba(5,150,165,0.14)",
+                color: OSP.slate,
+                fontSize: 11.2,
+                lineHeight: 1.3,
+                fontWeight: 720,
+              }}
+            >
+              Media is managed from Super Admin.
+            </div>
           </div>
         </section>
 
-        <section
-          aria-label={`${routeTitle} readiness`}
-          style={{
-            marginTop: 12,
-            borderRadius: 26,
-            padding: 14,
-            background: "#FFFFFF",
-            border: "1px solid rgba(1,56,99,0.08)",
-            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
-          }}
-        >
+        {/* Description */}
+        <section style={{ ...cardStyle, marginTop: 14, padding: 18 }}>
           <div
             style={{
-              color: "#0596A5",
-              fontSize: 9,
-              fontWeight: 950,
-              letterSpacing: "0.12em",
+              color: OSP.teal,
+              fontSize: 10.5,
+              fontWeight: 900,
+              letterSpacing: "0.13em",
               textTransform: "uppercase",
             }}
           >
-            Readiness
+            {content.descriptionTitle}
           </div>
+          <p
+            style={{
+              margin: "9px 0 0",
+              color: OSP.slate,
+              fontSize: 14.5,
+              lineHeight: 1.52,
+            }}
+          >
+            {content.description}
+          </p>
 
           <div
             style={{
-              marginTop: 10,
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
               gap: 8,
+              marginTop: 15,
             }}
           >
-            <div
-              style={{
-                borderRadius: 18,
-                padding: 11,
-                background: "#F4FCFA",
-                border: "1px solid rgba(5,150,165,0.12)",
-              }}
-            >
-              <strong style={{ display: "block", color: "#013863", fontSize: 13, fontWeight: 900 }}>
-                {statusLine}
-              </strong>
-              <span style={{ display: "block", marginTop: 5, color: "#50668B", fontSize: 10.5, lineHeight: 1.2, fontWeight: 740 }}>
-                {routeLabel}
-              </span>
-            </div>
-
-            <div
-              style={{
-                borderRadius: 18,
-                padding: 11,
-                background: "#FFF4D8",
-                border: "1px solid rgba(243,174,38,0.22)",
-              }}
-            >
-              <strong style={{ display: "block", color: "#013863", fontSize: 13, fontWeight: 900 }}>
-                Support check
-              </strong>
-              <span style={{ display: "block", marginTop: 5, color: "#50668B", fontSize: 10.5, lineHeight: 1.2, fontWeight: 740 }}>
-                {supportLine}
-              </span>
-            </div>
-          </div>
-        </section>
-
-        <section
-          aria-label={`${routeTitle} included support`}
-          style={{
-            marginTop: 12,
-            borderRadius: 26,
-            padding: 14,
-            background: "#FFFFFF",
-            border: "1px solid rgba(1,56,99,0.08)",
-            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
-          }}
-        >
-          <div
-            style={{
-              color: "#0596A5",
-              fontSize: 9,
-              fontWeight: 950,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-            }}
-          >
-            Included support
-          </div>
-
-          <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 7 }}>
-            {inclusions.map((item) => (
-              <span
-                key={item}
+            {content.routeFacts.map(([label, value]) => (
+              <div
+                key={label}
                 style={{
-                  borderRadius: 999,
-                  padding: "7px 9px",
-                  background: "#EAFBFA",
-                  border: "1px solid rgba(5,150,165,0.12)",
-                  color: "#013863",
-                  fontSize: 10,
-                  fontWeight: 850,
+                  borderRadius: 18,
+                  padding: 12,
+                  background: OSP.mistSoft,
+                  border: `1px solid ${OSP.line}`,
                 }}
               >
-                {item}
-              </span>
+                <div
+                  style={{
+                    color: OSP.slate,
+                    fontSize: 9.5,
+                    lineHeight: 1,
+                    fontWeight: 850,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                  }}
+                >
+                  {label}
+                </div>
+                <div
+                  style={{
+                    marginTop: 6,
+                    color: OSP.deepNavy,
+                    fontSize: 12.3,
+                    lineHeight: 1.16,
+                    fontWeight: 900,
+                  }}
+                >
+                  {value}
+                </div>
+              </div>
             ))}
           </div>
         </section>
 
+        {/* Features */}
+        <section style={{ ...cardStyle, marginTop: 14, padding: 18 }}>
+          <div
+            style={{
+              color: OSP.teal,
+              fontSize: 10.5,
+              fontWeight: 900,
+              letterSpacing: "0.13em",
+              textTransform: "uppercase",
+            }}
+          >
+            Features
+          </div>
+          <div style={{ display: "grid", gap: 9, marginTop: 12 }}>
+            {content.features.map((feature) => (
+              <div
+                key={feature}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "26px 1fr",
+                  gap: 10,
+                  alignItems: "center",
+                  borderRadius: 18,
+                  padding: 11,
+                  background: "rgba(234,251,250,0.72)",
+                  border: `1px solid ${OSP.line}`,
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    width: 26,
+                    height: 26,
+                    display: "grid",
+                    placeItems: "center",
+                    borderRadius: 999,
+                    background: OSP.gold,
+                    color: OSP.deepNavy,
+                    fontSize: 12,
+                    fontWeight: 950,
+                  }}
+                >
+                  ✓
+                </span>
+                <span style={{ color: OSP.deepNavy, fontSize: 13.5, fontWeight: 820 }}>
+                  {feature}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Booking Flow */}
+        <section style={{ ...cardStyle, marginTop: 14, padding: 18 }}>
+          <div
+            style={{
+              color: OSP.teal,
+              fontSize: 10.5,
+              fontWeight: 900,
+              letterSpacing: "0.13em",
+              textTransform: "uppercase",
+            }}
+          >
+            Booking Flow
+          </div>
+          <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
+            {content.bookingSteps.map(([step, title, body]) => (
+              <div
+                key={step}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "36px 1fr",
+                  gap: 11,
+                  alignItems: "start",
+                  padding: 12,
+                  borderRadius: 19,
+                  background: "#FFFFFF",
+                  border: `1px solid ${OSP.line}`,
+                }}
+              >
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 14,
+                    display: "grid",
+                    placeItems: "center",
+                    background: OSP.mist,
+                    color: OSP.teal,
+                    fontSize: 12,
+                    fontWeight: 950,
+                  }}
+                >
+                  {step}
+                </div>
+                <div>
+                  <div style={{ color: OSP.deepNavy, fontSize: 14, fontWeight: 900 }}>
+                    {title}
+                  </div>
+                  <p
+                    style={{
+                      margin: "4px 0 0",
+                      color: OSP.slate,
+                      fontSize: 12.8,
+                      lineHeight: 1.38,
+                    }}
+                  >
+                    {body}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Guide / Support Logic */}
+        <section style={{ ...cardStyle, marginTop: 14, padding: 18 }}>
+          <div
+            style={{
+              color: OSP.teal,
+              fontSize: 10.5,
+              fontWeight: 900,
+              letterSpacing: "0.13em",
+              textTransform: "uppercase",
+            }}
+          >
+            {content.guideTitle}
+          </div>
+          <p
+            style={{
+              margin: "9px 0 0",
+              color: OSP.slate,
+              fontSize: 14,
+              lineHeight: 1.48,
+            }}
+          >
+            {content.guideBody}
+          </p>
+        </section>
+
+        {/* Route Readiness CTA */}
         <section
-          aria-label={`${routeTitle} primary action`}
+          aria-label="Route readiness CTA"
           style={{
-            margin: "12px auto 0",
-            width: "min(390px, calc(100vw - 28px))",
-            borderRadius: 24,
-            padding: 10,
-            background: "rgba(255,255,255,0.96)",
-            border: "1px solid rgba(5,150,165,0.14)",
-            boxShadow: "0 14px 34px rgba(1,56,99,0.10)",
+            ...cardStyle,
+            marginTop: 14,
+            padding: 12,
+            display: "grid",
+            gap: 10,
+            background: "rgba(255,255,255,0.98)",
           }}
         >
-          <a
+          <div style={{ padding: "4px 6px 0" }}>
+            <div
+              style={{
+                color: OSP.slate,
+                fontSize: 10.5,
+                fontWeight: 850,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+              }}
+            >
+              Route readiness CTA
+            </div>
+            <div
+              style={{
+                marginTop: 5,
+                color: OSP.deepNavy,
+                fontSize: 15,
+                fontWeight: 900,
+              }}
+            >
+              Continue into the governed route flow.
+            </div>
+          </div>
+
+          <Link
             href={ctaHref}
             style={{
               minHeight: 54,
-              borderRadius: 18,
+              borderRadius: 19,
+              background: `linear-gradient(135deg, ${OSP.deepNavy}, ${OSP.teal})`,
+              color: OSP.white,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              textAlign: "center",
               textDecoration: "none",
-              background: "#F3AE26",
-              color: "#013863",
-              fontSize: 13,
-              fontWeight: 950,
-              boxShadow: "0 10px 22px rgba(243,174,38,0.20)",
+              fontSize: 14.5,
+              fontWeight: 900,
+              boxShadow: "0 16px 30px rgba(5,150,165,0.22)",
             }}
           >
-            {flow.primaryCtaLabel}
-          </a>
+            {content.ctaLabel}
+          </Link>
         </section>
 
-        <div aria-hidden="true" style={{ height: 148 }} />
+        <div aria-hidden="true" style={{ height: 118 }} />
       </div>
 
       <UniversalTravelerBottomTabBar activeTab="trails" fixed />

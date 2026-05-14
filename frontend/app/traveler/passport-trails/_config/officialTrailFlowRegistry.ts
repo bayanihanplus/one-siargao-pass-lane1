@@ -117,10 +117,13 @@ export const officialTrailFlowRegistry = {
 
     allowedNextRoutes: {
       detail: "/traveler/passport-trails/sugba-lagoon",
+      book: "/traveler/passport-trails/sugba-lagoon/book",
+      confirm: "/traveler/passport-trails/sugba-lagoon/confirm",
+      seatsConfirmed: "/traveler/passport-trails/sugba-lagoon/route-confirmed",
     },
 
     notes:
-      "Governed water-route candidate. Do not reuse General Luna boat class matrix. Needs separate Del Carmen route/port readiness logic before booking flow is built.",
+      "Governed Del Carmen water-route flow. Do not reuse General Luna boat class matrix. Uses Sugba Lagoon route-product readiness and checkout handoff after route readiness.",
   },
 
   "bucas-grande-sohoton": {

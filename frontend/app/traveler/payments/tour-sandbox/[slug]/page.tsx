@@ -46,56 +46,92 @@ export default function TourSandboxPaymentPage({
   searchParams,
 }: TourSandboxPaymentPageProps) {
   const slug = params?.slug || readParam(searchParams, "trail", "siargao-land-tour");
+  const trailSlug = readParam(searchParams, "trail", slug);
+  const isSugba = trailSlug === "sugba-lagoon" || String(slug).startsWith("SUGBA_LAGOON");
 
   const officialTrail = readParam(
     searchParams,
     "officialTrail",
-    slug === "siargao-land-tour"
-      ? "Siargao Land Tour Passport Trail"
-      : "Passport Trail Tour",
+    isSugba
+      ? "Sugba Lagoon"
+      : slug === "siargao-land-tour"
+        ? "Siargao Land Tour Passport Trail"
+        : "Passport Trail Tour",
   );
 
-  const productCode = readParam(searchParams, "productCode", "SPM_LAND_TOUR_PRIVATE_MVP");
-  const pricingVersion = readParam(searchParams, "pricingVersion", "LAND_TOUR_MVP_2026_05");
-  const pricingMode = readParam(searchParams, "pricingMode", "PAX_TIERED_PER_HEAD");
-  const paymentTiming = readParam(searchParams, "paymentTiming", "AFTER_OPERATOR_CONFIRMATION");
+  const routeProduct = readParam(searchParams, "routeProduct", isSugba ? String(slug) : "");
+  const productCode = readParam(searchParams, "productCode", isSugba ? routeProduct : "SPM_LAND_TOUR_PRIVATE_MVP");
+  const pricingVersion = readParam(searchParams, "pricingVersion", isSugba ? "DEL_CARMEN_SUGBA_2026_05" : "LAND_TOUR_MVP_2026_05");
+  const pricingMode = readParam(searchParams, "pricingMode", isSugba ? "ROUTE_PRODUCT_PLUS_ENTRANCE_FEE" : "PAX_TIERED_PER_HEAD");
+  const paymentTiming = readParam(searchParams, "paymentTiming", isSugba ? "AFTER_ROUTE_READINESS" : "AFTER_OPERATOR_CONFIRMATION");
   const currencyCode = readParam(searchParams, "currencyCode", "PHP");
 
+  const routeType = readParam(searchParams, "routeType", isSugba ? "DEL_CARMEN_SUGBA_LAGOON" : "");
+  const routeCode = readParam(searchParams, "routeCode", isSugba ? "dc-sugba-a" : "");
+  const tripNo = readParam(searchParams, "tripNo", "");
+  const departurePort = readParam(searchParams, "departurePort", isSugba ? "DEL_CARMEN_PORT" : "");
+  const pickupArea = readParam(searchParams, "pickupArea", readParam(searchParams, "pickup", "general-luna"));
+  const pickupZone = readParam(searchParams, "pickupZone", "");
+  const regularPax = readParam(searchParams, "regularPax", "");
+  const seniorPax = readParam(searchParams, "seniorPax", "0");
+  const pax = readParam(searchParams, "pax", regularPax || "7");
+  const routeBasePrice = readParam(searchParams, "routeBasePrice", isSugba ? "2650" : "");
+  const entranceFeePerPax = readParam(searchParams, "entranceFeePerPax", isSugba ? "100" : "");
+  const perPaxTotal = readParam(searchParams, "perPaxTotal", isSugba ? "2750" : "");
+
   const routeMode = readParam(searchParams, "routeMode", "south-tour");
-  const pax = readParam(searchParams, "pax", "7");
   const pickup = readParam(searchParams, "pickup", "general-luna");
   const transportMode = readParam(searchParams, "transportMode", "TUKTUK");
   const mediaAddOn = readParam(searchParams, "mediaAddOn", "MOBILE_PHOTOGRAPHER");
   const guideSupport = readParam(searchParams, "guideSupport", "DRIVER_LOCAL_SUPPORT");
   const supportLevel = readParam(searchParams, "supportLevel", "STANDARD");
   const unitPrice = readParam(searchParams, "unitPrice", "1500");
-  const estimatedTotal = readParam(
-    searchParams,
-    "estimatedTotal",
-    readParam(searchParams, "amount", String(Number(pax || 1) * Number(unitPrice || 0))),
-  );
+  const estimatedTotal = isSugba
+    ? readParam(searchParams, "amount", "0")
+    : readParam(
+        searchParams,
+        "estimatedTotal",
+        readParam(searchParams, "amount", String(Number(pax || 1) * Number(unitPrice || 0))),
+      );
   const tierLabel = readParam(searchParams, "tierLabel", "7–10 pax tier");
 
-  const rows = [
-    ["Trail", officialTrail],
-    ["Route", label(routeMode)],
-    ["Pax", `${pax} pax`],
-    ["Unit price", `${peso(unitPrice)} / pax`],
-    ["Tier", tierLabel],
-    ["Pickup", label(pickup)],
-    ["Transport", label(transportMode)],
-    ["Guide", label(guideSupport)],
-    ["Support level", label(supportLevel)],
-    ["Media", label(mediaAddOn)],
-  ];
+  const rows = isSugba
+    ? [
+        ["Trail", officialTrail],
+        ["Route", label(routeCode)],
+        ["Trip", tripNo],
+        ["Port", label(departurePort)],
+        ["Pickup", pickupArea],
+        ["Pax", `${regularPax || pax} regular · ${seniorPax} senior`],
+      ]
+    : [
+        ["Trail", officialTrail],
+        ["Route", label(routeMode)],
+        ["Pax", `${pax} pax`],
+        ["Unit price", `${peso(unitPrice)} / pax`],
+        ["Tier", tierLabel],
+        ["Pickup", label(pickup)],
+        ["Transport", label(transportMode)],
+        ["Guide", label(guideSupport)],
+        ["Support level", label(supportLevel)],
+        ["Media", label(mediaAddOn)],
+      ];
 
-  const snapshotRows = [
-    ["Product code", productCode],
-    ["Pricing version", pricingVersion],
-    ["Pricing mode", pricingMode],
-    ["Payment timing", label(paymentTiming)],
-    ["Currency", currencyCode],
-  ];
+  const snapshotRows = isSugba
+    ? [
+        ["Product", routeProduct.replaceAll("_", " ")],
+        ["Route base", `${peso(routeBasePrice)} / pax`],
+        ["Entrance", `${peso(entranceFeePerPax)} / pax`],
+        ["Per pax", peso(perPaxTotal)],
+        ["Pickup zone", pickupZone || "GL / Poblacion"],
+      ]
+    : [
+        ["Product code", productCode],
+        ["Pricing version", pricingVersion],
+        ["Pricing mode", pricingMode],
+        ["Payment timing", label(paymentTiming)],
+        ["Currency", currencyCode],
+      ];
 
   return (
     <main
@@ -118,7 +154,7 @@ export default function TourSandboxPaymentPage({
         }}
       >
         <header
-          aria-label="Tour Payment Review compact header"
+          aria-label={`${isSugba ? "Sugba Lagoon Checkout" : "Tour Payment Review"} compact header`}
           style={{
             borderRadius: 24,
             background: "rgba(255,255,255,0.98)",
@@ -148,7 +184,7 @@ export default function TourSandboxPaymentPage({
               fontWeight: 900,
             }}
           >
-            ‹ Before sandbox
+            ‹ Back
           </a>
 
           <div style={{ marginTop: 12 }}>
@@ -169,7 +205,7 @@ export default function TourSandboxPaymentPage({
                 textTransform: "uppercase",
               }}
             >
-              Payment sandbox
+              {isSugba ? "Sugba payment" : "Payment sandbox"}
             </span>
 
             <h1
@@ -182,7 +218,7 @@ export default function TourSandboxPaymentPage({
                 letterSpacing: "-0.055em",
               }}
             >
-              Tour Payment Review
+              {isSugba ? "Sugba Lagoon Checkout" : "Tour Payment Review"}
             </h1>
 
             <p
@@ -194,7 +230,7 @@ export default function TourSandboxPaymentPage({
                 fontWeight: 720,
               }}
             >
-              Review the payment snapshot before sandbox handoff. Transport, media, and guide selections remain confirmation-based unless priced later.
+              {isSugba ? "Review amount before checkout." : "Review the payment snapshot before checkout."}
             </p>
           </div>
         </header>
@@ -245,7 +281,7 @@ export default function TourSandboxPaymentPage({
               fontWeight: 760,
             }}
           >
-            {pax} pax × {peso(unitPrice)} / pax · {tierLabel}
+            {isSugba ? `${regularPax || pax} regular · ${seniorPax} senior · ${peso(perPaxTotal)} / pax` : `${pax} pax × ${peso(unitPrice)} / pax · ${tierLabel}`}
           </p>
         </section>
 
