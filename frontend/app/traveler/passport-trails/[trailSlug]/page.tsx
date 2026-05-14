@@ -1,8 +1,8 @@
+import UniversalTravelerBottomTabBar from "../../../../src/components/traveler/UniversalTravelerBottomTabBar";
 import Link from "next/link";
 import { SpmFunctionalJourneyMap } from "../../../../src/spm/functional-map/SpmFunctionalJourneyMap";
 import { notFound } from "next/navigation";
 import PassportMapShortcut from "../../../../src/components/traveler/PassportMapShortcut";
-import UniversalTravelerBottomTabBar from "../../../../src/components/traveler/UniversalTravelerBottomTabBar";
 
 type StopStatus = "STAMP_UNLOCKED" | "READY_TO_VERIFY" | "LOCKED";
 
@@ -112,7 +112,7 @@ const TRAILS: Record<string, TrailDetail> = {
     statusLabel: "Reserved / future-ready",
     nextStop: "Route readiness review",
     nextStopReason:
-      "Do not claim this route is fully bookable until backend route readiness, operator capacity, source attribution, and payment rules are wired.",
+      "This route opens only after official readiness, operator capacity, source attribution, and payment rules are confirmed.",
     stops: [
       {
         name: "Dapa-side Movement",
@@ -1016,7 +1016,7 @@ function DiscoverOtherPassportTrails({
             >
               <div>
                 <div
-                  aria-label={`Admin photo placeholder for ${trail.label}`}
+                  aria-label={`Approved trail media for ${trail.label}`}
                   style={{
                     minHeight: 68,
                     borderRadius: 14,
@@ -1471,7 +1471,7 @@ function OfficialTrailMediaPreview({
               {media.secondaryFrames.map((item, index) => (
                 <div
                   key={item}
-                  aria-label={`Approved photo placeholder ${index + 1}: ${item}`}
+                  aria-label={`Approved trail photo ${index + 1}: ${item}`}
                   style={{
                     minHeight: 72,
                     borderRadius: 16,
@@ -4894,6 +4894,228 @@ function buildOfficialDcsTrailBookingHref(trailSlug: OfficialDcsTrailSlug) {
 
 
 // OSP_DCS_PREMIUM_DETAIL_COMPONENT_START
+
+// OSP_SUGBA_SURF_TEMPLATE_DATA_START
+const sugbaSurfTemplateTrailStops = [
+  {
+    displayCode: "01",
+    stopCode: "SUGBA_DELCARMEN_ACCESS",
+    stopName: "Del Carmen access",
+    stopLabel: "Stop 01",
+    title: "Del Carmen access",
+    travelerBody:
+      "Start from the Del Carmen side with pickup, route, and readiness confirmed before payment.",
+    siteAccessPointCode: "SPM_SUGBA_DELCARMEN_ACCESS",
+    passportStampEligible: true,
+    scanBehavior: "Route readiness check-in",
+  },
+  {
+    displayCode: "02",
+    stopCode: "SUGBA_MANGROVE_ROUTE",
+    stopName: "Mangrove route",
+    stopLabel: "Stop 02",
+    title: "Mangrove route",
+    travelerBody:
+      "Move through the protected mangrove-side route before reaching the lagoon experience.",
+    siteAccessPointCode: "SPM_SUGBA_MANGROVE_ROUTE",
+    passportStampEligible: true,
+    scanBehavior: "Route progress scan",
+  },
+  {
+    displayCode: "03",
+    stopCode: "SUGBA_LAGOON_MAIN",
+    stopName: "Sugba Lagoon",
+    stopLabel: "Stop 03",
+    title: "Sugba Lagoon",
+    travelerBody:
+      "Main lagoon activity window with boat support, environmental fees, and route-product inclusions.",
+    siteAccessPointCode: "SPM_SUGBA_LAGOON_MAIN",
+    passportStampEligible: true,
+    scanBehavior: "Lagoon progress scan",
+  },
+  {
+    displayCode: "04",
+    stopCode: "SUGBA_ROUTE_ADDON",
+    stopName: "Kawhagan / Pamomoan option",
+    stopLabel: "Stop 04",
+    title: "Kawhagan / Pamomoan option",
+    travelerBody:
+      "Optional island add-on depends on selected Route A, Route B, or Route B+ readiness.",
+    siteAccessPointCode: "SPM_SUGBA_ROUTE_ADDON",
+    passportStampEligible: true,
+    scanBehavior: "Add-on route scan when included",
+  },
+];
+
+const sugbaSurfTemplateOtherTrails = [
+  {
+    title: "Tri-Island Passport Trail",
+    href: "/traveler/passport-trails/island-hopping",
+    routeBadge: "GL Port",
+    note: "Governed island route",
+    stripAccent: "Island",
+    tileColor: "#EAFBFA",
+    iconSrc: "/osp/osp-verified-logo.png",
+  },
+  {
+    title: "Siargao Land Tour Passport Trail",
+    href: "/traveler/passport-trails/siargao-land-tour",
+    routeBadge: "South / North",
+    note: "Land route",
+    stripAccent: "Land",
+    tileColor: "#FFF8E7",
+    iconSrc: "/osp/spm/trails/icons/siargao-land-tour-badge.png?v=01l",
+  },
+  {
+    title: "Explorer Surf Trail",
+    href: "/traveler/passport-trails/surf-explorer",
+    routeBadge: "Cloud 9",
+    note: "Surf support",
+    stripAccent: "Surf",
+    tileColor: "#EEF7FF",
+    iconSrc: "/osp/spm/trails/icons/surf-explorer-badge.png?v=01l",
+  },
+  {
+    title: "Culture & Community Trail",
+    href: "/traveler/passport-trails/culture-community",
+    routeBadge: "Local discovery",
+    note: "Community stops",
+    stripAccent: "Culture",
+    tileColor: "#F6F3FF",
+    iconSrc: "/osp/spm/trails/icons/culture-community-badge.png?v=01l",
+  },
+  {
+    title: "Food & Wellness Trail",
+    href: "/traveler/passport-trails/food-wellness",
+    routeBadge: "Merchant trail",
+    note: "Food and wellness",
+    stripAccent: "Merchant",
+    tileColor: "#FFF4EF",
+    iconSrc: "/osp/spm/trails/icons/food-wellness-badge.png?v=01l",
+  },
+  {
+    title: "Bucas Grande / Sohoton Official Trail",
+    href: "/traveler/passport-trails/bucas-grande-sohoton",
+    routeBadge: "Dapa-side",
+    note: "Sohoton route",
+    stripAccent: "Sohoton",
+    tileColor: "#EEF7FF",
+    iconSrc: "/osp/spm/trails/icons/bucas-sohoton-badge.png?v=01l",
+  },
+];
+// OSP_SUGBA_SURF_TEMPLATE_DATA_END
+
+
+// OSP_BUCAS_SURF_TEMPLATE_DATA_START
+const bucasSurfTemplateTrailStops = [
+  {
+    displayCode: "01",
+    stopCode: "BUCAS_DAPA_ACCESS",
+    stopName: "Dapa-side access",
+    stopLabel: "Stop 01",
+    title: "Dapa-side access",
+    travelerBody:
+      "Future-ready governed access point for Bucas Grande / Sohoton route confirmation.",
+    siteAccessPointCode: "SPM_BUCAS_DAPA_ACCESS",
+    passportStampEligible: true,
+    scanBehavior: "Route readiness check-in",
+  },
+  {
+    displayCode: "02",
+    stopCode: "BUCAS_SOHOTON_COVE",
+    stopName: "Sohoton Cove",
+    stopLabel: "Stop 02",
+    title: "Sohoton Cove",
+    travelerBody:
+      "Core Bucas Grande / Sohoton experience area, subject to official route readiness and access conditions.",
+    siteAccessPointCode: "SPM_BUCAS_SOHOTON_COVE",
+    passportStampEligible: true,
+    scanBehavior: "Cove progress scan when route is active",
+  },
+  {
+    displayCode: "03",
+    stopCode: "BUCAS_CAVE_PASSAGES",
+    stopName: "Hagukan / Magkukuob cave context",
+    stopLabel: "Stop 03",
+    title: "Hagukan / Magkukuob cave context",
+    travelerBody:
+      "Cave passage context depends on route confirmation, operator readiness, and official access conditions.",
+    siteAccessPointCode: "SPM_BUCAS_CAVE_PASSAGES",
+    passportStampEligible: true,
+    scanBehavior: "Cave progress scan when included",
+  },
+  {
+    displayCode: "04",
+    stopCode: "BUCAS_SANCTUARY_WATERS",
+    stopName: "Jellyfish Sanctuary / lake scenery",
+    stopLabel: "Stop 04",
+    title: "Jellyfish Sanctuary / lake scenery",
+    travelerBody:
+      "Sanctuary waters and lake scenery remain route-dependent and should not imply instant availability.",
+    siteAccessPointCode: "SPM_BUCAS_SANCTUARY_WATERS",
+    passportStampEligible: true,
+    scanBehavior: "Sanctuary progress scan when included",
+  },
+];
+
+const bucasSurfTemplateOtherTrails = [
+  {
+    title: "Tri-Island Passport Trail",
+    href: "/traveler/passport-trails/island-hopping",
+    routeBadge: "GL Port",
+    note: "Governed island route",
+    stripAccent: "Island",
+    tileColor: "#EAFBFA",
+    iconSrc: "/osp/osp-verified-logo.png",
+  },
+  {
+    title: "Sugba Lagoon Island Hopping",
+    href: "/traveler/passport-trails/sugba-lagoon",
+    routeBadge: "Del Carmen",
+    note: "Lagoon route",
+    stripAccent: "Lagoon",
+    tileColor: "#EAFBFA",
+    iconSrc: "/osp/spm/trails/icons/sugba-lagoon-badge.png?v=01l",
+  },
+  {
+    title: "Siargao Land Tour Passport Trail",
+    href: "/traveler/passport-trails/siargao-land-tour",
+    routeBadge: "South / North",
+    note: "Land route",
+    stripAccent: "Land",
+    tileColor: "#FFF8E7",
+    iconSrc: "/osp/spm/trails/icons/siargao-land-tour-badge.png?v=01l",
+  },
+  {
+    title: "Explorer Surf Trail",
+    href: "/traveler/passport-trails/surf-explorer",
+    routeBadge: "Cloud 9",
+    note: "Surf support",
+    stripAccent: "Surf",
+    tileColor: "#EEF7FF",
+    iconSrc: "/osp/spm/trails/icons/surf-explorer-badge.png?v=01l",
+  },
+  {
+    title: "Culture & Community Trail",
+    href: "/traveler/passport-trails/culture-community",
+    routeBadge: "Local discovery",
+    note: "Community stops",
+    stripAccent: "Culture",
+    tileColor: "#F6F3FF",
+    iconSrc: "/osp/spm/trails/icons/culture-community-badge.png?v=01l",
+  },
+  {
+    title: "Food & Wellness Trail",
+    href: "/traveler/passport-trails/food-wellness",
+    routeBadge: "Merchant trail",
+    note: "Food and wellness",
+    stripAccent: "Merchant",
+    tileColor: "#FFF4EF",
+    iconSrc: "/osp/spm/trails/icons/food-wellness-badge.png?v=01l",
+  },
+];
+// OSP_BUCAS_SURF_TEMPLATE_DATA_END
+
 function OfficialDcsPremiumTrailDetail({
   flow,
 }: {
@@ -5077,7 +5299,7 @@ function OfficialDcsPremiumTrailDetail({
             }}
           >
             <div
-              aria-label="Main video placeholder"
+              aria-label="Main trail video preview"
               style={{
                 minHeight: 212,
                 borderRadius: 24,
@@ -5164,7 +5386,7 @@ function OfficialDcsPremiumTrailDetail({
             </div>
 
             <div
-              aria-label="Compact photo placeholders"
+              aria-label="Compact trail photo previews"
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(3, 1fr)",
@@ -5482,8 +5704,474 @@ function OfficialDcsPremiumTrailDetail({
           </Link>
         </section>
 
+
+
+        {/* OSP_SUGBA_SURF_TEMPLATE_ONLY_INSERT_START */}
+        {flow.trailSlug === "sugba-lagoon" ? (
+          <>
+            <section
+                      aria-label="Surf Explorer trail stops"
+                      style={{
+                        marginTop: 12,
+                        borderRadius: 24,
+                        padding: 12,
+                        background: "#FFFFFF",
+                        border: `1px solid ${OSP.line}`,
+                        boxShadow: "0 12px 28px rgba(1,56,99,0.065)",
+                      }}
+                    >
+                      <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                        Trail stops
+                      </div>
+
+                      <div style={{ marginTop: 8, color: OSP.slate, fontSize: 11.4, lineHeight: 1.34, fontWeight: 720 }}>
+                        Passport-ready stop records for this trail. Each stop carries sequence, stop code, Site Access context, stamp eligibility, and scan behavior.
+                      </div>
+
+                      <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+                        {sugbaSurfTemplateTrailStops.map((stop) => (
+                          <div
+                            key={stop.stopCode}
+                            style={{
+                              display: "grid",
+                              gridTemplateColumns: "34px 1fr",
+                              gap: 10,
+                              alignItems: "start",
+                              minHeight: 62,
+                              borderRadius: 17,
+                              background: OSP.mist,
+                              color: OSP.navy,
+                              border: "1px solid rgba(5,150,165,0.12)",
+                              padding: 11,
+                            }}
+                          >
+                            <span
+                              style={{
+                                width: 30,
+                                height: 30,
+                                borderRadius: 12,
+                                display: "grid",
+                                placeItems: "center",
+                                background: "#FFFFFF",
+                                color: OSP.teal,
+                                fontSize: 10.5,
+                                fontWeight: 950,
+                              }}
+                            >
+                              {stop.displayCode}
+                            </span>
+                            <span>
+                              <strong style={{ display: "block", fontSize: 12.4, lineHeight: 1.05, fontWeight: 900 }}>{stop.stopName}</strong>
+                              <span style={{ display: "block", marginTop: 4, fontSize: 11.3, lineHeight: 1.25, fontWeight: 720, color: OSP.slate }}>{stop.travelerBody}</span>
+                              <span
+                                style={{
+                                  display: "grid",
+                                  gridTemplateColumns: "1fr 1fr",
+                                  gap: 6,
+                                  marginTop: 9,
+                                }}
+                              >
+                                {[
+                                  ["Stop", stop.stopCode],
+                                  ["Site", stop.siteAccessPointCode],
+                                  ["Stamp", stop.passportStampEligible ? "Eligible" : "Not eligible"],
+                                  ["Scan", stop.scanBehavior],
+                                ].map(([label, value]) => (
+                                  <span
+                                    key={label}
+                                    style={{
+                                      borderRadius: 12,
+                                      background: "#FFFFFF",
+                                      border: "1px solid rgba(1,56,99,0.08)",
+                                      padding: "7px 8px",
+                                      color: OSP.slate,
+                                      fontSize: 9.2,
+                                      lineHeight: 1.15,
+                                      fontWeight: 760,
+                                    }}
+                                  >
+                                    <strong style={{ display: "block", color: OSP.teal, fontSize: 8.6, letterSpacing: "0.08em", textTransform: "uppercase" }}>{label}</strong>
+                                    {value}
+                                  </span>
+                                ))}
+                              </span>
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+
+            <section
+                      aria-label="Discover other trails"
+                      style={{
+                        marginTop: 12,
+                        borderRadius: 24,
+                        padding: 12,
+                        background: "#FFFFFF",
+                        border: `1px solid ${OSP.line}`,
+                        boxShadow: "0 12px 28px rgba(1,56,99,0.065)",
+                      }}
+                    >
+                      <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                        Discover other trails
+                      </div>
+
+                      <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                        {sugbaSurfTemplateOtherTrails.map((trail) => (
+                          <Link
+                            key={trail.href}
+                            href={trail.href}
+                            style={{
+                              minHeight: 112,
+                              borderRadius: 18,
+                              background: trail.tileColor,
+                              color: OSP.navy,
+                              border: "1px solid rgba(5,150,165,0.12)",
+                              display: "grid",
+                              alignContent: "space-between",
+                              gap: 8,
+                              textDecoration: "none",
+                              padding: "11px",
+                              boxShadow: "0 8px 18px rgba(1,56,99,0.045)",
+                            }}
+                          >
+                            <span
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                gap: 8,
+                              }}
+                            >
+                              <span
+                                aria-hidden="true"
+                                style={{
+                                  width: 46,
+                                  height: 46,
+                                  borderRadius: 18,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  background: "#FFFFFF",
+                                  border: "1px solid rgba(1,56,99,0.10)",
+                                  boxShadow: "0 10px 22px rgba(1,56,99,0.09)",
+                                  overflow: "hidden",
+                                  fontSize: 19,
+                                }}
+                              >
+                                <img
+                                  src={trail.iconSrc}
+                                  alt=""
+                                  aria-hidden="true"
+                                  style={{
+                                    width: 34,
+                                    height: 34,
+                                    objectFit: "contain",
+                                    display: "block",
+                                  }}
+                                />
+                              </span>
+
+                              <span
+                                style={{
+                                  borderRadius: 999,
+                                  background: "#FFFFFF",
+                                  border: "1px solid rgba(1,56,99,0.07)",
+                                  padding: "5px 7px",
+                                  color: OSP.teal,
+                                  fontSize: 8.4,
+                                  fontWeight: 900,
+                                  textTransform: "uppercase",
+                                  letterSpacing: "0.08em",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {trail.stripAccent}
+                              </span>
+                            </span>
+
+                            <span>
+                              <strong
+                                style={{
+                                  display: "block",
+                                  color: OSP.deepNavy,
+                                  fontSize: 11.8,
+                                  lineHeight: 1.08,
+                                  fontWeight: 900,
+                                }}
+                              >
+                                {trail.title}
+                              </strong>
+                              <span
+                                style={{
+                                  display: "block",
+                                  marginTop: 5,
+                                  color: OSP.slate,
+                                  fontSize: 9.8,
+                                  lineHeight: 1.18,
+                                  fontWeight: 740,
+                                }}
+                              >
+                                {trail.routeBadge}
+                              </span>
+                            </span>
+
+                            <span
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                gap: 8,
+                                color: OSP.slate,
+                                fontSize: 9.4,
+                                lineHeight: 1,
+                                fontWeight: 760,
+                              }}
+                            >
+                              <span>{trail.note}</span>
+                              <strong style={{ color: OSP.deepNavy, fontSize: 16, lineHeight: 1 }}>›</strong>
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </section>
+          </>
+        ) : null}
+        {/* OSP_SUGBA_SURF_TEMPLATE_ONLY_INSERT_END */}
+        {/* OSP_BUCAS_SURF_TEMPLATE_ONLY_INSERT_START */}
+        {flow.trailSlug === "bucas-grande-sohoton" ? (
+          <>
+            <section
+                      aria-label="Surf Explorer trail stops"
+                      style={{
+                        marginTop: 12,
+                        borderRadius: 24,
+                        padding: 12,
+                        background: "#FFFFFF",
+                        border: `1px solid ${OSP.line}`,
+                        boxShadow: "0 12px 28px rgba(1,56,99,0.065)",
+                      }}
+                    >
+                      <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                        Trail stops
+                      </div>
+
+                      <div style={{ marginTop: 8, color: OSP.slate, fontSize: 11.4, lineHeight: 1.34, fontWeight: 720 }}>
+                        Passport-ready stop records for this trail. Each stop carries sequence, stop code, Site Access context, stamp eligibility, and scan behavior.
+                      </div>
+
+                      <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
+                        {bucasSurfTemplateTrailStops.map((stop) => (
+                          <div
+                            key={stop.stopCode}
+                            style={{
+                              display: "grid",
+                              gridTemplateColumns: "34px 1fr",
+                              gap: 10,
+                              alignItems: "start",
+                              minHeight: 62,
+                              borderRadius: 17,
+                              background: OSP.mist,
+                              color: OSP.navy,
+                              border: "1px solid rgba(5,150,165,0.12)",
+                              padding: 11,
+                            }}
+                          >
+                            <span
+                              style={{
+                                width: 30,
+                                height: 30,
+                                borderRadius: 12,
+                                display: "grid",
+                                placeItems: "center",
+                                background: "#FFFFFF",
+                                color: OSP.teal,
+                                fontSize: 10.5,
+                                fontWeight: 950,
+                              }}
+                            >
+                              {stop.displayCode}
+                            </span>
+                            <span>
+                              <strong style={{ display: "block", fontSize: 12.4, lineHeight: 1.05, fontWeight: 900 }}>{stop.stopName}</strong>
+                              <span style={{ display: "block", marginTop: 4, fontSize: 11.3, lineHeight: 1.25, fontWeight: 720, color: OSP.slate }}>{stop.travelerBody}</span>
+                              <span
+                                style={{
+                                  display: "grid",
+                                  gridTemplateColumns: "1fr 1fr",
+                                  gap: 6,
+                                  marginTop: 9,
+                                }}
+                              >
+                                {[
+                                  ["Stop", stop.stopCode],
+                                  ["Site", stop.siteAccessPointCode],
+                                  ["Stamp", stop.passportStampEligible ? "Eligible" : "Not eligible"],
+                                  ["Scan", stop.scanBehavior],
+                                ].map(([label, value]) => (
+                                  <span
+                                    key={label}
+                                    style={{
+                                      borderRadius: 12,
+                                      background: "#FFFFFF",
+                                      border: "1px solid rgba(1,56,99,0.08)",
+                                      padding: "7px 8px",
+                                      color: OSP.slate,
+                                      fontSize: 9.2,
+                                      lineHeight: 1.15,
+                                      fontWeight: 760,
+                                    }}
+                                  >
+                                    <strong style={{ display: "block", color: OSP.teal, fontSize: 8.6, letterSpacing: "0.08em", textTransform: "uppercase" }}>{label}</strong>
+                                    {value}
+                                  </span>
+                                ))}
+                              </span>
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+
+            <section
+                      aria-label="Discover other trails"
+                      style={{
+                        marginTop: 12,
+                        borderRadius: 24,
+                        padding: 12,
+                        background: "#FFFFFF",
+                        border: `1px solid ${OSP.line}`,
+                        boxShadow: "0 12px 28px rgba(1,56,99,0.065)",
+                      }}
+                    >
+                      <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+                        Discover other trails
+                      </div>
+
+                      <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                        {bucasSurfTemplateOtherTrails.map((trail) => (
+                          <Link
+                            key={trail.href}
+                            href={trail.href}
+                            style={{
+                              minHeight: 112,
+                              borderRadius: 18,
+                              background: trail.tileColor,
+                              color: OSP.navy,
+                              border: "1px solid rgba(5,150,165,0.12)",
+                              display: "grid",
+                              alignContent: "space-between",
+                              gap: 8,
+                              textDecoration: "none",
+                              padding: "11px",
+                              boxShadow: "0 8px 18px rgba(1,56,99,0.045)",
+                            }}
+                          >
+                            <span
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                gap: 8,
+                              }}
+                            >
+                              <span
+                                aria-hidden="true"
+                                style={{
+                                  width: 46,
+                                  height: 46,
+                                  borderRadius: 18,
+                                  display: "grid",
+                                  placeItems: "center",
+                                  background: "#FFFFFF",
+                                  border: "1px solid rgba(1,56,99,0.10)",
+                                  boxShadow: "0 10px 22px rgba(1,56,99,0.09)",
+                                  overflow: "hidden",
+                                  fontSize: 19,
+                                }}
+                              >
+                                <img
+                                  src={trail.iconSrc}
+                                  alt=""
+                                  aria-hidden="true"
+                                  style={{
+                                    width: 34,
+                                    height: 34,
+                                    objectFit: "contain",
+                                    display: "block",
+                                  }}
+                                />
+                              </span>
+
+                              <span
+                                style={{
+                                  borderRadius: 999,
+                                  background: "#FFFFFF",
+                                  border: "1px solid rgba(1,56,99,0.07)",
+                                  padding: "5px 7px",
+                                  color: OSP.teal,
+                                  fontSize: 8.4,
+                                  fontWeight: 900,
+                                  textTransform: "uppercase",
+                                  letterSpacing: "0.08em",
+                                  whiteSpace: "nowrap",
+                                }}
+                              >
+                                {trail.stripAccent}
+                              </span>
+                            </span>
+
+                            <span>
+                              <strong
+                                style={{
+                                  display: "block",
+                                  color: OSP.deepNavy,
+                                  fontSize: 11.8,
+                                  lineHeight: 1.08,
+                                  fontWeight: 900,
+                                }}
+                              >
+                                {trail.title}
+                              </strong>
+                              <span
+                                style={{
+                                  display: "block",
+                                  marginTop: 5,
+                                  color: OSP.slate,
+                                  fontSize: 9.8,
+                                  lineHeight: 1.18,
+                                  fontWeight: 740,
+                                }}
+                              >
+                                {trail.routeBadge}
+                              </span>
+                            </span>
+
+                            <span
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                gap: 8,
+                                color: OSP.slate,
+                                fontSize: 9.4,
+                                lineHeight: 1,
+                                fontWeight: 760,
+                              }}
+                            >
+                              <span>{trail.note}</span>
+                              <strong style={{ color: OSP.deepNavy, fontSize: 16, lineHeight: 1 }}>›</strong>
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </section>
+          </>
+        ) : null}
+        {/* OSP_BUCAS_SURF_TEMPLATE_ONLY_INSERT_END */}
         <div aria-hidden="true" style={{ height: 118 }} />
       </div>
+
+
 
       <UniversalTravelerBottomTabBar activeTab="trails" fixed />
     </main>
@@ -5633,28 +6321,86 @@ const islandHoppingBookingInputs = [
 
 const islandHoppingStops = [
   {
+    name: "General Luna Port",
+    tag: "Departure",
+    time: "Route start",
+    note: "DCS-linked operational anchor. Booking, voucher, operator readiness, and boarding truth stay attached here.",
+  },
+  {
     name: "Naked Island",
     tag: "Sandbar",
     time: "Morning stop",
-    note: "Open sandbar photo stop. Secret Island can be added when tide allows.",
+    note: "Classic sandbar stop inside the approved General Luna island-hopping route.",
   },
   {
     name: "Daku Island",
     tag: "Lunch stop",
     time: "Midday stop",
-    note: "Main beach stop for boodle fight lunch, cottage time, and rest.",
+    note: "Main island stop for boodle fight lunch, cottage time, and operator-handled inclusions.",
   },
   {
     name: "Guyam Island",
     tag: "Final island",
     time: "Afternoon stop",
-    note: "Compact island stop before return to General Luna.",
+    note: "Compact island stop before return handling and trip progress record.",
   },
 ];
 
 const islandHoppingOtherTrails = [
-  { title: "Corregidor + Tri-Island", href: "/traveler/partner-tours?focus=corregidor-tri-island", note: "Extended island route" },
-  { title: "Sugba Lagoon", href: "/traveler/passport-trails/sugba-lagoon", note: "Lagoon route" },
+  {
+    title: "Sugba Lagoon Island Hopping",
+    href: "/traveler/passport-trails/sugba-lagoon",
+    routeBadge: "Del Carmen",
+    note: "Lagoon route",
+    stripAccent: "Lagoon",
+    tileColor: "#EAFBFA",
+    iconSrc: "/osp/spm/trails/icons/sugba-lagoon-badge.png?v=01l",
+  },
+  {
+    title: "Siargao Land Tour Passport Trail",
+    href: "/traveler/passport-trails/siargao-land-tour",
+    routeBadge: "South / North",
+    note: "Land route",
+    stripAccent: "Land",
+    tileColor: "#FFF8E7",
+    iconSrc: "/osp/spm/trails/icons/siargao-land-tour-badge.png?v=01l",
+  },
+  {
+    title: "Explorer Surf Trail",
+    href: "/traveler/passport-trails/surf-explorer",
+    routeBadge: "Cloud 9",
+    note: "Surf support",
+    stripAccent: "Surf",
+    tileColor: "#EEF7FF",
+    iconSrc: "/osp/spm/trails/icons/surf-explorer-badge.png?v=01l",
+  },
+  {
+    title: "Culture & Community Trail",
+    href: "/traveler/passport-trails/culture-community",
+    routeBadge: "Local discovery",
+    note: "Community stops",
+    stripAccent: "Culture",
+    tileColor: "#F6F3FF",
+    iconSrc: "/osp/spm/trails/icons/culture-community-badge.png?v=01l",
+  },
+  {
+    title: "Food & Wellness Trail",
+    href: "/traveler/passport-trails/food-wellness",
+    routeBadge: "Merchant trail",
+    note: "Food and wellness",
+    stripAccent: "Merchant",
+    tileColor: "#FFF4EF",
+    iconSrc: "/osp/spm/trails/icons/food-wellness-badge.png?v=01l",
+  },
+  {
+    title: "Bucas Grande / Sohoton Official Trail",
+    href: "/traveler/passport-trails/bucas-grande-sohoton",
+    routeBadge: "Dapa-side",
+    note: "Sohoton route",
+    stripAccent: "Sohoton",
+    tileColor: "#EEF7FF",
+    iconSrc: "/osp/spm/trails/icons/bucas-sohoton-badge.png?v=01l",
+  },
 ];
 
 function IslandHoppingCommercialTemplate() {
@@ -5826,7 +6572,7 @@ function IslandHoppingCommercialTemplate() {
             </div>
 
             <div
-              aria-label="Video preview placeholder"
+              aria-label="Trail video preview"
               style={{
                 position: "absolute",
                 right: 12,
@@ -6352,27 +7098,119 @@ function IslandHoppingCommercialTemplate() {
 
           <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {islandHoppingOtherTrails.map((trail) => (
-              <a
+              <Link
                 key={trail.href}
                 href={trail.href}
                 style={{
-                  minHeight: 54,
-                  borderRadius: 17,
-                  background: OSP.mist,
+                  minHeight: 112,
+                  borderRadius: 18,
+                  background: trail.tileColor,
                   color: OSP.navy,
                   border: "1px solid rgba(5,150,165,0.12)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  display: "grid",
+                  alignContent: "space-between",
+                  gap: 8,
                   textDecoration: "none",
-                  textAlign: "center",
-                  gap: 4,
+                  padding: "11px",
+                  boxShadow: "0 8px 18px rgba(1,56,99,0.045)",
                 }}
               >
-                <strong style={{ fontSize: 11.3, lineHeight: 1, fontWeight: 880 }}>{trail.title}</strong>
-                <span style={{ fontSize: 9.2, lineHeight: 1, fontWeight: 720, color: OSP.slate }}>{trail.note}</span>
-              </a>
+                <span
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      width: 46,
+                      height: 46,
+                      borderRadius: 18,
+                      display: "grid",
+                      placeItems: "center",
+                      background: "#FFFFFF",
+                      border: "1px solid rgba(1,56,99,0.10)",
+                      boxShadow: "0 10px 22px rgba(1,56,99,0.09)",
+                      overflow: "hidden",
+                      fontSize: 19,
+                    }}
+                  >
+                    <img
+                      src={trail.iconSrc}
+                      alt=""
+                      aria-hidden="true"
+                      style={{
+                        width: 34,
+                        height: 34,
+                        objectFit: "contain",
+                        display: "block",
+                      }}
+                    />
+                  </span>
+
+                  <span
+                    style={{
+                      borderRadius: 999,
+                      background: "#FFFFFF",
+                      border: "1px solid rgba(1,56,99,0.07)",
+                      padding: "5px 7px",
+                      color: OSP.teal,
+                      fontSize: 8.4,
+                      fontWeight: 900,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.08em",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {trail.stripAccent}
+                  </span>
+                </span>
+
+                <span>
+                  <strong
+                    style={{
+                      display: "block",
+                      color: OSP.deepNavy,
+                      fontSize: 11.8,
+                      lineHeight: 1.08,
+                      fontWeight: 900,
+                    }}
+                  >
+                    {trail.title}
+                  </strong>
+                  <span
+                    style={{
+                      display: "block",
+                      marginTop: 5,
+                      color: OSP.slate,
+                      fontSize: 9.8,
+                      lineHeight: 1.18,
+                      fontWeight: 740,
+                    }}
+                  >
+                    {trail.routeBadge}
+                  </span>
+                </span>
+
+                <span
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 8,
+                    color: OSP.slate,
+                    fontSize: 9.4,
+                    lineHeight: 1,
+                    fontWeight: 760,
+                  }}
+                >
+                  <span>{trail.note}</span>
+                  <strong style={{ color: OSP.deepNavy, fontSize: 16, lineHeight: 1 }}>›</strong>
+                </span>
+              </Link>
             ))}
           </div>
         </section>
