@@ -1,6 +1,7 @@
 import KuyaTalaChatBox from "../../../src/traveler-assistant/KuyaTalaChatBox";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { getApiBaseUrl, getCurrentUser, requireAccessToken } from "../../../src/lib/server-auth";
 import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
 import PassportMapShortcut from "../../../src/components/traveler/PassportMapShortcut";
@@ -89,7 +90,7 @@ async function getLanguagePacks(): Promise<LanguageOption[]> {
 async function getTravelerDictionary(languageCode: string): Promise<Record<string, string>> {
   const fallback: Record<string, string> = {
     "settings.title": "Traveler Controls",
-    "settings.language.title": "Choose your travel language",
+    "settings.language.title": "Preferred travel language",
   };
 
   try {
@@ -131,7 +132,17 @@ async function updatePreferredLanguage(formData: FormData) {
     throw new Error("Unsupported preferred language");
   }
 
-  const token = await requireAccessToken();
+  let token: string;
+  try {
+    token = await requireAccessToken();
+  } catch {
+    cookies().set("osp_preview_language", preferredLanguage, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30,
+      sameSite: "lax",
+    });
+    redirect(`/traveler/settings?panel=language&authRequired=1&previewLanguage=${encodeURIComponent(preferredLanguage)}`);
+  }
 
   const res = await fetch(`${getApiBaseUrl()}/profile`, {
     method: "PATCH",
@@ -149,6 +160,7 @@ async function updatePreferredLanguage(formData: FormData) {
 
   revalidatePath("/");
   revalidatePath("/traveler/settings");
+  cookies().delete("osp_preview_language");
   redirect("/traveler/settings?panel=language&saved=1");
 }
 
@@ -363,8 +375,8 @@ function panelCopy(panel: PanelKey, dictionary: Record<string, string>) {
   if (panel === "language") {
     return {
       eyebrow: "Language Access",
-      title: t(dictionary, "settings.language.title", "Choose your travel language"),
-      body: "Your selected language is now saved to your OSP profile. Full translated content packs will be wired later through governed language dictionaries.",
+      title: t(dictionary, "settings.language.title", "Preferred travel language"),
+      body: "Choose the language you want to use in OSP.",
       accent: "#0ea5b7",
       bg: "#ecfeff",
       border: "#bfeaf0",
@@ -406,143 +418,320 @@ function panelCopy(panel: PanelKey, dictionary: Record<string, string>) {
   };
 }
 
+
+type LanguageCoverageLevel = "baseline" | "guidance" | "preview";
+
+function getLanguageCoverageLevel(languageCode: string): LanguageCoverageLevel {
+  const code = languageCode.trim().toLowerCase();
+
+  if (code === "en") {
+    return "baseline";
+  }
+
+  if (["fil", "ceb", "sgd"].includes(code)) {
+    return "guidance";
+  }
+
+  return "preview";
+}
+
+function getLanguageCoverageCopy(level: LanguageCoverageLevel) {
+  if (level === "baseline") {
+    return {
+      label: "Full baseline",
+      detail: "English remains the verified fallback for official traveler records.",
+      className: "border-[#013863]/15 bg-white text-[#013863]",
+    };
+  }
+
+  if (level === "guidance") {
+    return {
+      label: "Traveler guidance ready",
+      detail: "Recommended for guidance, support, and convenience text where available.",
+      className: "border-[#0596A5]/25 bg-[#EAFBFA] text-[#013863]",
+    };
+  }
+
+  return {
+    label: "Preview coverage",
+    detail: "Used for preference capture and low-risk convenience text as coverage expands.",
+    className: "border-[#F3AE26]/35 bg-[#FFF8E8] text-[#5B3B00]",
+  };
+}
+
+function LanguageCoveragePanel({
+  languageOptions,
+  dictionary,
+}: {
+  languageOptions: LanguageOption[];
+  dictionary: Record<string, string>;
+}) {
+  const activeOptions = languageOptions.filter((option) => option.code && option.label);
+  const localOptions = activeOptions.filter((option) => ["fil", "ceb", "sgd"].includes(option.code));
+  const previewOptions = activeOptions.filter((option) => !["en", "fil", "ceb", "sgd"].includes(option.code));
+
+  return (
+    <section
+      style={{
+        border: "1px solid rgba(5,150,165,0.14)",
+        background: "rgba(255,255,255,0.84)",
+        borderRadius: 24,
+        padding: 13,
+        boxShadow: "0 16px 36px rgba(1,56,99,0.07)",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+        <div>
+          <p
+            style={{
+              margin: 0,
+              color: "#0596A5",
+              fontSize: 10,
+              fontWeight: 900,
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+            }}
+          >
+            {t(dictionary, "settings.language.availability.eyebrow", "Availability")}
+          </p>
+          <h3
+            style={{
+              margin: "5px 0 0",
+              color: "#013863",
+              fontSize: 16,
+              lineHeight: 1.1,
+              fontWeight: 900,
+            }}
+          >
+            {t(dictionary, "settings.language.availability.title", "Language support")}
+          </h3>
+        </div>
+
+        <span
+          style={{
+            border: "1px solid rgba(5,150,165,0.16)",
+            background: "#F4FCFA",
+            borderRadius: 999,
+            color: "#013863",
+            fontSize: 10,
+            fontWeight: 900,
+            padding: "6px 9px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {activeOptions.length} {t(dictionary, "settings.language.availability.countLabel", "options")}
+        </span>
+      </div>
+
+      <div style={{ display: "grid", gap: 8, marginTop: 11 }}>
+        <div
+          style={{
+            border: "1px solid rgba(5,150,165,0.12)",
+            background: "#F4FCFA",
+            borderRadius: 16,
+            padding: 10,
+          }}
+        >
+          <p style={{ margin: 0, color: "#013863", fontSize: 12, fontWeight: 900 }}>
+            {t(dictionary, "settings.language.availability.local", "Local guidance")}
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
+            {localOptions.map((option) => (
+              <span
+                key={option.code}
+                style={{
+                  border: "1px solid rgba(1,56,99,0.10)",
+                  background: "#FFFFFF",
+                  borderRadius: 999,
+                  color: "#013863",
+                  fontSize: 11,
+                  fontWeight: 850,
+                  padding: "5px 8px",
+                  lineHeight: 1,
+                }}
+              >
+                {option.label}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div
+          style={{
+            border: "1px solid rgba(243,174,38,0.22)",
+            background: "#FFF8E8",
+            borderRadius: 16,
+            padding: 10,
+          }}
+        >
+          <p style={{ margin: 0, color: "#5B3B00", fontSize: 12, fontWeight: 900 }}>
+            {t(dictionary, "settings.language.availability.preview", "Preview languages")}
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
+            {previewOptions.slice(0, 5).map((option) => (
+              <span
+                key={option.code}
+                style={{
+                  border: "1px solid rgba(1,56,99,0.10)",
+                  background: "#FFFFFF",
+                  borderRadius: 999,
+                  color: "#013863",
+                  fontSize: 11,
+                  fontWeight: 850,
+                  padding: "5px 8px",
+                  lineHeight: 1,
+                }}
+              >
+                {option.label}
+              </span>
+            ))}
+            {previewOptions.length > 5 ? (
+              <span
+                style={{
+                  border: "1px solid rgba(1,56,99,0.10)",
+                  background: "rgba(255,255,255,0.76)",
+                  borderRadius: 999,
+                  color: "#50668B",
+                  fontSize: 11,
+                  fontWeight: 850,
+                  padding: "5px 8px",
+                  lineHeight: 1,
+                }}
+              >
+                +{previewOptions.length - 5}
+              </span>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
 function LanguageSelector(props: {
   currentLanguage: string;
   accent: string;
-  border: string;
   saved: boolean;
   languageOptions: LanguageOption[];
+  dictionary: Record<string, string>;
 }) {
-  const normalizedOptions = props.languageOptions
-    .filter((option) => option?.code && option?.label)
+  const normalizedOptions = [...props.languageOptions]
+    .filter((option) => option.code && option.label)
     .sort((a, b) => {
-      const aGroupIndex = LANGUAGE_GROUP_ORDER.indexOf(a.group);
-      const bGroupIndex = LANGUAGE_GROUP_ORDER.indexOf(b.group);
-
-      if (aGroupIndex !== bGroupIndex) {
-        if (aGroupIndex === -1) return 1;
-        if (bGroupIndex === -1) return -1;
-        return aGroupIndex - bGroupIndex;
-      }
-
-      return a.label.localeCompare(b.label);
+      if (a.code === props.currentLanguage) return -1;
+      if (b.code === props.currentLanguage) return 1;
+      return (a.group || "").localeCompare(b.group || "") || a.label.localeCompare(b.label);
     });
 
   const activeOption =
     normalizedOptions.find((option) => option.code === props.currentLanguage) ||
-    normalizedOptions[0] ||
-    FALLBACK_LANGUAGE_OPTIONS[0];
+    normalizedOptions.find((option) => option.code === "en") ||
+    normalizedOptions[0];
+
+  const previewBadge = props.saved
+    ? t(props.dictionary, "settings.language.status.saved", "Saved")
+    : t(props.dictionary, "settings.language.status.preview", "Preview");
 
   return (
-    <div style={{ marginTop: 16, display: "grid", gap: 14 }}>
-      {props.saved ? (
-        <div
-          style={{
-            borderRadius: 18,
-            border: "1px solid rgba(5,150,165,0.20)",
-            background: "linear-gradient(135deg, #ecfeff, #ffffff)",
-            color: "#013863",
-            padding: "12px 14px",
-            fontSize: 12,
-            fontWeight: 900,
-            boxShadow: "0 12px 28px rgba(1,56,99,0.08)",
-          }}
-        >
-          Language preference saved to your OSP profile.
-        </div>
-      ) : null}
-
+    <div style={{ display: "grid", gap: 12, paddingBottom: 132 }}>
       <section
         style={{
-          borderRadius: 24,
-          border: `1px solid ${props.border}`,
-          background: "linear-gradient(180deg, #ffffff 0%, #f7fdff 100%)",
-          padding: 16,
-          boxShadow: "0 18px 42px rgba(1,56,99,0.10)",
-          display: "grid",
-          gap: 12,
+          border: "1px solid rgba(5,150,165,0.16)",
+          background:
+            "radial-gradient(circle at 18% 0%, rgba(5,150,165,0.16), transparent 34%), linear-gradient(180deg, #FFFFFF 0%, #F4FCFA 100%)",
+          borderRadius: 30,
+          padding: 15,
+          boxShadow: "0 22px 52px rgba(1,56,99,0.10)",
         }}
       >
-        <div>
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 950,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: props.accent,
-              marginBottom: 6,
-            }}
-          >
-            Active Travel Language
-          </div>
-
-          <div
-            style={{
-              borderRadius: 20,
-              border: "1px solid rgba(5,150,165,0.16)",
-              background: "linear-gradient(135deg, rgba(234,251,250,0.95), rgba(255,255,255,0.98))",
-              padding: "12px 14px",
-              display: "grid",
-              gap: 4,
-            }}
-          >
-            <strong
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+          <div>
+            <p
               style={{
+                margin: 0,
+                color: "#0596A5",
+                fontSize: 10,
+                fontWeight: 900,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+              }}
+            >
+              {t(props.dictionary, "settings.language.selected.eyebrow", "Selected language")}
+            </p>
+            <h3
+              style={{
+                margin: "7px 0 0",
                 color: "#013863",
-                fontSize: 17,
-                lineHeight: 1.15,
-                fontWeight: 950,
-                letterSpacing: "-0.025em",
+                fontSize: 25,
+                lineHeight: 1.05,
+                fontWeight: 900,
+                letterSpacing: "-0.04em",
               }}
             >
               {activeOption.label}
-            </strong>
-            <span
+            </h3>
+            <p
               style={{
+                margin: "6px 0 0",
                 color: "#50668B",
                 fontSize: 12,
                 lineHeight: 1.35,
                 fontWeight: 750,
               }}
             >
-              Current setting: {activeOption.code.toUpperCase()} · {activeOption.group || "Language Pack"}
-            </span>
+              {t(props.dictionary, "settings.language.selected.helper", "Guidance language for your OSP app.")}
+            </p>
           </div>
-        </div>
 
-        <form action={updatePreferredLanguage} style={{ display: "grid", gap: 10 }}>
-          <label
+          <span
             style={{
-              display: "grid",
-              gap: 7,
-              color: "#013863",
-              fontSize: 13,
+              border: "1px solid rgba(243,174,38,0.26)",
+              background: "#FFF8E8",
+              borderRadius: 999,
+              color: "#5B3B00",
+              fontSize: 10,
               fontWeight: 900,
+              padding: "7px 10px",
+              whiteSpace: "nowrap",
             }}
           >
-            Choose language pack
+            {previewBadge}
+          </span>
+        </div>
+
+        <form action={updatePreferredLanguage} style={{ display: "grid", gap: 10, marginTop: 14 }}>
+          <label style={{ display: "grid", gap: 7 }}>
+            <span
+              style={{
+                color: "#013863",
+                fontSize: 12,
+                fontWeight: 900,
+              }}
+            >
+              {t(props.dictionary, "settings.language.chooseOption", "Choose language")}
+            </span>
+
             <select
               name="preferredLanguage"
               defaultValue={activeOption.code}
-              aria-label="Choose traveler language pack"
+              aria-label={t(props.dictionary, "settings.language.chooseAria", "Choose traveler language")}
               style={{
                 width: "100%",
-                minHeight: 52,
-                borderRadius: 18,
-                border: `1px solid ${props.border}`,
-                background: "#ffffff",
-                color: "#013863",
+                minHeight: 54,
+                border: "1px solid rgba(1,56,99,0.12)",
+                borderRadius: 20,
                 padding: "0 14px",
+                color: "#013863",
                 fontSize: 15,
                 fontWeight: 850,
-                outline: "none",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.80)",
+                background: "#FFFFFF",
+                boxShadow: "0 12px 26px rgba(1,56,99,0.06)",
               }}
             >
               {normalizedOptions.map((option) => (
                 <option key={option.code} value={option.code}>
-                  {option.label} · {option.group || "Language Pack"}
+                  {option.label} · {option.group}
                 </option>
               ))}
             </select>
@@ -551,32 +740,19 @@ function LanguageSelector(props: {
           <button
             type="submit"
             style={{
-              minHeight: 50,
               border: 0,
-              borderRadius: 18,
+              borderRadius: 999,
+              padding: "15px 18px",
               background: "linear-gradient(135deg, #013863, #0596A5)",
-              color: "#ffffff",
+              color: "#FFFFFF",
               fontSize: 14,
-              fontWeight: 950,
-              cursor: "pointer",
-              boxShadow: "0 14px 30px rgba(1,56,99,0.18)",
+              fontWeight: 900,
+              boxShadow: "0 18px 34px rgba(5,150,165,0.22)",
             }}
           >
-            Save language preference
+            {t(props.dictionary, "settings.language.saveButton", "Save language")}
           </button>
         </form>
-
-        <p
-          style={{
-            margin: 0,
-            color: "#64748b",
-            fontSize: 12,
-            lineHeight: 1.45,
-            fontWeight: 700,
-          }}
-        >
-          This controls traveler-facing labels where approved language pack dictionary values are available. Missing translations safely fall back to English.
-        </p>
       </section>
     </div>
   );
@@ -1431,11 +1607,11 @@ function KuyaTalaAssistantPanel(props: {
     label: string;
     value: any;
     note?: string;
-    tone?: "teal" | "green" | "amber" | "blue";
+    tone?: "teal" | "aqua" | "amber" | "blue";
   }) {
     const toneMap = {
       teal: { bg: "#ecfeff", border: "#a5f3fc", color: "#078da0" },
-      green: { bg: "#f0fdf4", border: "#bbf7d0", color: "#15803d" },
+      aqua: { bg: "#EAFBFA", border: "rgba(5,150,165,0.24)", color: "#013863" },
       amber: { bg: "#fffbeb", border: "#fde68a", color: "#b45309" },
       blue: { bg: "#eff6ff", border: "#bfdbfe", color: "#2563eb" },
     };
@@ -1653,13 +1829,13 @@ function KuyaTalaAssistantPanel(props: {
             label="Assistant Context"
             value={hasContext ? "Connected" : "Unavailable"}
             note={context?.source || context?.error || "DB read-only context"}
-            tone={hasContext ? "green" : "amber"}
+            tone={hasContext ? "aqua" : "amber"}
           />
           <ValueCard
             label="Knowledge Spine"
             value={hasSpine ? "Connected" : "Unavailable"}
             note={spine?.source || spine?.error || "Approved OSP/SPM doctrine"}
-            tone={hasSpine ? "green" : "amber"}
+            tone={hasSpine ? "aqua" : "amber"}
           />
           <ValueCard
             label="Return State"
@@ -1671,7 +1847,7 @@ function KuyaTalaAssistantPanel(props: {
             label="Pass / QR"
             value={passAndQr?.hasQrCredential ? "QR available" : "Not confirmed"}
             note={`Pass status: ${passAndQr?.latestPassStatus || "Not confirmed"}`}
-            tone={passAndQr?.hasQrCredential ? "green" : "blue"}
+            tone={passAndQr?.hasQrCredential ? "aqua" : "blue"}
           />
           <ValueCard
             label="Payment"
@@ -1814,10 +1990,18 @@ export default async function TravelerSettingsPage({
   const user = await getCurrentUser();
   const languageOptions = await getLanguagePacks();
   const activePanel = getPanel(searchParams);
+  const authRequired = searchParams?.authRequired === "1";
+  const requestedPreviewLanguage =
+    typeof searchParams?.previewLanguage === "string" ? searchParams.previewLanguage.trim() : "";
+  const previewLanguage = languageOptions.some((option) => option.code === requestedPreviewLanguage)
+    ? requestedPreviewLanguage
+    : "";
+  const previewLanguageLabel =
+    languageOptions.find((option) => option.code === previewLanguage)?.label || "This language";
   const kuyaTalaSettingsConfig = getSettingsKuyaTalaConfig(activePanel);
 
   const saved = getSaved(searchParams);
-  const currentLanguage = user?.preferredLanguage || "en";
+  const currentLanguage = previewLanguage || user?.preferredLanguage || "en";
   const currentDisplayCurrency = user?.preferredDisplayCurrencyCode || "USD";
   const travelerProfile = user?.travelerProfile || null;
   const currentBirthDate = travelerProfile?.birthDate ? String(travelerProfile.birthDate).slice(0, 10) : "";
@@ -2250,13 +2434,23 @@ export default async function TravelerSettingsPage({
         ) : null}
 
         {activePanel === "language" ? (
+          <>
+            {authRequired ? (
+              <div className="mb-3 rounded-2xl border border-[#F3AE26]/35 bg-[#FFF8E8] px-4 py-3 text-sm leading-6 text-[#5B3B00]">
+                <strong className="block text-[#013863]">
+                  {t(dictionary, "settings.language.authRequired.title", "Sign in to save")}
+                </strong>
+                {t(dictionary, "settings.language.authRequired.body", "Previewing {language}. Sign in to save.").replace("{language}", previewLanguageLabel)}
+              </div>
+            ) : null}
           <LanguageSelector
             currentLanguage={currentLanguage}
             accent={copy.accent}
-            border={copy.border}
             saved={saved}
             languageOptions={languageOptions}
+            dictionary={dictionary}
           />
+          </>
         ) : activePanel === "currency" ? (
           <CurrencySelector
             currentCurrency={currentDisplayCurrency}
@@ -2312,7 +2506,7 @@ export default async function TravelerSettingsPage({
           />
         </section>
       ) : null}
-      {activePanel !== "notifications" ? (
+      {activePanel !== "notifications" && activePanel !== "language" ? (
         <div
           style={{
             marginTop: 10,

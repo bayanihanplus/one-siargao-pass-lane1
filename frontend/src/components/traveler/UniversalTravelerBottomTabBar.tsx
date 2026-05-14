@@ -1,24 +1,50 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
+
 type TravelerBottomTabKey = "home" | "trails" | "pass" | "explore" | "profile";
 
 type UniversalTravelerBottomTabBarProps = {
   activeTab?: TravelerBottomTabKey;
   fixed?: boolean;
+  labels?: Partial<Record<Exclude<TravelerBottomTabKey, "pass">, string>>;
 };
 
 type TabItem = {
   key: Exclude<TravelerBottomTabKey, "pass">;
   label: string;
   href: string;
+  dictionaryKey: string;
 };
 
 const TABS: TabItem[] = [
-  { key: "home", label: "Home", href: "/traveler/home" },
-  { key: "trails", label: "Trails", href: "/traveler/passport-trails" },
-  { key: "explore", label: "Explore", href: "/traveler/explore" },
-  { key: "profile", label: "Profile", href: "/traveler/settings" },
+  { key: "home", label: "Home", href: "/traveler/home", dictionaryKey: "traveler.bottomTab.home" },
+  { key: "trails", label: "Trails", href: "/traveler/passport-trails", dictionaryKey: "traveler.bottomTab.trails" },
+  { key: "explore", label: "Explore", href: "/traveler/explore", dictionaryKey: "traveler.bottomTab.explore" },
+  { key: "profile", label: "Profile", href: "/traveler/settings", dictionaryKey: "traveler.bottomTab.profile" },
 ];
+
+const PREVIEW_LANGUAGE_COOKIE = "osp_preview_language";
+
+function readPreviewLanguageCookie() {
+  if (typeof document === "undefined") return "";
+
+  const match = document.cookie
+    .split("; ")
+    .find((item) => item.startsWith(`${PREVIEW_LANGUAGE_COOKIE}=`));
+
+  if (!match) return "";
+
+  return decodeURIComponent(match.split("=").slice(1).join("=")).trim().toLowerCase();
+}
+
+function getClientApiBaseUrl() {
+  return process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8001/api/v1";
+}
+
+function translate(dictionary: Record<string, string>, key: string, fallback: string) {
+  return dictionary[key] || fallback;
+}
 
 const OSP = {
   navy: "#013863",
@@ -32,8 +58,48 @@ const OSP = {
 export default function UniversalTravelerBottomTabBar({
   activeTab = "home",
   fixed = true,
+  labels,
 }: UniversalTravelerBottomTabBarProps) {
   const passActive = activeTab === "pass";
+  const [dictionary, setDictionary] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const languageCode = readPreviewLanguageCookie();
+
+    if (!languageCode || languageCode === "en") {
+      setDictionary({});
+      return;
+    }
+
+    let active = true;
+
+    fetch(`${getClientApiBaseUrl()}/language-packs/${encodeURIComponent(languageCode)}/dictionary?scope=traveler`, {
+      cache: "no-store",
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (!active) return;
+        const nextDictionary =
+          payload?.dictionary && typeof payload.dictionary === "object" ? payload.dictionary : {};
+        setDictionary(nextDictionary);
+      })
+      .catch(() => {
+        if (active) setDictionary({});
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const resolvedTabs = useMemo(
+    () =>
+      TABS.map((tab) => ({
+        ...tab,
+        label: labels?.[tab.key] || translate(dictionary, tab.dictionaryKey, tab.label),
+      })),
+    [dictionary, labels],
+  );
 
   return (
     <nav
@@ -63,13 +129,13 @@ export default function UniversalTravelerBottomTabBar({
         boxSizing: "border-box",
       }}
     >
-      {TABS.slice(0, 2).map((tab) => (
+      {resolvedTabs.slice(0, 2).map((tab) => (
         <BottomTabItem key={tab.key} tab={tab} active={activeTab === tab.key} />
       ))}
 
       <a
         href="/traveler/pass"
-        aria-label="Open official Traveler QR"
+        aria-label={translate(dictionary, "traveler.bottomTab.qrAria", "Open official Traveler QR")}
         aria-current={passActive ? "page" : undefined}
         data-osp-bottom-tab-center-qr="true"
         style={{
@@ -97,7 +163,7 @@ export default function UniversalTravelerBottomTabBar({
         <QrIcon active={passActive} />
       </a>
 
-      {TABS.slice(2).map((tab) => (
+      {resolvedTabs.slice(2).map((tab) => (
         <BottomTabItem key={tab.key} tab={tab} active={activeTab === tab.key} />
       ))}
     </nav>

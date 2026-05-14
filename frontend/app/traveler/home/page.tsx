@@ -3,6 +3,7 @@ import { getPreferredTravelerTrip } from "../../../src/lib/travelerTripSelection
 import { redirect } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
+import { getTravelerLanguageRuntime } from "../../../src/lib/traveler-language-runtime";
 
 function Section(props: { title: string; children: any }) {
   return (
@@ -2126,10 +2127,10 @@ function TravelerCompactStatusRow(props: {
       <TravelerStatusRowCard
         title={clearanceStatusTitle}
         value={clearanceStatus}
-        shellBg="#eefdf3"
-        borderColor="#cdeed7"
-        chipBg="#dcfce7"
-        accentColor="#16a34a"
+        shellBg="#F4FCFA"
+        borderColor="rgba(5,150,165,0.18)"
+        chipBg="#EAFBFA"
+        accentColor="#0596A5"
         icon={
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
             <rect x="5" y="3.5" width="14" height="17" rx="2" stroke="currentColor" strokeWidth="1.8" />
@@ -2333,10 +2334,10 @@ function TravelerReassuranceAndJourney(props: {
             href="/traveler/explore"
             title={checkpointsTitle}
             subtitle={checkpointsSubtitle}
-            shellBg="#eefdf3"
-            borderColor="#cdeed7"
-            chipBg="#dcfce7"
-            accentColor="#16a34a"
+            shellBg="#F4FCFA"
+            borderColor="rgba(5,150,165,0.18)"
+            chipBg="#EAFBFA"
+            accentColor="#0596A5"
             icon={
               <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
                 <path d="M12 3.5 18.5 6v5.2c0 4.2-2.7 7.5-6.5 9.3-3.8-1.8-6.5-5.1-6.5-9.3V6L12 3.5Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
@@ -2518,7 +2519,8 @@ function TravelerShell(props: {
 
 export default async function TravelerHomePage() {
   const user = await getCurrentUser();
-  const dictionary = await getTravelerDictionary(user?.preferredLanguage || "en");
+  const languageRuntime = await getTravelerLanguageRuntime({ scope: "traveler" });
+  const dictionary = languageRuntime.dictionary;
 
   const userRole = user?.primaryRole || user?.role || "";
 
@@ -3010,7 +3012,7 @@ export default async function TravelerHomePage() {
             </div>
 
             <div style={{ minWidth: 128, textAlign: "center" }}>
-              <div style={{ display: "inline-block", borderRadius: 999, padding: "8px 15px", background: "#16a34a", color: "#ffffff", fontSize: 13, fontWeight: 900 }}>
+              <div style={{ display: "inline-block", borderRadius: 999, padding: "8px 15px", background: "#0596A5", color: "#ffffff", fontSize: 13, fontWeight: 900 }}>
                 READY
               </div>
 
@@ -3119,10 +3121,10 @@ export default async function TravelerHomePage() {
               title="Explore Siargao"
               subtitle="Discover stays, tours, trails, and local spots"
               href="/traveler/explore"
-              shellBg="#f0fdf4"
-              borderColor="#bbf7d0"
-              chipBg="#dcfce7"
-              accentColor="#16a34a"
+              shellBg="#F4FCFA"
+              borderColor="rgba(5,150,165,0.22)"
+              chipBg="#EAFBFA"
+              accentColor="#0596A5"
               icon={
                 <svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
                   <path d="M12 3l7 3v5c0 4.5-3 8.1-7 10-4-1.9-7-5.5-7-10V6l7-3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
@@ -3149,7 +3151,7 @@ export default async function TravelerHomePage() {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "center" }}>
             <TravelerBottomNavLink
               href="/traveler/home"
-              label="Home"
+              label={t(dictionary, "traveler.bottomTab.home", "Home")}
               active
               icon={
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
@@ -3160,7 +3162,7 @@ export default async function TravelerHomePage() {
 
             <TravelerBottomNavLink
               href="/traveler/passport-trails"
-              label="Trails"
+              label={t(dictionary, "traveler.bottomTab.trails", "Trails")}
               icon={
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
                   <rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="1.9" />
@@ -3195,7 +3197,7 @@ export default async function TravelerHomePage() {
 
             <TravelerBottomNavLink
               href="/traveler/explore"
-              label="Explore"
+              label={t(dictionary, "traveler.bottomTab.explore", "Explore")}
               icon={
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
                   <rect x="3" y="6" width="18" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.9" />
@@ -3206,7 +3208,7 @@ export default async function TravelerHomePage() {
 
             <TravelerBottomNavLink
               href="/traveler/settings"
-              label="Profile"
+              label={t(dictionary, "traveler.bottomTab.profile", "Profile")}
               icon={
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
                   <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.9" />

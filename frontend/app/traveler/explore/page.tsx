@@ -1,5 +1,37 @@
 import Link from "next/link";
 import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
+import { getTravelerLanguageRuntime, tr } from "../../../src/lib/traveler-language-runtime";
+
+type TravelerDictionary = Record<string, string>;
+
+const premiumTapStyle = {
+  WebkitTapHighlightColor: "transparent",
+  touchAction: "manipulation",
+  transition:
+    "transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease",
+} as const;
+
+const premiumFocusRing = {
+  outline: "2px solid rgba(243,174,38,0.42)",
+  outlineOffset: 2,
+} as const;
+
+const premiumCardShadow = {
+  primary: "0 16px 36px rgba(1,56,99,0.14)",
+  medium: "0 12px 26px rgba(1,56,99,0.10)",
+  soft: "0 8px 18px rgba(1,56,99,0.065)",
+  flat: "0 6px 14px rgba(1,56,99,0.045)",
+} as const;
+
+const softCardSurfaces = {
+  aqua: "linear-gradient(135deg, #EAFBFA 0%, #FFFFFF 100%)",
+  sand: "linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%)",
+  blue: "linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%)",
+  pearl: "linear-gradient(135deg, #F8FBFD 0%, #FFFFFF 100%)",
+  gold: "linear-gradient(135deg, #FFF8E6 0%, #FFFFFF 100%)",
+  mist: "linear-gradient(135deg, #F4FCFA 0%, #FFFFFF 100%)",
+} as const;
+
 
 type ExploreLane = {
   eyebrow: string;
@@ -21,6 +53,7 @@ type FeaturedService = {
   slug?: string;
   category: string;
   title: string;
+  titleKey?: string;
   body: string;
   price: string;
   href: string;
@@ -147,7 +180,7 @@ const LOCKED_FEATURED_VERIFIED_ROUTE_CARDS: FeaturedService[] = [
     slug: "general-luna-island-hopping",
     category: "Island Hopping",
     title: "General Luna Island Hopping",
-    body: "Choose official island routes from General Luna Port. Review route options and clear fee visibility before payment.",
+    body: "Official island routes from General Luna.",
     price: "Trip options",
     href: "/traveler/explore/tours/general-luna-island-hopping",
     tags: ["General Luna Port", "Island routes", "Voucher path"],
@@ -276,12 +309,12 @@ function mapDiscoveryLaneToFeatured(lane: DiscoveryLane): FeaturedService {
     title: lane.title,
     body:
       lane.body ||
-      "Operator-console backed discovery lane prepared for governed traveler marketplace exposure.",
+      "Trusted discovery lane for traveler-ready services.",
     price: live ? `${serviceCount} ready service${serviceCount === 1 ? "" : "s"}` : "Coming online",
     href: lane.href,
-    tags: lane.tags && lane.tags.length ? lane.tags : live ? ["DB wired", "Marketplace backed"] : ["Lane ready", "Awaiting supply"],
+    tags: lane.tags && lane.tags.length ? lane.tags : live ? ["Live", "Verified"] : ["Lane ready", "Awaiting supply"],
     tone: normalizeDiscoveryLaneTone(lane.tone),
-    sourceLabel: live ? "DB lane" : "Preview lane",
+    sourceLabel: live ? "Live lane" : "Discovery lane",
     visualBackground: lane.fallbackGradient || undefined,
     mediaUrl: lane.featuredImageUrl || null,
     mediaTruth: lane.mediaStatus || lane.readinessStatus || undefined,
@@ -465,7 +498,7 @@ const lanes: ExploreLane[] = [
   {
     eyebrow: "Places to stay",
     title: "Stay in Siargao",
-    body: "Find hotels, resorts, villas, hostels, homestays, and guesthouses prepared for traveler-ready discovery.",
+    body: "Hotels, villas, hostels, and guesthouses.",
     href: "/traveler/explore/stays",
     cta: "Explore",
     tone: "teal",
@@ -474,7 +507,7 @@ const lanes: ExploreLane[] = [
   {
     eyebrow: "Official route layer",
     title: "Official Passport Trails",
-    body: "Follow curated trail families, verified stops, and progress logic connected to your Siargao journey.",
+    body: "Curated trails, stops, and progress.",
     href: "/traveler/passport-trails",
     cta: "Explore",
     tone: "sand",
@@ -483,7 +516,7 @@ const lanes: ExploreLane[] = [
   {
     eyebrow: "Flexible planning",
     title: "Build Your Own Trail",
-    body: "Create your own Passport Trail request and connect preferred island stops into one structured journey.",
+    body: "Build a route around your stops.",
     href: "/traveler/passport-trails/diy-trail-builder",
     cta: "Explore",
     tone: "mint",
@@ -492,7 +525,7 @@ const lanes: ExploreLane[] = [
   {
     eyebrow: "Food and local discovery",
     title: "Food & Local Spots",
-    body: "Discover cafés, restaurants, local culture, and curated island stops without turning Explore into a noisy directory.",
+    body: "Food, culture, and island stops.",
     href: "/traveler/explore/food-culture",
     cta: "Explore",
     tone: "sky",
@@ -526,7 +559,7 @@ const fallbackFeaturedServices: FeaturedService[] = [
     href: "/traveler/explore/tours",
     tags: ["Approved operators", "Governed exposure"],
     tone: "ocean",
-    sourceLabel: "Preview lane",
+    sourceLabel: "Discovery lane",
     mediaTruth: "PREVIEW_VISUAL",
     operatorLabel: "Verified operator lane",
     availabilityLabel: "Request-ready",
@@ -543,7 +576,7 @@ const fallbackFeaturedServices: FeaturedService[] = [
     href: "/traveler/explore/rentals",
     tags: ["Deposit aware", "Policy required"],
     tone: "trail",
-    sourceLabel: "Preview lane",
+    sourceLabel: "Discovery lane",
     mediaTruth: "PREVIEW_VISUAL",
     operatorLabel: "Verified rental lane",
     availabilityLabel: "Availability required",
@@ -560,7 +593,7 @@ const fallbackFeaturedServices: FeaturedService[] = [
     href: "/traveler/explore/surf-schools",
     tags: ["Instructor-ready", "Safety notes"],
     tone: "surf",
-    sourceLabel: "Preview lane",
+    sourceLabel: "Discovery lane",
     mediaTruth: "PREVIEW_VISUAL",
     operatorLabel: "Verified surf lane",
     availabilityLabel: "Request-ready",
@@ -572,12 +605,12 @@ const fallbackFeaturedServices: FeaturedService[] = [
   {
     category: "Food & Culture",
     title: "Food & Culture",
-    body: "Cafés, restaurants, local food, cultural spots, and curated island stops without becoming a noisy directory.",
+    body: "Cafés, restaurants, local food, and curated island stops.",
     price: "View spots",
     href: "/traveler/explore/food-culture",
     tags: ["Curated", "Local discovery"],
     tone: "trail",
-    sourceLabel: "Preview lane",
+    sourceLabel: "Discovery lane",
     mediaTruth: "PREVIEW_VISUAL",
     operatorLabel: "Curated discovery lane",
     availabilityLabel: "Discovery-ready",
@@ -594,7 +627,7 @@ const fallbackFeaturedServices: FeaturedService[] = [
     href: "/traveler/explore/beauty-health",
     tags: ["Verified services", "Careful listing"],
     tone: "ocean",
-    sourceLabel: "Preview lane",
+    sourceLabel: "Discovery lane",
     mediaTruth: "PREVIEW_VISUAL",
     operatorLabel: "Verified services lane",
     availabilityLabel: "Appointment-ready",
@@ -676,14 +709,13 @@ type ExploreSearchParams = {
 };
 
 const filterOptions = [
-  { label: "All", value: "ALL" },
-  { label: "Stays", value: "STAYS" },
-  { label: "Tours", value: "TOURS" },
-  { label: "Rentals",
-    href: "/traveler/explore/stays", value: "RENTALS" },
-  { label: "Surf", value: "SURF" },
-  { label: "Food", value: "FOOD_CULTURE" },
-  { label: "Health", value: "BEAUTY_HEALTH" },
+  { label: "All", value: "ALL", dictionaryKey: "explore.filters.all" },
+  { label: "Stays", value: "STAYS", dictionaryKey: "explore.filters.stays" },
+  { label: "Tours", value: "TOURS", dictionaryKey: "explore.filters.tours" },
+  { label: "Rentals", href: "/traveler/explore/stays", value: "RENTALS", dictionaryKey: "explore.filters.rentals" },
+  { label: "Surf", value: "SURF", dictionaryKey: "explore.filters.surf" },
+  { label: "Food", value: "FOOD_CULTURE", dictionaryKey: "explore.filters.food" },
+  { label: "Health", value: "BEAUTY_HEALTH", dictionaryKey: "explore.filters.health" },
 ];
 
 function normalizeSearchValue(value?: string | string[]) {
@@ -737,59 +769,54 @@ function buildExploreFilterHref(params: { q?: string; category?: string }) {
   return query ? `/traveler/explore?${query}` : "/traveler/explore";
 }
 
-function Header() {
+
+function compactFeaturedText(value: string, max = 42) {
+  const clean = String(value || "").replace(/\s+/g, " ").trim();
+  if (clean.length <= max) return clean;
+  return `${clean.slice(0, max - 1).trim()}…`;
+}
+
+function Header({ dictionary }: { dictionary: TravelerDictionary }) {
   return (
-    <header
-      style={{
-        display: "grid",
-        gap: 14,
-        padding: "4px 0 2px",
-      }}
-    >
+    <header style={{ display: "grid", gap: 10 }}>
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "52px 1fr 52px",
+          gridTemplateColumns: "44px 1fr 44px",
           alignItems: "center",
-          gap: 12,
+          gap: 10,
         }}
       >
         <Link
           href="/traveler/home"
           aria-label="Back to traveler home"
           style={{
-            width: 52,
-            height: 52,
+            width: 44,
+            height: 44,
             borderRadius: 999,
             display: "grid",
             placeItems: "center",
-            background: "rgba(255,255,255,0.96)",
-            border: "1px solid rgba(15, 23, 42, 0.08)",
-            color: "#0b3768",
+            background: "#ffffff",
+            border: "1px solid rgba(1,56,99,0.10)",
+            color: "#013863",
             textDecoration: "none",
-            boxShadow: "0 14px 30px rgba(15,23,42,0.07)",
-            fontSize: 28,
+            boxShadow: premiumCardShadow.soft,
+            fontSize: 20,
             fontWeight: 950,
+            ...premiumTapStyle,
           }}
         >
           ‹
         </Link>
 
-        <div
-          style={{
-            minWidth: 0,
-            textAlign: "center",
-            display: "grid",
-            gap: 4,
-          }}
-        >
+        <div style={{ minWidth: 0, textAlign: "center" }}>
           <p
             style={{
               margin: 0,
-              color: "#078da0",
-              fontSize: 10.5,
+              color: "#0596A5",
+              fontSize: 9.4,
               fontWeight: 950,
-              letterSpacing: "0.16em",
+              letterSpacing: "0.14em",
               textTransform: "uppercase",
             }}
           >
@@ -797,79 +824,52 @@ function Header() {
           </p>
           <h1
             style={{
-              margin: 0,
-              color: "#102f57",
-              fontSize: 34,
-              lineHeight: 0.96,
-              letterSpacing: "-0.055em",
+              margin: "2px 0 0",
+              color: "#013863",
+              fontSize: 22,
+              lineHeight: 1,
+              letterSpacing: "-0.045em",
               fontWeight: 950,
             }}
           >
-            Explore Siargao
+            {tr(dictionary, "explore.header.title", "Explore Siargao")}
           </h1>
         </div>
 
         <div
           aria-label="One Siargao Pass badge"
           style={{
-            width: 52,
-            height: 52,
-            borderRadius: 18,
+            width: 44,
+            height: 44,
+            borderRadius: 16,
             display: "grid",
             placeItems: "center",
-            background: "rgba(255,255,255,0.96)",
-            border: "1px solid rgba(6,120,137,0.14)",
-            boxShadow: "0 14px 30px rgba(6,120,137,0.10)",
+            background: "#ffffff",
+            border: "1px solid rgba(5,150,165,0.14)",
+            boxShadow: premiumCardShadow.soft,
             overflow: "hidden",
           }}
         >
           <img
             src="/osp/osp-logo.png"
             alt="One Siargao Pass"
-            style={{
-              width: 38,
-              height: 38,
-              objectFit: "contain",
-              display: "block",
-            }}
+            style={{ width: 32, height: 32, objectFit: "contain", display: "block" }}
           />
         </div>
       </div>
 
-      <section
+      <p
         style={{
-          borderRadius: 26,
-          padding: "16px 16px 15px",
-          background:
-            "radial-gradient(circle at 18% 0%, rgba(34,211,238,0.22), transparent 38%), linear-gradient(135deg, rgba(255,255,255,0.96), rgba(236,253,245,0.78))",
-          border: "1px solid rgba(6,120,137,0.12)",
-          boxShadow: "0 18px 42px rgba(15,23,42,0.06)",
+          margin: 0,
+          color: "#50668B",
+          fontSize: 12.2,
+          lineHeight: 1.25,
+          fontWeight: 780,
+          textAlign: "center",
         }}
       >
-        <p
-          style={{
-            margin: 0,
-            color: "#0b7285",
-            fontSize: 11,
-            fontWeight: 950,
-            letterSpacing: "0.13em",
-            textTransform: "uppercase",
-          }}
-        >
-          Verified island discovery
-        </p>
-        <p
-          style={{
-            margin: "7px 0 0",
-            color: "#4f647e",
-            fontSize: 13.5,
-            lineHeight: 1.42,
-            fontWeight: 800,
-          }}
-        >
-          Browse stays, tours, rentals, surf schools, food, culture, and trusted local services connected to your One Siargao Pass.
-        </p>
-      </section>
+        {tr(dictionary, "explore.header.body", "Find trusted routes, stays, and local services.")}
+      </p>
     </header>
   );
 }
@@ -877,56 +877,43 @@ function Header() {
 function SearchRow({
   q,
   category,
+  dictionary,
 }: {
   q: string;
   category: string;
+  dictionary: TravelerDictionary;
 }) {
   return (
-    <section
-      style={{
-        display: "grid",
-        gap: 11,
-        marginTop: -2,
-      }}
-    >
-      <form
-        action="/traveler/explore"
-        method="get"
-        style={{
-          display: "grid",
-          gap: 8,
-        }}
-      >
+    <section style={{ display: "grid", gap: 8 }}>
+      <form action="/traveler/explore" method="get">
         {category && category !== "ALL" ? <input type="hidden" name="category" value={category} /> : null}
 
         <label
           style={{
-            minHeight: 62,
-            borderRadius: 24,
-            background:
-              "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(248,253,255,0.96))",
-            border: "1px solid rgba(6,120,137,0.14)",
+            minHeight: 50,
+            borderRadius: 18,
+            background: "#ffffff",
+            border: "1px solid rgba(5,150,165,0.14)",
             display: "grid",
-            gridTemplateColumns: "34px 1fr auto",
+            gridTemplateColumns: "30px 1fr auto",
             alignItems: "center",
-            gap: 10,
-            padding: "8px 9px 8px 15px",
-            color: "#64748b",
-            fontWeight: 800,
-            boxShadow: "0 16px 34px rgba(15,23,42,0.07)",
+            gap: 8,
+            padding: "7px 8px 7px 12px",
+            color: "#50668B",
+            boxShadow: premiumCardShadow.medium,
           }}
         >
           <span
             aria-hidden="true"
             style={{
-              width: 34,
-              height: 34,
-              borderRadius: 14,
+              width: 30,
+              height: 30,
+              borderRadius: 13,
               display: "grid",
               placeItems: "center",
-              background: "#e0f7fb",
-              color: "#078da0",
-              fontSize: 18,
+              background: "#EAFBFA",
+              color: "#0596A5",
+              fontSize: 16,
               fontWeight: 950,
             }}
           >
@@ -936,36 +923,36 @@ function SearchRow({
           <input
             name="q"
             defaultValue={q}
-            placeholder="Search stays, tours, rentals, surf, food…"
+            placeholder={tr(dictionary, "explore.search.placeholder", "Search Siargao…")}
             style={{
               width: "100%",
               border: 0,
               outline: 0,
               background: "transparent",
-              color: "#102f57",
-              fontSize: 13.5,
-              fontWeight: 850,
+              color: "#013863",
+              fontSize: 13,
+              fontWeight: 820,
               minWidth: 0,
             }}
           />
 
           <button
             type="submit"
-            aria-label="Search Explore Siargao"
+            aria-label={tr(dictionary, "explore.search.aria", "Search Explore Siargao")}
             style={{
-              minHeight: 44,
-              borderRadius: 18,
-              padding: "0 15px",
-              border: "1px solid rgba(255,255,255,0.28)",
-              background: "linear-gradient(135deg, #063b63, #089fa5)",
+              minHeight: 34,
+              borderRadius: 14,
+              padding: "0 12px",
+              border: 0,
+              background: "linear-gradient(135deg, #013863, #0596A5)",
               color: "#ffffff",
               fontWeight: 950,
+              fontSize: 11,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 12px 24px rgba(6,120,137,0.18)",
               cursor: "pointer",
-              fontSize: 13,
+              ...premiumTapStyle,
             }}
           >
             Go
@@ -974,45 +961,36 @@ function SearchRow({
       </form>
 
       <div
-        aria-label="Explore filters"
+        aria-label={tr(dictionary, "explore.filters.aria", "Explore filters")}
         style={{
           display: "flex",
-          gap: 8,
+          gap: 7,
           overflowX: "auto",
-          padding: "2px 0 5px",
+          padding: "1px 1px 4px",
           scrollbarWidth: "none",
         }}
       >
         {filterOptions.map((option) => {
-          const active = category === option.value;
+          const active = category === option.value || (!category && option.value === "ALL");
           return (
             <Link
               key={option.value}
-              href={buildExploreFilterHref({ q, category: option.value })}
+              href={option.href || buildExploreFilterHref({ q, category: option.value === "ALL" ? undefined : option.value })}
               style={{
                 flex: "0 0 auto",
-                minHeight: 36,
                 borderRadius: 999,
-                padding: "0 13px",
-                background: active
-                  ? "linear-gradient(135deg,#063b63,#089fa5)"
-                  : "rgba(255,255,255,0.92)",
-                border: active
-                  ? "1px solid rgba(6,120,137,0.30)"
-                  : "1px solid rgba(6,120,137,0.13)",
-                color: active ? "#ffffff" : "#0b3768",
+                padding: "8px 11px",
+                background: active ? "#013863" : "#ffffff",
+                color: active ? "#ffffff" : "#50668B",
+                border: active ? "1px solid #013863" : "1px solid rgba(5,150,165,0.14)",
                 textDecoration: "none",
-                fontSize: 12,
-                fontWeight: 950,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: active
-                  ? "0 12px 24px rgba(6,120,137,0.16)"
-                  : "0 8px 18px rgba(15,23,42,0.045)",
+                fontSize: 10.6,
+                fontWeight: 900,
+                boxShadow: active ? "0 12px 22px rgba(1,56,99,0.18)" : premiumCardShadow.flat,
+                ...premiumTapStyle,
               }}
             >
-              {option.label}
+              {tr(dictionary, option.dictionaryKey, option.label)}
             </Link>
           );
         })}
@@ -1021,244 +999,211 @@ function SearchRow({
   );
 }
 
-function HeroCard() {
-  return (
-    <section
-      style={{
-        minHeight: 320,
-        borderRadius: 28,
-        padding: 24,
-        overflow: "hidden",
-        position: "relative",
-        color: "#ffffff",
-        backgroundImage:
-          "linear-gradient(90deg, rgba(2,18,31,0.90) 0%, rgba(2,24,39,0.78) 42%, rgba(3,52,66,0.38) 74%, rgba(3,52,66,0.18) 100%), url('/osp/explore-siargao-hero-lagoon-kayak-square.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center center",
-        backgroundRepeat: "no-repeat",
-        boxShadow: "0 22px 52px rgba(6,120,137,0.26)",
-        display: "grid",
-        alignContent: "end",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(180deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.28) 100%)",
-          pointerEvents: "none",
-        }}
-      />
+function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
+  const actions = [
+    {
+      label: "Passport Trails",
+      labelKey: "explore.primary.passportTrails",
+      note: "Routes",
+      noteKey: "explore.primary.routes",
+      href: "/traveler/passport-trails",
+      icon: "🧭",
+      tone: softCardSurfaces.aqua,
+      text: "#013863",
+    },
+    {
+      label: "Verified Tours",
+      labelKey: "explore.primary.verifiedTours",
+      note: "Bookable",
+      noteKey: "explore.primary.bookable",
+      href: "/traveler/explore/tours",
+      icon: "⛵",
+      tone: softCardSurfaces.blue,
+      text: "#013863",
+    },
+    {
+      label: "Stays",
+      labelKey: "explore.primary.stays",
+      note: "Places",
+      noteKey: "explore.primary.places",
+      href: "/traveler/explore/stays",
+      icon: "🏝️",
+      tone: softCardSurfaces.sand,
+      text: "#013863",
+    },
+  ];
 
+  return (
+    <section style={{ display: "grid", gap: 9 }}>
       <div
         style={{
-          position: "relative",
-          zIndex: 1,
-          maxWidth: 292,
+          borderRadius: 24,
+          padding: 16,
+          minHeight: 132,
+          color: "#ffffff",
+          backgroundImage:
+            "linear-gradient(90deg, rgba(1,56,99,0.94) 0%, rgba(1,56,99,0.82) 48%, rgba(1,56,99,0.50) 100%), url('/osp/explore-siargao-hero-lagoon-kayak-square.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          boxShadow: "0 18px 42px rgba(1,56,99,0.20)",
+          display: "grid",
+          alignContent: "end",
+          overflow: "hidden",
         }}
       >
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "8px 12px",
-            borderRadius: 999,
-            border: "1px solid rgba(255,255,255,0.38)",
-            background: "rgba(2,18,31,0.46)",
-            color: "#ffffff",
-            fontSize: 12,
-            fontWeight: 950,
-            letterSpacing: "0.06em",
-            marginBottom: 14,
-            textShadow: "0 2px 8px rgba(0,0,0,0.45)",
-          }}
-        >
-          ⛨ VERIFIED BY OSP
-        </div>
-
-        <h2
-          style={{
-            margin: "0 0 12px",
-fontSize: 36,
-            lineHeight: 0.98,
-            letterSpacing: "-0.04em",
-            maxWidth: 250,
-            fontWeight: 950,
-color: "#ffffff",
-            WebkitTextFillColor: "#ffffff",
-            textShadow: "0 5px 18px rgba(0,0,0,0.78)",
-          }}
-        >
-          <span
-            style={{
-              color: "#ffffff",
-              WebkitTextFillColor: "#ffffff",
-              textShadow: "0 5px 18px rgba(0,0,0,0.78)",
-              display: "inline",
-            }}
-          >
-            Discover Siargao your way
-          </span>
-        </h2>
-
         <p
           style={{
-            margin: "0 0 20px",
-            maxWidth: 270,
-fontSize: 15,
-            lineHeight: 1.5,
-            fontWeight: 850,
-            textShadow: "0 3px 12px rgba(0,0,0,0.54)",
-            color: "rgba(232,248,250,0.94)",
-          }}
-        >
-          Find verified local experiences, partner tours, and Passport Trails connected to your One Siargao Pass.
-        </p>
-
-        <Link
-          href="/traveler/passport-trails"
-          style={{
-            minHeight: 48,
-            padding: "0 18px",
-            borderRadius: 999,
-            background: "rgba(255,255,255,0.98)",
-            color: "#0b3768",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            textDecoration: "none",
+            margin: "0 0 5px",
+            color: "#F3AE26",
+            fontSize: 9.6,
             fontWeight: 950,
-            boxShadow: "0 16px 34px rgba(0,0,0,0.28)",
+            letterSpacing: "0.13em",
+            textTransform: "uppercase",
           }}
         >
-          Explore Passport Trails →
-        </Link>
+          {tr(dictionary, "explore.hero.badge", "Verified by OSP")}
+        </p>
+        <h2
+          style={{
+            margin: 0,
+            maxWidth: 250,
+            color: "#ffffff",
+            WebkitTextFillColor: "#ffffff",
+            fontSize: 24,
+            lineHeight: 0.98,
+            letterSpacing: "-0.04em",
+            fontWeight: 950,
+            textShadow: "0 5px 18px rgba(0,0,0,0.70)",
+          }}
+        >
+          {tr(dictionary, "explore.hero.title", "Discover Siargao your way")}
+        </h2>
+      </div>
+
+      <div
+        aria-label="Primary Explore actions"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1.18fr 1fr 1fr",
+          gap: 8,
+        }}
+      >
+        {actions.map((action) => (
+          <Link
+            key={tr(dictionary, action.labelKey, action.label)}
+            href={action.href}
+            style={{
+              minHeight: 78,
+              borderRadius: 20,
+              padding: 10,
+              background: action.tone,
+              border: "1px solid rgba(5,150,165,0.13)",
+              boxShadow: premiumCardShadow.soft,
+              color: action.text,
+              textDecoration: "none",
+              display: "grid",
+              alignContent: "space-between",
+              overflow: "hidden",
+              ...premiumTapStyle,
+            }}
+          >
+            <span
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 13,
+                display: "grid",
+                placeItems: "center",
+                background: "rgba(255,255,255,0.76)",
+                boxShadow: "0 6px 14px rgba(1,56,99,0.045)",
+                fontSize: 17,
+                lineHeight: 1,
+              }}
+            >
+              {action.icon}
+            </span>
+            <span>
+              <strong style={{ display: "block", fontSize: 11.4, lineHeight: 1.05, fontWeight: 950 }}>
+                {tr(dictionary, action.labelKey, action.label)}
+              </strong>
+              <span style={{ display: "block", marginTop: 3, fontSize: 9.2, opacity: 0.78, fontWeight: 850 }}>
+                {tr(dictionary, action.noteKey, action.note)}
+              </span>
+            </span>
+          </Link>
+        ))}
       </div>
     </section>
   );
 }
 
+function LaneGrid({ dictionary }: { dictionary: TravelerDictionary }) {
+  const shortcuts = [
+    { title: "Tours", titleKey: "explore.lanes.tours", icon: "⛵", href: "/traveler/explore/tours", surface: softCardSurfaces.blue },
+    { title: "Rentals", titleKey: "explore.lanes.rentals", icon: "🛵", href: "/traveler/explore/rentals", surface: softCardSurfaces.aqua },
+    { title: "Surf", titleKey: "explore.lanes.surf", icon: "🏄", href: "/traveler/explore/surf-schools", surface: softCardSurfaces.pearl },
+    { title: "Food", titleKey: "explore.lanes.food", icon: "🍽️", href: "/traveler/explore/food-culture", surface: softCardSurfaces.sand },
+    { title: "Care", titleKey: "explore.lanes.care", icon: "✨", href: "/traveler/explore/beauty-health", surface: softCardSurfaces.gold },
+    { title: "Stays", titleKey: "explore.lanes.stays", icon: "🏝️", href: "/traveler/explore/stays", surface: softCardSurfaces.mist },
+  ];
 
-function CategoryChips() {
   return (
-    <section
-      aria-label="Explore category shortcuts"
-      style={{
-        display: "flex",
-        gap: 8,
-        overflowX: "auto",
-        padding: "2px 0 6px",
-        scrollbarWidth: "none",
-      }}
-    >
-      {categories.map((item) => (
-        <Link
-          key={item.label}
-          href={item.href}
-          style={{
-            flex: "0 0 auto",
-            minWidth: 74,
-            minHeight: 58,
-            borderRadius: 16,
-            display: "grid",
-            placeItems: "center",
-            gap: 3,
-            textDecoration: "none",
-            color: "#0b3768",
-            background: "#ffffff",
-            border: "1px solid rgba(6,120,137,0.12)",
-            boxShadow: "0 10px 20px rgba(15,23,42,0.045)",
-            fontSize: 10.5,
-            fontWeight: 900,
-            textAlign: "center",
-            padding: "7px 8px",
-            lineHeight: 1.05,
-          }}
-        >
-          <span style={{ fontSize: 18, lineHeight: 1 }}>{item.icon}</span>
-          <span>{item.label}</span>
-        </Link>
-      ))}
-    </section>
-  );
-}
-
-function LaneGrid() {
-  return (
-    <section style={{ display: "grid", gap: 12 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end" }}>
-        <h2 style={{ margin: 0, color: "#102f57", fontSize: 22, lineHeight: 1.1 }}>
-          Explore by lane
+    <section style={{ display: "grid", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "end", justifyContent: "space-between", gap: 10 }}>
+        <h2 style={{ margin: 0, color: "#013863", fontSize: 18.5, lineHeight: 1.05, letterSpacing: "-0.02em" }}>
+          {tr(dictionary, "explore.lanes.title", "Explore by lane")}
         </h2>
-        <Link href="/traveler/explore/tours" style={{ color: "#078da0", fontWeight: 900, textDecoration: "none", fontSize: 13 }}>
-          See all →
+        <Link href="/traveler/explore/tours" style={{ color: "#0596A5", fontWeight: 950, textDecoration: "none", fontSize: 10.5 }}>
+          {tr(dictionary, "explore.actions.seeAll", "All")} →
         </Link>
       </div>
 
       <div
-        aria-label="Explore Siargao lane grid"
+        aria-label="Explore category shortcuts"
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gridAutoRows: "minmax(158px, auto)",
-          gap: 12,
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: 8,
         }}
       >
-        {lanes.map((lane) => {
-          const s = toneStyles(lane.tone);
-          return (
-            <Link
-              key={lane.title}
-              href={lane.href}
+        {shortcuts.map((item) => (
+          <Link
+            key={item.title}
+            href={item.href}
+            style={{
+              minHeight: 74,
+              borderRadius: 18,
+              padding: 9,
+              background: item.surface,
+              border: "1px solid rgba(5,150,165,0.13)",
+              boxShadow: premiumCardShadow.soft,
+              textDecoration: "none",
+              color: "#013863",
+              display: "grid",
+              placeItems: "center",
+              textAlign: "center",
+              gap: 5,
+              ...premiumTapStyle,
+            }}
+          >
+            <span
               style={{
-                minHeight: 158,
-                borderRadius: 22,
-                padding: 13,
-                background: s.background,
-                border: s.border,
-                boxShadow: "0 14px 32px rgba(15,23,42,0.06)",
-                textDecoration: "none",
-                color: s.title,
+                width: 30,
+                height: 30,
+                borderRadius: 13,
                 display: "grid",
-                alignContent: "space-between",
-                overflow: "hidden",
+                placeItems: "center",
+                background: "rgba(255,255,255,0.72)",
+                boxShadow: "0 6px 14px rgba(1,56,99,0.045)",
+                fontSize: 17,
+                lineHeight: 1,
               }}
             >
-              <div>
-                <div style={{ fontSize: 25, marginBottom: 7 }}>{lane.icon}</div>
-                <div
-                  style={{
-                    fontSize: 8.8,
-                    letterSpacing: "0.13em",
-                    textTransform: "uppercase",
-                    fontWeight: 950,
-                    color: s.eyebrow,
-                    marginBottom: 7,
-                  }}
-                >
-                  {lane.eyebrow}
-                </div>
-                <strong style={{ display: "block", fontSize: 15.3, lineHeight: 1.12, color: s.title }}>
-                  {lane.title}
-                </strong>
-                <p style={{ margin: "7px 0 0", color: s.body, fontSize: 10.8, lineHeight: 1.32, fontWeight: 750 }}>
-                  {lane.body}
-                </p>
-              </div>
-
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10 }}>
-                <span style={{ color: s.ctaColor, background: s.ctaBg, borderRadius: 999, padding: "5px 9px", fontSize: 11.2, fontWeight: 950 }}>
-                  {lane.cta}
-                </span>
-                <span style={{ color: s.ctaColor, background: s.ctaBg, width: 26, height: 26, borderRadius: 999, display: "grid", placeItems: "center", fontWeight: 950 }}>
-                  ›
-                </span>
-              </div>
-            </Link>
-          );
-        })}
+              {item.icon}
+            </span>
+            <strong style={{ fontSize: 10.8, lineHeight: 1.05, fontWeight: 950 }}>{tr(dictionary, item.titleKey, item.title)}</strong>
+          </Link>
+        ))}
       </div>
     </section>
   );
@@ -1267,581 +1212,135 @@ function LaneGrid() {
 function FeaturedServices({
   services,
   marketplaceMode,
+  dictionary,
 }: {
   services: FeaturedService[];
   marketplaceMode?: string;
+  dictionary: TravelerDictionary;
 }) {
   const displayServices = getFeaturedVerifiedServicesForDisplay(services);
 
   return (
-    <section style={{ display: "grid", gap: 12 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end" }}>
-        <div>
-          <h2 style={{ margin: 0, color: "#102f57", fontSize: 24, lineHeight: 1.1 }}>
-            Featured verified services
-          </h2>
-          <p style={{ margin: "6px 0 0", color: "#64748b", fontSize: 12.5, lineHeight: 1.35, fontWeight: 750 }}>
-            Choose your Siargao trip type. Open the route group, compare options, and continue only when the route and fee path feel clear.
-          </p>
-        </div>
-        <Link href="/traveler/explore/tours" style={{ color: "#078da0", fontWeight: 900, textDecoration: "none", fontSize: 13 }}>
-          All tours →
+    <section style={{ display: "grid", gap: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", gap: 10 }}>
+        <h2 style={{ margin: 0, color: "#013863", fontSize: 19.5, lineHeight: 1.04, letterSpacing: "-0.025em" }}>
+          {tr(dictionary, "explore.featured.title", "Featured verified services")}
+        </h2>
+        <Link href="/traveler/explore/tours" style={{ color: "#0596A5", fontWeight: 950, textDecoration: "none", fontSize: 10.5 }}>
+          {tr(dictionary, "explore.actions.allTours", "Tours")} →
         </Link>
       </div>
-
-      {marketplaceMode ? (
-        <div
-          style={{
-            marginTop: -4,
-            color: "#64748b",
-            fontSize: 11.5,
-            fontWeight: 800,
-          }}
-        >
-          Source: OSP curated trip gateway
-        </div>
-      ) : null}
 
       <div
         aria-label="Featured verified service carousel"
         style={{
           display: "flex",
-          gap: 10,
+          gap: 9,
           overflowX: "auto",
-          padding: "2px 2px 8px",
+          padding: "2px 2px 9px",
           scrollSnapType: "x mandatory",
           scrollbarWidth: "none",
         }}
       >
-        {displayServices.map((service) => (
-          <Link
-            key={service.title}
-            href={getFeaturedServiceCardHref(service)}
-            style={{
-              flex: "0 0 296px",
-              scrollSnapAlign: "start",
-              borderRadius: 24,
-              overflow: "hidden",
-              background: "#ffffff",
-              border: "1px solid rgba(15,23,42,0.10)",
-              boxShadow: "0 18px 40px rgba(1,56,99,0.12)",
-              textDecoration: "none",
-              color: "#102f57",
-            }}
-          >
-            <div
-              style={{
-                height: 176,
-                position: "relative",
-                overflow: "hidden",
-                background: service.visualBackground || serviceTone(service.tone),
-              }}
-            >
-              {getFeaturedServiceCardMediaUrl(service) ? (
-                <img
-                  src={getFeaturedServiceCardMediaUrl(service) || ""}
-                  alt={`${service.title} service banner`}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    display: "block",
-                  }}
-                />
-              ) : null}
-
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: getFeaturedServiceCardMediaUrl(service)
-                    ? "linear-gradient(180deg, rgba(1,56,99,0.18) 0%, rgba(1,56,99,0.76) 100%)"
-                    : "transparent",
-                }}
-              />
-
-              <div
-                style={{
-                  position: "absolute",
-                  left: 10,
-                  right: 10,
-                  top: 10,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 8,
-                }}
-              >
-                <span
-                  style={{
-                    borderRadius: 999,
-                    background: "rgba(7,141,160,0.9)",
-                    color: "#ffffff",
-                    padding: "6px 8px",
-                    fontSize: 10,
-                    fontWeight: 950,
-                    letterSpacing: "0.05em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {service.category}
-                </span>
-                <span style={{ color: "#ffffff", fontSize: 20, textShadow: "0 2px 8px rgba(0,0,0,0.35)" }}>♡</span>
-              </div>
-
-              {!getFeaturedServiceCardMediaUrl(service) && service.mediaTruth ? (
-                <div
-                  style={{
-                    position: "absolute",
-                    left: 10,
-                    bottom: 10,
-                    borderRadius: 999,
-                    background: "rgba(255,255,255,0.78)",
-                    color: "#475569",
-                    padding: "5px 7px",
-                    fontSize: 9.2,
-                    fontWeight: 900,
-                  }}
-                >
-                  Visual pending
-                </div>
-              ) : null}
-            </div>
-
-            <div style={{ padding: 14, display: "grid", gap: 10 }}>
-              <div>
-                <strong style={{ display: "block", fontSize: 16.5, lineHeight: 1.08, marginBottom: 6 }}>
-                  {service.title}
-                </strong>
-                <p style={{ margin: 0, color: "#64748b", fontSize: 11.4, lineHeight: 1.42, fontWeight: 680 }}>
-                  {service.body}
-                </p>
-              </div>
-
-              <div
-                style={{
-                  borderRadius: 16,
-                  background: "#F8FBFD",
-                  border: "1px solid rgba(15,23,42,0.06)",
-                  padding: 10,
-                  display: "grid",
-                  gap: 6,
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
-                  <span style={{ color: "#64748b", fontSize: 10.5, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                    Price
-                  </span>
-                  <strong style={{ color: "#078da0", fontSize: 15, fontWeight: 950, textAlign: "right" }}>
-                    {getFeaturedServiceCardPrice(service)}
-                  </strong>
-                </div>
-
-                <div style={{ color: "#475569", fontSize: 11.5, fontWeight: 800, lineHeight: 1.35 }}>
-                  {service.availabilityLabel} · {service.urgencyLabel}
-                </div>
-
-                <div style={{ color: "#64748b", fontSize: 11, fontWeight: 750, lineHeight: 1.35 }}>
-                  {service.operatorLabel}
-                </div>
-              </div>
-
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {(service.tags || []).slice(0, 3).map((tag) => (
-                  <span
-                    key={tag}
-                    style={{
-                      borderRadius: 999,
-                      background: "#ecfeff",
-                      color: "#0e7490",
-                      border: "1px solid rgba(14,116,144,0.14)",
-                      padding: "5px 7px",
-                      fontSize: 10.5,
-                      fontWeight: 900,
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <span
-                  style={{
-                    borderRadius: 999,
-                    background: "#eef8fb",
-                    color: "#0b7285",
-                    padding: "7px 9px",
-                    fontSize: 10.8,
-                    fontWeight: 950,
-                  }}
-                >
-                  {service.availabilityLabel || "Choose route"}
-                </span>
-                <span style={{ color: "#0b3768", fontSize: 12.5, fontWeight: 950 }}>
-                  {getFeaturedServiceCardCta(service)} →
-                </span>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function MoreWaysToExplore({ services }: { services: FeaturedService[] }) {
-  if (!services.length) return null;
-
-  function getBannerTheme(title: string) {
-    if (title === "Siargao Tour Operators") {
-      return {
-        eyebrow: "Verified local tours",
-        headline: "Island routes, land tours, and curated operator-led experiences",
-        icon: "🚐",
-        chips: ["Island hopping", "Land tours", "Custom trips"],
-        background: "linear-gradient(135deg, #013863 0%, #055f86 56%, #0ea5b1 100%)",
-        motif: "tours",
-      } as const;
-    }
-
-    if (title === "Rentals") {
-      return {
-        eyebrow: "Island mobility",
-        headline: "Motorbikes, vans, boards, and rental-ready island movement",
-        icon: "🛵",
-        chips: ["Motorbike", "Van", "Board rental"],
-        background: "linear-gradient(135deg, #0b3d67 0%, #146b89 50%, #f3ae26 100%)",
-        motif: "rentals",
-      } as const;
-    }
-
-    if (title === "Surfing Schools") {
-      return {
-        eyebrow: "Surf lessons",
-        headline: "Local coaching, board support, and beginner-to-advanced surf access",
-        icon: "🏄",
-        chips: ["Beginner", "Coaching", "Board support"],
-        background: "linear-gradient(135deg, #036b78 0%, #0c8ea0 54%, #013863 100%)",
-        motif: "surf",
-      } as const;
-    }
-
-    if (title === "Food & Culture") {
-      return {
-        eyebrow: "Local taste",
-        headline: "Cafés, restaurants, cultural stops, and curated island discoveries",
-        icon: "🍽️",
-        chips: ["Cafés", "Restaurants", "Culture stops"],
-        background: "linear-gradient(135deg, #9a5f0c 0%, #d58b18 48%, #013863 100%)",
-        motif: "food",
-      } as const;
-    }
-
-    if (title === "Beauty & Health") {
-      return {
-        eyebrow: "Wellness & care",
-        headline: "Spa, recovery, grooming, wellness, and local care services",
-        icon: "🌿",
-        chips: ["Spa", "Recovery", "Wellness"],
-        background: "linear-gradient(135deg, #0a6572 0%, #13889a 52%, #325d66 100%)",
-        motif: "wellness",
-      } as const;
-    }
-
-    return {
-      eyebrow: "Explore lane",
-      headline: title,
-      icon: "◇",
-      chips: ["Explore", "Discover", "View"],
-      background: "linear-gradient(135deg, #013863 0%, #0596a5 100%)",
-      motif: "default",
-    } as const;
-  }
-
-  function renderMotif(motif: string) {
-    if (motif === "tours") {
-      return (
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            right: 14,
-            bottom: 18,
-            width: 82,
-            height: 58,
-            zIndex: 1,
-          }}
-        >
-          <div style={{ position: "absolute", right: 0, bottom: 0, width: 68, height: 18, borderRadius: 999, background: "rgba(255,255,255,0.16)" }} />
-          <div style={{ position: "absolute", left: 10, bottom: 16, width: 12, height: 12, borderRadius: 999, background: "#ffffff" }} />
-          <div style={{ position: "absolute", left: 30, bottom: 26, width: 12, height: 12, borderRadius: 999, background: "rgba(255,255,255,0.88)" }} />
-          <div style={{ position: "absolute", left: 50, bottom: 38, width: 12, height: 12, borderRadius: 999, background: "rgba(255,255,255,0.72)" }} />
-          <div style={{ position: "absolute", left: 18, bottom: 22, width: 18, height: 2, background: "rgba(255,255,255,0.72)", transform: "rotate(26deg)" }} />
-          <div style={{ position: "absolute", left: 38, bottom: 34, width: 18, height: 2, background: "rgba(255,255,255,0.72)", transform: "rotate(26deg)" }} />
-        </div>
-      );
-    }
-
-    if (motif === "rentals") {
-      return (
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            right: 12,
-            bottom: 14,
-            width: 88,
-            height: 64,
-            zIndex: 1,
-          }}
-        >
-          <div style={{ position: "absolute", left: 0, right: 0, bottom: 10, height: 10, borderRadius: 999, background: "rgba(255,255,255,0.18)" }} />
-          <div style={{ position: "absolute", left: 16, bottom: 13, width: 12, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.92)" }} />
-          <div style={{ position: "absolute", left: 38, bottom: 13, width: 12, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.92)" }} />
-          <div style={{ position: "absolute", left: 60, bottom: 13, width: 12, height: 4, borderRadius: 999, background: "rgba(255,255,255,0.92)" }} />
-          <div style={{ position: "absolute", left: 10, bottom: 28, width: 24, height: 20, borderRadius: 8, background: "rgba(255,255,255,0.88)" }} />
-          <div style={{ position: "absolute", left: 38, bottom: 24, width: 18, height: 24, borderRadius: 10, background: "rgba(255,255,255,0.78)" }} />
-          <div style={{ position: "absolute", left: 62, bottom: 30, width: 14, height: 14, borderRadius: 999, background: "rgba(255,255,255,0.94)" }} />
-        </div>
-      );
-    }
-
-    if (motif === "surf") {
-      return (
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            right: 10,
-            bottom: 10,
-            width: 92,
-            height: 68,
-            zIndex: 1,
-          }}
-        >
-          <div style={{ position: "absolute", right: 0, bottom: 10, width: 70, height: 18, borderRadius: "20px 20px 24px 24px", border: "3px solid rgba(255,255,255,0.78)", borderLeft: "0", borderTop: "0", background: "transparent" }} />
-          <div style={{ position: "absolute", right: 18, bottom: 22, width: 52, height: 14, borderRadius: "20px 20px 22px 22px", border: "3px solid rgba(255,255,255,0.52)", borderLeft: "0", borderTop: "0", background: "transparent" }} />
-          <div style={{ position: "absolute", left: 6, bottom: 8, width: 10, height: 46, borderRadius: 999, background: "rgba(255,255,255,0.88)", transform: "rotate(18deg)" }} />
-        </div>
-      );
-    }
-
-    if (motif === "food") {
-      return (
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            right: 12,
-            bottom: 14,
-            width: 84,
-            height: 64,
-            zIndex: 1,
-          }}
-        >
-          <div style={{ position: "absolute", right: 8, bottom: 8, width: 42, height: 42, borderRadius: 999, border: "3px solid rgba(255,255,255,0.92)" }} />
-          <div style={{ position: "absolute", right: 19, bottom: 19, width: 20, height: 20, borderRadius: 999, background: "rgba(255,255,255,0.30)" }} />
-          <div style={{ position: "absolute", left: 12, bottom: 12, width: 4, height: 36, borderRadius: 999, background: "rgba(255,255,255,0.90)" }} />
-          <div style={{ position: "absolute", left: 22, bottom: 12, width: 4, height: 36, borderRadius: 999, background: "rgba(255,255,255,0.72)" }} />
-          <div style={{ position: "absolute", left: 32, bottom: 12, width: 4, height: 36, borderRadius: 999, background: "rgba(255,255,255,0.56)" }} />
-        </div>
-      );
-    }
-
-    if (motif === "wellness") {
-      return (
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            right: 10,
-            bottom: 12,
-            width: 86,
-            height: 66,
-            zIndex: 1,
-          }}
-        >
-          <div style={{ position: "absolute", right: 8, bottom: 8, width: 42, height: 16, borderRadius: 999, background: "rgba(255,255,255,0.32)" }} />
-          <div style={{ position: "absolute", right: 16, bottom: 26, width: 30, height: 14, borderRadius: 999, background: "rgba(255,255,255,0.54)" }} />
-          <div style={{ position: "absolute", right: 22, bottom: 42, width: 18, height: 10, borderRadius: 999, background: "rgba(255,255,255,0.82)" }} />
-          <div style={{ position: "absolute", left: 8, bottom: 12, width: 20, height: 34, borderRadius: "20px 0 20px 0", background: "rgba(255,255,255,0.82)", transform: "rotate(-22deg)" }} />
-          <div style={{ position: "absolute", left: 24, bottom: 18, width: 16, height: 28, borderRadius: "20px 0 20px 0", background: "rgba(255,255,255,0.56)", transform: "rotate(16deg)" }} />
-        </div>
-      );
-    }
-
-    return null;
-  }
-
-  return (
-    <section style={{ display: "grid", gap: 12 }}>
-      <div>
-        <h2 style={{ margin: 0, color: "#102f57", fontSize: 22, lineHeight: 1.1 }}>
-          More ways to explore
-        </h2>
-        <p style={{ margin: "6px 0 0", color: "#64748b", fontSize: 12.5, lineHeight: 1.35, fontWeight: 750 }}>
-          Discovery lanes shown separately from verified marketplace services.
-        </p>
-      </div>
-
-      <div
-        aria-label="More ways to explore carousel"
-        style={{
-          display: "flex",
-          gap: 12,
-          overflowX: "auto",
-          padding: "2px 2px 10px",
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
-        }}
-      >
-        {services.map((service) => {
-          const theme = getBannerTheme(service.title);
+        {displayServices.map((service) => {
+          const mediaUrl = getFeaturedServiceCardMediaUrl(service);
 
           return (
             <Link
               key={service.title}
               href={getFeaturedServiceCardHref(service)}
               style={{
-                flex: "0 0 242px",
+                flex: "0 0 66%",
                 scrollSnapAlign: "start",
-                borderRadius: 26,
+                borderRadius: 21,
                 overflow: "hidden",
                 background: "#ffffff",
-                border: "1px solid rgba(5,150,165,0.14)",
-                boxShadow: "0 18px 38px rgba(1,56,99,0.11)",
+                border: "1px solid rgba(1,56,99,0.10)",
+                boxShadow: premiumCardShadow.primary,
                 textDecoration: "none",
-                color: "#102f57",
+                color: "#013863",
+                ...premiumTapStyle,
               }}
             >
               <div
                 style={{
-                  minHeight: 148,
-                  padding: 14,
+                  height: 118,
                   position: "relative",
                   overflow: "hidden",
-                  background: theme.background,
-                  color: "#ffffff",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
+                  background: service.visualBackground || serviceTone(service.tone),
                 }}
               >
+                {mediaUrl ? (
+                  <img
+                    src={mediaUrl}
+                    alt={`${service.title} service banner`}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                ) : null}
+
                 <div
                   style={{
                     position: "absolute",
                     inset: 0,
-                    background:
-                      "linear-gradient(135deg, rgba(1,56,99,0.20) 0%, rgba(1,56,99,0.10) 100%)",
-                    zIndex: 0,
+                    background: mediaUrl
+                      ? "linear-gradient(180deg, rgba(1,56,99,0.08) 0%, rgba(1,56,99,0.55) 100%)"
+                      : "linear-gradient(180deg, rgba(1,56,99,0.02) 0%, rgba(1,56,99,0.22) 100%)",
                   }}
                 />
 
-                {renderMotif(theme.motif)}
-
-                <div
-                  style={{
-                    position: "relative",
-                    zIndex: 2,
-                    display: "flex",
-                    alignItems: "flex-start",
-                    justifyContent: "space-between",
-                    gap: 10,
-                  }}
-                >
-                  <span
-                    style={{
-                      borderRadius: 999,
-                      padding: "6px 9px",
-                      background: "rgba(255,255,255,0.18)",
-                      border: "1px solid rgba(255,255,255,0.34)",
-                      color: "#ffffff",
-                      fontSize: 10.5,
-                      fontWeight: 950,
-                      letterSpacing: "0.08em",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {theme.eyebrow}
-                  </span>
-
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      width: 38,
-                      height: 38,
-                      borderRadius: 16,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      background: "#ffffff",
-                      color: "#013863",
-                      fontSize: 19,
-                      boxShadow: "0 10px 22px rgba(1,56,99,0.18)",
-                      flex: "0 0 auto",
-                    }}
-                  >
-                    {theme.icon}
-                  </span>
-                </div>
-
-                <div style={{ position: "relative", zIndex: 2, display: "grid", gap: 10 }}>
-                  <strong
-                    style={{
-                      display: "block",
-                      maxWidth: 206,
-                      color: "#ffffff",
-                      fontSize: 16.5,
-                      lineHeight: 1.08,
-                      letterSpacing: "-0.025em",
-                      fontWeight: 950,
-                      textShadow: "0 2px 12px rgba(0,0,0,0.16)",
-                    }}
-                  >
-                    {theme.headline}
-                  </strong>
-
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {theme.chips.map((chip) => (
-                      <span
-                        key={chip}
-                        style={{
-                          borderRadius: 999,
-                          padding: "5px 8px",
-                          background: "rgba(255,255,255,0.16)",
-                          border: "1px solid rgba(255,255,255,0.22)",
-                          color: "#ffffff",
-                          fontSize: 10.5,
-                          fontWeight: 850,
-                        }}
-                      >
-                        {chip}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ padding: 13, display: "grid", gap: 8 }}>
-                <strong style={{ display: "block", fontSize: 14.5, lineHeight: 1.18 }}>
-                  {service.title}
-                </strong>
-                <p style={{ margin: 0, color: "#64748b", fontSize: 11.3, lineHeight: 1.38, fontWeight: 750 }}>
-                  {service.body}
-                </p>
                 <span
                   style={{
-                    width: "fit-content",
+                    position: "absolute",
+                    left: 9,
+                    top: 9,
+                    maxWidth: "calc(100% - 18px)",
                     borderRadius: 999,
-                    padding: "7px 10px",
-                    background: "rgba(5,150,165,0.10)",
-                    color: "#047f91",
-                    border: "1px solid rgba(5,150,165,0.16)",
-                    fontSize: 12,
+                    background: "rgba(1,56,99,0.82)",
+                    color: "#ffffff",
+                    padding: "5px 8px",
+                    fontSize: 8.6,
+                    fontWeight: 950,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {service.category}
+                </span>
+              </div>
+
+              <div style={{ padding: "10px 10px 11px", display: "grid", gap: 9 }}>
+                <strong
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    color: "#013863",
+                    fontSize: 14,
+                    lineHeight: 1.08,
+                    letterSpacing: "-0.018em",
+                    minHeight: 30,
+                  }}
+                >
+                  {service.titleKey ? tr(dictionary, service.titleKey, service.title) : service.title}
+                </strong>
+
+                <span
+                  style={{
+                    justifySelf: "start",
+                    borderRadius: 999,
+                    background: "linear-gradient(135deg, rgba(1,56,99,0.10), rgba(5,150,165,0.16))",
+                    color: "#013863",
+                    border: "1px solid rgba(5,150,165,0.18)",
+                    padding: "6px 11px",
+                    fontSize: 10,
                     fontWeight: 950,
                   }}
                 >
-                  Explore →
+                  {tr(dictionary, "explore.cards.cta", "View")}
                 </span>
               </div>
             </Link>
@@ -1852,58 +1351,102 @@ function MoreWaysToExplore({ services }: { services: FeaturedService[] }) {
   );
 }
 
-function GovernanceNote() {
+function MoreWaysToExplore({ services, dictionary }: { services: FeaturedService[]; dictionary: TravelerDictionary }) {
+  if (!services.length) return null;
+
+  const shortcuts: Array<{ title: string; titleKey?: string; href: string; icon: string; surface: string }> = [
+    ...services.slice(0, 5).map((service) => {
+      const title = service.title;
+      const key = title.toLowerCase();
+      const icon = key.includes("rental") ? "🛵" : key.includes("surf") ? "🏄" : key.includes("food") ? "🍽️" : key.includes("beauty") || key.includes("health") ? "✨" : "🧭";
+      const surface = key.includes("rental")
+        ? softCardSurfaces.aqua
+        : key.includes("surf")
+          ? softCardSurfaces.blue
+          : key.includes("food")
+            ? softCardSurfaces.sand
+            : key.includes("beauty") || key.includes("health")
+              ? softCardSurfaces.gold
+              : softCardSurfaces.pearl;
+      return { title, href: getFeaturedServiceCardHref(service), icon, surface };
+    }),
+    {
+      title: "Site Access",
+      titleKey: "explore.moreWays.siteAccess",
+      href: "/traveler/site-access/cloud-9",
+      icon: "🎟️",
+      surface: softCardSurfaces.mist,
+    },
+  ];
+
   return (
-    <section
-      style={{
-        borderRadius: 24,
-        background: "linear-gradient(135deg, #fff7ed, #fffaf0)",
-        border: "1px solid rgba(217,119,6,0.18)",
-        padding: 16,
-        display: "grid",
-        gridTemplateColumns: "52px 1fr auto",
-        gap: 12,
-        alignItems: "center",
-      }}
-    >
+    <section style={{ display: "grid", gap: 8 }}>
+      <h2 style={{ margin: 0, color: "#013863", fontSize: 18.2, lineHeight: 1.05, letterSpacing: "-0.02em" }}>
+        {tr(dictionary, "explore.moreWays.title", "More ways to explore")}
+      </h2>
+
       <div
-        aria-label="Department of Tourism visibility note"
+        aria-label="More Explore shortcuts"
         style={{
-          width: 52,
-          height: 52,
-          borderRadius: 18,
           display: "grid",
-          placeItems: "center",
-          background: "#ffffff",
-          border: "1px solid rgba(217,119,6,0.16)",
-          boxShadow: "0 10px 24px rgba(146,64,14,0.08)",
-          overflow: "hidden",
+          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+          gap: 8,
         }}
       >
-        <img
-          src="/osp/dot-logo.png"
-          alt="Department of Tourism"
-          style={{
-            width: 40,
-            height: 40,
-            objectFit: "contain",
-            display: "block",
-          }}
-        />
+        {shortcuts.map((service) => (
+          <Link
+            key={service.title}
+            href={service.href}
+            style={{
+              minHeight: 78,
+              borderRadius: 18,
+              background: service.surface,
+              border: "1px solid rgba(5,150,165,0.13)",
+              boxShadow: premiumCardShadow.soft,
+              color: "#013863",
+              textDecoration: "none",
+              padding: 10,
+              display: "grid",
+              gridTemplateColumns: "28px 1fr",
+              gap: 8,
+              alignItems: "center",
+              overflow: "hidden",
+              ...premiumTapStyle,
+            }}
+          >
+            <span
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: 12,
+                display: "grid",
+                placeItems: "center",
+                background: "rgba(255,255,255,0.72)",
+                boxShadow: "0 6px 14px rgba(1,56,99,0.045)",
+                fontSize: 15,
+              }}
+            >
+              {service.icon}
+            </span>
+            <strong
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                fontSize: 11.5,
+                lineHeight: 1.08,
+                fontWeight: 950,
+              }}
+            >
+              {service.title}
+            </strong>
+          </Link>
+        ))}
       </div>
-      <div>
-        <strong style={{ display: "block", color: "#92400e", fontSize: 14 }}>
-          Experience visibility is governed.
-        </strong>
-        <p style={{ margin: "4px 0 0", color: "#6b4f35", fontSize: 12.5, lineHeight: 1.35, fontWeight: 750 }}>
-          Only traveler-safe, approved, or marketplace-ready services appear here. Operator-created services do not show automatically.
-        </p>
-      </div>
-      <span style={{ color: "#92400e", fontSize: 24 }}>›</span>
     </section>
   );
 }
-
 
 export default async function TravelerExplorePage({
   searchParams,
@@ -1912,6 +1455,12 @@ export default async function TravelerExplorePage({
 }) {
   const q = normalizeSearchValue(searchParams?.q);
   const category = normalizeFilterCategory(searchParams?.category);
+  const languageRuntime = await getTravelerLanguageRuntime({
+    searchParams,
+    scope: "traveler",
+    allowQueryPreview: true,
+  });
+  const dictionary = languageRuntime.dictionary;
 
   const marketplace = await getMarketplaceServices();
   const backendFeaturedServices =
@@ -1920,10 +1469,10 @@ export default async function TravelerExplorePage({
       : [];
 
   const existingTitles = new Set(backendFeaturedServices.map((item) => item.title));
-  const backendDiscoveryLaneServices = await getDiscoveryLaneServices();
+  const DiscoveryLaneServices = await getDiscoveryLaneServices();
   const previewExploreServices = (
-    backendDiscoveryLaneServices.length > 0
-      ? backendDiscoveryLaneServices
+    DiscoveryLaneServices.length > 0
+      ? DiscoveryLaneServices
       : fallbackFeaturedServices.filter((item) => !existingTitles.has(item.title))
   ).slice(0, 5);
 
@@ -1938,16 +1487,16 @@ export default async function TravelerExplorePage({
           "radial-gradient(circle at 15% 0%, rgba(204,251,241,0.72), transparent 32%), linear-gradient(180deg, #f6fdff 0%, #ffffff 60%, #fffaf0 100%)",
         color: "#102f57",
         fontFamily: "Arial, sans-serif",
+        WebkitFontSmoothing: "antialiased",
       }}
     >
-      <div style={{ display: "grid", gap: 18 }}>
-        <Header />
-        <SearchRow q={q} category={category} />
-        <HeroCard />
-        <LaneGrid />
-        <FeaturedServices services={backendFeaturedServices} marketplaceMode={marketplace.mode} />
-        <MoreWaysToExplore services={previewExploreServices} />
-        <GovernanceNote />
+      <div style={{ display: "grid", gap: 13 }}>
+        <Header dictionary={dictionary} />
+        <SearchRow q={q} category={category} dictionary={dictionary} />
+        <HeroCard dictionary={dictionary} />
+        <LaneGrid dictionary={dictionary} />
+        <FeaturedServices services={backendFeaturedServices} marketplaceMode={marketplace.mode} dictionary={dictionary} />
+        <MoreWaysToExplore services={previewExploreServices} dictionary={dictionary} />
       </div>
 
       <UniversalTravelerBottomTabBar activeTab="explore" />

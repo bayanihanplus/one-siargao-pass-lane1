@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
+import { getTravelerLanguageRuntime, tr } from "../../../src/lib/traveler-language-runtime";
 
 const OSP = {
   navy: "#013863",
@@ -19,13 +20,14 @@ const OSP = {
 };
 
 type OfficialTrailFilterKey = "all" | "bookable" | "confirm" | "explore" | "saved";
+type TravelerDictionary = Record<string, string>;
 
-const OFFICIAL_TRAIL_FILTERS: Array<{ key: OfficialTrailFilterKey; label: string }> = [
-  { key: "all", label: "All" },
-  { key: "explore", label: "Explore" },
-  { key: "bookable", label: "Bookable" },
-  { key: "confirm", label: "Needs Confirm" },
-  { key: "saved", label: "Saved" },
+const OFFICIAL_TRAIL_FILTERS: Array<{ key: OfficialTrailFilterKey; label: string; dictionaryKey: string }> = [
+  { key: "all", label: "All", dictionaryKey: "passportTrails.filters.all" },
+  { key: "explore", label: "Explore", dictionaryKey: "passportTrails.filters.explore" },
+  { key: "bookable", label: "Bookable", dictionaryKey: "passportTrails.filters.bookable" },
+  { key: "confirm", label: "Needs Confirm", dictionaryKey: "passportTrails.filters.confirm" },
+  { key: "saved", label: "Saved", dictionaryKey: "passportTrails.filters.saved" },
 ];
 
 function getTrailFilterKey(trail: { badge?: string; status?: string; eyebrow?: string; title?: string }): OfficialTrailFilterKey {
@@ -303,10 +305,10 @@ function IslandHoppingRequestStartedPanel({
   );
 }
 
-function AppHeader() {
+function AppHeader({ dictionary }: { dictionary: TravelerDictionary }) {
   return (
     <header
-      aria-label="Passport Trails compact premium hero"
+      aria-label={tr(dictionary, "passportTrails.header.aria", "Passport Trails compact premium hero")}
       style={{
         marginTop: 12,
         borderRadius: 28,
@@ -374,12 +376,12 @@ function AppHeader() {
                 boxShadow: "0 0 0 4px rgba(243,174,38,0.16)",
               }}
             />
-            Passport Trails
+            {tr(dictionary, "passportTrails.header.title", "Passport Trails")}
           </div>
 
           <a
             href="/traveler/passport-map"
-            aria-label="Open Passport Map"
+            aria-label={tr(dictionary, "passportTrails.actions.openMapAria", "Open Passport Map")}
             style={{
               minHeight: 34,
               borderRadius: 999,
@@ -397,7 +399,7 @@ function AppHeader() {
               whiteSpace: "nowrap",
             }}
           >
-            Map
+            {tr(dictionary, "passportTrails.actions.map", "Map")}
           </a>
         </div>
 
@@ -422,7 +424,7 @@ function AppHeader() {
                 fontWeight: 840,
               }}
             >
-              Choose your trail.
+              {tr(dictionary, "passportTrails.hero.title", "Choose your trail.")}
             </h1>
 
             <p
@@ -435,7 +437,7 @@ function AppHeader() {
                 fontWeight: 700,
               }}
             >
-              Routes, stops, and progress in one view.
+              {tr(dictionary, "passportTrails.hero.body", "Routes, stops, and progress in one view.")}
             </p>
           </div>
 
@@ -452,7 +454,7 @@ function AppHeader() {
           >
             <div style={{ color: OSP.navy, fontSize: 15, lineHeight: 1, fontWeight: 920 }}>8</div>
             <div style={{ marginTop: 4, color: OSP.slate, fontSize: 9.2, lineHeight: 1.05, fontWeight: 800 }}>
-              Trails
+              {tr(dictionary, "passportTrails.count.trailsCapital", "Trails")}
             </div>
           </div>
         </div>
@@ -467,7 +469,7 @@ function AppHeader() {
         >
           <a
             href="#official-trails"
-            aria-label="View official Passport Trails"
+            aria-label={tr(dictionary, "passportTrails.actions.viewTrailsAria", "View official Passport Trails")}
             style={{
               minHeight: 44,
               borderRadius: 16,
@@ -482,12 +484,12 @@ function AppHeader() {
               boxShadow: "0 13px 28px rgba(1,56,99,0.17)",
             }}
           >
-            View trails
+            {tr(dictionary, "passportTrails.actions.viewTrails", "View trails")}
           </a>
 
           <a
             href="/traveler/passport-trails/diy-trail-builder"
-            aria-label="Build a custom Passport Trail"
+            aria-label={tr(dictionary, "passportTrails.actions.buildCustomAria", "Build a custom Passport Trail")}
             style={{
               minHeight: 44,
               borderRadius: 16,
@@ -503,7 +505,7 @@ function AppHeader() {
               boxShadow: "0 9px 20px rgba(1,56,99,0.065)",
             }}
           >
-            Build route
+            {tr(dictionary, "passportTrails.actions.buildRoute", "Build route")}
           </a>
         </div>
 
@@ -518,7 +520,7 @@ function AppHeader() {
         >
           <a
             href="/traveler/passport-map"
-            aria-label="Open Passport Map"
+            aria-label={tr(dictionary, "passportTrails.actions.openMapAria", "Open Passport Map")}
             style={{
               minHeight: 40,
               borderRadius: 15,
@@ -534,12 +536,12 @@ function AppHeader() {
               fontWeight: 840,
             }}
           >
-            🗺️ Map
+            🗺️ {tr(dictionary, "passportTrails.actions.map", "Map")}
           </a>
 
           <a
             href="/traveler/settings?panel=assistant&topic=passport-trails"
-            aria-label="Ask Kuya Tala about Passport Trails"
+            aria-label={tr(dictionary, "passportTrails.actions.askKuyaTalaAria", "Ask Kuya Tala about Passport Trails")}
             style={{
               minHeight: 40,
               borderRadius: 15,
@@ -555,7 +557,7 @@ function AppHeader() {
               fontWeight: 840,
             }}
           >
-            ✦ Kuya Tala™
+            ✦ {tr(dictionary, "passportTrails.actions.kuyaTala", "Kuya Tala™")}
           </a>
         </div>
       </div>
@@ -763,10 +765,10 @@ function PassportJourneyStatusStrip() {
 
 
 
-function TrailFilterChips({ activeFilter }: { activeFilter: OfficialTrailFilterKey }) {
+function TrailFilterChips({ activeFilter, dictionary }: { activeFilter: OfficialTrailFilterKey; dictionary: TravelerDictionary }) {
   return (
     <div
-      aria-label="Filter official Passport Trails"
+      aria-label={tr(dictionary, "passportTrails.filters.aria", "Filter official Passport Trails")}
       role="tablist"
       style={{
         display: "flex",
@@ -805,7 +807,7 @@ function TrailFilterChips({ activeFilter }: { activeFilter: OfficialTrailFilterK
               boxShadow: isActive ? "0 10px 22px rgba(1,56,99,0.16)" : "0 7px 16px rgba(1,56,99,0.055)",
             }}
           >
-            {filter.label}
+            {tr(dictionary, filter.dictionaryKey, filter.label)}
           </a>
         );
       })}
@@ -881,22 +883,24 @@ function OfficialTrailCard({
   trail,
   priority = false,
   compact = false,
+  dictionary,
 }: {
   trail: (typeof officialTrails)[number];
   priority?: boolean;
   compact?: boolean;
+  dictionary: TravelerDictionary;
 }) {
   const visual = getPriorityTrailSurface(trail);
   const readiness = getTrailReadiness(trail);
   const facts = trail.features.slice(0, compact ? 1 : priority ? 2 : 1);
   const safeState =
     readiness.state.toLowerCase().includes("confirm") || readiness.state.toLowerCase().includes("request")
-      ? "Request"
+      ? tr(dictionary, "passportTrails.status.request", "Request")
       : readiness.state.toLowerCase().includes("book")
-        ? "Bookable"
+        ? tr(dictionary, "passportTrails.status.bookable", "Bookable")
         : readiness.state.toLowerCase().includes("continue") || readiness.state.toLowerCase().includes("saved")
-          ? "Saved"
-          : "Explore";
+          ? tr(dictionary, "passportTrails.status.saved", "Saved")
+          : tr(dictionary, "passportTrails.status.explore", "Explore");
 
   if (compact) {
     return (
@@ -1249,7 +1253,7 @@ function OfficialTrailCard({
               fontWeight: 900,
             }}
           >
-            View
+            {tr(dictionary, "passportTrails.cards.view", "View")}
           </span>
 
           <span
@@ -1275,7 +1279,7 @@ function OfficialTrailCard({
   );
 }
 
-export default function PassportTrailsPremiumHubPage({
+export default async function PassportTrailsPremiumHubPage({
   searchParams,
 }: {
   searchParams?: {
@@ -1289,6 +1293,12 @@ export default function PassportTrailsPremiumHubPage({
   };
 }) {
   const requestedFilter = searchParams?.trailFilter;
+  const languageRuntime = await getTravelerLanguageRuntime({
+    searchParams,
+    scope: "traveler",
+    allowQueryPreview: true,
+  });
+  const dictionary = languageRuntime.dictionary;
   const activeFilter: OfficialTrailFilterKey = OFFICIAL_TRAIL_FILTERS.some((filter) => filter.key === requestedFilter)
     ? (requestedFilter as OfficialTrailFilterKey)
     : "all";
@@ -1322,7 +1332,7 @@ export default function PassportTrailsPremiumHubPage({
       }}
     >
       <div style={{ width: "100%", maxWidth: 430, margin: "0 auto" }}>
-        <AppHeader />
+        <AppHeader dictionary={dictionary} />
 
         <PassportJourneyStatusStrip />
 
@@ -1341,7 +1351,7 @@ export default function PassportTrailsPremiumHubPage({
         >
           <div style={{ display: "grid", gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-              <SectionEyebrow>Official SPM Passport Trails</SectionEyebrow>
+              <SectionEyebrow>{tr(dictionary, "passportTrails.sections.officialEyebrow", "Official SPM Passport Trails")}</SectionEyebrow>
               <span
                 style={{
                   borderRadius: 999,
@@ -1354,7 +1364,7 @@ export default function PassportTrailsPremiumHubPage({
                   whiteSpace: "nowrap",
                 }}
               >
-                {officialTrails.length} trails
+                {officialTrails.length} {tr(dictionary, "passportTrails.count.trails", "trails")}
               </span>
             </div>
 
@@ -1368,7 +1378,7 @@ export default function PassportTrailsPremiumHubPage({
                 letterSpacing: "-0.055em",
               }}
             >
-              Choose your official trail.
+              {tr(dictionary, "passportTrails.official.title", "Choose your official trail.")}
             </h2>
 
             <p
@@ -1380,11 +1390,11 @@ export default function PassportTrailsPremiumHubPage({
                 fontWeight: 640,
               }}
             >
-              Pick a route. Keep progress connected.
+              {tr(dictionary, "passportTrails.official.body", "Pick a route. Keep progress connected.")}
             </p>
           </div>
 
-          <TrailFilterChips activeFilter={activeFilter} />
+          <TrailFilterChips activeFilter={activeFilter} dictionary={dictionary} />
 
           <div
             style={{
@@ -1395,7 +1405,7 @@ export default function PassportTrailsPremiumHubPage({
             }}
           >
             {visibleOfficialTrails.slice(0, 4).map((trail) => (
-              <OfficialTrailCard key={trail.title} trail={trail} />
+              <OfficialTrailCard key={trail.title} trail={trail} dictionary={dictionary} />
             ))}
           </div>
 
@@ -1407,7 +1417,7 @@ export default function PassportTrailsPremiumHubPage({
             }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-              <SectionEyebrow>Discover + Saved</SectionEyebrow>
+              <SectionEyebrow>{tr(dictionary, "passportTrails.sections.discoverSaved", "Discover + Saved")}</SectionEyebrow>
               <span
                 style={{
                   color: OSP.slate,
@@ -1415,12 +1425,12 @@ export default function PassportTrailsPremiumHubPage({
                   fontWeight: 850,
                 }}
               >
-                Saved-friendly
+                {tr(dictionary, "passportTrails.labels.savedFriendly", "Saved-friendly")}
               </span>
             </div>
 
             {visibleOfficialTrails.slice(4).map((trail) => (
-              <OfficialTrailCard key={trail.title} trail={trail} compact />
+              <OfficialTrailCard key={trail.title} trail={trail} compact dictionary={dictionary} />
             ))}
           </div>
         </section>
@@ -1439,7 +1449,7 @@ export default function PassportTrailsPremiumHubPage({
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
             <div>
-              <SectionEyebrow>Next Step</SectionEyebrow>
+              <SectionEyebrow>{tr(dictionary, "passportTrails.nextStep.eyebrow", "Next Step")}</SectionEyebrow>
               <h2
                 style={{
                   margin: "6px 0 0",
@@ -1450,7 +1460,7 @@ export default function PassportTrailsPremiumHubPage({
                   fontWeight: 950,
                 }}
               >
-                Choose how you want to move.
+                {tr(dictionary, "passportTrails.nextStep.title", "Choose how you want to move.")}
               </h2>
             </div>
 
@@ -1500,10 +1510,10 @@ export default function PassportTrailsPremiumHubPage({
               <span style={{ fontSize: 22, lineHeight: 1 }}>🏝️</span>
               <span>
                 <strong style={{ display: "block", fontSize: 14.8, lineHeight: 1.02, letterSpacing: "-0.03em" }}>
-                  Official Trail
+                  {tr(dictionary, "passportTrails.nextStep.official.title", "Official Trail")}
                 </strong>
                 <span style={{ display: "block", marginTop: 5, color: OSP.slate, fontSize: 10.5, lineHeight: 1.2, fontWeight: 760 }}>
-                  Book or check route.
+                  {tr(dictionary, "passportTrails.nextStep.official.body", "Book or check route.")}
                 </span>
               </span>
             </a>
@@ -1528,10 +1538,10 @@ export default function PassportTrailsPremiumHubPage({
               <span style={{ fontSize: 22, lineHeight: 1 }}>✨</span>
               <span>
                 <strong style={{ display: "block", fontSize: 14.8, lineHeight: 1.02, letterSpacing: "-0.03em" }}>
-                  Custom Route
+                  {tr(dictionary, "passportTrails.nextStep.custom.title", "Custom Route")}
                 </strong>
                 <span style={{ display: "block", marginTop: 5, color: OSP.slate, fontSize: 10.5, lineHeight: 1.2, fontWeight: 760 }}>
-                  Pick your stops.
+                  {tr(dictionary, "passportTrails.nextStep.custom.body", "Pick your stops.")}
                 </span>
               </span>
             </a>
@@ -1545,8 +1555,8 @@ export default function PassportTrailsPremiumHubPage({
               gap: 9,
             }}
           >
-            <AppButton href="/traveler/passport-map" variant="soft">Open Map</AppButton>
-            <AppButton href="/traveler/settings?panel=assistant&topic=passport-trails" variant="navy">Ask Kuya Tala™</AppButton>
+            <AppButton href="/traveler/passport-map" variant="soft">{tr(dictionary, "passportTrails.actions.openMap", "Open Map")}</AppButton>
+            <AppButton href="/traveler/settings?panel=assistant&topic=passport-trails" variant="navy">{tr(dictionary, "passportTrails.actions.askKuyaTala", "Ask Kuya Tala™")}</AppButton>
           </div>
         </section>
 
@@ -1580,8 +1590,8 @@ export default function PassportTrailsPremiumHubPage({
             >
               <span style={{ fontSize: 18 }}>🎫</span>
               <span>
-                <strong style={{ display: "block", fontSize: 12.5, lineHeight: 1.05 }}>Trips</strong>
-                <span style={{ display: "block", marginTop: 3, color: OSP.slate, fontSize: 9.8, fontWeight: 760 }}>Saved plans</span>
+                <strong style={{ display: "block", fontSize: 12.5, lineHeight: 1.05 }}>{tr(dictionary, "passportTrails.shortcuts.trips", "Trips")}</strong>
+                <span style={{ display: "block", marginTop: 3, color: OSP.slate, fontSize: 9.8, fontWeight: 760 }}>{tr(dictionary, "passportTrails.shortcuts.savedPlans", "Saved plans")}</span>
               </span>
             </a>
 
@@ -1603,8 +1613,8 @@ export default function PassportTrailsPremiumHubPage({
             >
               <span style={{ fontSize: 18 }}>₱</span>
               <span>
-                <strong style={{ display: "block", fontSize: 12.5, lineHeight: 1.05 }}>Payments</strong>
-                <span style={{ display: "block", marginTop: 3, color: OSP.slate, fontSize: 9.8, fontWeight: 760 }}>Receipts</span>
+                <strong style={{ display: "block", fontSize: 12.5, lineHeight: 1.05 }}>{tr(dictionary, "passportTrails.utility.payments", "Payments")}</strong>
+                <span style={{ display: "block", marginTop: 3, color: OSP.slate, fontSize: 9.8, fontWeight: 760 }}>{tr(dictionary, "passportTrails.utility.receipts", "Receipts")}</span>
               </span>
             </a>
           </div>
