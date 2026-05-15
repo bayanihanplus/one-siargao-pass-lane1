@@ -640,7 +640,7 @@ const fallbackFeaturedServices: FeaturedService[] = [
 
 const categories = [
   { label: "Siargao Tour Operators", href: "/traveler/explore/stays", icon: "🚐" },
-  { label: "Rentals", href: "/traveler/explore/stays", icon: "🛵" },
+  { label: "Rentals", href: "/traveler/explore/rentals", icon: "🛵" },
   { label: "Surfing Schools", href: "/traveler/explore/stays", icon: "🏄" },
   { label: "Food & Culture", href: "/traveler/explore/stays", icon: "🍽️" },
   { label: "Beauty & Health", href: "/traveler/explore/stays", icon: "🌿" },
@@ -712,7 +712,7 @@ const filterOptions = [
   { label: "All", value: "ALL", dictionaryKey: "explore.filters.all" },
   { label: "Stays", value: "STAYS", dictionaryKey: "explore.filters.stays" },
   { label: "Tours", value: "TOURS", dictionaryKey: "explore.filters.tours" },
-  { label: "Rentals", href: "/traveler/explore/stays", value: "RENTALS", dictionaryKey: "explore.filters.rentals" },
+  { label: "Rentals", href: "/traveler/explore/rentals", value: "RENTALS", dictionaryKey: "explore.filters.rentals" },
   { label: "Surf", value: "SURF", dictionaryKey: "explore.filters.surf" },
   { label: "Food", value: "FOOD_CULTURE", dictionaryKey: "explore.filters.food" },
   { label: "Health", value: "BEAUTY_HEALTH", dictionaryKey: "explore.filters.health" },
