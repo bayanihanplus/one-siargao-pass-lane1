@@ -709,13 +709,13 @@ type ExploreSearchParams = {
 };
 
 const filterOptions = [
-  { label: "All", value: "ALL", dictionaryKey: "explore.filters.all" },
-  { label: "Stays", value: "STAYS", dictionaryKey: "explore.filters.stays" },
-  { label: "Tours", value: "TOURS", dictionaryKey: "explore.filters.tours" },
+  { label: "All", href: "/traveler/explore", value: "ALL", dictionaryKey: "explore.filters.all" },
+  { label: "Stays", href: "/traveler/explore/stays", value: "STAYS", dictionaryKey: "explore.filters.stays" },
+  { label: "Tours", href: "/traveler/explore/tours", value: "TOURS", dictionaryKey: "explore.filters.tours" },
   { label: "Rentals", href: "/traveler/explore/rentals", value: "RENTALS", dictionaryKey: "explore.filters.rentals" },
-  { label: "Surf", value: "SURF", dictionaryKey: "explore.filters.surf" },
-  { label: "Food", value: "FOOD_CULTURE", dictionaryKey: "explore.filters.food" },
-  { label: "Health", value: "BEAUTY_HEALTH", dictionaryKey: "explore.filters.health" },
+  { label: "Surf", href: "/traveler/explore/surf-schools", value: "SURF", dictionaryKey: "explore.filters.surf" },
+  { label: "Food", href: "/traveler/explore/food-culture", value: "FOOD_CULTURE", dictionaryKey: "explore.filters.food" },
+  { label: "Health", href: "/traveler/explore/beauty-health", value: "BEAUTY_HEALTH", dictionaryKey: "explore.filters.health" },
 ];
 
 function normalizeSearchValue(value?: string | string[]) {
@@ -885,8 +885,7 @@ function SearchRow({
 }) {
   return (
     <section style={{ display: "grid", gap: 8 }}>
-      <form action="/traveler/explore" method="get">
-        {category && category !== "ALL" ? <input type="hidden" name="category" value={category} /> : null}
+      <form action="/traveler/explore/search" method="get">
 
         <label
           style={{
@@ -975,7 +974,7 @@ function SearchRow({
           return (
             <Link
               key={option.value}
-              href={option.href || buildExploreFilterHref({ q, category: option.value === "ALL" ? undefined : option.value })}
+              href={q ? `${option.href}?q=${encodeURIComponent(q)}` : option.href}
               style={{
                 flex: "0 0 auto",
                 borderRadius: 999,
