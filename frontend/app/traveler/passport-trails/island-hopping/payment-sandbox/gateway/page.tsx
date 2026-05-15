@@ -1,5 +1,5 @@
 import Link from "next/link";
-import UniversalTravelerBottomTabBar from "../../../../../src/components/traveler/UniversalTravelerBottomTabBar";
+import UniversalTravelerBottomTabBar from "../../../../../../src/components/traveler/UniversalTravelerBottomTabBar";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -113,27 +113,34 @@ function SummaryRow({ label, value, highlight = false }: { label: string; value:
   );
 }
 
-export default function IslandHoppingPaymentSandboxPage({ searchParams }: { searchParams: SearchParams }) {
-  const completeParams = buildFlowParams(searchParams, "island-hopping-checkout-complete", "sandbox-gateway");
+export default function IslandHoppingTemporarySandboxGatewayPage({ searchParams }: { searchParams: SearchParams }) {
+  const completeParams = {
+    ...buildFlowParams(searchParams, "island-hopping-checkout-complete", "checkout-complete"),
+    paymentProvider: "TEMP_SANDBOX",
+    paymentStatus: "sandbox-authorized",
+  };
 
   return (
     <main style={shell}>
       <section style={{ width: "100%", maxWidth: 390, margin: "0 auto", display: "grid", gap: 14 }}>
+        <Link href={makeHref("/traveler/passport-trails/island-hopping/payment-sandbox", completeParams)} style={{ width: "fit-content", borderRadius: 999, padding: "8px 12px", background: "#FFFFFF", color: "#013863", textDecoration: "none", fontSize: 12, fontWeight: 900, border: "1px solid rgba(5,150,165,0.16)" }}>
+          ← Payment
+        </Link>
+
         <section style={card}>
-          <span style={eyebrow}>Payment ready</span>
+          <span style={eyebrow}>Sandbox payment</span>
           <h1 style={{ margin: "10px 0 6px", fontSize: 25, lineHeight: 1.02, letterSpacing: "-0.04em" }}>{formatPeso(completeParams.amount)}</h1>
-          <p style={{ margin: 0, color: "#50668B", fontSize: 12.2, lineHeight: 1.28, fontWeight: 750 }}>Sandbox payment for your GL island route.</p>
+          <p style={{ margin: 0, color: "#50668B", fontSize: 12.2, lineHeight: 1.28, fontWeight: 750 }}>Authorize this test payment.</p>
         </section>
 
         <section style={{ ...card, display: "grid", gap: 10 }}>
-          <SummaryRow label="Route" value="GL Tri-Island" />
-          <SummaryRow label="Product" value={productLabel(completeParams.product)} />
-          <SummaryRow label="Travelers" value={`${completeParams.pax} pax`} />
+          <SummaryRow label="Provider" value="Temporary Sandbox" />
+          <SummaryRow label="Trip" value={completeParams.tripNo} />
           <SummaryRow label="Amount" value={formatPeso(completeParams.amount)} highlight />
         </section>
 
-        <Link href={makeHref("/traveler/passport-trails/island-hopping/payment-sandbox/gateway", completeParams)} style={{ display: "grid", placeItems: "center", minHeight: 56, borderRadius: 18, background: "#F9B320", color: "#013863", textDecoration: "none", fontSize: 14, fontWeight: 950, boxShadow: "0 14px 28px rgba(249,179,32,0.26)" }}>
-          Open Sandbox Payment
+        <Link href={makeHref("/traveler/passport-trails/island-hopping/checkout-complete", completeParams)} style={{ display: "grid", placeItems: "center", minHeight: 56, borderRadius: 18, background: "#F9B320", color: "#013863", textDecoration: "none", fontSize: 14, fontWeight: 950, boxShadow: "0 14px 28px rgba(249,179,32,0.26)" }}>
+          Authorize Sandbox Payment
         </Link>
       </section>
       <UniversalTravelerBottomTabBar />

@@ -1,6 +1,5 @@
 "use client";
 
-import UniversalTravelerBottomTabBar from "../../../../../src/components/traveler/UniversalTravelerBottomTabBar";
 import { useMemo, useState } from "react";
 
 type BookingState = {
@@ -107,10 +106,13 @@ function pickupLabel(value: string) {
 }
 
 function selectedClassForPax(totalPax: number) {
-  return (
-    privateMatrix.find((item) => totalPax >= item.min && totalPax <= item.max) ||
-    privateMatrix[0]
-  );
+  // 6 / 10 / 15 / 20 are guide-capacity boundary positions, not paying traveler bands.
+  // Never fall back downward to Class A. Move boundary pax to the next safe boat class.
+  if (totalPax <= 5) return privateMatrix[0];
+  if (totalPax <= 9) return privateMatrix[1];
+  if (totalPax <= 14) return privateMatrix[2];
+  if (totalPax <= 19) return privateMatrix[3];
+  return privateMatrix[4];
 }
 
 export default function IslandHoppingTrailBookingClient({ initialState }: Props) {
@@ -164,6 +166,7 @@ export default function IslandHoppingTrailBookingClient({ initialState }: Props)
       pax: String(totalPax),
       boatClass: bookingPath === "private" ? selectedClass.code : "JOINER",
       matrixTotal: String(matrixTotal),
+      amount: String(matrixTotal),
     });
 
     return `/traveler/passport-trails/island-hopping/confirm?${params.toString()}`;
@@ -616,43 +619,6 @@ export default function IslandHoppingTrailBookingClient({ initialState }: Props)
           </a>
         </div>
       </div>
-    
-      
-      <section
-        aria-label="Continue Island Hopping booking"
-        style={{
-          margin: "10px auto 0",
-          width: "min(390px, calc(100vw - 28px))",
-          borderRadius: 24,
-          padding: 10,
-          background: "rgba(255,255,255,0.96)",
-          border: "1px solid rgba(5,150,165,0.14)",
-          boxShadow: "0 14px 34px rgba(1,56,99,0.10)",
-        }}
-      >
-        <a
-          href={confirmHref}
-          style={{
-            minHeight: 54,
-            borderRadius: 18,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            textDecoration: "none",
-            background: "#F3AE26",
-            color: "#013863",
-            fontSize: 13,
-            fontWeight: 950,
-            boxShadow: "0 10px 22px rgba(243,174,38,0.20)",
-          }}
-        >
-          Continue to Review
-        </a>
-      </section>
-
-      <div aria-hidden="true" style={{ height: 148 }} />
-      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }

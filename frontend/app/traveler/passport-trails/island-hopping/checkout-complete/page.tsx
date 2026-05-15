@@ -113,27 +113,28 @@ function SummaryRow({ label, value, highlight = false }: { label: string; value:
   );
 }
 
-export default function IslandHoppingPaymentSandboxPage({ searchParams }: { searchParams: SearchParams }) {
-  const completeParams = buildFlowParams(searchParams, "island-hopping-checkout-complete", "sandbox-gateway");
+export default function IslandHoppingCheckoutCompletePage({ searchParams }: { searchParams: SearchParams }) {
+  const params = buildFlowParams(searchParams, "island-hopping-checkout-complete", "checkout-complete");
+  const paymentStatus = readParam(searchParams, "paymentStatus", "sandbox-authorized");
 
   return (
     <main style={shell}>
       <section style={{ width: "100%", maxWidth: 390, margin: "0 auto", display: "grid", gap: 14 }}>
         <section style={card}>
-          <span style={eyebrow}>Payment ready</span>
-          <h1 style={{ margin: "10px 0 6px", fontSize: 25, lineHeight: 1.02, letterSpacing: "-0.04em" }}>{formatPeso(completeParams.amount)}</h1>
-          <p style={{ margin: 0, color: "#50668B", fontSize: 12.2, lineHeight: 1.28, fontWeight: 750 }}>Sandbox payment for your GL island route.</p>
+          <span style={eyebrow}>Payment recorded</span>
+          <h1 style={{ margin: "10px 0 6px", fontSize: 25, lineHeight: 1.02, letterSpacing: "-0.04em" }}>Checkout ready.</h1>
+          <p style={{ margin: 0, color: "#50668B", fontSize: 12.2, lineHeight: 1.28, fontWeight: 750 }}>Voucher and boarding steps follow assignment.</p>
         </section>
 
         <section style={{ ...card, display: "grid", gap: 10 }}>
-          <SummaryRow label="Route" value="GL Tri-Island" />
-          <SummaryRow label="Product" value={productLabel(completeParams.product)} />
-          <SummaryRow label="Travelers" value={`${completeParams.pax} pax`} />
-          <SummaryRow label="Amount" value={formatPeso(completeParams.amount)} highlight />
+          <SummaryRow label="Trip" value={params.tripNo} />
+          <SummaryRow label="Product" value={productLabel(params.product)} />
+          <SummaryRow label="Payment" value={paymentStatus} />
+          <SummaryRow label="Amount" value={formatPeso(params.amount)} highlight />
         </section>
 
-        <Link href={makeHref("/traveler/passport-trails/island-hopping/payment-sandbox/gateway", completeParams)} style={{ display: "grid", placeItems: "center", minHeight: 56, borderRadius: 18, background: "#F9B320", color: "#013863", textDecoration: "none", fontSize: 14, fontWeight: 950, boxShadow: "0 14px 28px rgba(249,179,32,0.26)" }}>
-          Open Sandbox Payment
+        <Link href="/traveler/passport-trails/island-hopping" style={{ display: "grid", placeItems: "center", minHeight: 56, borderRadius: 18, background: "#F9B320", color: "#013863", textDecoration: "none", fontSize: 14, fontWeight: 950, boxShadow: "0 14px 28px rgba(249,179,32,0.26)" }}>
+          Back to Island Hopping
         </Link>
       </section>
       <UniversalTravelerBottomTabBar />

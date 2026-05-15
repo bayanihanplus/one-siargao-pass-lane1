@@ -1,293 +1,142 @@
+import Link from "next/link";
 import UniversalTravelerBottomTabBar from "../../../../../src/components/traveler/UniversalTravelerBottomTabBar";
 
-type PageProps = {
-  searchParams?: Record<string, string | string[] | undefined>;
+type SearchParams = Record<string, string | string[] | undefined>;
+
+function readParam(searchParams: SearchParams, key: string, fallback = "") {
+  const value = searchParams[key];
+  if (Array.isArray(value)) return value[0] ?? fallback;
+  return value ?? fallback;
+}
+
+function makeHref(path: string, params: Record<string, string>) {
+  return `${path}?${new URLSearchParams(params).toString()}`;
+}
+
+function formatPeso(value: string) {
+  const amount = Number(value || 0);
+  if (!Number.isFinite(amount)) return "PHP 0";
+  return `PHP ${amount.toLocaleString("en-PH")}`;
+}
+
+function productLabel(product: string) {
+  if (product === "private-island-route") return "Private Boat";
+  return "Tri-Island Joiner";
+}
+
+function pickupLabel(value: string) {
+  if (value === "pickup-help") return "Pickup help";
+  return "General Luna";
+}
+
+function buildFlowParams(searchParams: SearchParams, intent: string, step: string) {
+  const product = readParam(searchParams, "product", readParam(searchParams, "routeProduct", "tri-island-joiner"));
+  const bookingPath = readParam(searchParams, "bookingPath", product === "private-island-route" ? "private" : "joiner");
+  const amount = readParam(searchParams, "amount", readParam(searchParams, "matrixTotal", "0"));
+  const boatClass = readParam(searchParams, "boatClass", bookingPath === "private" ? "A" : "JOINER");
+
+  return {
+    intent,
+    trail: readParam(searchParams, "trail", "island-hopping"),
+    officialTrail: readParam(searchParams, "officialTrail", "Island Hopping"),
+    routeType: readParam(searchParams, "routeType", "GL_TRI_ISLAND_STANDARD"),
+    routeCode: readParam(searchParams, "routeCode", "gl-tri-island-standard"),
+    routeProduct: readParam(searchParams, "routeProduct", product),
+    product,
+    tripNo: readParam(searchParams, "tripNo", "GL-ISL-01"),
+    departurePort: readParam(searchParams, "departurePort", "GENERAL_LUNA_PORT"),
+    source: readParam(searchParams, "source", "passport-trails"),
+    bookingPath,
+    pricingMode: readParam(searchParams, "pricingMode", bookingPath === "private" ? "pax-tiered" : "per-head"),
+    date: readParam(searchParams, "date", "2026-05-15"),
+    departureWindow: readParam(searchParams, "departureWindow", "08:00"),
+    regularPax: readParam(searchParams, "regularPax", "2"),
+    seniorPax: readParam(searchParams, "seniorPax", "0"),
+    pax: readParam(searchParams, "pax", "2"),
+    pickup: readParam(searchParams, "pickup", "general-luna"),
+    boatClass,
+    matrixTotal: amount,
+    amount,
+    routeReadiness: readParam(searchParams, "routeReadiness", "required"),
+    departureReadiness: readParam(searchParams, "departureReadiness", "required"),
+    boardingFlow: readParam(searchParams, "boardingFlow", "online"),
+    voucher: readParam(searchParams, "voucher", "required"),
+    onlineBoarding: readParam(searchParams, "onlineBoarding", "required"),
+    boardingQr: readParam(searchParams, "boardingQr", "required"),
+    manifest: readParam(searchParams, "manifest", "required"),
+    movementRecord: readParam(searchParams, "movementRecord", "required"),
+    paymentTiming: readParam(searchParams, "paymentTiming", "after-route-readiness"),
+    fulfillment: readParam(searchParams, "fulfillment", "boat-guide-operator-assignment"),
+    step,
+  };
+}
+
+const shell: React.CSSProperties = {
+  minHeight: "100vh",
+  background: "radial-gradient(circle at 50% 0%, rgba(234,251,250,0.98), #FFFFFF 48%, rgba(244,252,250,0.98))",
+  padding: "22px 14px 132px",
+  color: "#013863",
 };
 
-function getParam(searchParams: PageProps["searchParams"], key: string, fallback = "") {
-  const value = searchParams?.[key];
-  if (Array.isArray(value)) return value[0] || fallback;
-  return value || fallback;
+const card: React.CSSProperties = {
+  borderRadius: 24,
+  padding: 16,
+  background: "#FFFFFF",
+  border: "1px solid rgba(5,150,165,0.14)",
+  boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
+};
+
+const eyebrow: React.CSSProperties = {
+  color: "#0596A5",
+  fontSize: 10,
+  fontWeight: 950,
+  letterSpacing: "0.10em",
+  textTransform: "uppercase",
+};
+
+const rowStyle = (highlight = false): React.CSSProperties => ({
+  display: "flex",
+  justifyContent: "space-between",
+  gap: 12,
+  padding: "11px 12px",
+  borderRadius: 14,
+  background: highlight ? "rgba(249,179,32,0.14)" : "rgba(234,251,250,0.72)",
+  border: highlight ? "1px solid rgba(249,179,32,0.28)" : "1px solid rgba(5,150,165,0.12)",
+});
+
+function SummaryRow({ label, value, highlight = false }: { label: string; value: string; highlight?: boolean }) {
+  return (
+    <div style={rowStyle(highlight)}>
+      <span style={{ color: "#50668B", fontSize: 10, fontWeight: 950, letterSpacing: "0.06em", textTransform: "uppercase" }}>{label}</span>
+      <strong style={{ color: "#013863", fontSize: 12, fontWeight: 950, textAlign: "right" }}>{value}</strong>
+    </div>
+  );
 }
 
-function buildPaymentHref(searchParams: PageProps["searchParams"]) {
-  const params = new URLSearchParams();
-
-  [
-    "intent",
-    "trail",
-    "officialTrail",
-    "routeType",
-    "routeCode",
-    "routeProduct",
-    "tripNo",
-    "departurePort",
-    "routeReadiness",
-    "departureReadiness",
-    "boardingFlow",
-    "voucher",
-    "onlineBoarding",
-    "boardingQr",
-    "manifest",
-    "movementRecord",
-    "paymentTiming",
-    "fulfillment",
-    "product",
-    "pricingMode",
-    "source",
-    "bookingPath",
-    "date",
-    "departureWindow",
-    "pickup",
-    "regularPax",
-    "seniorPax",
-    "pax",
-    "boatClass",
-    "matrixTotal",
-  ].forEach((key) => {
-    const value = getParam(searchParams, key);
-    if (value) params.set(key, value);
-  });
-
-  params.set("step", "payment");
-  params.set("status", "seats-confirmed");
-
-  const route = "/traveler/passport-trails/island-hopping/payment-" + "sandbox";
-  return `${route}?${params.toString()}`;
-}
-
-export default function IslandHoppingSeatsConfirmedPage({ searchParams }: PageProps) {
-  const pax = getParam(searchParams, "pax", "2");
-  const departureWindow = getParam(searchParams, "departureWindow", "08:00");
-  const pickup = getParam(searchParams, "pickup", "General Luna");
-  const matrixTotal = getParam(searchParams, "matrixTotal", "3000");
-  const paymentHref = buildPaymentHref(searchParams);
+export default function IslandHoppingSeatsConfirmedPage({ searchParams }: { searchParams: SearchParams }) {
+  const params = buildFlowParams(searchParams, "island-hopping-payment", "payment");
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background:
-          "radial-gradient(circle at 0% 0%, rgba(5,150,165,0.08), transparent 34%), linear-gradient(180deg, #F4FCFA 0%, #FFFFFF 54%, #EAFBFA 100%)",
-        color: "#013863",
-        padding: "14px 14px 0",
-      }}
-    >
-      <div style={{ maxWidth: 390, margin: "0 auto" }}>
-        <a
-          href="/traveler/passport-trails/island-hopping"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            minHeight: 36,
-            borderRadius: 999,
-            padding: "0 12px",
-            background: "#FFFFFF",
-            border: "1px solid rgba(1,56,99,0.08)",
-            boxShadow: "0 8px 20px rgba(1,56,99,0.06)",
-            color: "#013863",
-            fontSize: 12,
-            fontWeight: 850,
-            textDecoration: "none",
-          }}
-        >
-          ← Island Hopping
-        </a>
-
-        <section
-          aria-label="Island Hopping seats confirmed"
-          style={{
-            marginTop: 12,
-            borderRadius: 28,
-            padding: 16,
-            background: "#FFFFFF",
-            border: "1px solid rgba(5,150,165,0.14)",
-            boxShadow: "0 18px 42px rgba(1,56,99,0.08)",
-          }}
-        >
-          <div
-            style={{
-              display: "inline-flex",
-              borderRadius: 999,
-              padding: "5px 8px",
-              background: "#EAFBFA",
-              color: "#0596A5",
-              fontSize: 9,
-              lineHeight: 1,
-              fontWeight: 950,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-            }}
-          >
-            Seats Confirmed
-          </div>
-
-          <h1
-            style={{
-              margin: "12px 0 0",
-              color: "#013863",
-              fontSize: 25,
-              lineHeight: 1.02,
-              letterSpacing: "-0.045em",
-              fontWeight: 880,
-            }}
-          >
-            Your island route is reserved.
-          </h1>
-
-          <p
-            style={{
-              margin: "8px 0 0",
-              maxWidth: 310,
-              color: "#50668B",
-              fontSize: 13,
-              lineHeight: 1.28,
-              fontWeight: 760,
-            }}
-          >
-            Review payment next to keep your trip record moving.
-          </p>
+    <main style={shell}>
+      <section style={{ width: "100%", maxWidth: 390, margin: "0 auto", display: "grid", gap: 14 }}>
+        <section style={card}>
+          <span style={eyebrow}>Seats confirmed</span>
+          <h1 style={{ margin: "10px 0 6px", fontSize: 25, lineHeight: 1.02, letterSpacing: "-0.04em" }}>Seat hold ready.</h1>
+          <p style={{ margin: 0, color: "#50668B", fontSize: 12.2, lineHeight: 1.28, fontWeight: 750 }}>Payment is next.</p>
         </section>
 
-        <section
-          aria-label="Island Hopping booking summary"
-          style={{
-            marginTop: 12,
-            borderRadius: 26,
-            padding: 14,
-            background: "#FFFFFF",
-            border: "1px solid rgba(1,56,99,0.08)",
-            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
-          }}
-        >
-          <div
-            style={{
-              color: "#0596A5",
-              fontSize: 9,
-              fontWeight: 950,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-            }}
-          >
-            Trip setup
-          </div>
-
-          <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {[
-              { label: "Pax", value: pax },
-              { label: "Time", value: departureWindow },
-              { label: "Pickup", value: pickup.replaceAll("-", " ") },
-              { label: "Total", value: `PHP ${Number(matrixTotal || 0).toLocaleString("en-PH")}` },
-            ].map((item) => (
-              <div
-                key={item.label}
-                style={{
-                  borderRadius: 18,
-                  padding: 10,
-                  background: "#F4FCFA",
-                  border: "1px solid rgba(5,150,165,0.12)",
-                }}
-              >
-                <div style={{ color: "#50668B", fontSize: 8.5, fontWeight: 930, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                  {item.label}
-                </div>
-                <strong style={{ display: "block", marginTop: 5, color: "#013863", fontSize: 12, lineHeight: 1.1, fontWeight: 900 }}>
-                  {item.value}
-                </strong>
-              </div>
-            ))}
-          </div>
+        <section style={{ ...card, display: "grid", gap: 10 }}>
+          <SummaryRow label="Trip" value={params.tripNo} />
+          <SummaryRow label="Travelers" value={`${params.pax} pax`} />
+          <SummaryRow label="Boat class" value={params.boatClass} />
+          <SummaryRow label="Amount" value={formatPeso(params.amount)} highlight />
         </section>
 
-        <section
-          aria-label="Island Hopping next step"
-          style={{
-            marginTop: 12,
-            borderRadius: 26,
-            padding: 14,
-            background: "#FFFFFF",
-            border: "1px solid rgba(1,56,99,0.08)",
-            boxShadow: "0 14px 34px rgba(1,56,99,0.07)",
-          }}
-        >
-          <div style={{ color: "#0596A5", fontSize: 9, fontWeight: 950, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-            Next
-          </div>
-
-          <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
-            {["Payment", "Receipt", "Voucher", "Boarding QR"].map((item, index) => (
-              <div
-                key={item}
-                style={{
-                  minHeight: 48,
-                  borderRadius: 18,
-                  padding: "9px 10px",
-                  display: "grid",
-                  gridTemplateColumns: "34px 1fr",
-                  alignItems: "center",
-                  gap: 9,
-                  background: index === 0 ? "#FFF4D8" : "#EAFBFA",
-                  border: index === 0 ? "1px solid rgba(243,174,38,0.24)" : "1px solid rgba(5,150,165,0.12)",
-                }}
-              >
-                <span
-                  style={{
-                    width: 34,
-                    height: 34,
-                    borderRadius: 13,
-                    background: "#FFFFFF",
-                    color: "#013863",
-                    display: "grid",
-                    placeItems: "center",
-                    fontSize: 10,
-                    fontWeight: 950,
-                  }}
-                >
-                  {index + 1}
-                </span>
-                <strong style={{ color: "#013863", fontSize: 12.5, fontWeight: 900 }}>{item}</strong>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section
-          aria-label="Continue to Island Hopping payment"
-          style={{
-            margin: "12px auto 0",
-            width: "min(390px, calc(100vw - 28px))",
-            borderRadius: 24,
-            padding: 10,
-            background: "rgba(255,255,255,0.96)",
-            border: "1px solid rgba(5,150,165,0.14)",
-            boxShadow: "0 14px 34px rgba(1,56,99,0.10)",
-          }}
-        >
-          <a
-            href={paymentHref}
-            style={{
-              minHeight: 54,
-              borderRadius: 18,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              textAlign: "center",
-              textDecoration: "none",
-              background: "#F3AE26",
-              color: "#013863",
-              fontSize: 13,
-              fontWeight: 950,
-              boxShadow: "0 10px 22px rgba(243,174,38,0.20)",
-            }}
-          >
-            Continue to Payment
-          </a>
-        </section>
-
-        <div aria-hidden="true" style={{ height: 148 }} />
-      </div>
-
-      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
+        <Link href={makeHref("/traveler/passport-trails/island-hopping/payment-sandbox", params)} style={{ display: "grid", placeItems: "center", minHeight: 56, borderRadius: 18, background: "#F9B320", color: "#013863", textDecoration: "none", fontSize: 14, fontWeight: 950, boxShadow: "0 14px 28px rgba(249,179,32,0.26)" }}>
+          Continue to Payment
+        </Link>
+      </section>
+      <UniversalTravelerBottomTabBar />
     </main>
   );
 }

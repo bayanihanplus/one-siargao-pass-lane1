@@ -6205,31 +6205,8 @@ const islandHoppingInputTargets = {
 };
 
 const islandHoppingProductHref = {
-  "Tri-Island Joiner": islandHoppingDcsParams({
-    step: "product",
-    product: "tri-island-joiner",
-    routeProduct: "tri-island-joiner",
-    pricingMode: "per-head",
-  }),
-  "Private Island Route": islandHoppingDcsParams({
-    step: "product",
-    product: "private-island-route",
-    routeProduct: "private-island-route",
-    pricingMode: "pax-tiered",
-  }),
-  "Premium Private": islandHoppingDcsParams({
-    step: "product",
-    product: "premium-private",
-    routeProduct: "premium-private",
-    pricingMode: "pax-tiered-premium",
-  }),
-  "VVIP Party Boat": islandHoppingDcsParams({
-    step: "product",
-    product: "vvip-party-boat",
-    routeProduct: "vvip-party-boat",
-    pricingMode: "flat-package",
-  }),
-};
+  "Tri-Island Joiner": islandHoppingProductUrl,
+} as const;
 
 const islandHoppingStopMapHref = {
   "Naked Island": `${islandHoppingMapUrl}&stop=naked-island&movement=trail-stop`,
@@ -6254,43 +6231,19 @@ const islandHoppingConfidence = [
 const islandHoppingProducts = [
   {
     title: "Tri-Island Joiner",
-    cta: "Choose Joiner Seat",
+    cta: "Confirm Joiner Seat",
     price: "From ₱1,500",
     meta: "Per traveler",
     note: "Shared island-hopping slot.",
     badge: "Best start",
   },
-  {
-    title: "Private Island Route",
-    cta: "Choose Private Boat",
-    price: "Pax-tiered",
-    meta: "Private boat",
-    note: "Price adjusts by group size.",
-    badge: "Flexible",
-  },
-  {
-    title: "Premium Private",
-    cta: "View Premium Setup",
-    price: "From ₱2,000",
-    meta: "10+ pax rate",
-    note: "Richer food route option.",
-    badge: "Upgrade",
-  },
-  {
-    title: "VVIP Party Boat",
-    cta: "View VVIP Package",
-    price: "₱60,000",
-    meta: "Flat package",
-    note: "Private premium island day.",
-    badge: "VVIP",
-  },
-];
+  ];
 
 const islandHoppingReasons = [
-  { title: "Classic island route", note: "Guyam, Naked, Daku, plus Secret Island when tide allows." },
-  { title: "Easy tour day", note: "Typical 9 AM–4 PM island schedule." },
-  { title: "Pickup support", note: "Poblacion / General Luna pickup boundary shown clearly." },
-  { title: "Commercial package ready", note: "Joiner, private, premium, and VVIP can be sold cleanly." },
+  { title: "Classic island route", note: "Guyam, Naked, and Daku route." },
+  { title: "Easy tour day", note: "Simple island day." },
+  { title: "Pickup support", note: "General Luna pickup." },
+  { title: "Trail checkout ready", note: "Joiner checkout is ready." },
 ];
 
 const islandHoppingInclusions = [
@@ -6306,8 +6259,8 @@ const islandHoppingInclusions = [
 ];
 
 const islandHoppingExclusions = [
-  "Snorkels not included",
-  "Paddle boards not included",
+  "Snorkels optional",
+  "Paddle boards optional",
   "Outside GL pickup may add charge",
 ];
 
@@ -6324,25 +6277,25 @@ const islandHoppingStops = [
     name: "General Luna Port",
     tag: "Departure",
     time: "Route start",
-    note: "DCS-linked operational anchor. Booking, voucher, operator readiness, and boarding truth stay attached here.",
+    note: "General Luna port start and boarding checkpoint.",
   },
   {
     name: "Naked Island",
     tag: "Sandbar",
     time: "Morning stop",
-    note: "Classic sandbar stop inside the approved General Luna island-hopping route.",
+    note: "Morning sandbar stop.",
   },
   {
     name: "Daku Island",
     tag: "Lunch stop",
     time: "Midday stop",
-    note: "Main island stop for boodle fight lunch, cottage time, and operator-handled inclusions.",
+    note: "Lunch stop and island break.",
   },
   {
     name: "Guyam Island",
     tag: "Final island",
     time: "Afternoon stop",
-    note: "Compact island stop before return handling and trip progress record.",
+    note: "Final island stop before return.",
   },
 ];
 
@@ -6903,10 +6856,10 @@ function IslandHoppingCommercialTemplate() {
           }}
         >
           <h2 style={{ margin: 0, color: OSP.navy, fontSize: 19, lineHeight: 1, letterSpacing: "-0.04em", fontWeight: 880 }}>
-            Classic General Luna island route.
+            Official GL Tri-Island route.
           </h2>
           <p style={{ margin: "7px 0 0", color: OSP.slate, fontSize: 12.2, lineHeight: 1.36, fontWeight: 710 }}>
-            This official trail is fulfilled by commercial tour offers such as joiner, private, premium private, and VVIP island-hopping packages.
+            Start with the official GL Tri-Island joiner route. Payment stays inside the trail flow.
           </p>
         </section>
 
@@ -6952,62 +6905,6 @@ function IslandHoppingCommercialTemplate() {
                     {item.note}
                   </span>
                 </span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section
-          aria-label="Inclusions and exclusions"
-          style={{
-            marginTop: 12,
-            borderRadius: 26,
-            padding: 14,
-            background: "#FFFFFF",
-            border: `1px solid ${OSP.line}`,
-            boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
-          }}
-        >
-          <div style={{ color: OSP.teal, fontSize: 9.4, lineHeight: 1, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-            Included support
-          </div>
-
-          <div style={{ marginTop: 11, display: "flex", flexWrap: "wrap", gap: 7 }}>
-            {islandHoppingInclusions.map((item) => (
-              <span
-                key={item}
-                style={{
-                  borderRadius: 999,
-                  padding: "7px 9px",
-                  background: OSP.mistSoft,
-                  border: "1px solid rgba(5,150,165,0.12)",
-                  color: OSP.navy,
-                  fontSize: 10,
-                  lineHeight: 1,
-                  fontWeight: 820,
-                }}
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-
-          <div style={{ marginTop: 12, display: "grid", gap: 7 }}>
-            {islandHoppingExclusions.map((item) => (
-              <div
-                key={item}
-                style={{
-                  borderRadius: 16,
-                  padding: "9px 10px",
-                  background: OSP.goldSoft,
-                  border: "1px solid rgba(243,174,38,0.20)",
-                  color: OSP.navy,
-                  fontSize: 10.5,
-                  lineHeight: 1.15,
-                  fontWeight: 760,
-                }}
-              >
-                {item}
               </div>
             ))}
           </div>
