@@ -32,9 +32,11 @@ import { AdminControlTowerContractsModule } from "./modules/admin-control-tower-
 import { OspDcsModule } from './modules/osp-dcs/osp-dcs.module';
 import { SiteAccessModule } from "./modules/site-access";
 import { TravelerFoodCultureMarketplaceModule } from './modules/traveler-food-culture-marketplace/traveler-food-culture-marketplace.module';
+import { TravelerCareMarketplaceModule } from './modules/traveler-care-marketplace/traveler-care-marketplace.module';
 
 @Module({
   imports: [
+    TravelerCareMarketplaceModule,
     TravelerFoodCultureMarketplaceModule,
     SiteAccessModule,
     OspDcsModule,
