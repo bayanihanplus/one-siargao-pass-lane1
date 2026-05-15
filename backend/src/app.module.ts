@@ -31,9 +31,11 @@ import { PublicPassportTrailsModule } from './modules/public-passport-trails/pub
 import { AdminControlTowerContractsModule } from "./modules/admin-control-tower-contracts";
 import { OspDcsModule } from './modules/osp-dcs/osp-dcs.module';
 import { SiteAccessModule } from "./modules/site-access";
+import { TravelerFoodCultureMarketplaceModule } from './modules/traveler-food-culture-marketplace/traveler-food-culture-marketplace.module';
 
 @Module({
   imports: [
+    TravelerFoodCultureMarketplaceModule,
     SiteAccessModule,
     OspDcsModule,
     AdminControlTowerContractsModule,

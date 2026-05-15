@@ -642,7 +642,7 @@ const categories = [
   { label: "Siargao Tour Operators", href: "/traveler/explore/stays", icon: "🚐" },
   { label: "Rentals", href: "/traveler/explore/rentals", icon: "🛵" },
   { label: "Surfing Schools", href: "/traveler/explore/surf-schools", icon: "🏄" },
-  { label: "Food & Culture", href: "/traveler/explore/stays", icon: "🍽️" },
+  { label: "Food & Culture", href: "/traveler/explore/food-culture", icon: "🍽️" },
   { label: "Beauty & Health", href: "/traveler/explore/stays", icon: "🌿" },
 ];
 
