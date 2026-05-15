@@ -11,89 +11,50 @@ const OSP = {
   line: "rgba(1,56,99,0.10)",
 };
 
-function buildIslandHoppingBookingHref({
-  product,
-  bookingPath,
-  pricingMode,
-}: {
-  product: "tri-island-joiner" | "private-island-route";
-  bookingPath: "joiner" | "private";
-  pricingMode: "per-head" | "pax-tiered";
-}) {
-  const params = new URLSearchParams({
-    intent: "island-hopping-request",
-    trail: "island-hopping",
-    officialTrail: "Island Hopping",
-    routeType: "GL_TRI_ISLAND_STANDARD",
-    routeCode: "gl-tri-island-standard",
-    routeProduct: product,
-    tripNo: "GL-ISL-01",
-    departurePort: "GENERAL_LUNA_PORT",
-    routeReadiness: "required",
-    departureReadiness: "required",
-    boardingFlow: "online",
-    voucher: "required",
-    onlineBoarding: "required",
-    boardingQr: "required",
-    manifest: "required",
-    movementRecord: "required",
-    paymentTiming: "after-route-readiness",
-    fulfillment: "boat-guide-operator-assignment",
-    step: "availability",
-    product,
-    pricingMode,
-    bookingPath,
-    source: "explore-tour",
-  });
-
-  return `/traveler/passport-trails/island-hopping/book?${params.toString()}`;
-}
-
-const joinerBookingHref = buildIslandHoppingBookingHref({
-  product: "tri-island-joiner",
-  bookingPath: "joiner",
-  pricingMode: "per-head",
-});
-
-const privateBookingHref = buildIslandHoppingBookingHref({
-  product: "private-island-route",
-  bookingPath: "private",
-  pricingMode: "pax-tiered",
-});
-
-const bookingHref = joinerBookingHref;
+const bookingHref =
+  "/traveler/passport-trails/siargao-land-tour/book?source=explore-tour&trail=siargao-land-tour&officialTrail=Siargao+Land+Tour&routeType=SIARGAO_LAND_TOUR&routeCode=south-highlights&routeProduct=SOUTH_HIGHLIGHTS&step=slot-confirmation&bookingPath=land-route&product=south-highlights";
 
 const mediaTiles = [
-  { label: "Boat route", hint: "Route view" },
-  { label: "Daku lunch", hint: "Island stop" },
-  { label: "Sandbar", hint: "Open beach" },
+  { label: "South route", hint: "Route view" },
+  { label: "North route", hint: "Scenic route" },
+  { label: "DIY stops", hint: "Custom route" },
 ];
 
 const confidenceCards = [
-  { label: "Route-ready", value: "GL Tri-Island" },
-  { label: "Voucher", value: "After booking" },
-  { label: "Support", value: "Boarding help" },
+  { label: "Route", value: "South / North" },
+  { label: "Support", value: "Driver / guide" },
+  { label: "Status", value: "Slot request" },
 ];
 
-const routeSetups = [
+const routeProducts = [
   {
-    badge: "Best start",
-    title: "Tri-Island Joiner",
-    note: "Shared island-hopping slot.",
-    price: "From ₱1,500",
-    meta: "Per traveler",
-    cta: "Choose Joiner Seat",
-    href: joinerBookingHref,
+    badge: "Popular",
+    title: "South Highlights",
+    note: "Coconut Road, Maasin, and Magpupungko.",
+    price: "Confirm first",
+    meta: "One-day route",
+    cta: "Confirm South Slot",
+    href: "/traveler/passport-trails/siargao-land-tour/book?source=explore-tour&trail=siargao-land-tour&officialTrail=Siargao+Land+Tour&routeType=SIARGAO_LAND_TOUR&routeCode=south-highlights&routeProduct=SOUTH_HIGHLIGHTS&step=slot-confirmation&bookingPath=land-route&product=south-highlights",
     tone: "gold",
   },
   {
+    badge: "Scenic",
+    title: "North Highlights",
+    note: "Pacifico, Alegria, and Taktak Falls.",
+    price: "Confirm first",
+    meta: "One-day route",
+    cta: "Confirm North Slot",
+    href: "/traveler/passport-trails/siargao-land-tour/book?source=explore-tour&trail=siargao-land-tour&officialTrail=Siargao+Land+Tour&routeType=SIARGAO_LAND_TOUR&routeCode=north-highlights&routeProduct=NORTH_HIGHLIGHTS&step=slot-confirmation&bookingPath=land-route&product=north-highlights",
+    tone: "mist",
+  },
+  {
     badge: "Flexible",
-    title: "Private Boat",
-    note: "Price adjusts by group size.",
-    price: "Pax-tiered",
-    meta: "Boat class matched",
-    cta: "Review Private Boat",
-    href: privateBookingHref,
+    title: "Private DIY Route",
+    note: "Flexible private route setup.",
+    price: "Custom quote",
+    meta: "Private route",
+    cta: "Confirm Private Slot",
+    href: "/traveler/passport-trails/siargao-land-tour/book?source=explore-tour&trail=siargao-land-tour&officialTrail=Siargao+Land+Tour&routeType=SIARGAO_LAND_TOUR&routeCode=private-diy&routeProduct=PRIVATE_DIY&step=slot-confirmation&bookingPath=land-route&product=private-diy",
     tone: "mist",
   },
 ];
@@ -101,91 +62,89 @@ const routeSetups = [
 const trailStops = [
   {
     number: "1",
-    tag: "Departure · Route start",
-    title: "General Luna Port",
-    body: "General Luna departure point.",
+    tag: "Route setup",
+    title: "Choose South, North, or DIY",
+    body: "Choose your route style.",
     tone: "mist",
   },
   {
     number: "2",
-    tag: "Sandbar · Morning stop",
-    title: "Naked Island",
-    body: "Open sandbar stop.",
+    tag: "South option",
+    title: "South Highlights",
+    body: "Coconut Road, Maasin, and Magpupungko.",
     tone: "gold",
   },
   {
     number: "3",
-    tag: "Lunch stop · Midday stop",
-    title: "Daku Island",
-    body: "Lunch and island time.",
+    tag: "North option",
+    title: "North Highlights",
+    body: "Pacifico, Alegria, and Taktak Falls.",
     tone: "mist",
   },
   {
     number: "4",
-    tag: "Final island · Afternoon stop",
-    title: "Guyam Island",
-    body: "Final island stop before return.",
+    tag: "Custom option",
+    title: "Private DIY Route",
+    body: "Flexible stops with local support.",
     tone: "mist",
   },
 ];
 
 const reasons = [
-  ["1", "Classic route", "Guyam, Naked, and Daku."],
-  ["2", "Easy day", "Simple island-hopping rhythm."],
-  ["3", "Pickup area", "General Luna pickup guidance."],
-  ["4", "Clear setup", "Choose joiner or private boat."],
+  ["1", "Flexible route", "South, North, or DIY."],
+  ["2", "Clear next step", "Pickup and timing reviewed next."],
+  ["3", "Local support", "Driver or guide support."],
+  ["4", "No fixed script", "Keep the route flexible."],
 ];
 
 const inclusions = [
-  "Boat",
-  "Guide",
-  "Drone shots",
-  "Entrance fees",
-  "Boodle fight lunch",
-  "Cottages",
-  "Docking fees",
-  "Environmental fees",
-  "GL pickup",
+  "Route review",
+  "Driver support",
+  "Guide support",
+  "Pickup guidance",
+  "Timing check",
+  "Stop planning",
+  "Operator support",
+  "Slot confirmation",
 ];
 
-const exclusions = ["Snorkels not included", "Paddle boards not included"];
+const exclusions = [
+  "Entrance fees may vary by stop",
+  "Drone or photographer support depends on selected package",
+];
 
 const otherTrails = [
   {
+    title: "General Luna Island Hopping",
+    area: "General Luna Port",
+    tag: "Island",
+    note: "Boat route",
+    href: "/traveler/explore/tours/general-luna-island-hopping",
+    tileColor: "#EAFBFA",
+  },
+  {
     title: "Sugba Lagoon Island Hopping",
-    icon: "/osp/spm/trails/icons/sugba-lagoon-badge.png",
     area: "Del Carmen",
     tag: "Lagoon",
     note: "Lagoon route",
     href: "/traveler/explore/tours/sugba-lagoon-mangrove-tours",
-    tileColor: "#EAFBFA",
-  },
-  {
-    title: "Siargao Land Tour Passport Trail",
-    icon: "/osp/spm/trails/icons/siargao-land-tour-badge.png",
-    area: "South / North",
-    tag: "Land",
-    note: "Land route",
-    href: "/traveler/explore/tours/private-siargao-land-route",
     tileColor: "#FFF8E6",
   },
   {
-    title: "Explorer Surf Trail",
-    icon: "/osp/spm/trails/icons/surf-explorer-badge.png",
-    area: "Cloud 9",
-    tag: "Surf",
-    note: "Surf support",
-    href: "/traveler/passport-trails/surf-explorer",
-    tileColor: "#EAF5FF",
-  },
-  {
     title: "Bucas Grande / Sohoton Official Trail",
-    icon: "/osp/spm/trails/icons/bucas-sohoton-badge.png",
     area: "Dapa-side",
     tag: "Sohoton",
     note: "Governed route",
     href: "/traveler/explore/tours/bucas-grande-sohoton-tour",
     tileColor: "#EAFBFA",
+  },
+  {
+    title: "Explorer Surf Trail",
+    area: "Cloud 9",
+    tag: "Surf",
+    note: "Surf support",
+    href: "/traveler/passport-trails/surf-explorer",
+    tileColor: "#EAF5FF",
   },
 ];
 
@@ -246,7 +205,7 @@ function Heading({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function GeneralLunaIslandHoppingExplorePage() {
+export default function PrivateSiargaoLandRouteExplorePage() {
   return (
     <main
       style={{
@@ -282,7 +241,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
 
         <ShellCard style={{ padding: 8 }}>
           <section
-            aria-label="Island Hopping media detail"
+            aria-label="Private Siargao Land Route media detail"
             style={{
               minHeight: 246,
               borderRadius: 22,
@@ -291,7 +250,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
               display: "grid",
               alignContent: "end",
               background:
-                "linear-gradient(180deg, rgba(1,56,99,0.58), rgba(1,56,99,0.94)), url('/osp/temp-tour-posters/tri-island-joiner.png') center/cover",
+                "linear-gradient(180deg, rgba(1,56,99,0.58), rgba(1,56,99,0.94)), url('/osp/temp-tour-posters/private-diy-land-tour.png') center/cover",
             }}
           >
             <div style={{ display: "flex", gap: 7, alignItems: "center", flexWrap: "wrap", marginBottom: 13 }}>
@@ -305,7 +264,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                   fontWeight: 900,
                 }}
               >
-                ● OFFICIAL TRAIL
+                ● PRIVATE ROUTE
               </span>
               <span
                 style={{
@@ -317,7 +276,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                   fontWeight: 900,
                 }}
               >
-                Route ready
+                South / North / DIY
               </span>
             </div>
 
@@ -332,7 +291,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                 fontWeight: 880,
               }}
             >
-              Island Hopping
+              Private Siargao Land Route
             </h1>
 
             <p
@@ -346,7 +305,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                 maxWidth: 300,
               }}
             >
-              Tri-Island packages mapped to the official General Luna route.
+              South, North, or custom land route.
             </p>
 
             <Link
@@ -394,9 +353,9 @@ export default function GeneralLunaIslandHoppingExplorePage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {[
               ["📅", "Date", "Choose on next step"],
-              ["👥", "Pax", "Set during booking"],
-              ["📍", "Pickup", "General Luna"],
-              ["🛥️", "Setup", "Joiner / Private"],
+              ["👥", "Pax", "Set during request"],
+              ["📍", "Route", "South / North"],
+              ["🛺", "Support", "Driver / guide"],
             ].map(([icon, label, value]) => (
               <div
                 key={label}
@@ -439,7 +398,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
               fontWeight: 930,
             }}
           >
-            Confirm Island Hopping Seat
+            Confirm Land Route Slot
           </Link>
         </ShellCard>
 
@@ -527,14 +486,14 @@ export default function GeneralLunaIslandHoppingExplorePage() {
           <Eyebrow>Choose route setup</Eyebrow>
 
           <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
-            {routeSetups.map((setup) => (
+            {routeProducts.map((product) => (
               <article
-                key={setup.title}
+                key={product.title}
                 style={{
                   borderRadius: 20,
                   padding: 12,
-                  background: setup.tone === "gold" ? "#FFF8E6" : OSP.mist,
-                  border: setup.tone === "gold" ? "1px solid rgba(243,174,38,0.28)" : "1px solid rgba(5,150,165,0.16)",
+                  background: product.tone === "gold" ? "#FFF8E6" : OSP.mist,
+                  border: product.tone === "gold" ? "1px solid rgba(243,174,38,0.28)" : "1px solid rgba(5,150,165,0.16)",
                   display: "grid",
                   gap: 9,
                 }}
@@ -552,22 +511,22 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                         textTransform: "uppercase",
                       }}
                     >
-                      {setup.badge}
+                      {product.badge}
                     </span>
                     <strong style={{ display: "block", marginTop: 9, color: OSP.navy, fontSize: 15.5, lineHeight: 1.05 }}>
-                      {setup.title}
+                      {product.title}
                     </strong>
-                    <p style={{ margin: "4px 0 0", color: OSP.slate, fontSize: 12, fontWeight: 720 }}>{setup.note}</p>
+                    <p style={{ margin: "4px 0 0", color: OSP.slate, fontSize: 12, fontWeight: 720 }}>{product.note}</p>
                   </div>
 
                   <div style={{ textAlign: "right" }}>
-                    <strong style={{ display: "block", color: OSP.navy, fontSize: 15.5, lineHeight: 1.05 }}>{setup.price}</strong>
-                    <span style={{ color: OSP.slate, fontSize: 10.5, fontWeight: 800 }}>{setup.meta}</span>
+                    <strong style={{ display: "block", color: OSP.navy, fontSize: 15.5, lineHeight: 1.05 }}>{product.price}</strong>
+                    <span style={{ color: OSP.slate, fontSize: 10.5, fontWeight: 800 }}>{product.meta}</span>
                   </div>
                 </div>
 
                 <Link
-                  href={setup.href}
+                  href={product.href}
                   style={{
                     width: "fit-content",
                     borderRadius: 999,
@@ -579,7 +538,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                     fontWeight: 900,
                   }}
                 >
-                  {setup.cta}
+                  {product.cta}
                 </Link>
               </article>
             ))}
@@ -587,9 +546,9 @@ export default function GeneralLunaIslandHoppingExplorePage() {
         </ShellCard>
 
         <ShellCard style={{ marginTop: 12 }}>
-          <Heading>Classic General Luna island route.</Heading>
+          <Heading>Flexible Siargao land route.</Heading>
           <p style={{ margin: "9px 0 0", color: OSP.slate, fontSize: 12.6, lineHeight: 1.35, fontWeight: 760 }}>
-            Choose joiner or private boat, then continue to booking.
+            Choose your route first. Pickup and timing follow.
           </p>
         </ShellCard>
 
@@ -662,10 +621,10 @@ export default function GeneralLunaIslandHoppingExplorePage() {
         </ShellCard>
 
         <ShellCard style={{ marginTop: 12, background: "linear-gradient(145deg, #FFF8E6, #FFFFFF)", border: "1px solid rgba(243,174,38,0.28)" }}>
-          <Eyebrow>Guide support</Eyebrow>
-          <Heading>Confirm your seat first.</Heading>
+          <Eyebrow>Route support</Eyebrow>
+          <Heading>Confirm your land route slot.</Heading>
           <p style={{ margin: "9px 0 0", color: OSP.slate, fontSize: 12.6, lineHeight: 1.35, fontWeight: 760 }}>
-            Local support checks pickup, pax, boat readiness, product type, tide-sensitive stops, and departure timing.
+            Route, date, and pickup are reviewed next.
           </p>
         </ShellCard>
 
@@ -679,11 +638,11 @@ export default function GeneralLunaIslandHoppingExplorePage() {
             boxShadow: "0 14px 28px rgba(1,56,99,0.20)",
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 21, lineHeight: 1.02, letterSpacing: "-0.045em", fontWeight: 860 }}>
-            Confirm your Island Hopping seat.
+          <h2 style={{ margin: 0, color: "#FFFFFF", fontSize: 21, lineHeight: 1.02, letterSpacing: "-0.045em", fontWeight: 860 }}>
+            Confirm your land route slot.
           </h2>
-          <p style={{ margin: "10px 0 0", color: "rgba(255,255,255,0.82)", fontSize: 12.8, lineHeight: 1.35, fontWeight: 760 }}>
-            Choose date, pax, and setup next.
+          <p style={{ margin: "10px 0 0", color: "rgba(255,255,255,0.88)", fontSize: 12.8, lineHeight: 1.35, fontWeight: 760 }}>
+            Choose route, date, pax, and pickup next.
           </p>
           <Link
             href={bookingHref}
@@ -701,7 +660,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
               fontWeight: 930,
             }}
           >
-            Confirm Island Hopping Seat
+            Confirm Land Route Slot
           </Link>
         </section>
 
@@ -725,59 +684,25 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                   padding: 12,
                 }}
               >
-                <div style={{ display: "grid", gap: 8 }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
-                    <div
-                      style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 999,
-                        background: "#FFFFFF",
-                        border: "1px solid rgba(5,150,165,0.16)",
-                        boxShadow: "0 8px 18px rgba(1,56,99,0.08)",
-                        display: "grid",
-                        placeItems: "center",
-                        overflow: "hidden",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <img
-                        src={trail.icon}
-                        alt=""
-                        aria-hidden="true"
-                        style={{
-                          width: 36,
-                          height: 36,
-                          objectFit: "contain",
-                          display: "block",
-                        }}
-                      />
-                    </div>
-
-                    <span
-                      style={{
-                        borderRadius: 999,
-                        padding: "5px 8px",
-                        background: "#FFFFFF",
-                        color: OSP.teal,
-                        border: "1px solid rgba(5,150,165,0.16)",
-                        boxShadow: "0 6px 14px rgba(1,56,99,0.06)",
-                        fontSize: 9,
-                        fontWeight: 950,
-                        letterSpacing: "0.05em",
-                        textTransform: "uppercase",
-                        lineHeight: 1,
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {trail.tag}
-                    </span>
-                  </div>
-
-                  <strong style={{ display: "block", color: OSP.navy, fontSize: 13.2, lineHeight: 1.05 }}>
+                <div>
+                  <span
+                    style={{
+                      borderRadius: 999,
+                      padding: "5px 8px",
+                      background: "#FFFFFF",
+                      color: OSP.teal,
+                      fontSize: 9,
+                      fontWeight: 900,
+                      textTransform: "uppercase",
+                      float: "right",
+                    }}
+                  >
+                    {trail.tag}
+                  </span>
+                  <strong style={{ display: "block", color: OSP.navy, fontSize: 13.2, lineHeight: 1.05, clear: "both", paddingTop: 10 }}>
                     {trail.title}
                   </strong>
-                  <span style={{ display: "block", color: OSP.slate, fontSize: 11, fontWeight: 750 }}>{trail.area}</span>
+                  <span style={{ display: "block", marginTop: 5, color: OSP.slate, fontSize: 11, fontWeight: 750 }}>{trail.area}</span>
                 </div>
                 <span style={{ color: OSP.slate, fontSize: 10.8, fontWeight: 800 }}>{trail.note} ›</span>
               </Link>

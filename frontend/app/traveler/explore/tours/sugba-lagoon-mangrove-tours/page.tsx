@@ -11,89 +11,60 @@ const OSP = {
   line: "rgba(1,56,99,0.10)",
 };
 
-function buildIslandHoppingBookingHref({
-  product,
-  bookingPath,
-  pricingMode,
-}: {
-  product: "tri-island-joiner" | "private-island-route";
-  bookingPath: "joiner" | "private";
-  pricingMode: "per-head" | "pax-tiered";
-}) {
-  const params = new URLSearchParams({
-    intent: "island-hopping-request",
-    trail: "island-hopping",
-    officialTrail: "Island Hopping",
-    routeType: "GL_TRI_ISLAND_STANDARD",
-    routeCode: "gl-tri-island-standard",
-    routeProduct: product,
-    tripNo: "GL-ISL-01",
-    departurePort: "GENERAL_LUNA_PORT",
-    routeReadiness: "required",
-    departureReadiness: "required",
-    boardingFlow: "online",
-    voucher: "required",
-    onlineBoarding: "required",
-    boardingQr: "required",
-    manifest: "required",
-    movementRecord: "required",
-    paymentTiming: "after-route-readiness",
-    fulfillment: "boat-guide-operator-assignment",
-    step: "availability",
-    product,
-    pricingMode,
-    bookingPath,
-    source: "explore-tour",
-  });
-
-  return `/traveler/passport-trails/island-hopping/book?${params.toString()}`;
-}
-
-const joinerBookingHref = buildIslandHoppingBookingHref({
-  product: "tri-island-joiner",
-  bookingPath: "joiner",
-  pricingMode: "per-head",
-});
-
-const privateBookingHref = buildIslandHoppingBookingHref({
-  product: "private-island-route",
-  bookingPath: "private",
-  pricingMode: "pax-tiered",
-});
-
-const bookingHref = joinerBookingHref;
+const bookingHref =
+  "/traveler/passport-trails/sugba-lagoon/book?intent=sugba-lagoon-request&trail=sugba-lagoon&officialTrail=Sugba+Lagoon&routeType=DEL_CARMEN_SUGBA_LAGOON&routeCode=dc-sugba-a&routeProduct=SUGBA_LAGOON_TOUR_A&tripNo=DOT-DC-SUGBA-A-20260515-0800&departurePort=DEL_CARMEN_PORT&routeReadiness=required&departureReadiness=required&boardingFlow=online&voucher=required&onlineBoarding=required&boardingQr=required&manifest=required&movementRecord=required&paymentTiming=after-route-readiness&fulfillment=boat-guide-operator-assignment&step=seat-confirmation&product=sugba-lagoon-seat&routeBasePrice=2650&entranceFeePerPax=100&source=explore-tour";
 
 const mediaTiles = [
-  { label: "Boat route", hint: "Route view" },
-  { label: "Daku lunch", hint: "Island stop" },
-  { label: "Sandbar", hint: "Open beach" },
+  { label: "Lagoon route", hint: "Route view" },
+  { label: "Boardwalk", hint: "Lagoon stop" },
+  { label: "Mangrove access", hint: "Access point" },
 ];
 
 const confidenceCards = [
-  { label: "Route-ready", value: "GL Tri-Island" },
-  { label: "Voucher", value: "After booking" },
-  { label: "Support", value: "Boarding help" },
+  { label: "Route-ready", value: "Del Carmen" },
+  { label: "Entrance", value: "₱100 / pax" },
+  { label: "Support", value: "Route review" },
 ];
 
-const routeSetups = [
+const routeProducts = [
   {
     badge: "Best start",
-    title: "Tri-Island Joiner",
-    note: "Shared island-hopping slot.",
-    price: "From ₱1,500",
-    meta: "Per traveler",
-    cta: "Choose Joiner Seat",
-    href: joinerBookingHref,
+    title: "Sugba Lagoon",
+    note: "Published Del Carmen lagoon route.",
+    price: "₱2,650 base",
+    meta: "+ ₱100 / pax",
+    cta: "Choose Sugba Lagoon",
+    href: "/traveler/passport-trails/sugba-lagoon/book?intent=sugba-lagoon-request&trail=sugba-lagoon&officialTrail=Sugba+Lagoon&routeType=DEL_CARMEN_SUGBA_LAGOON&routeCode=dc-sugba-a&routeProduct=SUGBA_LAGOON_TOUR_A&tripNo=DOT-DC-SUGBA-A-20260515-0800&departurePort=DEL_CARMEN_PORT&routeReadiness=required&departureReadiness=required&boardingFlow=online&voucher=required&onlineBoarding=required&boardingQr=required&manifest=required&movementRecord=required&paymentTiming=after-route-readiness&fulfillment=boat-guide-operator-assignment&step=seat-confirmation&product=sugba-lagoon-seat&routeBasePrice=2650&entranceFeePerPax=100&source=explore-tour",
     tone: "gold",
   },
   {
-    badge: "Flexible",
-    title: "Private Boat",
-    note: "Price adjusts by group size.",
-    price: "Pax-tiered",
-    meta: "Boat class matched",
-    cta: "Review Private Boat",
-    href: privateBookingHref,
+    badge: "Extended",
+    title: "Sugba + Kawhagan or Pamomoan",
+    note: "Choose your extended lagoon route.",
+    price: "₱3,200 base",
+    meta: "+ ₱100 / pax",
+    cta: "Review extended route",
+    href: "/traveler/passport-trails/sugba-lagoon/book?intent=sugba-lagoon-request&trail=sugba-lagoon&officialTrail=Sugba+Lagoon&routeType=DEL_CARMEN_SUGBA_LAGOON&routeCode=dc-sugba-b&routeProduct=SUGBA_LAGOON_TOUR_B&tripNo=DOT-DC-SUGBA-B-20260515-0800&departurePort=DEL_CARMEN_PORT&routeReadiness=required&departureReadiness=required&boardingFlow=online&voucher=required&onlineBoarding=required&boardingQr=required&manifest=required&movementRecord=required&paymentTiming=after-route-readiness&fulfillment=boat-guide-operator-assignment&step=seat-confirmation&product=sugba-lagoon-seat&routeBasePrice=3200&entranceFeePerPax=100&source=explore-tour",
+    tone: "mist",
+  },
+  {
+    badge: "Full route",
+    title: "Sugba + Kawhagan + Pamomoan",
+    note: "Full lagoon route option.",
+    price: "₱3,550 base",
+    meta: "+ ₱100 / pax",
+    cta: "Review full route",
+    href: "/traveler/passport-trails/sugba-lagoon/book?intent=sugba-lagoon-request&trail=sugba-lagoon&officialTrail=Sugba+Lagoon&routeType=DEL_CARMEN_SUGBA_LAGOON&routeCode=dc-sugba-b-plus&routeProduct=SUGBA_LAGOON_TOUR_B_PLUS&tripNo=DOT-DC-SUGBA-BPLUS-20260515-0800&departurePort=DEL_CARMEN_PORT&routeReadiness=required&departureReadiness=required&boardingFlow=online&voucher=required&onlineBoarding=required&boardingQr=required&manifest=required&movementRecord=required&paymentTiming=after-route-readiness&fulfillment=boat-guide-operator-assignment&step=seat-confirmation&product=sugba-lagoon-seat&routeBasePrice=3550&entranceFeePerPax=100&source=explore-tour",
+    tone: "mist",
+  },
+  {
+    badge: "Mangrove",
+    title: "Del Carmen Mangrove Tour",
+    note: "Mangrove route option with Del Carmen access context.",
+    price: "₱2,650 base",
+    meta: "+ ₱100 / pax",
+    cta: "Choose mangrove route",
+    href: "/traveler/passport-trails/sugba-lagoon/book?intent=sugba-lagoon-request&trail=sugba-lagoon&officialTrail=Sugba+Lagoon&routeType=DEL_CARMEN_MANGROVE&routeCode=dc-mangrove&routeProduct=DEL_CARMEN_MANGROVE_TOUR&tripNo=DOT-DC-MANGROVE-20260515-0800&departurePort=DEL_CARMEN_PORT&routeReadiness=required&departureReadiness=required&boardingFlow=online&voucher=required&onlineBoarding=required&boardingQr=required&manifest=required&movementRecord=required&paymentTiming=after-route-readiness&fulfillment=boat-guide-operator-assignment&step=seat-confirmation&product=del-carmen-mangrove&routeBasePrice=2650&entranceFeePerPax=100&source=explore-tour",
     tone: "mist",
   },
 ];
@@ -101,63 +72,65 @@ const routeSetups = [
 const trailStops = [
   {
     number: "1",
-    tag: "Departure · Route start",
-    title: "General Luna Port",
-    body: "General Luna departure point.",
+    tag: "Access · Route start",
+    title: "Del Carmen",
+    body: "Del Carmen access point.",
     tone: "mist",
   },
   {
     number: "2",
-    tag: "Sandbar · Morning stop",
-    title: "Naked Island",
-    body: "Open sandbar stop.",
+    tag: "Lagoon · Main stop",
+    title: "Sugba Lagoon",
+    body: "Main lagoon experience.",
     tone: "gold",
   },
   {
     number: "3",
-    tag: "Lunch stop · Midday stop",
-    title: "Daku Island",
-    body: "Lunch and island time.",
+    tag: "Optional route",
+    title: "Kawhagan or Pamomoan",
+    body: "Optional extended route.",
     tone: "mist",
   },
   {
     number: "4",
-    tag: "Final island · Afternoon stop",
-    title: "Guyam Island",
-    body: "Final island stop before return.",
+    tag: "Return · Completion",
+    title: "Del Carmen Return",
+    body: "Return to Del Carmen.",
     tone: "mist",
   },
 ];
 
 const reasons = [
-  ["1", "Classic route", "Guyam, Naked, and Daku."],
-  ["2", "Easy day", "Simple island-hopping rhythm."],
-  ["3", "Pickup area", "General Luna pickup guidance."],
-  ["4", "Clear setup", "Choose joiner or private boat."],
+  ["1", "Lagoon route", "Del Carmen access."],
+  ["2", "Clear options", "Choose A, B, B+, or Mangrove."],
+  ["3", "Entrance fee", "₱100 per pax shown."],
+  ["4", "Reviewed first", "Date and pax checked next."],
 ];
 
 const inclusions = [
-  "Boat",
-  "Guide",
-  "Drone shots",
-  "Entrance fees",
-  "Boodle fight lunch",
-  "Cottages",
-  "Docking fees",
-  "Environmental fees",
-  "GL pickup",
+  "Lagoon route",
+  "Route review",
+  "Local operator support",
+  "Entrance fee shown",
+  "Date check",
+  "Pax check",
+  "Pickup guidance",
+  "Voucher path",
 ];
 
-const exclusions = ["Snorkels not included", "Paddle boards not included"];
+const exclusions = [
+  "Weather changes may affect route timing",
+  "Optional stops depend on selected route product",
+];
 
 const otherTrails = [
   {
-    title: "Sugba Lagoon Island Hopping",
-    icon: "/osp/spm/trails/icons/sugba-lagoon-badge.png",
-    area: "Del Carmen",
-    tag: "Lagoon",
-    note: "Lagoon route",
-    href: "/traveler/explore/tours/sugba-lagoon-mangrove-tours",
+    title: "General Luna Island Hopping",
+    icon: "/osp/spm/trails/icons/passport-progress-badge.png",
+    area: "General Luna Port",
+    tag: "Island",
+    note: "Boat route",
+    href: "/traveler/explore/tours/general-luna-island-hopping",
     tileColor: "#EAFBFA",
   },
   {
@@ -246,7 +219,7 @@ function Heading({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function GeneralLunaIslandHoppingExplorePage() {
+export default function SugbaLagoonExplorePage() {
   return (
     <main
       style={{
@@ -282,7 +255,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
 
         <ShellCard style={{ padding: 8 }}>
           <section
-            aria-label="Island Hopping media detail"
+            aria-label="Sugba Lagoon media detail"
             style={{
               minHeight: 246,
               borderRadius: 22,
@@ -291,7 +264,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
               display: "grid",
               alignContent: "end",
               background:
-                "linear-gradient(180deg, rgba(1,56,99,0.58), rgba(1,56,99,0.94)), url('/osp/temp-tour-posters/tri-island-joiner.png') center/cover",
+                "linear-gradient(180deg, rgba(1,56,99,0.58), rgba(1,56,99,0.94)), url('/osp/temp-tour-posters/sugba-lagoon-mangrove-tours.png') center/cover",
             }}
           >
             <div style={{ display: "flex", gap: 7, alignItems: "center", flexWrap: "wrap", marginBottom: 13 }}>
@@ -305,7 +278,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                   fontWeight: 900,
                 }}
               >
-                ● OFFICIAL TRAIL
+                ● OFFICIAL ROUTE
               </span>
               <span
                 style={{
@@ -317,7 +290,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                   fontWeight: 900,
                 }}
               >
-                Route ready
+                Del Carmen access
               </span>
             </div>
 
@@ -332,7 +305,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                 fontWeight: 880,
               }}
             >
-              Island Hopping
+              Sugba Lagoon
             </h1>
 
             <p
@@ -346,7 +319,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                 maxWidth: 300,
               }}
             >
-              Tri-Island packages mapped to the official General Luna route.
+              Del Carmen lagoon route with clear product options.
             </p>
 
             <Link
@@ -394,9 +367,9 @@ export default function GeneralLunaIslandHoppingExplorePage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {[
               ["📅", "Date", "Choose on next step"],
-              ["👥", "Pax", "Set during booking"],
-              ["📍", "Pickup", "General Luna"],
-              ["🛥️", "Setup", "Joiner / Private"],
+              ["👥", "Pax", "Set during request"],
+              ["📍", "Access", "Del Carmen"],
+              ["🛶", "Route", "Lagoon / Mangrove"],
             ].map(([icon, label, value]) => (
               <div
                 key={label}
@@ -439,7 +412,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
               fontWeight: 930,
             }}
           >
-            Confirm Island Hopping Seat
+            Confirm Sugba Seat
           </Link>
         </ShellCard>
 
@@ -524,17 +497,17 @@ export default function GeneralLunaIslandHoppingExplorePage() {
         </ShellCard>
 
         <ShellCard style={{ marginTop: 12 }}>
-          <Eyebrow>Choose route setup</Eyebrow>
+          <Eyebrow>Choose route product</Eyebrow>
 
           <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
-            {routeSetups.map((setup) => (
+            {routeProducts.map((product) => (
               <article
-                key={setup.title}
+                key={product.title}
                 style={{
                   borderRadius: 20,
                   padding: 12,
-                  background: setup.tone === "gold" ? "#FFF8E6" : OSP.mist,
-                  border: setup.tone === "gold" ? "1px solid rgba(243,174,38,0.28)" : "1px solid rgba(5,150,165,0.16)",
+                  background: product.tone === "gold" ? "#FFF8E6" : OSP.mist,
+                  border: product.tone === "gold" ? "1px solid rgba(243,174,38,0.28)" : "1px solid rgba(5,150,165,0.16)",
                   display: "grid",
                   gap: 9,
                 }}
@@ -552,22 +525,22 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                         textTransform: "uppercase",
                       }}
                     >
-                      {setup.badge}
+                      {product.badge}
                     </span>
                     <strong style={{ display: "block", marginTop: 9, color: OSP.navy, fontSize: 15.5, lineHeight: 1.05 }}>
-                      {setup.title}
+                      {product.title}
                     </strong>
-                    <p style={{ margin: "4px 0 0", color: OSP.slate, fontSize: 12, fontWeight: 720 }}>{setup.note}</p>
+                    <p style={{ margin: "4px 0 0", color: OSP.slate, fontSize: 12, fontWeight: 720 }}>{product.note}</p>
                   </div>
 
                   <div style={{ textAlign: "right" }}>
-                    <strong style={{ display: "block", color: OSP.navy, fontSize: 15.5, lineHeight: 1.05 }}>{setup.price}</strong>
-                    <span style={{ color: OSP.slate, fontSize: 10.5, fontWeight: 800 }}>{setup.meta}</span>
+                    <strong style={{ display: "block", color: OSP.navy, fontSize: 15.5, lineHeight: 1.05 }}>{product.price}</strong>
+                    <span style={{ color: OSP.slate, fontSize: 10.5, fontWeight: 800 }}>{product.meta}</span>
                   </div>
                 </div>
 
                 <Link
-                  href={setup.href}
+                  href={product.href}
                   style={{
                     width: "fit-content",
                     borderRadius: 999,
@@ -579,7 +552,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                     fontWeight: 900,
                   }}
                 >
-                  {setup.cta}
+                  {product.cta}
                 </Link>
               </article>
             ))}
@@ -587,9 +560,9 @@ export default function GeneralLunaIslandHoppingExplorePage() {
         </ShellCard>
 
         <ShellCard style={{ marginTop: 12 }}>
-          <Heading>Classic General Luna island route.</Heading>
+          <Heading>Del Carmen lagoon route.</Heading>
           <p style={{ margin: "9px 0 0", color: OSP.slate, fontSize: 12.6, lineHeight: 1.35, fontWeight: 760 }}>
-            Choose joiner or private boat, then continue to booking.
+            Choose your lagoon route, then confirm date and pax.
           </p>
         </ShellCard>
 
@@ -662,10 +635,10 @@ export default function GeneralLunaIslandHoppingExplorePage() {
         </ShellCard>
 
         <ShellCard style={{ marginTop: 12, background: "linear-gradient(145deg, #FFF8E6, #FFFFFF)", border: "1px solid rgba(243,174,38,0.28)" }}>
-          <Eyebrow>Guide support</Eyebrow>
+          <Eyebrow>Route support</Eyebrow>
           <Heading>Confirm your seat first.</Heading>
           <p style={{ margin: "9px 0 0", color: OSP.slate, fontSize: 12.6, lineHeight: 1.35, fontWeight: 760 }}>
-            Local support checks pickup, pax, boat readiness, product type, tide-sensitive stops, and departure timing.
+            Date, pax, and route are reviewed next.
           </p>
         </ShellCard>
 
@@ -679,11 +652,11 @@ export default function GeneralLunaIslandHoppingExplorePage() {
             boxShadow: "0 14px 28px rgba(1,56,99,0.20)",
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 21, lineHeight: 1.02, letterSpacing: "-0.045em", fontWeight: 860 }}>
-            Confirm your Island Hopping seat.
+          <h2 style={{ margin: 0, color: "#FFFFFF", fontSize: 21, lineHeight: 1.02, letterSpacing: "-0.045em", fontWeight: 860 }}>
+            Confirm your Sugba seat.
           </h2>
-          <p style={{ margin: "10px 0 0", color: "rgba(255,255,255,0.82)", fontSize: 12.8, lineHeight: 1.35, fontWeight: 760 }}>
-            Choose date, pax, and setup next.
+          <p style={{ margin: "10px 0 0", color: "rgba(255,255,255,0.88)", fontSize: 12.8, lineHeight: 1.35, fontWeight: 760 }}>
+            Choose route, date, and pax next.
           </p>
           <Link
             href={bookingHref}
@@ -701,7 +674,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
               fontWeight: 930,
             }}
           >
-            Confirm Island Hopping Seat
+            Confirm Sugba Seat
           </Link>
         </section>
 

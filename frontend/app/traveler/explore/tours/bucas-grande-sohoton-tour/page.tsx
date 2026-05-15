@@ -11,89 +11,50 @@ const OSP = {
   line: "rgba(1,56,99,0.10)",
 };
 
-function buildIslandHoppingBookingHref({
-  product,
-  bookingPath,
-  pricingMode,
-}: {
-  product: "tri-island-joiner" | "private-island-route";
-  bookingPath: "joiner" | "private";
-  pricingMode: "per-head" | "pax-tiered";
-}) {
-  const params = new URLSearchParams({
-    intent: "island-hopping-request",
-    trail: "island-hopping",
-    officialTrail: "Island Hopping",
-    routeType: "GL_TRI_ISLAND_STANDARD",
-    routeCode: "gl-tri-island-standard",
-    routeProduct: product,
-    tripNo: "GL-ISL-01",
-    departurePort: "GENERAL_LUNA_PORT",
-    routeReadiness: "required",
-    departureReadiness: "required",
-    boardingFlow: "online",
-    voucher: "required",
-    onlineBoarding: "required",
-    boardingQr: "required",
-    manifest: "required",
-    movementRecord: "required",
-    paymentTiming: "after-route-readiness",
-    fulfillment: "boat-guide-operator-assignment",
-    step: "availability",
-    product,
-    pricingMode,
-    bookingPath,
-    source: "explore-tour",
-  });
-
-  return `/traveler/passport-trails/island-hopping/book?${params.toString()}`;
-}
-
-const joinerBookingHref = buildIslandHoppingBookingHref({
-  product: "tri-island-joiner",
-  bookingPath: "joiner",
-  pricingMode: "per-head",
-});
-
-const privateBookingHref = buildIslandHoppingBookingHref({
-  product: "private-island-route",
-  bookingPath: "private",
-  pricingMode: "pax-tiered",
-});
-
-const bookingHref = joinerBookingHref;
+const bookingHref =
+  "/traveler/passport-trails/bucas-grande-sohoton/book?intent=bucas-grande-sohoton-request&trail=bucas-grande-sohoton&officialTrail=Bucas+Grande+%2F+Sohoton&routeType=BUCAS_GRANDE_SOHOTON&routeCode=bucas-sohoton-main&routeProduct=SOHOTON_BUCAS_GRANDE_TOUR&tripNo=DOT-DAPA-SOHOTON-20260515-0800&departurePort=DAPA_PORT&routeReadiness=required&departureReadiness=required&boardingFlow=online&voucher=required&onlineBoarding=required&boardingQr=required&manifest=required&movementRecord=required&paymentTiming=after-route-readiness&fulfillment=boat-guide-operator-assignment&step=seat-confirmation&product=sohoton-bucas-grande-seat&entranceFeePerPax=100&source=explore-tour";
 
 const mediaTiles = [
-  { label: "Boat route", hint: "Route view" },
-  { label: "Daku lunch", hint: "Island stop" },
-  { label: "Sandbar", hint: "Open beach" },
+  { label: "Sohoton Cove", hint: "Route view" },
+  { label: "Cave route", hint: "Cove stop" },
+  { label: "Lagoon access", hint: "Access point" },
 ];
 
 const confidenceCards = [
-  { label: "Route-ready", value: "GL Tri-Island" },
-  { label: "Voucher", value: "After booking" },
-  { label: "Support", value: "Boarding help" },
+  { label: "Route", value: "Dapa / Socorro" },
+  { label: "Entrance", value: "₱100 / pax" },
+  { label: "Status", value: "Request first" },
 ];
 
-const routeSetups = [
+const routeProducts = [
   {
-    badge: "Best start",
-    title: "Tri-Island Joiner",
-    note: "Shared island-hopping slot.",
-    price: "From ₱1,500",
-    meta: "Per traveler",
-    cta: "Choose Joiner Seat",
-    href: joinerBookingHref,
+    badge: "Main route",
+    title: "Bucas Grande / Sohoton Tour",
+    note: "Dapa-side island and lagoon route.",
+    price: "Price to confirm",
+    meta: "+ ₱100 / pax",
+    cta: "Request Sohoton route",
+    href: "/traveler/passport-trails/bucas-grande-sohoton/book?intent=bucas-grande-sohoton-request&trail=bucas-grande-sohoton&officialTrail=Bucas+Grande+%2F+Sohoton&routeType=BUCAS_GRANDE_SOHOTON&routeCode=bucas-sohoton-main&routeProduct=SOHOTON_BUCAS_GRANDE_TOUR&tripNo=DOT-DAPA-SOHOTON-20260515-0800&departurePort=DAPA_PORT&routeReadiness=required&departureReadiness=required&boardingFlow=online&voucher=required&onlineBoarding=required&boardingQr=required&manifest=required&movementRecord=required&paymentTiming=after-route-readiness&fulfillment=boat-guide-operator-assignment&step=seat-confirmation&product=sohoton-bucas-grande-seat&entranceFeePerPax=100&source=explore-tour",
     tone: "gold",
   },
   {
-    badge: "Flexible",
-    title: "Private Boat",
-    note: "Price adjusts by group size.",
-    price: "Pax-tiered",
-    meta: "Boat class matched",
-    cta: "Review Private Boat",
-    href: privateBookingHref,
+    badge: "Cove",
+    title: "Sohoton Cove Route",
+    note: "Cove access is reviewed first.",
+    price: "Confirm first",
+    meta: "Route review",
+    cta: "Review cove route",
+    href: "/traveler/passport-trails/bucas-grande-sohoton/book?intent=bucas-grande-sohoton-request&trail=bucas-grande-sohoton&officialTrail=Bucas+Grande+%2F+Sohoton&routeType=SOHOTON_COVE&routeCode=sohoton-cove&routeProduct=SOHOTON_COVE_ROUTE&tripNo=DOT-DAPA-COVE-20260515-0800&departurePort=DAPA_PORT&routeReadiness=required&departureReadiness=required&boardingFlow=online&voucher=required&onlineBoarding=required&boardingQr=required&manifest=required&movementRecord=required&paymentTiming=after-route-readiness&fulfillment=boat-guide-operator-assignment&step=seat-confirmation&product=sohoton-cove-seat&entranceFeePerPax=100&source=explore-tour",
+    tone: "mist",
+  },
+  {
+    badge: "Seasonal",
+    title: "Jellyfish Lagoon Interest",
+    note: "Access is condition-sensitive.",
+    price: "Confirm first",
+    meta: "Access dependent",
+    cta: "Check lagoon access",
+    href: "/traveler/passport-trails/bucas-grande-sohoton/book?intent=bucas-grande-sohoton-request&trail=bucas-grande-sohoton&officialTrail=Bucas+Grande+%2F+Sohoton&routeType=JELLYFISH_LAGOON&routeCode=jellyfish-lagoon&routeProduct=JELLYFISH_LAGOON_INTEREST&tripNo=DOT-DAPA-JELLYFISH-20260515-0800&departurePort=DAPA_PORT&routeReadiness=required&departureReadiness=required&boardingFlow=online&voucher=required&onlineBoarding=required&boardingQr=required&manifest=required&movementRecord=required&paymentTiming=after-route-readiness&fulfillment=boat-guide-operator-assignment&step=seat-confirmation&product=jellyfish-lagoon-seat&entranceFeePerPax=100&source=explore-tour",
     tone: "mist",
   },
 ];
@@ -101,56 +62,67 @@ const routeSetups = [
 const trailStops = [
   {
     number: "1",
-    tag: "Departure · Route start",
-    title: "General Luna Port",
-    body: "General Luna departure point.",
+    tag: "Access · Route start",
+    title: "Dapa / Socorro Access",
+    body: "Dapa-side access point.",
     tone: "mist",
   },
   {
     number: "2",
-    tag: "Sandbar · Morning stop",
-    title: "Naked Island",
-    body: "Open sandbar stop.",
+    tag: "Cove · Main stop",
+    title: "Sohoton Cove",
+    body: "Cove and cave route.",
     tone: "gold",
   },
   {
     number: "3",
-    tag: "Lunch stop · Midday stop",
-    title: "Daku Island",
-    body: "Lunch and island time.",
+    tag: "Lagoon · Conditional stop",
+    title: "Jellyfish Lagoon",
+    body: "Seasonal lagoon access.",
     tone: "mist",
   },
   {
     number: "4",
-    tag: "Final island · Afternoon stop",
-    title: "Guyam Island",
-    body: "Final island stop before return.",
+    tag: "Return · Completion",
+    title: "Bucas Grande Return",
+    body: "Return from Bucas Grande.",
     tone: "mist",
   },
 ];
 
 const reasons = [
-  ["1", "Classic route", "Guyam, Naked, and Daku."],
-  ["2", "Easy day", "Simple island-hopping rhythm."],
-  ["3", "Pickup area", "General Luna pickup guidance."],
-  ["4", "Clear setup", "Choose joiner or private boat."],
+  ["1", "Dapa-side route", "Cove and lagoon access."],
+  ["2", "Review first", "Route and timing checked next."],
+  ["3", "Entrance fee", "₱100 per pax shown."],
+  ["4", "Clear access", "Dapa / Socorro side."],
 ];
 
 const inclusions = [
-  "Boat",
-  "Guide",
-  "Drone shots",
-  "Entrance fees",
-  "Boodle fight lunch",
-  "Cottages",
-  "Docking fees",
-  "Environmental fees",
-  "GL pickup",
+  "Route review",
+  "Dapa-side access context",
+  "Operator readiness check",
+  "Entrance fee shown",
+  "Date check",
+  "Pax check",
+  "Cove route support",
+  "Voucher path",
 ];
 
-const exclusions = ["Snorkels not included", "Paddle boards not included"];
+const exclusions = [
+  "Base price confirmed before checkout",
+  "Jellyfish Lagoon access depends on route conditions",
+];
 
 const otherTrails = [
+  {
+    title: "General Luna Island Hopping",
+    icon: "/osp/spm/trails/icons/passport-progress-badge.png",
+    area: "General Luna Port",
+    tag: "Island",
+    note: "Boat route",
+    href: "/traveler/explore/tours/general-luna-island-hopping",
+    tileColor: "#EAFBFA",
+  },
   {
     title: "Sugba Lagoon Island Hopping",
     icon: "/osp/spm/trails/icons/sugba-lagoon-badge.png",
@@ -158,7 +130,7 @@ const otherTrails = [
     tag: "Lagoon",
     note: "Lagoon route",
     href: "/traveler/explore/tours/sugba-lagoon-mangrove-tours",
-    tileColor: "#EAFBFA",
+    tileColor: "#FFF8E6",
   },
   {
     title: "Siargao Land Tour Passport Trail",
@@ -167,7 +139,7 @@ const otherTrails = [
     tag: "Land",
     note: "Land route",
     href: "/traveler/explore/tours/private-siargao-land-route",
-    tileColor: "#FFF8E6",
+    tileColor: "#EAFBFA",
   },
   {
     title: "Explorer Surf Trail",
@@ -177,15 +149,6 @@ const otherTrails = [
     note: "Surf support",
     href: "/traveler/passport-trails/surf-explorer",
     tileColor: "#EAF5FF",
-  },
-  {
-    title: "Bucas Grande / Sohoton Official Trail",
-    icon: "/osp/spm/trails/icons/bucas-sohoton-badge.png",
-    area: "Dapa-side",
-    tag: "Sohoton",
-    note: "Governed route",
-    href: "/traveler/explore/tours/bucas-grande-sohoton-tour",
-    tileColor: "#EAFBFA",
   },
 ];
 
@@ -246,7 +209,7 @@ function Heading({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function GeneralLunaIslandHoppingExplorePage() {
+export default function BucasGrandeSohotonExplorePage() {
   return (
     <main
       style={{
@@ -282,7 +245,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
 
         <ShellCard style={{ padding: 8 }}>
           <section
-            aria-label="Island Hopping media detail"
+            aria-label="Bucas Grande Sohoton media detail"
             style={{
               minHeight: 246,
               borderRadius: 22,
@@ -291,7 +254,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
               display: "grid",
               alignContent: "end",
               background:
-                "linear-gradient(180deg, rgba(1,56,99,0.58), rgba(1,56,99,0.94)), url('/osp/temp-tour-posters/tri-island-joiner.png') center/cover",
+                "linear-gradient(180deg, rgba(1,56,99,0.58), rgba(1,56,99,0.94)), url('/osp/temp-tour-posters/bucas-grande-sohoton-tour.png') center/cover",
             }}
           >
             <div style={{ display: "flex", gap: 7, alignItems: "center", flexWrap: "wrap", marginBottom: 13 }}>
@@ -305,7 +268,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                   fontWeight: 900,
                 }}
               >
-                ● OFFICIAL TRAIL
+                ● GOVERNED ROUTE
               </span>
               <span
                 style={{
@@ -317,7 +280,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                   fontWeight: 900,
                 }}
               >
-                Route ready
+                Dapa / Socorro
               </span>
             </div>
 
@@ -332,7 +295,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                 fontWeight: 880,
               }}
             >
-              Island Hopping
+              Bucas Grande & Sohoton
             </h1>
 
             <p
@@ -346,7 +309,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                 maxWidth: 300,
               }}
             >
-              Tri-Island packages mapped to the official General Luna route.
+              Dapa-side cove and lagoon route.
             </p>
 
             <Link
@@ -393,10 +356,10 @@ export default function GeneralLunaIslandHoppingExplorePage() {
         <ShellCard style={{ marginTop: 12 }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {[
-              ["📅", "Date", "Choose on next step"],
-              ["👥", "Pax", "Set during booking"],
-              ["📍", "Pickup", "General Luna"],
-              ["🛥️", "Setup", "Joiner / Private"],
+              ["📅", "Date", "Confirm first"],
+              ["👥", "Pax", "Set during request"],
+              ["📍", "Access", "Dapa / Socorro"],
+              ["🛶", "Route", "Cove / Lagoon"],
             ].map(([icon, label, value]) => (
               <div
                 key={label}
@@ -439,7 +402,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
               fontWeight: 930,
             }}
           >
-            Confirm Island Hopping Seat
+            Confirm Sohoton Seat
           </Link>
         </ShellCard>
 
@@ -524,17 +487,17 @@ export default function GeneralLunaIslandHoppingExplorePage() {
         </ShellCard>
 
         <ShellCard style={{ marginTop: 12 }}>
-          <Eyebrow>Choose route setup</Eyebrow>
+          <Eyebrow>Choose route interest</Eyebrow>
 
           <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
-            {routeSetups.map((setup) => (
+            {routeProducts.map((product) => (
               <article
-                key={setup.title}
+                key={product.title}
                 style={{
                   borderRadius: 20,
                   padding: 12,
-                  background: setup.tone === "gold" ? "#FFF8E6" : OSP.mist,
-                  border: setup.tone === "gold" ? "1px solid rgba(243,174,38,0.28)" : "1px solid rgba(5,150,165,0.16)",
+                  background: product.tone === "gold" ? "#FFF8E6" : OSP.mist,
+                  border: product.tone === "gold" ? "1px solid rgba(243,174,38,0.28)" : "1px solid rgba(5,150,165,0.16)",
                   display: "grid",
                   gap: 9,
                 }}
@@ -552,22 +515,22 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                         textTransform: "uppercase",
                       }}
                     >
-                      {setup.badge}
+                      {product.badge}
                     </span>
                     <strong style={{ display: "block", marginTop: 9, color: OSP.navy, fontSize: 15.5, lineHeight: 1.05 }}>
-                      {setup.title}
+                      {product.title}
                     </strong>
-                    <p style={{ margin: "4px 0 0", color: OSP.slate, fontSize: 12, fontWeight: 720 }}>{setup.note}</p>
+                    <p style={{ margin: "4px 0 0", color: OSP.slate, fontSize: 12, fontWeight: 720 }}>{product.note}</p>
                   </div>
 
                   <div style={{ textAlign: "right" }}>
-                    <strong style={{ display: "block", color: OSP.navy, fontSize: 15.5, lineHeight: 1.05 }}>{setup.price}</strong>
-                    <span style={{ color: OSP.slate, fontSize: 10.5, fontWeight: 800 }}>{setup.meta}</span>
+                    <strong style={{ display: "block", color: OSP.navy, fontSize: 15.5, lineHeight: 1.05 }}>{product.price}</strong>
+                    <span style={{ color: OSP.slate, fontSize: 10.5, fontWeight: 800 }}>{product.meta}</span>
                   </div>
                 </div>
 
                 <Link
-                  href={setup.href}
+                  href={product.href}
                   style={{
                     width: "fit-content",
                     borderRadius: 999,
@@ -579,7 +542,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                     fontWeight: 900,
                   }}
                 >
-                  {setup.cta}
+                  {product.cta}
                 </Link>
               </article>
             ))}
@@ -587,9 +550,9 @@ export default function GeneralLunaIslandHoppingExplorePage() {
         </ShellCard>
 
         <ShellCard style={{ marginTop: 12 }}>
-          <Heading>Classic General Luna island route.</Heading>
+          <Heading>Dapa-side governed route.</Heading>
           <p style={{ margin: "9px 0 0", color: OSP.slate, fontSize: 12.6, lineHeight: 1.35, fontWeight: 760 }}>
-            Choose joiner or private boat, then continue to booking.
+            Confirm route, date, and pax first.
           </p>
         </ShellCard>
 
@@ -662,10 +625,10 @@ export default function GeneralLunaIslandHoppingExplorePage() {
         </ShellCard>
 
         <ShellCard style={{ marginTop: 12, background: "linear-gradient(145deg, #FFF8E6, #FFFFFF)", border: "1px solid rgba(243,174,38,0.28)" }}>
-          <Eyebrow>Guide support</Eyebrow>
+          <Eyebrow>Route support</Eyebrow>
           <Heading>Confirm your seat first.</Heading>
           <p style={{ margin: "9px 0 0", color: OSP.slate, fontSize: 12.6, lineHeight: 1.35, fontWeight: 760 }}>
-            Local support checks pickup, pax, boat readiness, product type, tide-sensitive stops, and departure timing.
+            Route, date, and pax are reviewed next.
           </p>
         </ShellCard>
 
@@ -679,11 +642,11 @@ export default function GeneralLunaIslandHoppingExplorePage() {
             boxShadow: "0 14px 28px rgba(1,56,99,0.20)",
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 21, lineHeight: 1.02, letterSpacing: "-0.045em", fontWeight: 860 }}>
-            Confirm your Island Hopping seat.
+          <h2 style={{ margin: 0, color: "#FFFFFF", fontSize: 21, lineHeight: 1.02, letterSpacing: "-0.045em", fontWeight: 860 }}>
+            Confirm your Sohoton seat.
           </h2>
-          <p style={{ margin: "10px 0 0", color: "rgba(255,255,255,0.82)", fontSize: 12.8, lineHeight: 1.35, fontWeight: 760 }}>
-            Choose date, pax, and setup next.
+          <p style={{ margin: "10px 0 0", color: "rgba(255,255,255,0.88)", fontSize: 12.8, lineHeight: 1.35, fontWeight: 760 }}>
+            Choose route, date, and pax next.
           </p>
           <Link
             href={bookingHref}
@@ -701,7 +664,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
               fontWeight: 930,
             }}
           >
-            Confirm Island Hopping Seat
+            Confirm Sohoton Seat
           </Link>
         </section>
 
