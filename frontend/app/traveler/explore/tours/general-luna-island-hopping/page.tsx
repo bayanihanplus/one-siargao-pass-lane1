@@ -64,9 +64,21 @@ const privateBookingHref = buildIslandHoppingBookingHref({
 const bookingHref = joinerBookingHref;
 
 const mediaTiles = [
-  { label: "Boat route", hint: "Route view" },
-  { label: "Daku lunch", hint: "Island stop" },
-  { label: "Sandbar", hint: "Open beach" },
+  {
+    label: "Boat route",
+    hint: "Route view",
+    image: "/osp/explore/tours/general-luna-island-hopping/boat-route.png",
+  },
+  {
+    label: "Daku lunch",
+    hint: "Island stop",
+    image: "/osp/explore/tours/general-luna-island-hopping/daku-lunch.png",
+  },
+  {
+    label: "Sandbar",
+    hint: "Open beach",
+    image: "/osp/explore/tours/general-luna-island-hopping/sandbar.png",
+  },
 ];
 
 const confidenceCards = [
@@ -291,7 +303,7 @@ export default function GeneralLunaIslandHoppingExplorePage() {
               display: "grid",
               alignContent: "end",
               background:
-                "linear-gradient(180deg, rgba(1,56,99,0.58), rgba(1,56,99,0.94)), url('/osp/temp-tour-posters/tri-island-joiner.png') center/cover",
+                "linear-gradient(180deg, rgba(1,56,99,0.36), rgba(1,56,99,0.88)), url('/osp/explore/tours/general-luna-island-hopping/main-preview.png') center/cover",
             }}
           >
             <div style={{ display: "flex", gap: 7, alignItems: "center", flexWrap: "wrap", marginBottom: 13 }}>
@@ -375,16 +387,19 @@ export default function GeneralLunaIslandHoppingExplorePage() {
                   minHeight: 76,
                   borderRadius: 18,
                   padding: 10,
-                  background: "linear-gradient(145deg, #EAFBFA, #FFF8E6)",
-                  border: "1px solid rgba(5,150,165,0.18)",
+                  background:
+                    `linear-gradient(180deg, rgba(1,56,99,0.04), rgba(1,56,99,0.64)), url(${tile.image}) center/cover`,
+                  border: "1px solid rgba(255,255,255,0.72)",
+                  boxShadow: "0 12px 26px rgba(1,56,99,0.14)",
                   display: "grid",
                   alignContent: "space-between",
+                  overflow: "hidden",
                 }}
               >
-                <span style={{ color: OSP.slate, fontSize: 9.2, fontWeight: 900, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                <span style={{ color: "rgba(255,255,255,0.88)", textShadow: "0 2px 8px rgba(1,56,99,0.42)", fontSize: 9.2, fontWeight: 900, letterSpacing: "0.08em", textTransform: "uppercase" }}>
                   {tile.hint}
                 </span>
-                <strong style={{ color: OSP.navy, fontSize: 12.5, lineHeight: 1.05 }}>{tile.label}</strong>
+                <strong style={{ color: "#FFFFFF", textShadow: "0 2px 8px rgba(1,56,99,0.48)", fontSize: 12.5, lineHeight: 1.05 }}>{tile.label}</strong>
               </div>
             ))}
           </div>

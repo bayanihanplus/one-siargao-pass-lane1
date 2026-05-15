@@ -309,28 +309,42 @@ export default function FoodWellnessOfficialTrailPage() {
 
             <div aria-label="Compact trail photo previews" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
               {[
-                ["Photo 01", "Food"],
-                ["Photo 02", "Flavor"],
-                ["Photo 03", "Wellness"],
-              ].map(([label, caption]) => (
+                {
+                  label: "Photo 01",
+                  caption: "Food",
+                  image: "/osp/spm/trails/food-wellness/food.png",
+                },
+                {
+                  label: "Photo 02",
+                  caption: "Flavor",
+                  image: "/osp/spm/trails/food-wellness/flavor.png",
+                },
+                {
+                  label: "Photo 03",
+                  caption: "Wellness",
+                  image: "/osp/spm/trails/food-wellness/wellness.png",
+                },
+              ].map((item) => (
                 <div
-                  key={label}
+                  key={item.label}
                   style={{
                     minHeight: 78,
                     borderRadius: 17,
                     padding: 9,
                     display: "grid",
                     alignContent: "space-between",
-                    background: "#FFFFFF",
-                    border: "1px solid rgba(1,56,99,0.10)",
-                    boxShadow: "0 10px 24px rgba(1,56,99,0.06)",
+                    background:
+                      `linear-gradient(180deg, rgba(1,56,99,0.04), rgba(1,56,99,0.62)), url(${item.image}) center/cover`,
+                    border: "1px solid rgba(255,255,255,0.72)",
+                    boxShadow: "0 12px 26px rgba(1,56,99,0.14)",
+                    overflow: "hidden",
                   }}
                 >
-                  <span style={{ color: OSP.teal, fontSize: 8.6, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                    {label}
+                  <span style={{ color: "rgba(255,255,255,0.88)", textShadow: "0 2px 8px rgba(1,56,99,0.42)", fontSize: 8.6, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                    {item.label}
                   </span>
-                  <span style={{ color: OSP.deepNavy, fontSize: 11.2, lineHeight: 1.05, fontWeight: 850 }}>
-                    {caption}
+                  <span style={{ color: "#FFFFFF", textShadow: "0 2px 8px rgba(1,56,99,0.48)", fontSize: 11.2, lineHeight: 1.05, fontWeight: 850 }}>
+                    {item.caption}
                   </span>
                 </div>
               ))}

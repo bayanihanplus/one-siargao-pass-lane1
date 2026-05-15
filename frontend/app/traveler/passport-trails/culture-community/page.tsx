@@ -295,28 +295,42 @@ export default function CultureCommunityOfficialTrailPage() {
 
             <div aria-label="Compact trail photo previews" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
               {[
-                ["Photo 01", "Community"],
-                ["Photo 02", "Story"],
-                ["Photo 03", "Culture"],
-              ].map(([label, caption]) => (
+                {
+                  label: "Photo 01",
+                  caption: "Community",
+                  image: "/osp/spm/trails/culture-community/community.png",
+                },
+                {
+                  label: "Photo 02",
+                  caption: "Story",
+                  image: "/osp/spm/trails/culture-community/story.png",
+                },
+                {
+                  label: "Photo 03",
+                  caption: "Culture",
+                  image: "/osp/spm/trails/culture-community/culture.png",
+                },
+              ].map((item) => (
                 <div
-                  key={label}
+                  key={item.label}
                   style={{
                     minHeight: 78,
                     borderRadius: 17,
                     padding: 9,
                     display: "grid",
                     alignContent: "space-between",
-                    background: "#FFFFFF",
-                    border: "1px solid rgba(1,56,99,0.10)",
-                    boxShadow: "0 10px 24px rgba(1,56,99,0.06)",
+                    background:
+                      `linear-gradient(180deg, rgba(1,56,99,0.04), rgba(1,56,99,0.62)), url(${item.image}) center/cover`,
+                    border: "1px solid rgba(255,255,255,0.72)",
+                    boxShadow: "0 12px 26px rgba(1,56,99,0.14)",
+                    overflow: "hidden",
                   }}
                 >
-                  <span style={{ color: OSP.teal, fontSize: 8.6, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                    {label}
+                  <span style={{ color: "rgba(255,255,255,0.88)", textShadow: "0 2px 8px rgba(1,56,99,0.42)", fontSize: 8.6, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                    {item.label}
                   </span>
-                  <span style={{ color: OSP.deepNavy, fontSize: 11.2, lineHeight: 1.05, fontWeight: 850 }}>
-                    {caption}
+                  <span style={{ color: "#FFFFFF", textShadow: "0 2px 8px rgba(1,56,99,0.48)", fontSize: 11.2, lineHeight: 1.05, fontWeight: 850 }}>
+                    {item.caption}
                   </span>
                 </div>
               ))}

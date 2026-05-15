@@ -5122,6 +5122,7 @@ function OfficialDcsPremiumTrailDetail({
   flow: (typeof officialDcsTrailFlowConfig)[OfficialDcsTrailSlug];
 }) {
   const isSugba = flow.trailSlug === "sugba-lagoon";
+  const isBucas = flow.trailSlug === "bucas-grande-sohoton";
   const ctaHref = buildOfficialDcsTrailBookingHref(flow.trailSlug);
 
   const OSP = {
@@ -5306,14 +5307,52 @@ function OfficialDcsPremiumTrailDetail({
                 padding: 16,
                 display: "grid",
                 alignContent: "space-between",
-                background:
-                  "linear-gradient(180deg, #FFFFFF 0%, #EAFBFA 100%)",
+                background: isSugba || isBucas
+                  ? "linear-gradient(180deg, rgba(1,56,99,0.08), rgba(1,56,99,0.34))"
+                  : "linear-gradient(180deg, #FFFFFF 0%, #EAFBFA 100%)",
                 border: "1px solid rgba(1,56,99,0.10)",
                 boxShadow: "0 14px 34px rgba(1,56,99,0.08)",
+                position: "relative",
+                overflow: "hidden",
               }}
             >
+              {isSugba || isBucas ? (
+                <video
+                  src={isSugba ? "/osp/spm/trails/sugba-lagoon/preview-video.mp4" : "/osp/spm/trails/bucas-grande-sohoton/preview-video.mp4"}
+                  poster={isSugba ? "/osp/spm/trails/sugba-lagoon/lagoon.png" : "/osp/spm/trails/bucas-grande-sohoton/route.png"}
+                  muted
+                  playsInline
+                  controls
+                  preload="metadata"
+                  aria-label={isSugba ? "Sugba Lagoon route preview video" : "Bucas Grande / Sohoton route preview video"}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+              ) : null}
+
+              {isSugba || isBucas ? (
+                <div
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "linear-gradient(180deg, rgba(1,56,99,0.04), rgba(1,56,99,0.64))",
+                    pointerEvents: "none",
+                  }}
+                />
+              ) : null}
+
               <div
                 style={{
+                  position: "relative",
+                  zIndex: 2,
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "flex-start",
@@ -5328,7 +5367,7 @@ function OfficialDcsPremiumTrailDetail({
                     gap: 8,
                     borderRadius: 999,
                     padding: "7px 10px",
-                    background: "#FFFFFF",
+                    background: "rgba(255,255,255,0.94)",
                     border: "1px solid rgba(5,150,165,0.18)",
                     color: OSP.teal,
                     fontSize: 10,
@@ -5354,15 +5393,21 @@ function OfficialDcsPremiumTrailDetail({
                     boxShadow: "0 10px 24px rgba(243,174,38,0.24)",
                   }}
                 >
-                  ▶
+                  ?
                 </div>
               </div>
 
-              <div>
+              <div
+                style={{
+                  position: "relative",
+                  zIndex: 2,
+                }}
+              >
                 <h2
                   style={{
                     margin: 0,
-                    color: OSP.deepNavy,
+                    color: isSugba || isBucas ? "#FFFFFF" : OSP.deepNavy,
+                    textShadow: isSugba || isBucas ? "0 3px 14px rgba(1,56,99,0.42)" : "none",
                     fontSize: 26,
                     lineHeight: 1,
                     fontWeight: 760,
@@ -5374,17 +5419,17 @@ function OfficialDcsPremiumTrailDetail({
                 <p
                   style={{
                     margin: "8px 0 0",
-                    color: OSP.slate,
+                    color: isSugba || isBucas ? "rgba(255,255,255,0.88)" : OSP.slate,
+                    textShadow: isSugba || isBucas ? "0 2px 10px rgba(1,56,99,0.40)" : "none",
                     fontSize: 13.2,
                     lineHeight: 1.34,
                     maxWidth: 320,
                   }}
                 >
-                  
+                  {content.mediaBody}
                 </p>
               </div>
             </div>
-
             <div
               aria-label="Compact trail photo previews"
               style={{
@@ -5393,44 +5438,91 @@ function OfficialDcsPremiumTrailDetail({
                 gap: 8,
               }}
             >
-              {[
-                ["Photo 01", isSugba ? "Access" : "Route"],
-                ["Photo 02", isSugba ? "Lagoon" : "Operator"],
-                ["Photo 03", isSugba ? "Support" : "Access"],
-              ].map(([label, caption]) => (
+              {(
+                isSugba
+                  ? [
+                      {
+                        label: "Photo 01",
+                        caption: "Access",
+                        image: "/osp/spm/trails/sugba-lagoon/access.png",
+                      },
+                      {
+                        label: "Photo 02",
+                        caption: "Lagoon",
+                        image: "/osp/spm/trails/sugba-lagoon/lagoon.png",
+                      },
+                      {
+                        label: "Photo 03",
+                        caption: "Support",
+                        image: "/osp/spm/trails/sugba-lagoon/support.png",
+                      },
+                    ]
+                  : isBucas
+                    ? [
+                        {
+                          label: "Photo 01",
+                          caption: "Route",
+                          image: "/osp/spm/trails/bucas-grande-sohoton/route.png",
+                        },
+                        {
+                          label: "Photo 02",
+                          caption: "Operator",
+                          image: "/osp/spm/trails/bucas-grande-sohoton/operator.png",
+                        },
+                        {
+                          label: "Photo 03",
+                          caption: "Access",
+                          image: "/osp/spm/trails/bucas-grande-sohoton/access.png",
+                        },
+                      ]
+                    : [
+                          { label: "Photo 01", caption: "Route" },
+                          { label: "Photo 02", caption: "Operator" },
+                          { label: "Photo 03", caption: "Access" },
+                        ]
+              ).map((item) => (
                 <div
-                  key={label}
+                  key={item.label}
                   style={{
                     minHeight: 78,
                     borderRadius: 17,
                     padding: 9,
                     display: "grid",
                     alignContent: "space-between",
-                    background: "#FFFFFF",
-                    border: "1px solid rgba(1,56,99,0.10)",
-                    boxShadow: "0 10px 24px rgba(1,56,99,0.06)",
+                    background: item.image
+                      ? `linear-gradient(180deg, rgba(1,56,99,0.04), rgba(1,56,99,0.62)), url(${item.image}) center/cover`
+                      : "#FFFFFF",
+                    border: item.image
+                      ? "1px solid rgba(255,255,255,0.72)"
+                      : "1px solid rgba(1,56,99,0.10)",
+                    boxShadow: item.image
+                      ? "0 12px 26px rgba(1,56,99,0.14)"
+                      : "0 10px 24px rgba(1,56,99,0.06)",
+                    overflow: "hidden",
                   }}
                 >
                   <span
                     style={{
-                      color: OSP.teal,
+                      color: item.image ? "rgba(255,255,255,0.88)" : OSP.teal,
+                      textShadow: item.image ? "0 2px 8px rgba(1,56,99,0.42)" : "none",
                       fontSize: 8.6,
                       fontWeight: 900,
                       letterSpacing: "0.1em",
                       textTransform: "uppercase",
                     }}
                   >
-                    {label}
+                    {item.label}
                   </span>
                   <span
                     style={{
-                      color: OSP.deepNavy,
+                      color: item.image ? "#FFFFFF" : OSP.deepNavy,
+                      textShadow: item.image ? "0 2px 8px rgba(1,56,99,0.48)" : "none",
                       fontSize: 11.2,
                       lineHeight: 1.05,
                       fontWeight: 850,
                     }}
                   >
-                    {caption}
+                    {item.caption}
                   </span>
                 </div>
               ))}
@@ -6217,9 +6309,21 @@ const islandHoppingStopMapHref = {
 
 
 const islandHoppingMedia = [
-  { label: "Boat route", hint: "Video slot" },
-  { label: "Daku lunch", hint: "Photo" },
-  { label: "Sandbar", hint: "Photo" },
+  {
+    label: "Boat Route",
+    hint: "Photo 01",
+    image: "/osp/spm/trails/island-hopping/boat-route.png",
+  },
+  {
+    label: "Daku Launch",
+    hint: "Photo 02",
+    image: "/osp/spm/trails/island-hopping/daku-launch.png",
+  },
+  {
+    label: "Sand Bar",
+    hint: "Photo 03",
+    image: "/osp/spm/trails/island-hopping/sand-bar.png",
+  },
 ];
 
 const islandHoppingConfidence = [
@@ -6559,18 +6663,20 @@ function IslandHoppingCommercialTemplate() {
                   minHeight: 56,
                   borderRadius: 17,
                   background:
-                    "linear-gradient(145deg, rgba(5,150,165,0.17), rgba(243,174,38,0.12))",
-                  border: "1px solid rgba(1,56,99,0.08)",
+                    `linear-gradient(180deg, rgba(1,56,99,0.04), rgba(1,56,99,0.62)), url(${item.image}) center/cover`,
+                  border: "1px solid rgba(255,255,255,0.72)",
                   padding: 8,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
+                  overflow: "hidden",
+                  boxShadow: "0 12px 26px rgba(1,56,99,0.14)",
                 }}
               >
-                <span style={{ color: OSP.slate, fontSize: 8.5, fontWeight: 850, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+                <span style={{ color: "rgba(255,255,255,0.88)", textShadow: "0 2px 8px rgba(1,56,99,0.42)", fontSize: 8.5, fontWeight: 850, letterSpacing: "0.08em", textTransform: "uppercase" }}>
                   {item.hint}
                 </span>
-                <strong style={{ color: OSP.navy, fontSize: 10.6, lineHeight: 1, fontWeight: 880 }}>
+                <strong style={{ color: "#FFFFFF", textShadow: "0 2px 8px rgba(1,56,99,0.48)", fontSize: 10.6, lineHeight: 1, fontWeight: 880 }}>
                   {item.label}
                 </strong>
               </div>

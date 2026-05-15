@@ -22,16 +22,19 @@ const heroStats = [
     label: "Saved Trails",
     value: "3",
     icon: "▰",
+    image: "/osp/spm/trails/return-traveler-continuity/saved-trails.png",
   },
   {
     label: "Verified Stamps",
     value: "7",
     icon: "✦",
+    image: "/osp/spm/trails/return-traveler-continuity/verified-stamps.png",
   },
   {
     label: "Next Return",
     value: "Planned",
     icon: "✈",
+    image: "/osp/spm/trails/return-traveler-continuity/next-returned-planned.png",
   },
 ] as const;
 
@@ -353,10 +356,12 @@ export default function ReturnTravelerContinuityPage() {
                   padding: 9,
                   display: "grid",
                   alignContent: "space-between",
-                  background: item.label === "Next Return" ? "#FFF8E7" : "#F4FCFA",
-                  border: `1px solid ${OSP.line}`,
-                  boxShadow: "0 8px 18px rgba(1,56,99,0.055)",
+                  background:
+                    `linear-gradient(180deg, rgba(1,56,99,0.06), rgba(1,56,99,0.70)), url(${item.image}) center/cover`,
+                  border: "1px solid rgba(255,255,255,0.72)",
+                  boxShadow: "0 12px 28px rgba(1,56,99,0.16)",
                   minWidth: 0,
+                  overflow: "hidden",
                 }}
               >
                 <span
@@ -365,7 +370,8 @@ export default function ReturnTravelerContinuityPage() {
                     alignItems: "center",
                     justifyContent: "space-between",
                     gap: 7,
-                    color: OSP.teal,
+                    color: "rgba(255,255,255,0.92)",
+                    textShadow: "0 2px 8px rgba(1,56,99,0.42)",
                   }}
                 >
                   <span
@@ -385,13 +391,14 @@ export default function ReturnTravelerContinuityPage() {
                   >
                     {item.icon}
                   </span>
-                  <span style={{ color: OSP.teal, fontSize: 13, fontWeight: 950 }}>›</span>
+                  <span style={{ color: "rgba(255,255,255,0.92)", textShadow: "0 2px 8px rgba(1,56,99,0.42)", fontSize: 13, fontWeight: 950 }}>›</span>
                 </span>
                 <span>
                   <span
                     style={{
                       display: "block",
-                      color: OSP.teal,
+                      color: "rgba(255,255,255,0.88)",
+                      textShadow: "0 2px 8px rgba(1,56,99,0.42)",
                       fontSize: 8,
                       lineHeight: 1,
                       fontWeight: 930,
@@ -405,7 +412,8 @@ export default function ReturnTravelerContinuityPage() {
                     style={{
                       display: "block",
                       marginTop: 4,
-                      color: OSP.deepNavy,
+                      color: "#FFFFFF",
+                      textShadow: "0 2px 10px rgba(1,56,99,0.52)",
                       fontSize: item.value === "Planned" ? 13 : 18,
                       lineHeight: 1,
                       fontWeight: 920,
