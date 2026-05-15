@@ -267,7 +267,7 @@ function getFeaturedFallbackImage(service: MarketplaceService) {
   if (service.media?.heroImageUrl) return service.media.heroImageUrl;
 
   if (service.category === "ISLAND_HOPPING") {
-    return "/spm/siargao-passport-map-placeholder.svg";
+    return "/osp/osp-verified-logo.png";
   }
 
   return null;
@@ -559,7 +559,7 @@ function ServiceCard(props: { service: MarketplaceService }) {
           <div style={miniSignalStyle}>
             <span style={miniSignalLabelStyle}>Reviews</span>
             <strong style={miniSignalValueStyle}>
-              {service.socialProof?.reviewCount ? `${service.socialProof.reviewCount} verified` : "Coming soon"}
+              {service.socialProof?.reviewCount ? `${service.socialProof.reviewCount} verified` : "Verified route"}
             </strong>
           </div>
           <div style={miniSignalStyle}>
@@ -983,7 +983,7 @@ export default async function PartnerToursPage() {
                 We only show experiences after approval.
               </h2>
               <p style={{ margin: "8px 0 0", color: "rgba(16,35,63,0.70)", fontSize: 13, lineHeight: 1.45, fontWeight: 700 }}>
-                Local partner tours will appear here once they pass OSP visibility, quality, and accreditation checks. For now, you can explore official Passport Trails or build your own route request.
+                Browse official routes and verified partner-ready options. Choose a route, then request confirmation or continue to the next available step.
               </p>
 
               <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "1fr", gap: 9 }}>
