@@ -976,16 +976,28 @@ function SearchRow({
               key={option.value}
               href={q ? `${option.href}?q=${encodeURIComponent(q)}` : option.href}
               style={{
+                position: "relative",
+                zIndex: 5,
                 flex: "0 0 auto",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 40,
+                minWidth: option.label === "All" ? 48 : 58,
                 borderRadius: 999,
-                padding: "8px 11px",
+                padding: "10px 14px",
                 background: active ? "#013863" : "#ffffff",
                 color: active ? "#ffffff" : "#50668B",
                 border: active ? "1px solid #013863" : "1px solid rgba(5,150,165,0.14)",
                 textDecoration: "none",
-                fontSize: 10.6,
+                fontSize: 11,
                 fontWeight: 900,
-                boxShadow: active ? "0 12px 22px rgba(1,56,99,0.18)" : premiumCardShadow.flat,
+                letterSpacing: "0.01em",
+                lineHeight: 1,
+                whiteSpace: "nowrap",
+                cursor: "pointer",
+                boxShadow: active ? "0 12px 24px rgba(1,56,99,0.18)" : premiumCardShadow.flat,
+                pointerEvents: "auto",
                 ...premiumTapStyle,
               }}
             >
