@@ -1,4 +1,4 @@
-import UniversalTravelerBottomTabBar from "../../../../src/components/traveler/UniversalTravelerBottomTabBar";
+import SpmTravelerBottomTabBar from "../../../../src/components/traveler/SpmTravelerBottomTabBar";
 import Link from "next/link";
 
 function buildHref(pathname: string, params: Record<string, string>) {
@@ -570,7 +570,7 @@ export default function FoodWellnessOfficialTrailPage() {
         <div aria-hidden="true" style={{ height: 118 }} />
       </div>
 
-      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
+      <SpmTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }

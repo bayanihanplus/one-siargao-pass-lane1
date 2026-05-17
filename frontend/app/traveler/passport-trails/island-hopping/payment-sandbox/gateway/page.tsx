@@ -1,5 +1,5 @@
 import Link from "next/link";
-import UniversalTravelerBottomTabBar from "../../../../../../src/components/traveler/UniversalTravelerBottomTabBar";
+import SpmTravelerBottomTabBar from "../../../../../../src/components/traveler/SpmTravelerBottomTabBar";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -143,7 +143,7 @@ export default function IslandHoppingTemporarySandboxGatewayPage({ searchParams 
           Authorize Sandbox Payment
         </Link>
       </section>
-      <UniversalTravelerBottomTabBar />
+      <SpmTravelerBottomTabBar />
     </main>
   );
 }

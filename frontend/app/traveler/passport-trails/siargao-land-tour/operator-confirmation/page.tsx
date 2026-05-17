@@ -1,4 +1,4 @@
-import UniversalTravelerBottomTabBar from "../../../../../src/components/traveler/UniversalTravelerBottomTabBar";
+import SpmTravelerBottomTabBar from "../../../../../src/components/traveler/SpmTravelerBottomTabBar";
 import {
   OfficialTrailLightHeaderCard,
   OfficialTrailStateChips,
@@ -231,7 +231,7 @@ export default function LandTourOperatorConfirmationPage({
         </section>
       </div>
 
-      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
+      <SpmTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }

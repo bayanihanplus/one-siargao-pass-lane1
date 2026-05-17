@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import UniversalTravelerBottomTabBar from "../../../../../src/components/traveler/UniversalTravelerBottomTabBar";
+import SpmTravelerBottomTabBar from "../../../../../src/components/traveler/SpmTravelerBottomTabBar";
 import PassportMapShortcut from "../../../../../src/components/traveler/PassportMapShortcut";
 
 const DRAFT_STORAGE_KEY = "osp-spm-diy-passport-trail-draft-v1";
@@ -761,7 +761,7 @@ export default function DiyTrailSummaryPage() {
         title="Optional map check"
         body="Use the map only if you need location context. The main next step is request and payment readiness."
       />
-      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
+      <SpmTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }

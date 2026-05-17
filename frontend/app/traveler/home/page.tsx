@@ -3041,27 +3041,7 @@ export default async function TravelerHomePage() {
             </div>
           </div>
         </section>
-
-        <section
-          style={{
-            width: "100%",
-            maxWidth: 430,
-            margin: "0 auto 14px",
-            borderRadius: 18,
-            background: "#e0f2fe",
-            border: "1px solid #bae6fd",
-            padding: 14,
-            color: "#475569",
-            fontSize: 14,
-            lineHeight: 1.4,
-            fontWeight: 700,
-            boxSizing: "border-box",
-          }}
-        >
-          Start your OSP access first, then your pass, trip records, payment status, and QR actions will unlock after setup.
-        </section>
-
-        <TravelerHomeQuickAccessGrid />
+<TravelerHomeQuickAccessGrid />
 
         <section style={{ width: "100%", maxWidth: 430, margin: "0 auto 14px" }}>
           <h2 style={{ margin: "0 0 10px", fontSize: 18, color: "#19305a" }}>
@@ -3135,89 +3115,7 @@ export default async function TravelerHomePage() {
           </div>
         </section>
 
-        <nav
-          style={{
-            width: "100%",
-            maxWidth: 430,
-            margin: "0 auto",
-            border: "1px solid #dbe8ef",
-            borderRadius: 26,
-            background: "#ffffff",
-            padding: "10px 12px 12px",
-            boxShadow: "0 14px 36px rgba(15,23,42,0.08)",
-            boxSizing: "border-box",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "center" }}>
-            <TravelerBottomNavLink
-              href="/traveler/home"
-              label={t(dictionary, "traveler.bottomTab.home", "Home")}
-              active
-              icon={
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
-                  <path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-8.5Z" stroke="currentColor" strokeWidth="1.9" strokeLinejoin="round" />
-                </svg>
-              }
-            />
-
-            <TravelerBottomNavLink
-              href="/traveler/passport-trails"
-              label={t(dictionary, "traveler.bottomTab.trails", "Trails")}
-              icon={
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
-                  <rect x="5" y="4" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="1.9" />
-                  <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
-                </svg>
-              }
-            />
-
-            <a
-              href="/traveler/pass"
-              aria-label="Open OSP QR"
-              style={{
-                width: 66,
-                height: 66,
-                marginTop: -24,
-                borderRadius: 999,
-                background: "#24bfd1",
-                color: "#ffffff",
-                border: "6px solid #ffffff",
-                boxShadow: "0 12px 28px rgba(36,191,209,0.35)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                textDecoration: "none",
-                flex: "0 0 auto",
-              }}
-            >
-              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true">
-                <path d="M4 4h6v6H4V4ZM14 4h6v6h-6V4ZM4 14h6v6H4v-6ZM14 14h2v2h-2v-2ZM18 14h2v6h-6v-2h4v-4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-              </svg>
-            </a>
-
-            <TravelerBottomNavLink
-              href="/traveler/explore"
-              label={t(dictionary, "traveler.bottomTab.explore", "Explore")}
-              icon={
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
-                  <rect x="3" y="6" width="18" height="12" rx="2.5" stroke="currentColor" strokeWidth="1.9" />
-                  <path d="M3 10h18M7 15h4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
-                </svg>
-              }
-            />
-
-            <TravelerBottomNavLink
-              href="/traveler/settings"
-              label={t(dictionary, "traveler.bottomTab.profile", "Profile")}
-              icon={
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
-                  <circle cx="12" cy="8" r="3.5" stroke="currentColor" strokeWidth="1.9" />
-                  <path d="M5 20c1.2-3.5 3.5-5.2 7-5.2s5.8 1.7 7 5.2" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
-                </svg>
-              }
-            />
-          </div>
-        </nav>
+        <UniversalTravelerBottomTabBar activeTab="home" fixed />
 
       </main>
     );

@@ -276,9 +276,9 @@ export default function Cloud9AccessBookingPage() {
             <div
               style={{
                 marginTop: 12,
-                borderRadius: 24,
+                borderRadius: 22,
                 background: "#F9FEFE",
-                border: "1px solid rgba(1,56,99,0.08)",
+                border: "1px solid rgba(1,56,99,0.075)",
                 padding: 14,
                 display: "grid",
                 gap: 13,
@@ -291,7 +291,7 @@ export default function Cloud9AccessBookingPage() {
                       display: "block",
                       color: colors.deep,
                       fontSize: 17,
-                      fontWeight: 950,
+                      fontWeight: 900,
                       letterSpacing: "-0.03em",
                     }}
                   >
@@ -338,7 +338,7 @@ export default function Cloud9AccessBookingPage() {
                       placeItems: "center",
                       color: colors.deep,
                       fontSize: 20,
-                      fontWeight: 950,
+                      fontWeight: 900,
                     }}
                   >
                     {pax}
@@ -390,7 +390,7 @@ export default function Cloud9AccessBookingPage() {
                 marginTop: 12,
                 borderRadius: 22,
                 background: "#F9FEFE",
-                border: "1px solid rgba(1,56,99,0.08)",
+                border: "1px solid rgba(1,56,99,0.075)",
                 padding: 13,
                 display: "grid",
                 gap: 8,
@@ -400,7 +400,7 @@ export default function Cloud9AccessBookingPage() {
                 style={{
                   color: colors.deep,
                   fontSize: 14,
-                  fontWeight: 950,
+                  fontWeight: 900,
                   letterSpacing: "-0.02em",
                 }}
               >
@@ -465,7 +465,7 @@ export default function Cloud9AccessBookingPage() {
                         color: active ? colors.tealDark : colors.deep,
                         fontSize: 12.5,
                         lineHeight: 1.1,
-                        fontWeight: 950,
+                        fontWeight: 900,
                       }}
                     >
                       {item}
@@ -516,7 +516,7 @@ export default function Cloud9AccessBookingPage() {
                         color: active ? colors.tealDark : colors.deep,
                         fontSize: 12.5,
                         lineHeight: 1.08,
-                        fontWeight: 950,
+                        fontWeight: 900,
                       }}
                     >
                       {rate.label}
@@ -577,7 +577,7 @@ export default function Cloud9AccessBookingPage() {
                     display: "block",
                     color: colors.deep,
                     fontSize: 17,
-                    fontWeight: 950,
+                    fontWeight: 900,
                     letterSpacing: "-0.03em",
                   }}
                 >
@@ -603,7 +603,7 @@ export default function Cloud9AccessBookingPage() {
                   fontSize: 46,
                   lineHeight: 0.9,
                   letterSpacing: "-0.075em",
-                  fontWeight: 950,
+                  fontWeight: 900,
                 }}
               >
                 {formatMoney(standardAmount)}
@@ -614,7 +614,7 @@ export default function Cloud9AccessBookingPage() {
           <section
             style={{
               marginTop: 14,
-              borderRadius: 24,
+              borderRadius: 22,
               background: "rgba(234,251,250,0.68)",
               border: "1px solid rgba(5,150,165,0.14)",
               padding: 14,
@@ -694,7 +694,7 @@ function TopBar() {
           border: "1px solid rgba(1,56,99,0.10)",
           color: colors.tealDark,
           fontSize: 12.5,
-          fontWeight: 950,
+          fontWeight: 900,
           boxShadow: "0 12px 26px rgba(1,56,99,0.06)",
         }}
       >
@@ -746,7 +746,7 @@ function BottomActionBar({ paymentHref, amount, onPrepareBackendPayment, isPrepa
             color: colors.white,
             textDecoration: "none",
             fontSize: 14.5,
-            fontWeight: 950,
+            fontWeight: 900,
             boxShadow: "0 18px 40px rgba(5,150,165,0.28)",
             border: "0",
             cursor: isPreparingBackendIntent ? "wait" : "pointer",
@@ -771,7 +771,7 @@ function BottomActionBar({ paymentHref, amount, onPrepareBackendPayment, isPrepa
             border: "1px solid rgba(243,174,38,0.34)",
             textDecoration: "none",
             fontSize: 13,
-            fontWeight: 950,
+            fontWeight: 900,
           }}
         >
           Back to Cloud 9 Access
@@ -785,7 +785,7 @@ const eyebrow = {
   margin: 0,
   color: colors.tealDark,
   fontSize: 10.5,
-  fontWeight: 950,
+  fontWeight: 900,
   letterSpacing: "0.14em",
   textTransform: "uppercase" as const,
 };
@@ -807,6 +807,6 @@ const stepperButtonStyle = {
   background: "#EAFBFA",
   color: colors.tealDark,
   fontSize: 22,
-  fontWeight: 950,
+  fontWeight: 900,
   cursor: "pointer",
 };

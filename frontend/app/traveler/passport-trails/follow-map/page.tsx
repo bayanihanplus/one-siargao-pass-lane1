@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import UniversalTravelerBottomTabBar from "../../../../src/components/traveler/UniversalTravelerBottomTabBar";
+import SpmTravelerBottomTabBar from "../../../../src/components/traveler/SpmTravelerBottomTabBar";
 
 const OSP = {
   navy: "#013863",
@@ -593,7 +593,7 @@ export default function FollowMapPage() {
       </div>
 
       <div aria-hidden="true" style={{ height: 118 }} />
-      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
+      <SpmTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }
