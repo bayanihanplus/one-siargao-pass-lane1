@@ -6320,3 +6320,4927 @@ html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"] > sp
   color: #013863 !important;
 }
 
+/* OSP_PUBLIC_COMMERCIAL_GATEWAY_02_START */
+.osp-commercial-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 2%, rgba(5, 150, 165, 0.10), transparent 28%),
+    linear-gradient(180deg, #f4fcfa 0%, #f7fefc 100%);
+  color: #0b2442;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.osp-commercial-page * {
+  box-sizing: border-box;
+}
+
+.osp-premium-hero-shell {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(5, 150, 165, 0.34), transparent 34%),
+    radial-gradient(circle at 82% 10%, rgba(243, 174, 38, 0.16), transparent 28%),
+    linear-gradient(135deg, #013863 0%, #022b4d 100%);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.osp-premium-hero-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.32;
+  background:
+    linear-gradient(120deg, transparent 0 42%, rgba(255, 255, 255, 0.11) 43%, transparent 54%),
+    radial-gradient(circle at 52% 104%, rgba(234, 251, 250, 0.20), transparent 42%);
+  pointer-events: none;
+}
+
+.osp-commercial-header {
+  position: relative;
+  z-index: 40;
+  width: min(100% - 32px, 1220px);
+  margin: 0 auto;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-top: 0;
+  border-radius: 0 0 24px 24px;
+  background: rgba(1, 56, 99, 0.72);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
+}
+
+.osp-commercial-brand,
+.osp-commercial-nav a,
+.osp-commercial-login,
+.osp-commercial-pass-button,
+.osp-trail-card,
+.osp-explore-card,
+.osp-partner-role,
+.osp-commercial-footer a {
+  text-decoration: none;
+}
+
+.osp-commercial-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.osp-commercial-brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 28% 22%, rgba(255, 255, 255, 0.42), transparent 30%),
+    linear-gradient(135deg, #f9b320, #0596a5);
+  color: #022b4d;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
+}
+
+.osp-commercial-brand strong {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.osp-commercial-brand small {
+  display: block;
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.osp-commercial-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.osp-commercial-nav a {
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 12px;
+  font-weight: 820;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.osp-commercial-header-actions,
+.osp-commercial-final-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.osp-commercial-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border-radius: 999px;
+  padding: 0 16px;
+  color: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.osp-commercial-pass-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border-radius: 999px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 211, 107, 0.64);
+  background:
+    linear-gradient(135deg, rgba(255, 211, 107, 0.98), rgba(243, 174, 38, 0.98) 46%, rgba(5, 150, 165, 0.96));
+  color: #062640;
+  font-size: 13px;
+  font-weight: 950;
+  box-shadow: 0 16px 38px rgba(243, 174, 38, 0.25);
+}
+
+.osp-commercial-hero {
+  position: relative;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.osp-commercial-hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(5, 150, 165, 0.24), transparent 32%),
+    radial-gradient(circle at 82% 20%, rgba(243, 174, 38, 0.13), transparent 30%);
+}
+
+.osp-commercial-hero-inner {
+  position: relative;
+  z-index: 2;
+  width: min(100% - 32px, 1220px);
+  margin: 0 auto;
+  padding: 72px 0 86px;
+  display: grid;
+  gap: 26px;
+}
+
+.osp-commercial-hero-copy {
+  max-width: 860px;
+}
+
+.osp-commercial-eyebrow {
+  margin: 0 0 14px;
+  color: rgba(255, 211, 107, 0.94);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.osp-commercial-hero-copy h1 {
+  margin: 0;
+  max-width: 820px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(42px, 6vw, 66px);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  font-weight: 820;
+}
+
+.osp-commercial-hero-copy p {
+  margin: 22px 0 0;
+  max-width: 760px;
+  color: rgba(255, 255, 255, 0.73);
+  font-size: clamp(16px, 1.65vw, 19px);
+  line-height: 1.68;
+  font-weight: 520;
+}
+
+.osp-commercial-trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.osp-commercial-trust-row span {
+  border: 1px solid rgba(255, 255, 255, 0.19);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.80);
+  border-radius: 999px;
+  padding: 8px 11px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.osp-booking-card {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background:
+    linear-gradient(180deg, rgba(247, 254, 252, 0.98), rgba(234, 251, 250, 0.94));
+  border-radius: 34px;
+  padding: 20px;
+  box-shadow:
+    0 34px 90px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  color: #0b2442;
+}
+
+.osp-booking-card-top {
+  padding: 2px 4px 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.osp-booking-card-top span {
+  color: #047886;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.osp-booking-card-top strong {
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+.osp-booking-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 14px;
+  scrollbar-width: none;
+}
+
+.osp-booking-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.osp-booking-tabs button {
+  appearance: none;
+  border: 1px solid rgba(1, 56, 99, 0.12);
+  background: rgba(255, 255, 255, 0.75);
+  color: rgba(11, 36, 66, 0.72);
+  border-radius: 999px;
+  padding: 10px 13px;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.osp-booking-tabs button.is-active {
+  border-color: rgba(5, 150, 165, 0.44);
+  background: linear-gradient(135deg, rgba(5, 150, 165, 0.15), rgba(243, 174, 38, 0.18));
+  color: #013863;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.72);
+}
+
+.osp-booking-tab-short {
+  display: none;
+}
+
+.osp-booking-form {
+  display: grid;
+  grid-template-columns: minmax(340px, 1.65fr) minmax(160px, 0.74fr) minmax(128px, 0.52fr) minmax(170px, 0.78fr) minmax(164px, auto);
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.osp-booking-field {
+  display: grid;
+  gap: 7px;
+  border: 1px solid rgba(1, 56, 99, 0.12);
+  background: rgba(255, 255, 255, 0.84);
+  border-radius: 18px;
+  padding: 12px 14px;
+  min-height: 74px;
+}
+
+.osp-booking-field span {
+  color: rgba(11, 36, 66, 0.58);
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.osp-booking-field input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #0b2442;
+  font-size: 14px;
+  font-weight: 800;
+  min-width: 0;
+}
+
+.osp-booking-submit {
+  min-height: 74px;
+  border: 0;
+  border-radius: 20px;
+  padding: 0 22px;
+  background: linear-gradient(135deg, #ffd36b, #f3ae26 52%, #0596a5);
+  color: #062640;
+  font-size: 14px;
+  font-weight: 950;
+  cursor: pointer;
+  box-shadow: 0 16px 34px rgba(243, 174, 38, 0.28);
+  white-space: nowrap;
+}
+
+.osp-booking-auth-note {
+  margin-top: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  color: rgba(11, 36, 66, 0.64);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.osp-booking-auth-note a {
+  color: #013863;
+  font-weight: 950;
+}
+
+.osp-commercial-section {
+  width: min(100% - 32px, 1220px);
+  margin: 0 auto;
+  padding: 76px 0;
+}
+
+.osp-section-heading {
+  max-width: 800px;
+}
+
+.osp-section-heading p {
+  margin: 0 0 10px;
+  color: #0596a5;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.osp-section-heading h2 {
+  margin: 0;
+  color: #08233d;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  font-weight: 810;
+}
+
+.osp-section-heading span {
+  display: block;
+  margin-top: 16px;
+  color: rgba(80, 102, 139, 0.96);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 520;
+}
+
+.osp-ecosystem-panel {
+  margin-top: 30px;
+  border: 1px solid rgba(5, 150, 165, 0.16);
+  background:
+    radial-gradient(circle at 18% 10%, rgba(5, 150, 165, 0.10), transparent 32%),
+    radial-gradient(circle at 84% 20%, rgba(243, 174, 38, 0.12), transparent 32%),
+    rgba(255, 255, 255, 0.78);
+  border-radius: 36px;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: minmax(260px, 0.74fr) 1fr;
+  gap: 18px;
+  box-shadow: 0 24px 70px rgba(1, 56, 99, 0.09);
+}
+
+.osp-ecosystem-core {
+  position: relative;
+  overflow: hidden;
+  min-height: 380px;
+  border-radius: 30px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 211, 107, 0.28), transparent 24%),
+    linear-gradient(145deg, #013863, #0596a5);
+  color: rgba(255, 255, 255, 0.90);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.24);
+}
+
+.osp-pass-glow {
+  position: absolute;
+  width: 190px;
+  height: 190px;
+  border-radius: 999px;
+  top: 34px;
+  right: 28px;
+  background:
+    radial-gradient(circle, rgba(255, 211, 107, 0.44), rgba(5, 150, 165, 0.16) 55%, transparent 70%);
+}
+
+.osp-ecosystem-core strong {
+  position: relative;
+  display: block;
+  font-size: 42px;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.osp-ecosystem-core small {
+  position: relative;
+  display: block;
+  margin-top: 12px;
+  max-width: 280px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 700;
+}
+
+.osp-ecosystem-groups {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.osp-ecosystem-group,
+.osp-step-card,
+.osp-explore-card,
+.osp-partner-role {
+  border: 1px solid rgba(1, 56, 99, 0.10);
+  background: rgba(255, 255, 255, 0.84);
+  border-radius: 24px;
+  box-shadow: 0 18px 48px rgba(1, 56, 99, 0.06);
+}
+
+.osp-ecosystem-group {
+  padding: 18px;
+}
+
+.osp-ecosystem-group h3 {
+  margin: 0 0 14px;
+  color: #08233d;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+}
+
+.osp-ecosystem-group div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.osp-ecosystem-group span {
+  border: 1px solid rgba(5, 150, 165, 0.13);
+  background: rgba(234, 251, 250, 0.72);
+  color: rgba(11, 36, 66, 0.76);
+  border-radius: 999px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 840;
+}
+
+.osp-step-grid,
+.osp-trail-grid,
+.osp-explore-grid,
+.osp-partner-grid {
+  margin-top: 30px;
+  display: grid;
+  gap: 16px;
+}
+
+.osp-step-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.osp-step-card {
+  padding: 22px;
+  min-height: 198px;
+}
+
+.osp-step-card span {
+  display: inline-flex;
+  margin-bottom: 18px;
+  color: #013863;
+  background: rgba(243, 174, 38, 0.20);
+  border: 1px solid rgba(243, 174, 38, 0.25);
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.osp-step-card h3,
+.osp-trail-card h3,
+.osp-explore-card strong {
+  margin: 0;
+  color: #08233d;
+  font-size: 18px;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
+}
+
+.osp-step-card p,
+.osp-trail-card p,
+.osp-explore-card p {
+  margin: 10px 0 0;
+  color: rgba(80, 102, 139, 0.96);
+  font-size: 14px;
+  line-height: 1.62;
+}
+
+.osp-trails-section {
+  width: 100%;
+  max-width: none;
+  padding: 82px max(16px, calc((100vw - 1220px) / 2));
+  background:
+    radial-gradient(circle at 18% 12%, rgba(5, 150, 165, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(234, 251, 250, 0.76));
+}
+
+.osp-trail-grid {
+  grid-template-columns: 1.2fr repeat(3, 1fr);
+}
+
+.osp-trail-card {
+  min-height: 260px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(5, 150, 165, 0.32), transparent 34%),
+    linear-gradient(180deg, rgba(1, 56, 99, 0.42), rgba(1, 56, 99, 0.94)),
+    #013863;
+  box-shadow: 0 22px 58px rgba(1, 56, 99, 0.16);
+}
+
+.osp-trail-card:first-child {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 211, 107, 0.28), transparent 30%),
+    radial-gradient(circle at 86% 18%, rgba(5, 150, 165, 0.32), transparent 34%),
+    linear-gradient(180deg, rgba(1, 56, 99, 0.30), rgba(1, 56, 99, 0.92)),
+    #013863;
+}
+
+.osp-trail-card span {
+  align-self: flex-start;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 211, 107, 0.36);
+  background: rgba(255, 211, 107, 0.14);
+  color: rgba(255, 211, 107, 0.96);
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.osp-trail-card h3 {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.osp-trail-card p {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.osp-explore-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.osp-explore-card {
+  padding: 22px;
+  min-height: 178px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(5, 150, 165, 0.09), transparent 36%),
+    rgba(255, 255, 255, 0.86);
+}
+
+.osp-explore-card span {
+  display: inline-flex;
+  margin-top: 18px;
+  color: #013863;
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.osp-boarding-section {
+  padding-top: 86px;
+}
+
+.osp-boarding-panel {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background:
+    radial-gradient(circle at 12% 10%, rgba(5, 150, 165, 0.24), transparent 34%),
+    radial-gradient(circle at 90% 16%, rgba(243, 174, 38, 0.18), transparent 28%),
+    linear-gradient(135deg, #013863, #022b4d);
+  color: rgba(255, 255, 255, 0.88);
+  border-radius: 36px;
+  padding: 34px;
+  display: grid;
+  grid-template-columns: 0.92fr 1fr;
+  gap: 28px;
+  box-shadow: 0 26px 78px rgba(1, 56, 99, 0.20);
+}
+
+.osp-boarding-panel h2,
+.osp-commercial-final h2 {
+  margin: 0;
+  max-width: 680px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(28px, 4vw, 46px);
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+  font-weight: 810;
+}
+
+.osp-boarding-panel p:not(.osp-commercial-eyebrow) {
+  margin: 16px 0 22px;
+  max-width: 640px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+  line-height: 1.72;
+}
+
+.osp-boarding-flow {
+  display: grid;
+  gap: 10px;
+}
+
+.osp-boarding-flow span {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.osp-partner-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.osp-partner-role {
+  display: grid;
+  place-items: center;
+  min-height: 86px;
+  color: #013863;
+  font-weight: 900;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(5, 150, 165, 0.08), transparent 36%),
+    rgba(255, 255, 255, 0.86);
+}
+
+.osp-partner-cta {
+  margin-top: 22px;
+}
+
+.osp-commercial-final {
+  width: min(100% - 32px, 1220px);
+  margin: 30px auto 0;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background:
+    radial-gradient(circle at 80% 0%, rgba(243, 174, 38, 0.22), transparent 32%),
+    radial-gradient(circle at 18% 0%, rgba(5, 150, 165, 0.24), transparent 34%),
+    linear-gradient(135deg, #022b4d, #013863);
+  border-radius: 36px;
+  padding: 34px;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+}
+
+.osp-commercial-footer {
+  margin-top: 56px;
+  padding: 34px max(22px, calc((100vw - 1220px) / 2));
+  background: #022b4d;
+  color: rgba(255, 255, 255, 0.72);
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.osp-commercial-footer strong {
+  display: block;
+  color: rgba(255, 255, 255, 0.90);
+  margin-bottom: 8px;
+}
+
+.osp-commercial-footer span {
+  display: block;
+  max-width: 520px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.osp-commercial-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.osp-commercial-footer a {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+@media (max-width: 1120px) {
+  .osp-commercial-header {
+    flex-wrap: wrap;
+  }
+
+  .osp-commercial-nav {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .osp-booking-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .osp-booking-field-wide {
+    grid-column: 1 / -1;
+  }
+
+  .osp-booking-submit {
+    grid-column: 1 / -1;
+  }
+
+  .osp-ecosystem-panel,
+  .osp-step-grid,
+  .osp-trail-grid,
+  .osp-explore-grid,
+  .osp-boarding-panel {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .osp-ecosystem-core {
+    grid-column: 1 / -1;
+  }
+
+  .osp-commercial-final,
+  .osp-commercial-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .osp-commercial-footer nav {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-commercial-page {
+    background:
+      radial-gradient(circle at 18% 0%, rgba(5, 150, 165, 0.16), transparent 34%),
+      linear-gradient(180deg, #022B4D 0%, #013863 12%, #f4fcfa 12%, #f7fefc 100%);
+  }
+
+  .osp-commercial-header {
+    width: calc(100% - 24px);
+    padding: 12px 12px;
+  }
+
+  .osp-commercial-brand small,
+  .osp-commercial-nav {
+    display: none;
+  }
+
+  .osp-commercial-brand strong {
+    font-size: 11px;
+  }
+
+  .osp-commercial-brand-mark {
+    width: 38px;
+    height: 38px;
+  }
+
+  .osp-commercial-header-actions {
+    gap: 7px;
+  }
+
+  .osp-commercial-login,
+  .osp-commercial-pass-button {
+    min-height: 38px;
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+  .osp-commercial-hero-inner {
+    width: calc(100% - 28px);
+    padding: 42px 0 54px;
+    gap: 22px;
+  }
+
+  .osp-commercial-hero-copy h1 {
+    font-size: 38px;
+  }
+
+  .osp-commercial-hero-copy p {
+    font-size: 15.5px;
+  }
+
+  .osp-booking-card {
+    border-radius: 28px;
+    padding: 14px;
+  }
+
+  .osp-booking-card-top {
+    display: block;
+  }
+
+  .osp-booking-card-top strong {
+    display: block;
+    margin-top: 7px;
+  }
+
+  .osp-booking-tab-full {
+    display: none;
+  }
+
+  .osp-booking-tab-short {
+    display: inline;
+  }
+
+  .osp-booking-form {
+    grid-template-columns: 1fr;
+  }
+
+  .osp-booking-field-wide,
+  .osp-booking-submit {
+    grid-column: auto;
+  }
+
+  .osp-commercial-section,
+  .osp-trails-section {
+    width: calc(100% - 28px);
+    padding: 54px 0;
+  }
+
+  .osp-ecosystem-panel,
+  .osp-ecosystem-groups,
+  .osp-step-grid,
+  .osp-trail-grid,
+  .osp-explore-grid,
+  .osp-partner-grid,
+  .osp-boarding-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .osp-ecosystem-core {
+    min-height: 260px;
+  }
+
+  .osp-commercial-final {
+    width: calc(100% - 28px);
+    padding: 24px;
+  }
+
+  .osp-commercial-final-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .osp-commercial-final-actions a {
+    width: 100%;
+  }
+}
+/* OSP_PUBLIC_COMMERCIAL_GATEWAY_02_END */
+
+/* OSP_PUBLIC_HOME_CONTRAST_COMMERCIAL_POLISH_04_START */
+
+/*
+  OSP 04 ship-polish:
+  - Route-scoped contrast enforcement
+  - Commercial hero refinement
+  - Dark-panel readability
+  - Booking auth-note artifact hardening
+  - CTA gradient refinement
+  - No route/auth/schema/payment changes
+*/
+
+.osp-premium-v3 .osp-premium-hero-shell .osp-commercial-hero-copy h1,
+.osp-premium-v3 .osp-premium-hero-shell .osp-commercial-hero-copy h1 *,
+.osp-premium-v3 .osp-boarding-panel h2,
+.osp-premium-v3 .osp-boarding-panel h2 *,
+.osp-premium-v3 .osp-commercial-final h2,
+.osp-premium-v3 .osp-commercial-final h2 *,
+.osp-premium-v3 .osp-trail-card h3,
+.osp-premium-v3 .osp-trail-card h3 * {
+  color: rgba(255, 255, 255, 0.94) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.94) !important;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.18);
+}
+
+.osp-premium-v3 .osp-premium-hero-shell .osp-commercial-hero-copy p,
+.osp-premium-v3 .osp-premium-hero-shell .osp-commercial-hero-copy p *,
+.osp-premium-v3 .osp-boarding-panel p:not(.osp-commercial-eyebrow),
+.osp-premium-v3 .osp-boarding-panel p:not(.osp-commercial-eyebrow) *,
+.osp-premium-v3 .osp-commercial-final p:not(.osp-commercial-eyebrow),
+.osp-premium-v3 .osp-commercial-final p:not(.osp-commercial-eyebrow) *,
+.osp-premium-v3 .osp-trail-card p,
+.osp-premium-v3 .osp-trail-card p * {
+  color: rgba(255, 255, 255, 0.76) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.76) !important;
+}
+
+.osp-premium-v3 .osp-premium-hero-shell .osp-commercial-eyebrow,
+.osp-premium-v3 .osp-boarding-panel .osp-commercial-eyebrow,
+.osp-premium-v3 .osp-commercial-final .osp-commercial-eyebrow {
+  color: rgba(255, 211, 107, 0.98) !important;
+  -webkit-text-fill-color: rgba(255, 211, 107, 0.98) !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-inner {
+  padding-top: 58px !important;
+  padding-bottom: 72px !important;
+  gap: 22px !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-copy {
+  max-width: 900px !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-copy h1 {
+  max-width: 850px !important;
+  font-weight: 780 !important;
+  letter-spacing: -0.052em !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-copy p {
+  max-width: 780px !important;
+  font-weight: 560 !important;
+}
+
+.osp-premium-v3 .osp-booking-card {
+  margin-top: 4px !important;
+  border-color: rgba(255, 255, 255, 0.54) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(5, 150, 165, 0.10), transparent 30%),
+    linear-gradient(180deg, rgba(250, 255, 253, 0.99), rgba(234, 251, 250, 0.96)) !important;
+  box-shadow:
+    0 36px 95px rgba(0, 0, 0, 0.34),
+    0 10px 24px rgba(5, 150, 165, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+}
+
+.osp-premium-v3 .osp-booking-tabs button {
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.osp-premium-v3 .osp-booking-tabs button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(5, 150, 165, 0.26);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.osp-premium-v3 .osp-booking-tabs button.is-active {
+  background:
+    linear-gradient(135deg, rgba(255, 211, 107, 0.26), rgba(5, 150, 165, 0.16)) !important;
+  border-color: rgba(243, 174, 38, 0.36) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.78),
+    0 10px 24px rgba(5, 150, 165, 0.08) !important;
+}
+
+.osp-premium-v3 .osp-booking-field {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(247, 254, 252, 0.92)) !important;
+  border-color: rgba(1, 56, 99, 0.13) !important;
+}
+
+.osp-premium-v3 .osp-booking-field:focus-within {
+  border-color: rgba(5, 150, 165, 0.42) !important;
+  box-shadow: 0 0 0 4px rgba(5, 150, 165, 0.09) !important;
+}
+
+.osp-premium-v3 .osp-booking-submit,
+.osp-premium-v3 .osp-commercial-pass-button {
+  background:
+    linear-gradient(135deg, #ffd36b 0%, #f3ae26 42%, #0596a5 100%) !important;
+  color: #062640 !important;
+  -webkit-text-fill-color: #062640 !important;
+  border-color: rgba(255, 211, 107, 0.66) !important;
+  box-shadow:
+    0 18px 42px rgba(243, 174, 38, 0.24),
+    0 8px 20px rgba(5, 150, 165, 0.12) !important;
+}
+
+.osp-premium-v3 .osp-booking-submit:hover,
+.osp-premium-v3 .osp-commercial-pass-button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 22px 48px rgba(243, 174, 38, 0.30),
+    0 10px 24px rgba(5, 150, 165, 0.16) !important;
+}
+
+.osp-premium-v3 .osp-booking-auth-note,
+.osp-premium-v3 .osp-booking-auth-note * {
+  line-height: 1.35 !important;
+}
+
+.osp-premium-v3 .osp-booking-auth-note a {
+  display: inline !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #013863 !important;
+  -webkit-text-fill-color: #013863 !important;
+  vertical-align: baseline !important;
+}
+
+.osp-premium-v3 .osp-booking-auth-note a::before,
+.osp-premium-v3 .osp-booking-auth-note a::after,
+.osp-premium-v3 .osp-booking-auth-note::before,
+.osp-premium-v3 .osp-booking-auth-note::after {
+  content: none !important;
+  display: none !important;
+}
+
+.osp-premium-v3 .osp-trail-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.osp-premium-v3 .osp-trail-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(2, 43, 77, 0.06), rgba(2, 43, 77, 0.44) 42%, rgba(2, 43, 77, 0.86) 100%);
+  pointer-events: none;
+}
+
+.osp-premium-v3 .osp-trail-card span,
+.osp-premium-v3 .osp-trail-card h3,
+.osp-premium-v3 .osp-trail-card p {
+  position: relative;
+  z-index: 1;
+}
+
+.osp-premium-v3 .osp-trail-card h3 {
+  font-size: 19px !important;
+  line-height: 1.15 !important;
+}
+
+.osp-premium-v3 .osp-trail-card p {
+  font-weight: 560 !important;
+}
+
+.osp-premium-v3 .osp-boarding-panel {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(5, 150, 165, 0.28), transparent 34%),
+    radial-gradient(circle at 90% 16%, rgba(243, 174, 38, 0.20), transparent 28%),
+    linear-gradient(135deg, #013863, #022b4d) !important;
+}
+
+.osp-premium-v3 .osp-commercial-final {
+  background:
+    radial-gradient(circle at 80% 0%, rgba(243, 174, 38, 0.24), transparent 32%),
+    radial-gradient(circle at 18% 0%, rgba(5, 150, 165, 0.28), transparent 34%),
+    linear-gradient(135deg, #022b4d, #013863) !important;
+}
+
+.osp-premium-v3 .osp-commercial-final h2 {
+  max-width: 720px !important;
+}
+
+.osp-premium-v3 .osp-commercial-final .osp-commercial-login {
+  color: rgba(255, 255, 255, 0.88) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.88) !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+}
+
+.osp-premium-v3 .osp-section-heading h2 {
+  font-weight: 760 !important;
+}
+
+.osp-premium-v3 .osp-step-card,
+.osp-premium-v3 .osp-explore-card,
+.osp-premium-v3 .osp-partner-role,
+.osp-premium-v3 .osp-ecosystem-group {
+  box-shadow:
+    0 18px 48px rgba(1, 56, 99, 0.055),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+}
+
+.osp-premium-v3 .osp-commercial-footer {
+  margin-top: 58px !important;
+}
+
+@media (max-width: 1120px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    padding-top: 46px !important;
+  }
+
+  .osp-premium-v3 .osp-booking-form {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .osp-premium-v3 .osp-booking-field-wide,
+  .osp-premium-v3 .osp-booking-submit {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-premium-v3 .osp-commercial-hero-copy h1 {
+    font-size: 38px !important;
+    line-height: 1.02 !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    padding-top: 36px !important;
+    padding-bottom: 48px !important;
+  }
+
+  .osp-premium-v3 .osp-booking-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  .osp-premium-v3 .osp-booking-field-wide,
+  .osp-premium-v3 .osp-booking-submit {
+    grid-column: auto !important;
+  }
+}
+/* OSP_PUBLIC_HOME_CONTRAST_COMMERCIAL_POLISH_04_END */
+
+/* OSP_PUBLIC_HOME_PREMIUM_IDENTITY_DETAILING_05_START */
+.osp-premium-v3 .osp-premium-hero-shell {
+  isolation: isolate;
+}
+
+.osp-premium-v3 .osp-premium-hero-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.18;
+  background-image:
+    linear-gradient(115deg, transparent 0 22%, rgba(255,255,255,0.045) 22.2%, transparent 22.8%, transparent 47%, rgba(255,255,255,0.04) 47.2%, transparent 48%),
+    radial-gradient(circle at 72% 56%, rgba(255, 211, 107, 0.12), transparent 18%),
+    radial-gradient(circle at 18% 68%, rgba(5, 150, 165, 0.16), transparent 24%);
+  pointer-events: none;
+}
+
+.osp-premium-v3 .osp-commercial-header,
+.osp-premium-v3 .osp-commercial-hero {
+  position: relative;
+  z-index: 2;
+}
+
+.osp-premium-v3 .osp-hero-identity-strip {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.35fr) auto 1fr;
+  gap: 14px;
+  align-items: center;
+  max-width: 760px;
+}
+
+.osp-premium-v3 .osp-mini-pass-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 104px;
+  border-radius: 24px;
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255,255,255,0.18), transparent 32%),
+    linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.20), 0 20px 50px rgba(0,0,0,0.16);
+}
+
+.osp-premium-v3 .osp-mini-pass-card::after {
+  content: "";
+  position: absolute;
+  width: 112px;
+  height: 112px;
+  right: -28px;
+  top: -30px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255,211,107,0.28), rgba(5,150,165,0.08) 62%, transparent 70%);
+}
+
+.osp-premium-v3 .osp-mini-pass-card span {
+  position: relative;
+  display: block;
+  color: rgba(255,211,107,0.96);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.18em;
+}
+
+.osp-premium-v3 .osp-mini-pass-card strong {
+  position: relative;
+  display: block;
+  margin-top: 12px;
+  color: rgba(255,255,255,0.94);
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.osp-premium-v3 .osp-mini-pass-card small {
+  position: relative;
+  display: block;
+  margin-top: 8px;
+  color: rgba(255,255,255,0.66);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.osp-premium-v3 .osp-mini-qr-mark {
+  width: 82px;
+  height: 82px;
+  border-radius: 22px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  border: 1px solid rgba(255,255,255,0.20);
+  background: rgba(255,255,255,0.08);
+}
+
+.osp-premium-v3 .osp-mini-qr-mark i {
+  display: block;
+  border-radius: 5px;
+  background: rgba(255,255,255,0.78);
+}
+
+.osp-premium-v3 .osp-mini-qr-mark i:nth-child(2),
+.osp-premium-v3 .osp-mini-qr-mark i:nth-child(5),
+.osp-premium-v3 .osp-mini-qr-mark i:nth-child(8) {
+  background: rgba(255,211,107,0.78);
+}
+
+.osp-premium-v3 .osp-mini-route-line {
+  position: relative;
+  min-height: 72px;
+}
+
+.osp-premium-v3 .osp-mini-route-line::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, rgba(255,255,255,0.20), rgba(255,211,107,0.58), rgba(5,150,165,0.40));
+}
+
+.osp-premium-v3 .osp-mini-route-line span {
+  position: absolute;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: #ffd36b;
+  box-shadow: 0 0 0 6px rgba(255,211,107,0.11);
+}
+
+.osp-premium-v3 .osp-mini-route-line span:nth-child(1) { left: 4%; }
+.osp-premium-v3 .osp-mini-route-line span:nth-child(2) { left: 48%; background: #ffffff; }
+.osp-premium-v3 .osp-mini-route-line span:nth-child(3) { right: 4%; background: #0596a5; }
+
+.osp-premium-v3 .osp-booking-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.osp-premium-v3 .osp-booking-card::after {
+  content: "QR";
+  position: absolute;
+  right: 24px;
+  bottom: 20px;
+  color: rgba(1,56,99,0.035);
+  font-size: 94px;
+  font-weight: 950;
+  letter-spacing: -0.08em;
+  pointer-events: none;
+}
+
+.osp-premium-v3 .osp-booking-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.osp-premium-v3 .osp-booking-pass-cue {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(5,150,165,0.14);
+  background: rgba(255,255,255,0.58);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.osp-premium-v3 .osp-booking-pass-cue span {
+  color: #047886;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.osp-premium-v3 .osp-booking-pass-cue strong {
+  color: rgba(11,36,66,0.70);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: right;
+}
+
+.osp-premium-v3 .osp-ecosystem-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.osp-premium-v3 .osp-ecosystem-panel::before {
+  content: "";
+  position: absolute;
+  inset: 24px;
+  border-radius: 28px;
+  opacity: 0.30;
+  background:
+    linear-gradient(90deg, transparent 0 30%, rgba(5,150,165,0.18) 30.2%, transparent 31%, transparent 64%, rgba(243,174,38,0.16) 64.2%, transparent 65%),
+    linear-gradient(0deg, transparent 0 46%, rgba(1,56,99,0.08) 46.2%, transparent 47%);
+  pointer-events: none;
+}
+
+.osp-premium-v3 .osp-ecosystem-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.osp-premium-v3 .osp-ecosystem-core::after {
+  content: "";
+  position: absolute;
+  right: 26px;
+  top: 28px;
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
+  opacity: 0.50;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.68) 18%, transparent 18% 38%, rgba(255,255,255,0.68) 38% 56%, transparent 56%),
+    linear-gradient(0deg, rgba(255,255,255,0.68) 18%, transparent 18% 38%, rgba(255,255,255,0.68) 38% 56%, transparent 56%);
+  background-size: 28px 28px;
+  filter: blur(0.2px);
+}
+
+.osp-premium-v3 .osp-trail-card .osp-trail-stamp-mark {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 1;
+  width: 74px;
+  height: 74px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed rgba(255,211,107,0.44);
+  color: rgba(255,211,107,0.74);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 950;
+  letter-spacing: 0.10em;
+  transform: rotate(10deg);
+  background: rgba(255,211,107,0.06);
+}
+
+.osp-premium-v3 .osp-trail-card::after {
+  content: "";
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  top: 96px;
+  height: 1px;
+  opacity: 0.45;
+  background: linear-gradient(90deg, rgba(255,211,107,0.0), rgba(255,211,107,0.42), rgba(5,150,165,0.08));
+}
+
+.osp-premium-v3 .osp-boarding-panel {
+  align-items: stretch;
+}
+
+.osp-premium-v3 .osp-boarding-identity {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.58fr) 1fr;
+  gap: 12px;
+}
+
+.osp-premium-v3 .osp-boarding-proof-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 100%;
+  border-radius: 26px;
+  padding: 22px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255,211,107,0.18), transparent 30%),
+    rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.osp-premium-v3 .osp-boarding-proof-card > span {
+  color: rgba(255,211,107,0.96);
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.osp-premium-v3 .osp-boarding-proof-card strong {
+  display: block;
+  margin-top: 10px;
+  color: rgba(255,255,255,0.94);
+  font-size: 22px;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.osp-premium-v3 .osp-boarding-proof-card small {
+  display: block;
+  margin-top: 9px;
+  color: rgba(255,255,255,0.68);
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.osp-premium-v3 .osp-boarding-qr-mini {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.16);
+}
+
+.osp-premium-v3 .osp-boarding-qr-mini i {
+  border-radius: 5px;
+  background: rgba(255,255,255,0.76);
+}
+
+.osp-premium-v3 .osp-footer-brand-block {
+  display: grid;
+  gap: 6px;
+}
+
+.osp-premium-v3 .osp-footer-contact {
+  margin-top: 14px;
+  display: grid;
+  gap: 4px;
+  color: rgba(255,255,255,0.62);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.osp-premium-v3 .osp-footer-contact a {
+  color: rgba(255,211,107,0.92);
+  font-weight: 850;
+}
+
+@media (max-width: 1120px) {
+  .osp-premium-v3 .osp-hero-identity-strip,
+  .osp-premium-v3 .osp-boarding-identity {
+    grid-template-columns: 1fr;
+  }
+
+  .osp-premium-v3 .osp-mini-route-line {
+    display: none;
+  }
+
+  .osp-premium-v3 .osp-booking-pass-cue {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .osp-premium-v3 .osp-booking-pass-cue strong {
+    text-align: left;
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-premium-v3 .osp-hero-identity-strip {
+    display: none;
+  }
+
+  .osp-premium-v3 .osp-booking-card::after {
+    display: none;
+  }
+
+  .osp-premium-v3 .osp-trail-card .osp-trail-stamp-mark {
+    width: 58px;
+    height: 58px;
+    font-size: 9px;
+  }
+}
+/* OSP_PUBLIC_HOME_PREMIUM_IDENTITY_DETAILING_05_END */
+
+/* OSP_PUBLIC_HOME_FINAL_COMPOSITION_QA_06_START */
+
+/*
+  OSP 06 final composition QA:
+  - Reduce hero clutter while preserving OSP identity motifs elsewhere
+  - Tighten section rhythm
+  - Polish Explore and Partner cards
+  - Improve footer grouping
+  - Keep all architecture, routes, copy doctrine, and commercial flow intact
+*/
+
+.osp-premium-v3 .osp-hero-identity-strip {
+  display: none !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-inner {
+  padding-top: 52px !important;
+  padding-bottom: 64px !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-copy {
+  margin-bottom: 2px !important;
+}
+
+.osp-premium-v3 .osp-commercial-trust-row {
+  margin-top: -2px !important;
+  margin-bottom: 4px !important;
+}
+
+.osp-premium-v3 .osp-booking-card {
+  margin-top: 8px !important;
+  border-radius: 32px !important;
+}
+
+.osp-premium-v3 .osp-booking-pass-cue {
+  padding: 10px 13px !important;
+  margin-top: 10px !important;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.68), rgba(234,251,250,0.52)) !important;
+}
+
+.osp-premium-v3 .osp-commercial-section {
+  padding-top: 64px !important;
+  padding-bottom: 64px !important;
+}
+
+.osp-premium-v3 .osp-connected-section {
+  padding-top: 58px !important;
+}
+
+.osp-premium-v3 .osp-trails-section {
+  padding-top: 70px !important;
+  padding-bottom: 72px !important;
+}
+
+.osp-premium-v3 .osp-explore-section {
+  padding-top: 66px !important;
+  padding-bottom: 52px !important;
+}
+
+.osp-premium-v3 .osp-boarding-section {
+  padding-top: 44px !important;
+  padding-bottom: 58px !important;
+}
+
+.osp-premium-v3 .osp-partner-section {
+  padding-top: 54px !important;
+  padding-bottom: 54px !important;
+}
+
+.osp-premium-v3 .osp-section-heading {
+  max-width: 820px !important;
+}
+
+.osp-premium-v3 .osp-section-heading h2 {
+  letter-spacing: -0.048em !important;
+}
+
+.osp-premium-v3 .osp-section-heading span {
+  max-width: 760px !important;
+}
+
+.osp-premium-v3 .osp-step-grid,
+.osp-premium-v3 .osp-trail-grid,
+.osp-premium-v3 .osp-explore-grid,
+.osp-premium-v3 .osp-partner-grid {
+  margin-top: 26px !important;
+}
+
+.osp-premium-v3 .osp-step-card {
+  min-height: 178px !important;
+}
+
+.osp-premium-v3 .osp-trail-card {
+  min-height: 246px !important;
+}
+
+.osp-premium-v3 .osp-trail-card .osp-trail-stamp-mark {
+  opacity: 0.72 !important;
+}
+
+.osp-premium-v3 .osp-explore-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 166px !important;
+  padding: 24px !important;
+  border-color: rgba(5, 150, 165, 0.13) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(5,150,165,0.075), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(250,255,253,0.84)) !important;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.osp-premium-v3 .osp-explore-card::before {
+  content: "";
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  top: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(243,174,38,0.0), rgba(243,174,38,0.68), rgba(5,150,165,0.52), rgba(243,174,38,0.0));
+  opacity: 0.55;
+}
+
+.osp-premium-v3 .osp-explore-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(5, 150, 165, 0.24) !important;
+  box-shadow:
+    0 22px 56px rgba(1, 56, 99, 0.075),
+    inset 0 1px 0 rgba(255,255,255,0.82) !important;
+}
+
+.osp-premium-v3 .osp-explore-card strong {
+  display: block;
+  font-size: 17px !important;
+}
+
+.osp-premium-v3 .osp-explore-card span {
+  position: relative;
+  margin-top: 16px !important;
+  padding-right: 18px;
+}
+
+.osp-premium-v3 .osp-explore-card span::after {
+  content: "→";
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.osp-premium-v3 .osp-boarding-panel {
+  padding: 32px !important;
+  border-radius: 34px !important;
+}
+
+.osp-premium-v3 .osp-boarding-proof-card {
+  min-height: 248px !important;
+}
+
+.osp-premium-v3 .osp-boarding-flow span {
+  min-height: 54px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.osp-premium-v3 .osp-partner-grid {
+  margin-top: 28px !important;
+}
+
+.osp-premium-v3 .osp-partner-role {
+  position: relative;
+  min-height: 82px !important;
+  overflow: hidden;
+  border-color: rgba(5,150,165,0.13) !important;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(5,150,165,0.08), transparent 36%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(250,255,253,0.86)) !important;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.osp-premium-v3 .osp-partner-role::before {
+  content: "";
+  position: absolute;
+  width: 42px;
+  height: 42px;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 16px;
+  opacity: 0.10;
+  background: linear-gradient(135deg, #ffd36b, #0596a5);
+}
+
+.osp-premium-v3 .osp-partner-role:hover {
+  transform: translateY(-2px);
+  border-color: rgba(5,150,165,0.24) !important;
+  box-shadow:
+    0 20px 52px rgba(1,56,99,0.075),
+    inset 0 1px 0 rgba(255,255,255,0.82) !important;
+}
+
+.osp-premium-v3 .osp-commercial-final {
+  margin-top: 18px !important;
+  margin-bottom: 34px !important;
+  min-height: 220px !important;
+}
+
+.osp-premium-v3 .osp-commercial-final h2 {
+  font-size: clamp(30px, 3.5vw, 44px) !important;
+  line-height: 1.08 !important;
+}
+
+.osp-premium-v3 .osp-commercial-final-actions {
+  flex-shrink: 0 !important;
+}
+
+.osp-premium-v3 .osp-commercial-footer {
+  margin-top: 0 !important;
+  padding-top: 36px !important;
+  padding-bottom: 36px !important;
+  border-top: 1px solid rgba(255,255,255,0.10);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(5,150,165,0.16), transparent 32%),
+    linear-gradient(180deg, #022b4d, #012943) !important;
+}
+
+.osp-premium-v3 .osp-footer-brand-block {
+  max-width: 560px !important;
+}
+
+.osp-premium-v3 .osp-footer-contact {
+  margin-top: 16px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid rgba(255,255,255,0.10);
+}
+
+.osp-premium-v3 .osp-commercial-footer nav {
+  align-content: flex-start !important;
+  gap: 10px 14px !important;
+}
+
+.osp-premium-v3 .osp-commercial-footer nav a {
+  opacity: 0.86;
+}
+
+.osp-premium-v3 .osp-commercial-footer nav a:hover {
+  opacity: 1;
+  color: rgba(255,211,107,0.92) !important;
+}
+
+@media (max-width: 1120px) {
+  .osp-premium-v3 .osp-commercial-section,
+  .osp-premium-v3 .osp-trails-section {
+    padding-top: 54px !important;
+    padding-bottom: 54px !important;
+  }
+
+  .osp-premium-v3 .osp-boarding-section {
+    padding-top: 38px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-final {
+    min-height: auto !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    padding-top: 34px !important;
+    padding-bottom: 42px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-section,
+  .osp-premium-v3 .osp-trails-section {
+    padding-top: 44px !important;
+    padding-bottom: 44px !important;
+  }
+
+  .osp-premium-v3 .osp-booking-pass-cue {
+    display: none !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card {
+    min-height: 224px !important;
+  }
+
+  .osp-premium-v3 .osp-boarding-panel {
+    padding: 24px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-final {
+    margin-bottom: 24px !important;
+  }
+}
+/* OSP_PUBLIC_HOME_FINAL_COMPOSITION_QA_06_END */
+
+/* OSP_PUBLIC_HOME_VERTICAL_RHYTHM_RESTORE_07_START */
+
+/*
+  OSP 07 vertical rhythm restore:
+  - Restore calmer premium spacing from the better previous build
+  - Preserve 04 contrast, 05 identity details, and 06 card polish
+  - Reduce over-compression from 06
+  - Keep hero, booking card, route logic, and public copy unchanged
+*/
+
+/* HERO: keep strong and compact, but not squeezed */
+.osp-premium-v3 .osp-commercial-hero-inner {
+  padding-top: 64px !important;
+  padding-bottom: 76px !important;
+  gap: 24px !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-copy {
+  margin-bottom: 4px !important;
+}
+
+.osp-premium-v3 .osp-commercial-trust-row {
+  margin-top: 0 !important;
+  margin-bottom: 8px !important;
+}
+
+.osp-premium-v3 .osp-booking-card {
+  margin-top: 12px !important;
+}
+
+/* KEEP HERO IDENTITY STRIP OFF — booking card and ecosystem already carry identity */
+.osp-premium-v3 .osp-hero-identity-strip {
+  display: none !important;
+}
+
+/* GLOBAL SECTION RHYTHM: undo overly tight 06 compression */
+.osp-premium-v3 .osp-commercial-section {
+  padding-top: 76px !important;
+  padding-bottom: 78px !important;
+}
+
+.osp-premium-v3 .osp-connected-section {
+  padding-top: 72px !important;
+  padding-bottom: 80px !important;
+}
+
+.osp-premium-v3 .osp-trails-section {
+  padding-top: 86px !important;
+  padding-bottom: 90px !important;
+}
+
+.osp-premium-v3 .osp-explore-section {
+  padding-top: 88px !important;
+  padding-bottom: 82px !important;
+}
+
+.osp-premium-v3 .osp-boarding-section {
+  padding-top: 78px !important;
+  padding-bottom: 86px !important;
+}
+
+.osp-premium-v3 .osp-partner-section {
+  padding-top: 78px !important;
+  padding-bottom: 80px !important;
+}
+
+/* INTERNAL SECTION SPACING */
+.osp-premium-v3 .osp-section-heading {
+  margin-bottom: 0 !important;
+}
+
+.osp-premium-v3 .osp-section-heading span {
+  margin-top: 18px !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-panel {
+  margin-top: 34px !important;
+}
+
+.osp-premium-v3 .osp-step-grid,
+.osp-premium-v3 .osp-trail-grid,
+.osp-premium-v3 .osp-explore-grid,
+.osp-premium-v3 .osp-partner-grid {
+  margin-top: 34px !important;
+}
+
+/* ECOSYSTEM: slightly calmer, not dashboard-compressed */
+.osp-premium-v3 .osp-ecosystem-panel {
+  padding: 28px !important;
+  border-radius: 38px !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core {
+  min-height: 360px !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-group {
+  min-height: 128px !important;
+}
+
+/* HOW IT WORKS: give steps room to breathe */
+.osp-premium-v3 .osp-step-card {
+  min-height: 194px !important;
+  padding: 24px !important;
+}
+
+/* PASSPORT TRAILS: keep identity, reduce repeated stamp dominance */
+.osp-premium-v3 .osp-trail-card {
+  min-height: 266px !important;
+}
+
+.osp-premium-v3 .osp-trail-card .osp-trail-stamp-mark {
+  width: 62px !important;
+  height: 62px !important;
+  top: 20px !important;
+  right: 20px !important;
+  opacity: 0.52 !important;
+  font-size: 9px !important;
+}
+
+.osp-premium-v3 .osp-trail-card:hover .osp-trail-stamp-mark {
+  opacity: 0.68 !important;
+}
+
+/* EXPLORE: keep 06 polish, restore more premium breathing */
+.osp-premium-v3 .osp-explore-card {
+  min-height: 178px !important;
+  padding: 25px !important;
+}
+
+.osp-premium-v3 .osp-explore-grid {
+  gap: 20px !important;
+}
+
+/* ONLINE BOARDING: major feature must feel isolated, not rushed */
+.osp-premium-v3 .osp-boarding-panel {
+  margin-top: 0 !important;
+  padding: 36px !important;
+  border-radius: 36px !important;
+}
+
+.osp-premium-v3 .osp-boarding-proof-card {
+  min-height: 270px !important;
+}
+
+.osp-premium-v3 .osp-boarding-flow {
+  gap: 12px !important;
+}
+
+.osp-premium-v3 .osp-boarding-flow span {
+  min-height: 58px !important;
+}
+
+/* LOCAL PARTNERS: calm partner pathway, not cramped button grid */
+.osp-premium-v3 .osp-partner-grid {
+  margin-top: 34px !important;
+  gap: 18px !important;
+}
+
+.osp-premium-v3 .osp-partner-role {
+  min-height: 88px !important;
+}
+
+/* FINAL CTA: keep strong, restore better separation from footer */
+.osp-premium-v3 .osp-commercial-final {
+  margin-top: 34px !important;
+  margin-bottom: 48px !important;
+  min-height: 230px !important;
+  padding: 38px !important;
+}
+
+.osp-premium-v3 .osp-commercial-final h2 {
+  max-width: 760px !important;
+}
+
+/* FOOTER: stable; no extra compression */
+.osp-premium-v3 .osp-commercial-footer {
+  padding-top: 40px !important;
+  padding-bottom: 42px !important;
+}
+
+@media (max-width: 1120px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    padding-top: 54px !important;
+    padding-bottom: 64px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-section,
+  .osp-premium-v3 .osp-trails-section {
+    padding-top: 66px !important;
+    padding-bottom: 68px !important;
+  }
+
+  .osp-premium-v3 .osp-explore-section,
+  .osp-premium-v3 .osp-boarding-section,
+  .osp-premium-v3 .osp-partner-section {
+    padding-top: 66px !important;
+    padding-bottom: 68px !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-core {
+    min-height: 320px !important;
+  }
+
+  .osp-premium-v3 .osp-boarding-proof-card {
+    min-height: 230px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-final {
+    min-height: auto !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    padding-top: 40px !important;
+    padding-bottom: 52px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-section,
+  .osp-premium-v3 .osp-trails-section,
+  .osp-premium-v3 .osp-explore-section,
+  .osp-premium-v3 .osp-boarding-section,
+  .osp-premium-v3 .osp-partner-section {
+    padding-top: 52px !important;
+    padding-bottom: 54px !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-panel,
+  .osp-premium-v3 .osp-step-grid,
+  .osp-premium-v3 .osp-trail-grid,
+  .osp-premium-v3 .osp-explore-grid,
+  .osp-premium-v3 .osp-partner-grid {
+    margin-top: 26px !important;
+  }
+
+  .osp-premium-v3 .osp-step-card {
+    min-height: 176px !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card {
+    min-height: 238px !important;
+  }
+
+  .osp-premium-v3 .osp-boarding-panel {
+    padding: 26px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-final {
+    margin-top: 24px !important;
+    margin-bottom: 30px !important;
+    padding: 26px !important;
+  }
+}
+/* OSP_PUBLIC_HOME_VERTICAL_RHYTHM_RESTORE_07_END */
+
+/* OSP_PUBLIC_HOME_SECTION_TRANSITION_CALIBRATION_08_START */
+
+/*
+  OSP 08 section transition calibration:
+  - Hero is frozen and intentionally untouched
+  - Corrects vertical gaps between story sections
+  - Keeps 04 contrast, 05 identity details, 06 card polish, and 07 restored rhythm
+  - No copy, route, DB, payment, auth, or middleware change
+*/
+
+/* HERO LOCK: keep final approved hero rhythm stable */
+.osp-premium-v3 .osp-commercial-hero-inner {
+  padding-top: 64px !important;
+  padding-bottom: 76px !important;
+  gap: 24px !important;
+}
+
+.osp-premium-v3 .osp-booking-card {
+  margin-top: 12px !important;
+}
+
+/* TRANSITION CALIBRATION: reduce dead air between chapters, not inside the hero */
+.osp-premium-v3 .osp-connected-section {
+  padding-top: 60px !important;
+  padding-bottom: 52px !important;
+}
+
+.osp-premium-v3 .osp-commercial-section:not(.osp-connected-section):not(.osp-trails-section):not(.osp-explore-section):not(.osp-boarding-section):not(.osp-partner-section) {
+  padding-top: 58px !important;
+  padding-bottom: 50px !important;
+}
+
+.osp-premium-v3 .osp-trails-section {
+  padding-top: 58px !important;
+  padding-bottom: 54px !important;
+}
+
+.osp-premium-v3 .osp-explore-section {
+  padding-top: 54px !important;
+  padding-bottom: 48px !important;
+}
+
+.osp-premium-v3 .osp-boarding-section {
+  padding-top: 48px !important;
+  padding-bottom: 56px !important;
+}
+
+.osp-premium-v3 .osp-partner-section {
+  padding-top: 52px !important;
+  padding-bottom: 54px !important;
+}
+
+/* KEEP SECTION HEADERS COMFORTABLE BUT NOT FLOATING */
+.osp-premium-v3 .osp-section-heading {
+  margin-bottom: 0 !important;
+}
+
+.osp-premium-v3 .osp-section-heading span {
+  margin-top: 14px !important;
+}
+
+/* PANEL-TO-HEADING RHYTHM */
+.osp-premium-v3 .osp-ecosystem-panel {
+  margin-top: 26px !important;
+}
+
+.osp-premium-v3 .osp-step-grid,
+.osp-premium-v3 .osp-trail-grid,
+.osp-premium-v3 .osp-explore-grid,
+.osp-premium-v3 .osp-partner-grid {
+  margin-top: 26px !important;
+}
+
+/* CONNECTED JOURNEY: reduce oversized visual block feeling without redesign */
+.osp-premium-v3 .osp-ecosystem-panel {
+  padding: 24px !important;
+  border-radius: 36px !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core {
+  min-height: 330px !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-group {
+  min-height: 118px !important;
+}
+
+/* HOW IT WORKS: preserve readable step cards but remove dead transition below */
+.osp-premium-v3 .osp-step-card {
+  min-height: 178px !important;
+  padding: 23px !important;
+}
+
+/* PASSPORT TRAILS: keep editorial feel but reduce excessive post-card air */
+.osp-premium-v3 .osp-trail-card {
+  min-height: 252px !important;
+}
+
+.osp-premium-v3 .osp-trail-card .osp-trail-stamp-mark {
+  width: 58px !important;
+  height: 58px !important;
+  top: 20px !important;
+  right: 20px !important;
+  opacity: 0.48 !important;
+  font-size: 8px !important;
+}
+
+/* EXPLORE: keep polished cards but reduce blank space before boarding */
+.osp-premium-v3 .osp-explore-card {
+  min-height: 166px !important;
+  padding: 24px !important;
+}
+
+.osp-premium-v3 .osp-explore-grid {
+  gap: 18px !important;
+}
+
+/* ONLINE BOARDING: strong major block, but no longer floating too far away */
+.osp-premium-v3 .osp-boarding-panel {
+  margin-top: 0 !important;
+  padding: 34px !important;
+  border-radius: 36px !important;
+}
+
+.osp-premium-v3 .osp-boarding-proof-card {
+  min-height: 248px !important;
+}
+
+.osp-premium-v3 .osp-boarding-flow {
+  gap: 10px !important;
+}
+
+.osp-premium-v3 .osp-boarding-flow span {
+  min-height: 54px !important;
+}
+
+/* LOCAL PARTNERS: bring final conversion sequence closer without cramping */
+.osp-premium-v3 .osp-partner-grid {
+  margin-top: 28px !important;
+  gap: 16px !important;
+}
+
+.osp-premium-v3 .osp-partner-role {
+  min-height: 82px !important;
+}
+
+/* FINAL CTA: preserve current strong state; reduce only excessive top separation */
+.osp-premium-v3 .osp-commercial-final {
+  margin-top: 26px !important;
+  margin-bottom: 42px !important;
+  min-height: 220px !important;
+  padding: 36px !important;
+}
+
+/* FOOTER: stable */
+.osp-premium-v3 .osp-commercial-footer {
+  padding-top: 38px !important;
+  padding-bottom: 40px !important;
+}
+
+/* PREVENT ACCIDENTAL SECTION GAP DRIFT FROM PREVIOUS OVERRIDE LAYERS */
+.osp-premium-v3 .osp-trails-section + .osp-explore-section,
+.osp-premium-v3 .osp-explore-section + .osp-boarding-section,
+.osp-premium-v3 .osp-boarding-section + .osp-partner-section {
+  margin-top: 0 !important;
+}
+
+@media (max-width: 1120px) {
+  .osp-premium-v3 .osp-connected-section,
+  .osp-premium-v3 .osp-commercial-section:not(.osp-connected-section):not(.osp-trails-section):not(.osp-explore-section):not(.osp-boarding-section):not(.osp-partner-section),
+  .osp-premium-v3 .osp-trails-section,
+  .osp-premium-v3 .osp-explore-section,
+  .osp-premium-v3 .osp-boarding-section,
+  .osp-premium-v3 .osp-partner-section {
+    padding-top: 50px !important;
+    padding-bottom: 50px !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-core {
+    min-height: 300px !important;
+  }
+
+  .osp-premium-v3 .osp-boarding-proof-card {
+    min-height: 220px !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-premium-v3 .osp-connected-section,
+  .osp-premium-v3 .osp-commercial-section:not(.osp-connected-section):not(.osp-trails-section):not(.osp-explore-section):not(.osp-boarding-section):not(.osp-partner-section),
+  .osp-premium-v3 .osp-trails-section,
+  .osp-premium-v3 .osp-explore-section,
+  .osp-premium-v3 .osp-boarding-section,
+  .osp-premium-v3 .osp-partner-section {
+    padding-top: 42px !important;
+    padding-bottom: 44px !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-panel,
+  .osp-premium-v3 .osp-step-grid,
+  .osp-premium-v3 .osp-trail-grid,
+  .osp-premium-v3 .osp-explore-grid,
+  .osp-premium-v3 .osp-partner-grid {
+    margin-top: 22px !important;
+  }
+
+  .osp-premium-v3 .osp-step-card {
+    min-height: 166px !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card {
+    min-height: 226px !important;
+  }
+
+  .osp-premium-v3 .osp-boarding-panel {
+    padding: 24px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-final {
+    margin-top: 22px !important;
+    margin-bottom: 28px !important;
+    padding: 26px !important;
+  }
+}
+/* OSP_PUBLIC_HOME_SECTION_TRANSITION_CALIBRATION_08_END */
+
+/* OSP_PUBLIC_HOME_HERO_AUTHORITY_09_START */
+
+/*
+  OSP 09 hero authority:
+  - First viewport must show HERO ONLY
+  - Deep navy / ocean teal shell reaches bottom of visible screen
+  - Next section must not peek above the fold on desktop
+  - Trust chips breathe below the subheading
+  - Booking card remains the commercial anchor
+  - No copy, route, DB, payment, auth, or middleware changes
+*/
+
+/* Full-screen authority hero */
+.osp-premium-v3 .osp-premium-hero-shell {
+  min-height: 100vh !important;
+  min-height: 100svh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background:
+    radial-gradient(circle at 16% 20%, rgba(5, 150, 165, 0.30), transparent 34%),
+    radial-gradient(circle at 74% 18%, rgba(255, 211, 107, 0.08), transparent 28%),
+    linear-gradient(135deg, #013863 0%, #003b66 42%, #022b4d 100%) !important;
+}
+
+/* Header stays compact; hero body owns remaining viewport */
+.osp-premium-v3 .osp-commercial-header {
+  flex: 0 0 auto !important;
+}
+
+/* Keep hero content inside first screen with stronger authority */
+.osp-premium-v3 .osp-commercial-hero {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  align-items: stretch !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-inner {
+  flex: 1 1 auto !important;
+  min-height: calc(100svh - 96px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  padding-top: clamp(42px, 5.8vh, 72px) !important;
+  padding-bottom: clamp(58px, 7.5vh, 96px) !important;
+  gap: clamp(22px, 3vh, 34px) !important;
+}
+
+/* Heading/subheading group: strong but not cramped */
+.osp-premium-v3 .osp-commercial-hero-copy {
+  margin-bottom: 0 !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-copy h1 {
+  max-width: 930px !important;
+  line-height: 0.96 !important;
+  letter-spacing: -0.065em !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-copy p {
+  max-width: 850px !important;
+  margin-top: 24px !important;
+  line-height: 1.56 !important;
+}
+
+/* Trust chips must not sit too close to subheading */
+.osp-premium-v3 .osp-commercial-trust-row {
+  margin-top: 20px !important;
+  margin-bottom: 0 !important;
+  gap: 10px !important;
+}
+
+.osp-premium-v3 .osp-commercial-trust-row span {
+  padding: 9px 14px !important;
+  min-height: 34px !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,0.115) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  color: rgba(255,255,255,0.88) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 8px 22px rgba(0,0,0,0.08);
+}
+
+/* Booking card gets deliberate separation and sits as the visual anchor */
+.osp-premium-v3 .osp-booking-card {
+  margin-top: clamp(20px, 3.2vh, 40px) !important;
+  margin-bottom: 0 !important;
+  border-radius: 34px !important;
+  box-shadow:
+    0 32px 88px rgba(0, 21, 46, 0.30),
+    0 12px 34px rgba(0, 21, 46, 0.18),
+    inset 0 1px 0 rgba(255,255,255,0.82) !important;
+}
+
+/* Keep booking card compact enough to fit inside first viewport */
+.osp-premium-v3 .osp-booking-tabs {
+  margin-top: 18px !important;
+}
+
+.osp-premium-v3 .osp-booking-grid {
+  margin-top: 16px !important;
+}
+
+.osp-premium-v3 .osp-booking-pass-cue {
+  margin-top: 10px !important;
+}
+
+/* Prevent the next section from visually peeking into first screen */
+.osp-premium-v3 .osp-connected-section {
+  padding-top: 72px !important;
+}
+
+/* Ensure there is no accidental pale band inside the hero bottom */
+.osp-premium-v3 .osp-premium-hero-shell + .osp-connected-section,
+.osp-premium-v3 .osp-premium-hero-shell + section {
+  margin-top: 0 !important;
+}
+
+/* Keep prior identity strip off */
+.osp-premium-v3 .osp-hero-identity-strip {
+  display: none !important;
+}
+
+@media (max-height: 820px) and (min-width: 900px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    justify-content: flex-start !important;
+    padding-top: 46px !important;
+    padding-bottom: 70px !important;
+    gap: 18px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-copy h1 {
+    font-size: clamp(50px, 6vw, 78px) !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-copy p {
+    margin-top: 18px !important;
+    line-height: 1.48 !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-trust-row {
+    margin-top: 16px !important;
+  }
+
+  .osp-premium-v3 .osp-booking-card {
+    margin-top: 22px !important;
+  }
+}
+
+@media (max-width: 1120px) {
+  .osp-premium-v3 .osp-premium-hero-shell {
+    min-height: auto !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    min-height: auto !important;
+    justify-content: flex-start !important;
+    padding-top: 52px !important;
+    padding-bottom: 58px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-trust-row {
+    margin-top: 18px !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    padding-top: 38px !important;
+    padding-bottom: 48px !important;
+    gap: 22px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-copy p {
+    margin-top: 18px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-trust-row {
+    margin-top: 16px !important;
+    gap: 8px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-trust-row span {
+    min-height: 32px !important;
+    padding: 8px 12px !important;
+  }
+
+  .osp-premium-v3 .osp-booking-card {
+    margin-top: 20px !important;
+  }
+}
+/* OSP_PUBLIC_HOME_HERO_AUTHORITY_09_END */
+
+/* OSP_PUBLIC_HOME_HERO_CONTAINER_LOCK_10_START */
+
+/*
+  OSP 10 hero container lock:
+  - Preserve full-height dark navy/teal hero shell from 09
+  - Restore centered premium max-width containment
+  - Prevent hero text and booking card from bleeding to screen edges
+  - Keep first viewport HERO ONLY
+  - No copy, route, DB, payment, auth, or middleware changes
+*/
+
+.osp-premium-v3 .osp-premium-hero-shell {
+  overflow-x: hidden !important;
+}
+
+/* Re-lock hero inner content to the same premium site width as the rest of the page */
+.osp-premium-v3 .osp-commercial-hero-inner {
+  width: min(100%, 1180px) !important;
+  max-width: 1180px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: clamp(22px, 4vw, 48px) !important;
+  padding-right: clamp(22px, 4vw, 48px) !important;
+  box-sizing: border-box !important;
+}
+
+/* Keep the copy block controlled and intentionally left-aligned inside the container */
+.osp-premium-v3 .osp-commercial-hero-copy {
+  width: min(100%, 900px) !important;
+  max-width: 900px !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-copy h1 {
+  width: min(100%, 880px) !important;
+  max-width: 880px !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-copy p {
+  width: min(100%, 820px) !important;
+  max-width: 820px !important;
+}
+
+/* Trust chips stay under subheading, not edge-to-edge */
+.osp-premium-v3 .osp-commercial-trust-row {
+  width: min(100%, 760px) !important;
+  max-width: 760px !important;
+}
+
+/* Booking card must remain the commercial anchor, but contained */
+.osp-premium-v3 .osp-booking-card {
+  width: 100% !important;
+  max-width: 1180px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Prevent internal booking grid from forcing overflow */
+.osp-premium-v3 .osp-booking-tabs,
+.osp-premium-v3 .osp-booking-grid,
+.osp-premium-v3 .osp-booking-auth-note,
+.osp-premium-v3 .osp-booking-pass-cue {
+  max-width: 100% !important;
+}
+
+.osp-premium-v3 .osp-booking-grid {
+  overflow: visible !important;
+}
+
+.osp-premium-v3 .osp-booking-submit {
+  min-width: 150px !important;
+}
+
+/* Keep header aligned with hero content width */
+.osp-premium-v3 .osp-commercial-header {
+  width: min(100%, 1180px) !important;
+  max-width: 1180px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Desktop wide screens: never let hero content touch the browser edge */
+@media (min-width: 1280px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+}
+
+/* Mid screens: keep booking form from becoming too wide or clipped */
+@media (max-width: 1120px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-header {
+    width: calc(100% - 32px) !important;
+    max-width: calc(100% - 32px) !important;
+  }
+
+  .osp-premium-v3 .osp-booking-card {
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-header {
+    width: calc(100% - 24px) !important;
+    max-width: calc(100% - 24px) !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-copy,
+  .osp-premium-v3 .osp-commercial-hero-copy h1,
+  .osp-premium-v3 .osp-commercial-hero-copy p,
+  .osp-premium-v3 .osp-commercial-trust-row {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .osp-premium-v3 .osp-booking-card {
+    border-radius: 26px !important;
+  }
+}
+/* OSP_PUBLIC_HOME_HERO_CONTAINER_LOCK_10_END */
+
+/* OSP_PUBLIC_HOME_HERO_FINAL_AUTHORITY_11_START */
+
+/*
+  OSP 11 final hero authority:
+  - Preserve full-height navy/teal shell
+  - Keep first viewport HERO ONLY
+  - Tighten premium vertical composition
+  - Keep hero content centered inside premium width
+  - Improve booking card authority without making it oversized
+  - No copy, route, DB, payment, auth, or middleware changes
+*/
+
+/* HERO SHELL: keep full viewport but make composition feel intentional */
+.osp-premium-v3 .osp-premium-hero-shell {
+  min-height: 100vh !important;
+  min-height: 100svh !important;
+  background:
+    radial-gradient(circle at 15% 18%, rgba(5, 150, 165, 0.34), transparent 34%),
+    radial-gradient(circle at 76% 18%, rgba(255, 211, 107, 0.075), transparent 28%),
+    radial-gradient(circle at 45% 86%, rgba(5, 150, 165, 0.11), transparent 35%),
+    linear-gradient(135deg, #013863 0%, #003b66 40%, #022b4d 100%) !important;
+}
+
+/* HERO BODY: stronger vertical command, less floaty dead air */
+.osp-premium-v3 .osp-commercial-hero {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  align-items: stretch !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-inner {
+  width: min(100%, 1180px) !important;
+  max-width: 1180px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  min-height: calc(100svh - 94px) !important;
+  padding-left: clamp(22px, 4vw, 48px) !important;
+  padding-right: clamp(22px, 4vw, 48px) !important;
+  padding-top: clamp(34px, 4.8vh, 58px) !important;
+  padding-bottom: clamp(54px, 6.8vh, 84px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* COPY: premium readable hierarchy, not oversized drift */
+.osp-premium-v3 .osp-commercial-hero-copy {
+  width: min(100%, 900px) !important;
+  max-width: 900px !important;
+  margin-bottom: 0 !important;
+}
+
+.osp-premium-v3 .osp-commercial-eyebrow {
+  margin-bottom: 14px !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-copy h1 {
+  width: min(100%, 880px) !important;
+  max-width: 880px !important;
+  font-size: clamp(54px, 5.85vw, 78px) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.062em !important;
+  font-weight: 790 !important;
+}
+
+.osp-premium-v3 .osp-commercial-hero-copy p {
+  width: min(100%, 820px) !important;
+  max-width: 820px !important;
+  margin-top: 24px !important;
+  line-height: 1.55 !important;
+  font-size: clamp(16px, 1.45vw, 19px) !important;
+}
+
+/* TRUST CHIPS: breathe below subheading; do not crowd copy */
+.osp-premium-v3 .osp-commercial-trust-row {
+  width: min(100%, 780px) !important;
+  max-width: 780px !important;
+  margin-top: 22px !important;
+  margin-bottom: 0 !important;
+  gap: 11px !important;
+}
+
+.osp-premium-v3 .osp-commercial-trust-row span {
+  min-height: 34px !important;
+  padding: 9px 15px !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.01em !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* BOOKING CARD: commercial anchor with tighter premium proportion */
+.osp-premium-v3 .osp-booking-card {
+  width: 100% !important;
+  max-width: 1120px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-top: clamp(34px, 5vh, 52px) !important;
+  padding: 18px 20px 18px !important;
+  border-radius: 32px !important;
+  border-color: rgba(255, 255, 255, 0.60) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(5, 150, 165, 0.10), transparent 32%),
+    linear-gradient(180deg, rgba(250, 255, 253, 0.99), rgba(234, 251, 250, 0.965)) !important;
+  box-shadow:
+    0 34px 92px rgba(0, 21, 46, 0.34),
+    0 14px 36px rgba(0, 21, 46, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+}
+
+/* Booking card header: cleaner two-level hierarchy */
+.osp-premium-v3 .osp-booking-card-top {
+  padding: 0 2px 14px !important;
+  align-items: flex-start !important;
+}
+
+.osp-premium-v3 .osp-booking-card-top span {
+  letter-spacing: 0.16em !important;
+}
+
+.osp-premium-v3 .osp-booking-card-top strong {
+  font-size: 17px !important;
+}
+
+/* Tabs: keep usable but more compact */
+.osp-premium-v3 .osp-booking-tabs {
+  padding: 2px 0 12px !important;
+  gap: 8px !important;
+}
+
+.osp-premium-v3 .osp-booking-tabs button {
+  min-height: 36px !important;
+  padding: 9px 14px !important;
+}
+
+/* Fields: compact, readable, travel-commerce feel */
+.osp-premium-v3 .osp-booking-form {
+  gap: 9px !important;
+}
+
+.osp-premium-v3 .osp-booking-field {
+  min-height: 68px !important;
+  padding: 11px 14px !important;
+  border-radius: 17px !important;
+}
+
+.osp-premium-v3 .osp-booking-submit {
+  min-height: 68px !important;
+  border-radius: 18px !important;
+  min-width: 148px !important;
+}
+
+/* Footer cue inside booking: keep but reduce height */
+.osp-premium-v3 .osp-booking-auth-note {
+  margin-top: 10px !important;
+  font-size: 12px !important;
+}
+
+.osp-premium-v3 .osp-booking-pass-cue {
+  margin-top: 9px !important;
+  padding: 9px 13px !important;
+  min-height: 38px !important;
+  border-radius: 16px !important;
+}
+
+.osp-premium-v3 .osp-booking-pass-cue span {
+  font-size: 10.5px !important;
+}
+
+.osp-premium-v3 .osp-booking-pass-cue strong {
+  font-size: 11.5px !important;
+}
+
+/* Prevent next section from appearing in first viewport on normal desktop */
+.osp-premium-v3 .osp-connected-section {
+  padding-top: 78px !important;
+}
+
+/* Wide desktop: keep hero centered and authoritative */
+@media (min-width: 1280px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+}
+
+/* Short laptop screens: fit first viewport without leaking the next section */
+@media (max-height: 820px) and (min-width: 900px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    justify-content: flex-start !important;
+    padding-top: 38px !important;
+    padding-bottom: 58px !important;
+    min-height: calc(100svh - 88px) !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-copy h1 {
+    font-size: clamp(50px, 5.5vw, 70px) !important;
+    line-height: 0.98 !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-copy p {
+    margin-top: 18px !important;
+    line-height: 1.46 !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-trust-row {
+    margin-top: 16px !important;
+  }
+
+  .osp-premium-v3 .osp-booking-card {
+    margin-top: 28px !important;
+    padding: 16px 18px 16px !important;
+  }
+
+  .osp-premium-v3 .osp-booking-card-top {
+    padding-bottom: 10px !important;
+  }
+
+  .osp-premium-v3 .osp-booking-tabs {
+    padding-bottom: 10px !important;
+  }
+
+  .osp-premium-v3 .osp-booking-field,
+  .osp-premium-v3 .osp-booking-submit {
+    min-height: 62px !important;
+  }
+
+  .osp-premium-v3 .osp-booking-pass-cue {
+    display: flex !important;
+  }
+}
+
+/* Tablet/mobile: do not force full-height hero; content should breathe naturally */
+@media (max-width: 1120px) {
+  .osp-premium-v3 .osp-premium-hero-shell {
+    min-height: auto !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    justify-content: flex-start !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    padding-top: 52px !important;
+    padding-bottom: 60px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-copy h1 {
+    font-size: clamp(42px, 7vw, 64px) !important;
+  }
+
+  .osp-premium-v3 .osp-booking-card {
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-premium-v3 .osp-commercial-hero-inner {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+    padding-top: 38px !important;
+    padding-bottom: 48px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-copy,
+  .osp-premium-v3 .osp-commercial-hero-copy h1,
+  .osp-premium-v3 .osp-commercial-hero-copy p,
+  .osp-premium-v3 .osp-commercial-trust-row {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-hero-copy h1 {
+    font-size: clamp(38px, 11vw, 48px) !important;
+  }
+
+  .osp-premium-v3 .osp-booking-card {
+    margin-top: 24px !important;
+    padding: 14px !important;
+    border-radius: 26px !important;
+  }
+}
+/* OSP_PUBLIC_HOME_HERO_FINAL_AUTHORITY_11_END */
+
+/* OSP_PUBLIC_HOME_PREMIUM_INTERACTION_SURFACE_12_START */
+
+/*
+  OSP 12 global premium interaction + surface hardening:
+  - Hard reject yellow/green CTA psychology
+  - Replace primary actions with blue / teal / aqua action system
+  - Apply consistent hover, focus-visible, and tap feedback
+  - Harden buttons, cards, tabs, fields, nav links, trail cards, explore cards, role cards, final CTA, footer links
+  - Preserve hero structure, booking architecture, route logic, and public copy
+*/
+
+/* Local interaction tokens scoped to public homepage */
+.osp-premium-v3 {
+  --osp-action-blue: #0b5f89;
+  --osp-action-blue-deep: #06476f;
+  --osp-action-teal: #0f9aa8;
+  --osp-action-aqua: #8ce8ee;
+  --osp-action-aqua-soft: rgba(140, 232, 238, 0.24);
+  --osp-action-glow: rgba(15, 154, 168, 0.28);
+  --osp-action-border: rgba(140, 232, 238, 0.42);
+  --osp-surface-aqua: rgba(238, 251, 251, 0.86);
+  --osp-surface-blue: rgba(241, 248, 251, 0.90);
+  --osp-surface-mist: rgba(247, 252, 251, 0.92);
+  --osp-soft-navy: #07385f;
+  --osp-soft-slate: #496782;
+  --osp-focus-ring: rgba(140, 232, 238, 0.90);
+  --osp-focus-halo: rgba(15, 154, 168, 0.20);
+}
+
+/* HARD REJECT: override old yellow/green CTA gradient anywhere inside homepage */
+.osp-premium-v3 .osp-commercial-primary,
+.osp-premium-v3 .osp-booking-submit,
+.osp-premium-v3 .osp-commercial-final .osp-commercial-primary,
+.osp-premium-v3 .osp-partner-section .osp-commercial-primary,
+.osp-premium-v3 a[href="/traveler/start"],
+.osp-premium-v3 a[href="/traveler/explore"],
+.osp-premium-v3 a[href="/traveler/passport-trails"],
+.osp-premium-v3 a[href="/operators"] {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(140, 232, 238, 0.36), transparent 34%),
+    linear-gradient(135deg, var(--osp-action-blue) 0%, var(--osp-action-teal) 100%) !important;
+  color: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid rgba(140, 232, 238, 0.44) !important;
+  box-shadow:
+    0 14px 34px rgba(2, 43, 77, 0.24),
+    0 8px 22px rgba(15, 154, 168, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  text-shadow: 0 1px 0 rgba(0, 26, 46, 0.18);
+}
+
+/* Secondary / glass action language */
+.osp-premium-v3 .osp-commercial-secondary,
+.osp-premium-v3 a[href="/partners"],
+.osp-premium-v3 a[href="/developers"] {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08)) !important;
+  color: rgba(255,255,255,0.90) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.14),
+    0 12px 26px rgba(0, 21, 46, 0.12) !important;
+}
+
+/* Header sign-in button on dark shell */
+.osp-premium-v3 .osp-commercial-header a[href*="login"],
+.osp-premium-v3 .osp-commercial-header button:not(.osp-commercial-primary) {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease !important;
+}
+
+/* Universal interaction reset for clickable elements */
+.osp-premium-v3 a,
+.osp-premium-v3 button,
+.osp-premium-v3 input,
+.osp-premium-v3 select,
+.osp-premium-v3 textarea {
+  -webkit-tap-highlight-color: rgba(15, 154, 168, 0.18);
+}
+
+.osp-premium-v3 a,
+.osp-premium-v3 button {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease,
+    opacity 180ms ease !important;
+}
+
+/* Accessible focus ring */
+.osp-premium-v3 a:focus-visible,
+.osp-premium-v3 button:focus-visible,
+.osp-premium-v3 input:focus-visible,
+.osp-premium-v3 select:focus-visible,
+.osp-premium-v3 textarea:focus-visible,
+.osp-premium-v3 .osp-booking-field:focus-within {
+  outline: 2px solid var(--osp-focus-ring) !important;
+  outline-offset: 3px !important;
+  box-shadow:
+    0 0 0 7px var(--osp-focus-halo),
+    0 16px 38px rgba(2, 43, 77, 0.12) !important;
+}
+
+/* Header nav links: premium underline motion */
+.osp-premium-v3 .osp-commercial-header nav a {
+  position: relative;
+  color: rgba(255,255,255,0.78) !important;
+}
+
+.osp-premium-v3 .osp-commercial-header nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(140,232,238,0), rgba(140,232,238,0.84), rgba(140,232,238,0));
+  opacity: 0;
+  transform: scaleX(0.62);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.osp-premium-v3 .osp-commercial-header nav a:hover,
+.osp-premium-v3 .osp-commercial-header nav a:focus-visible {
+  color: rgba(255,255,255,0.96) !important;
+}
+
+.osp-premium-v3 .osp-commercial-header nav a:hover::after,
+.osp-premium-v3 .osp-commercial-header nav a:focus-visible::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* Trust chips: calmer blue/aqua surface */
+.osp-premium-v3 .osp-commercial-trust-row span {
+  background:
+    linear-gradient(180deg, rgba(140,232,238,0.16), rgba(255,255,255,0.08)) !important;
+  border-color: rgba(140,232,238,0.24) !important;
+  color: rgba(235,251,253,0.92) !important;
+}
+
+/* Booking tabs: active/hover/focus refinement */
+.osp-premium-v3 .osp-booking-tabs button {
+  color: rgba(7, 56, 95, 0.78) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(241,248,251,0.80)) !important;
+  border: 1px solid rgba(7, 56, 95, 0.08) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.88),
+    0 8px 18px rgba(2,43,77,0.035) !important;
+}
+
+.osp-premium-v3 .osp-booking-tabs button[aria-selected="true"],
+.osp-premium-v3 .osp-booking-tabs button[data-active="true"],
+.osp-premium-v3 .osp-booking-tabs button.is-active,
+.osp-premium-v3 .osp-booking-tabs button:first-child {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(140,232,238,0.34), transparent 38%),
+    linear-gradient(180deg, rgba(229, 250, 251, 0.98), rgba(214, 244, 246, 0.90)) !important;
+  border-color: rgba(15,154,168,0.34) !important;
+  color: var(--osp-soft-navy) !important;
+  box-shadow:
+    0 10px 24px rgba(15,154,168,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.92) !important;
+}
+
+/* Booking fields */
+.osp-premium-v3 .osp-booking-field {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248,252,252,0.88)) !important;
+  border: 1px solid rgba(7, 56, 95, 0.10) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.86),
+    0 8px 18px rgba(2,43,77,0.035) !important;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease !important;
+}
+
+.osp-premium-v3 .osp-booking-field label {
+  color: rgba(73, 103, 130, 0.86) !important;
+}
+
+.osp-premium-v3 .osp-booking-field input,
+.osp-premium-v3 .osp-booking-field select {
+  color: var(--osp-soft-navy) !important;
+}
+
+/* Ecosystem surfaces: soft color logic */
+.osp-premium-v3 .osp-ecosystem-panel {
+  background:
+    radial-gradient(circle at 78% 18%, rgba(140,232,238,0.12), transparent 30%),
+    radial-gradient(circle at 18% 82%, rgba(11,95,137,0.055), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.86), rgba(244,252,251,0.80)) !important;
+  border-color: rgba(15,154,168,0.13) !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core {
+  box-shadow:
+    0 18px 50px rgba(2,43,77,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.22) !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-group,
+.osp-premium-v3 .osp-step-card,
+.osp-premium-v3 .osp-explore-card,
+.osp-premium-v3 .osp-partner-role {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    opacity 180ms ease !important;
+}
+
+/* Soft differentiated card surfaces */
+.osp-premium-v3 .osp-ecosystem-group:nth-child(1) {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(140,232,238,0.16), transparent 40%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(238,251,251,0.78)) !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-group:nth-child(2) {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(11,95,137,0.10), transparent 40%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(241,248,251,0.82)) !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-group:nth-child(3) {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(15,154,168,0.12), transparent 40%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(247,252,251,0.84)) !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-group:nth-child(4) {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(7,56,95,0.08), transparent 40%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(241,248,251,0.84)) !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-group:nth-child(5) {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(140,232,238,0.12), transparent 40%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(247,252,251,0.86)) !important;
+}
+
+/* Step cards: soft public-trust surfaces */
+.osp-premium-v3 .osp-step-card {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(140,232,238,0.10), transparent 38%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248,252,252,0.86)) !important;
+  border-color: rgba(7,56,95,0.08) !important;
+}
+
+.osp-premium-v3 .osp-step-card .osp-step-number,
+.osp-premium-v3 .osp-step-card small,
+.osp-premium-v3 .osp-step-card b {
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease !important;
+}
+
+/* Passport Trail cards: premium dark hover depth */
+.osp-premium-v3 .osp-trail-card {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease !important;
+}
+
+.osp-premium-v3 .osp-trail-card .osp-trail-stamp-mark,
+.osp-premium-v3 .osp-trail-card span,
+.osp-premium-v3 .osp-trail-card strong {
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    background 180ms ease !important;
+}
+
+/* Explore cards: soft surface tint + clearer link affordance */
+.osp-premium-v3 .osp-explore-card {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(140,232,238,0.10), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(247,252,251,0.86)) !important;
+  border-color: rgba(15,154,168,0.12) !important;
+}
+
+.osp-premium-v3 .osp-explore-card:nth-child(1)::before {
+  background: linear-gradient(90deg, rgba(15,154,168,0.0), rgba(11,95,137,0.50), rgba(140,232,238,0.50), rgba(15,154,168,0.0)) !important;
+}
+.osp-premium-v3 .osp-explore-card:nth-child(2)::before {
+  background: linear-gradient(90deg, rgba(15,154,168,0.0), rgba(140,232,238,0.56), rgba(11,95,137,0.36), rgba(15,154,168,0.0)) !important;
+}
+.osp-premium-v3 .osp-explore-card:nth-child(3)::before {
+  background: linear-gradient(90deg, rgba(15,154,168,0.0), rgba(7,56,95,0.46), rgba(15,154,168,0.50), rgba(15,154,168,0.0)) !important;
+}
+.osp-premium-v3 .osp-explore-card:nth-child(4)::before,
+.osp-premium-v3 .osp-explore-card:nth-child(5)::before,
+.osp-premium-v3 .osp-explore-card:nth-child(6)::before {
+  background: linear-gradient(90deg, rgba(15,154,168,0.0), rgba(15,154,168,0.46), rgba(140,232,238,0.42), rgba(15,154,168,0.0)) !important;
+}
+
+.osp-premium-v3 .osp-explore-card span,
+.osp-premium-v3 .osp-explore-card a {
+  color: var(--osp-action-blue-deep) !important;
+  transition: color 180ms ease, transform 180ms ease !important;
+}
+
+/* Online boarding panel: tighter interactive depth */
+.osp-premium-v3 .osp-boarding-panel {
+  box-shadow:
+    0 28px 78px rgba(2,43,77,0.14),
+    inset 0 1px 0 rgba(255,255,255,0.13) !important;
+}
+
+.osp-premium-v3 .osp-boarding-flow span,
+.osp-premium-v3 .osp-boarding-proof-card {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease !important;
+}
+
+.osp-premium-v3 .osp-boarding-flow span {
+  border-color: rgba(140,232,238,0.14) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.065)) !important;
+}
+
+/* Partner role cards: pathway surface, not flat buttons */
+.osp-premium-v3 .osp-partner-role {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(140,232,238,0.12), transparent 36%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(247,252,251,0.88)) !important;
+  border-color: rgba(15,154,168,0.12) !important;
+}
+
+.osp-premium-v3 .osp-partner-role::before {
+  background:
+    radial-gradient(circle at 35% 25%, rgba(140,232,238,0.52), transparent 42%),
+    linear-gradient(135deg, rgba(11,95,137,0.28), rgba(15,154,168,0.18)) !important;
+  opacity: 0.24 !important;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease !important;
+}
+
+/* Footer links */
+.osp-premium-v3 .osp-commercial-footer a {
+  position: relative;
+  color: rgba(235,251,253,0.76) !important;
+}
+
+.osp-premium-v3 .osp-commercial-footer a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(140,232,238,0), rgba(140,232,238,0.68), rgba(140,232,238,0));
+  opacity: 0;
+  transform: scaleX(0.58);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+/* Desktop hover only: no sticky mobile hover effects */
+@media (hover: hover) and (pointer: fine) {
+  .osp-premium-v3 .osp-commercial-primary:hover,
+  .osp-premium-v3 .osp-booking-submit:hover,
+  .osp-premium-v3 .osp-commercial-final .osp-commercial-primary:hover,
+  .osp-premium-v3 .osp-partner-section .osp-commercial-primary:hover,
+  .osp-premium-v3 a[href="/traveler/start"]:hover,
+  .osp-premium-v3 a[href="/traveler/explore"]:hover,
+  .osp-premium-v3 a[href="/traveler/passport-trails"]:hover,
+  .osp-premium-v3 a[href="/operators"]:hover {
+    transform: translateY(-2px) !important;
+    background:
+      radial-gradient(circle at 22% 0%, rgba(140, 232, 238, 0.44), transparent 36%),
+      linear-gradient(135deg, #0d6f9e 0%, #10a7b5 100%) !important;
+    border-color: rgba(140,232,238,0.64) !important;
+    box-shadow:
+      0 20px 46px rgba(2, 43, 77, 0.26),
+      0 12px 30px rgba(15,154,168,0.24),
+      inset 0 1px 0 rgba(255,255,255,0.28) !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-secondary:hover,
+  .osp-premium-v3 a[href="/partners"]:hover,
+  .osp-premium-v3 a[href="/developers"]:hover {
+    transform: translateY(-2px) !important;
+    background:
+      linear-gradient(180deg, rgba(140,232,238,0.20), rgba(255,255,255,0.10)) !important;
+    border-color: rgba(140,232,238,0.34) !important;
+    color: rgba(255,255,255,0.96) !important;
+    box-shadow:
+      0 18px 42px rgba(2,43,77,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.18) !important;
+  }
+
+  .osp-premium-v3 .osp-booking-tabs button:hover {
+    transform: translateY(-1px) !important;
+    border-color: rgba(15,154,168,0.24) !important;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.98), rgba(238,251,251,0.88)) !important;
+    box-shadow:
+      0 12px 24px rgba(2,43,77,0.07),
+      inset 0 1px 0 rgba(255,255,255,0.92) !important;
+  }
+
+  .osp-premium-v3 .osp-booking-field:hover {
+    transform: translateY(-1px) !important;
+    border-color: rgba(15,154,168,0.20) !important;
+    box-shadow:
+      0 13px 28px rgba(2,43,77,0.07),
+      inset 0 1px 0 rgba(255,255,255,0.92) !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-group:hover,
+  .osp-premium-v3 .osp-step-card:hover,
+  .osp-premium-v3 .osp-explore-card:hover,
+  .osp-premium-v3 .osp-partner-role:hover {
+    transform: translateY(-3px) !important;
+    border-color: rgba(15,154,168,0.24) !important;
+    box-shadow:
+      0 22px 56px rgba(2,43,77,0.09),
+      inset 0 1px 0 rgba(255,255,255,0.90) !important;
+  }
+
+  .osp-premium-v3 .osp-step-card:hover .osp-step-number,
+  .osp-premium-v3 .osp-step-card:hover small,
+  .osp-premium-v3 .osp-step-card:hover b {
+    border-color: rgba(15,154,168,0.28) !important;
+    background: rgba(238,251,251,0.92) !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card:hover {
+    transform: translateY(-4px) !important;
+    border-color: rgba(140,232,238,0.30) !important;
+    box-shadow:
+      0 26px 68px rgba(2,43,77,0.22),
+      0 10px 24px rgba(15,154,168,0.12),
+      inset 0 1px 0 rgba(255,255,255,0.13) !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card:hover .osp-trail-stamp-mark {
+    opacity: 0.72 !important;
+    transform: rotate(-7deg) scale(1.03) !important;
+  }
+
+  .osp-premium-v3 .osp-explore-card:hover span,
+  .osp-premium-v3 .osp-explore-card:hover a {
+    color: var(--osp-action-teal) !important;
+    transform: translateX(3px);
+  }
+
+  .osp-premium-v3 .osp-boarding-flow span:hover,
+  .osp-premium-v3 .osp-boarding-proof-card:hover {
+    transform: translateY(-2px) !important;
+    border-color: rgba(140,232,238,0.26) !important;
+    background:
+      linear-gradient(180deg, rgba(140,232,238,0.16), rgba(255,255,255,0.08)) !important;
+    box-shadow:
+      0 18px 38px rgba(0,21,46,0.16),
+      inset 0 1px 0 rgba(255,255,255,0.16) !important;
+  }
+
+  .osp-premium-v3 .osp-partner-role:hover::before {
+    opacity: 0.38 !important;
+    transform: translateY(-50%) scale(1.05) !important;
+    box-shadow: 0 10px 22px rgba(15,154,168,0.14);
+  }
+
+  .osp-premium-v3 .osp-commercial-footer a:hover {
+    color: rgba(140,232,238,0.96) !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-footer a:hover::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+/* Mobile/touch active feedback: controlled, no jumpy hover */
+.osp-premium-v3 a:active,
+.osp-premium-v3 button:active,
+.osp-premium-v3 .osp-booking-field:active,
+.osp-premium-v3 .osp-step-card:active,
+.osp-premium-v3 .osp-trail-card:active,
+.osp-premium-v3 .osp-explore-card:active,
+.osp-premium-v3 .osp-partner-role:active,
+.osp-premium-v3 .osp-boarding-flow span:active {
+  transform: translateY(0) scale(0.992) !important;
+}
+
+/* Touch target guardrail */
+.osp-premium-v3 a,
+.osp-premium-v3 button,
+.osp-premium-v3 .osp-booking-tabs button,
+.osp-premium-v3 .osp-booking-submit {
+  min-height: 44px;
+}
+
+/* Final CTA buttons stay blue/teal, not yellow/green */
+.osp-premium-v3 .osp-commercial-final {
+  border-color: rgba(140,232,238,0.16) !important;
+}
+
+.osp-premium-v3 .osp-commercial-final-actions a,
+.osp-premium-v3 .osp-commercial-final-actions button {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease !important;
+}
+
+/* Ensure old yellow-green literal patterns are visually overridden even if defined earlier */
+.osp-premium-v3 [style*="ffd36b"],
+.osp-premium-v3 [style*="22b85a"],
+.osp-premium-v3 [style*="16a34a"],
+.osp-premium-v3 [style*="15803d"] {
+  filter: hue-rotate(155deg) saturate(0.82) brightness(0.92);
+}
+
+/* Reduced motion safety */
+@media (prefers-reduced-motion: reduce) {
+  .osp-premium-v3 *,
+  .osp-premium-v3 *::before,
+  .osp-premium-v3 *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* OSP_PUBLIC_HOME_PREMIUM_INTERACTION_SURFACE_12_END */
+
+/* OSP_PUBLIC_HOME_NAV_FOOTER_INTERACTION_FIX_13_START */
+
+/*
+  OSP 13 nav/footer interaction correction:
+  - Fix aggressive top-nav boxed hover caused by broad interaction pass
+  - Fix footer Developers boxed hover
+  - Keep premium text-link behavior: subtle aqua underline/glow only
+  - Improve primary CTA text contrast
+  - No layout, copy, route, DB, payment, auth, or middleware changes
+*/
+
+/* HEADER NAV: never render as boxed buttons */
+.osp-premium-v3 .osp-commercial-header nav a,
+.osp-premium-v3 .osp-commercial-header nav a:visited {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: rgba(235, 251, 253, 0.76) !important;
+  text-shadow: none !important;
+  transform: none !important;
+}
+
+/* Undo broad CTA targeting for nav links that happen to share hrefs */
+.osp-premium-v3 .osp-commercial-header nav a[href="/traveler/explore"],
+.osp-premium-v3 .osp-commercial-header nav a[href="/operators"],
+.osp-premium-v3 .osp-commercial-header nav a[href="/partners"],
+.osp-premium-v3 .osp-commercial-header nav a[href="/developers"] {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: rgba(235, 251, 253, 0.76) !important;
+  min-height: auto !important;
+  padding: 0 !important;
+}
+
+/* Premium underline only */
+.osp-premium-v3 .osp-commercial-header nav a::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: -10px !important;
+  height: 2px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(
+    90deg,
+    rgba(140, 232, 238, 0),
+    rgba(140, 232, 238, 0.88),
+    rgba(140, 232, 238, 0)
+  ) !important;
+  opacity: 0 !important;
+  transform: scaleX(0.58) !important;
+  transition: opacity 180ms ease, transform 180ms ease !important;
+}
+
+/* Header nav hover/focus: text + underline only */
+@media (hover: hover) and (pointer: fine) {
+  .osp-premium-v3 .osp-commercial-header nav a:hover,
+  .osp-premium-v3 .osp-commercial-header nav a[href="/traveler/explore"]:hover,
+  .osp-premium-v3 .osp-commercial-header nav a[href="/operators"]:hover,
+  .osp-premium-v3 .osp-commercial-header nav a[href="/partners"]:hover,
+  .osp-premium-v3 .osp-commercial-header nav a[href="/developers"]:hover {
+    transform: none !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    color: rgba(255, 255, 255, 0.96) !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-header nav a:hover::after,
+  .osp-premium-v3 .osp-commercial-header nav a:focus-visible::after {
+    opacity: 1 !important;
+    transform: scaleX(1) !important;
+  }
+}
+
+/* Focus ring for header nav should not become a box */
+.osp-premium-v3 .osp-commercial-header nav a:focus-visible {
+  outline: 2px solid rgba(140, 232, 238, 0.85) !important;
+  outline-offset: 8px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 6px !important;
+}
+
+/* PRIMARY CTA: keep blue/teal/aqua but fix text contrast */
+.osp-premium-v3 .osp-commercial-header .osp-commercial-primary,
+.osp-premium-v3 .osp-commercial-primary,
+.osp-premium-v3 .osp-booking-submit,
+.osp-premium-v3 .osp-commercial-final .osp-commercial-primary,
+.osp-premium-v3 .osp-partner-section .osp-commercial-primary {
+  color: rgba(255, 255, 255, 0.98) !important;
+  text-shadow: 0 1px 0 rgba(0, 30, 54, 0.24) !important;
+}
+
+/* Booking submit can keep dark text only if it is inside light card? Force white for consistent CTA authority. */
+.osp-premium-v3 .osp-booking-submit {
+  color: rgba(255, 255, 255, 0.98) !important;
+}
+
+/* FOOTER LINKS: never become boxed buttons */
+.osp-premium-v3 .osp-commercial-footer a,
+.osp-premium-v3 .osp-commercial-footer a:visited,
+.osp-premium-v3 .osp-commercial-footer a[href="/developers"],
+.osp-premium-v3 .osp-commercial-footer a[href="/partners"],
+.osp-premium-v3 .osp-commercial-footer a[href="/operators"],
+.osp-premium-v3 .osp-commercial-footer a[href="/traveler/start"],
+.osp-premium-v3 .osp-commercial-footer a[href="/traveler/explore"],
+.osp-premium-v3 .osp-commercial-footer a[href="/traveler/passport-trails"] {
+  display: inline-flex !important;
+  min-height: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: rgba(235, 251, 253, 0.72) !important;
+  text-shadow: none !important;
+  transform: none !important;
+}
+
+/* Footer underline only */
+.osp-premium-v3 .osp-commercial-footer a::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: -5px !important;
+  height: 1px !important;
+  background: linear-gradient(
+    90deg,
+    rgba(140, 232, 238, 0),
+    rgba(140, 232, 238, 0.70),
+    rgba(140, 232, 238, 0)
+  ) !important;
+  opacity: 0 !important;
+  transform: scaleX(0.58) !important;
+  transition: opacity 180ms ease, transform 180ms ease !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .osp-premium-v3 .osp-commercial-footer a:hover,
+  .osp-premium-v3 .osp-commercial-footer a[href="/developers"]:hover,
+  .osp-premium-v3 .osp-commercial-footer a[href="/partners"]:hover,
+  .osp-premium-v3 .osp-commercial-footer a[href="/operators"]:hover,
+  .osp-premium-v3 .osp-commercial-footer a[href="/traveler/start"]:hover,
+  .osp-premium-v3 .osp-commercial-footer a[href="/traveler/explore"]:hover,
+  .osp-premium-v3 .osp-commercial-footer a[href="/traveler/passport-trails"]:hover {
+    transform: none !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    color: rgba(140, 232, 238, 0.96) !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-footer a:hover::after,
+  .osp-premium-v3 .osp-commercial-footer a:focus-visible::after {
+    opacity: 1 !important;
+    transform: scaleX(1) !important;
+  }
+}
+
+.osp-premium-v3 .osp-commercial-footer a:focus-visible {
+  outline: 2px solid rgba(140, 232, 238, 0.85) !important;
+  outline-offset: 6px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 5px !important;
+}
+
+/* Keep real CTA buttons pill-shaped; this excludes nav/footer plain links */
+.osp-premium-v3 .osp-commercial-header > a.osp-commercial-primary,
+.osp-premium-v3 .osp-commercial-final-actions a,
+.osp-premium-v3 .osp-partner-section a.osp-commercial-primary {
+  border-radius: 999px !important;
+}
+
+/* OSP_PUBLIC_HOME_NAV_FOOTER_INTERACTION_FIX_13_END */
+
+/* OSP_PUBLIC_HOME_EXISTING_ASSET_INSERT_15_START */
+
+/*
+  OSP 15 existing asset insertion:
+  - Header/footer OSP logo from existing repo assets
+  - Passport Trails existing banner asset
+  - No generated Image 2.0 assets yet
+  - No layout/route/copy/schema/payment changes
+*/
+
+.osp-premium-v3 .osp-brand-logo-mark {
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 28% 18%, rgba(140, 232, 238, 0.18), transparent 36%),
+    linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05)) !important;
+  border: 1px solid rgba(140, 232, 238, 0.22) !important;
+}
+
+.osp-premium-v3 .osp-brand-logo-mark img {
+  width: 31px !important;
+  height: 31px !important;
+  object-fit: contain !important;
+  display: block !important;
+  filter: drop-shadow(0 6px 14px rgba(0, 21, 46, 0.20));
+}
+
+.osp-premium-v3 .osp-passport-trails-asset-panel {
+  position: relative;
+  overflow: hidden;
+  margin-top: 30px;
+  min-height: 230px;
+  border-radius: 34px;
+  border: 1px solid rgba(15,154,168,0.16);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(140,232,238,0.12), transparent 36%),
+    linear-gradient(135deg, rgba(2,43,77,0.92), rgba(1,56,99,0.84));
+  box-shadow:
+    0 24px 64px rgba(2,43,77,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.16);
+}
+
+.osp-premium-v3 .osp-passport-trails-asset-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(90deg, rgba(2,43,77,0.72) 0%, rgba(2,43,77,0.34) 42%, rgba(2,43,77,0.14) 100%),
+    linear-gradient(180deg, rgba(2,43,77,0.05), rgba(2,43,77,0.30));
+  pointer-events: none;
+}
+
+.osp-premium-v3 .osp-passport-trails-banner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.01);
+  filter: saturate(0.92) contrast(1.02) brightness(0.90);
+}
+
+.osp-premium-v3 .osp-passport-trails-mark {
+  position: absolute;
+  z-index: 3;
+  left: 24px;
+  bottom: 24px;
+  width: 74px;
+  height: 74px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(140,232,238,0.24);
+  background:
+    radial-gradient(circle at 28% 18%, rgba(140,232,238,0.22), transparent 40%),
+    rgba(255,255,255,0.10);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 18px 42px rgba(0,21,46,0.20),
+    inset 0 1px 0 rgba(255,255,255,0.18);
+}
+
+.osp-premium-v3 .osp-passport-trails-mark img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+}
+
+.osp-premium-v3 .osp-passport-trails-asset-panel + .osp-trail-grid {
+  margin-top: 24px !important;
+}
+
+.osp-premium-v3 .osp-footer-logo-mark {
+  width: 46px;
+  height: 46px;
+  border-radius: 17px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 10px;
+  border: 1px solid rgba(140,232,238,0.18);
+  background:
+    radial-gradient(circle at 28% 18%, rgba(140,232,238,0.16), transparent 38%),
+    rgba(255,255,255,0.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 12px 28px rgba(0,21,46,0.14);
+}
+
+.osp-premium-v3 .osp-footer-logo-mark img {
+  width: 33px;
+  height: 33px;
+  object-fit: contain;
+  display: block;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .osp-premium-v3 .osp-passport-trails-asset-panel {
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .osp-premium-v3 .osp-passport-trails-asset-panel:hover {
+    transform: translateY(-2px);
+    border-color: rgba(140,232,238,0.30);
+    box-shadow:
+      0 30px 74px rgba(2,43,77,0.16),
+      inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-premium-v3 .osp-brand-logo-mark img {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .osp-premium-v3 .osp-passport-trails-asset-panel {
+    min-height: 170px;
+    border-radius: 26px;
+    margin-top: 24px;
+  }
+
+  .osp-premium-v3 .osp-passport-trails-mark {
+    left: 18px;
+    bottom: 18px;
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+  }
+
+  .osp-premium-v3 .osp-passport-trails-mark img {
+    width: 38px;
+    height: 38px;
+  }
+}
+/* OSP_PUBLIC_HOME_EXISTING_ASSET_INSERT_15_END */
+
+/* OSP_PUBLIC_HOME_PASSPORT_TRAIL_CARD_ASSETS_16D_START */
+
+/*
+  OSP 16D Passport Trail card assets:
+  - Existing repo assets only
+  - trailHighlights image field powers each card
+  - Image is masked background layer, not raw thumbnail
+  - Preserve dark premium card readability
+*/
+
+.osp-premium-v3 .osp-trail-card {
+  position: relative !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  background:
+    linear-gradient(180deg, rgba(1, 56, 99, 0.94), rgba(2, 43, 77, 0.98)) !important;
+}
+
+.osp-premium-v3 .osp-trail-card-media {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  display: block;
+  opacity: 0.66;
+  transform: scale(1.015);
+  transition:
+    opacity 220ms ease,
+    transform 420ms ease;
+}
+
+.osp-premium-v3 .osp-trail-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter:
+    saturate(0.86)
+    contrast(1.03)
+    brightness(0.76);
+}
+
+.osp-premium-v3 .osp-trail-card-media-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  display: block;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(140, 232, 238, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(1, 40, 72, 0.42) 0%, rgba(1, 40, 72, 0.70) 48%, rgba(2, 33, 58, 0.94) 100%),
+    linear-gradient(90deg, rgba(2, 43, 77, 0.90) 0%, rgba(2, 43, 77, 0.60) 56%, rgba(2, 43, 77, 0.84) 100%);
+  pointer-events: none;
+}
+
+.osp-premium-v3 .osp-trail-card::before {
+  z-index: -1 !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.025)) !important;
+  opacity: 0.72 !important;
+}
+
+.osp-premium-v3 .osp-trail-card::after {
+  content: "";
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 98px;
+  height: 1px;
+  z-index: -1;
+  background: linear-gradient(90deg, rgba(140,232,238,0), rgba(140,232,238,0.22), rgba(140,232,238,0));
+  pointer-events: none;
+}
+
+.osp-premium-v3 .osp-trail-card span:not(.osp-trail-card-media):not(.osp-trail-card-media-overlay),
+.osp-premium-v3 .osp-trail-card h3,
+.osp-premium-v3 .osp-trail-card p,
+.osp-premium-v3 .osp-trail-card .osp-trail-stamp-mark {
+  position: relative;
+  z-index: 2;
+}
+
+.osp-premium-v3 .osp-trail-card h3 {
+  color: rgba(255,255,255,0.97) !important;
+  text-shadow: 0 2px 10px rgba(0, 21, 46, 0.35);
+}
+
+.osp-premium-v3 .osp-trail-card p {
+  color: rgba(235, 251, 253, 0.86) !important;
+  text-shadow: 0 1px 7px rgba(0, 21, 46, 0.26);
+}
+
+.osp-premium-v3 .osp-trail-card > span:first-of-type:not(.osp-trail-card-media):not(.osp-trail-card-media-overlay),
+.osp-premium-v3 .osp-trail-card span:not(.osp-trail-card-media):not(.osp-trail-card-media-overlay):not(.osp-passport-trails-mark) {
+  backdrop-filter: blur(12px);
+}
+
+.osp-premium-v3 .osp-trail-card .osp-trail-stamp-mark {
+  background:
+    radial-gradient(circle at 35% 20%, rgba(140,232,238,0.16), transparent 46%),
+    rgba(2,43,77,0.42) !important;
+  border-color: rgba(140,232,238,0.18) !important;
+  backdrop-filter: blur(10px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .osp-premium-v3 .osp-trail-card:hover .osp-trail-card-media {
+    opacity: 0.78;
+    transform: scale(1.045);
+  }
+
+  .osp-premium-v3 .osp-trail-card:hover .osp-trail-card-media img {
+    filter:
+      saturate(0.96)
+      contrast(1.04)
+      brightness(0.82);
+  }
+
+  .osp-premium-v3 .osp-trail-card:hover .osp-trail-card-media-overlay {
+    background:
+      radial-gradient(circle at 18% 0%, rgba(140, 232, 238, 0.20), transparent 38%),
+      linear-gradient(180deg, rgba(1, 40, 72, 0.36) 0%, rgba(1, 40, 72, 0.64) 48%, rgba(2, 33, 58, 0.91) 100%),
+      linear-gradient(90deg, rgba(2, 43, 77, 0.85) 0%, rgba(2, 43, 77, 0.55) 56%, rgba(2, 43, 77, 0.80) 100%);
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-premium-v3 .osp-trail-card-media {
+    opacity: 0.56;
+  }
+
+  .osp-premium-v3 .osp-trail-card-media-overlay {
+    background:
+      linear-gradient(180deg, rgba(1, 40, 72, 0.54) 0%, rgba(1, 40, 72, 0.78) 52%, rgba(2, 33, 58, 0.95) 100%),
+      linear-gradient(90deg, rgba(2, 43, 77, 0.92) 0%, rgba(2, 43, 77, 0.72) 100%);
+  }
+}
+/* OSP_PUBLIC_HOME_PASSPORT_TRAIL_CARD_ASSETS_16D_END */
+
+/* OSP_PUBLIC_HOME_TRAIL_CARD_ALIGNMENT_17_START */
+
+/*
+  OSP 17 Passport Trail card alignment:
+  - Keep accepted existing banners/assets
+  - Convert floating thumbnails into controlled top media bands
+  - Normalize image height, crop, spacing, content baseline, and card rhythm
+  - Preserve premium dark card treatment and readability
+*/
+
+.osp-premium-v3 .osp-trail-grid {
+  align-items: stretch !important;
+}
+
+.osp-premium-v3 .osp-trail-card {
+  min-height: 320px !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+  gap: 0 !important;
+  border-radius: 28px !important;
+  overflow: hidden !important;
+  background:
+    linear-gradient(180deg, rgba(1, 56, 99, 0.96), rgba(2, 43, 77, 0.99)) !important;
+}
+
+/* Turn image into a consistent top media band */
+.osp-premium-v3 .osp-trail-card-media {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 1 !important;
+  display: block !important;
+  width: calc(100% - 42px) !important;
+  height: 132px !important;
+  margin: 24px 21px 0 !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  opacity: 1 !important;
+  transform: none !important;
+  border: 1px solid rgba(140, 232, 238, 0.12) !important;
+  box-shadow:
+    0 18px 34px rgba(0, 21, 46, 0.18),
+    inset 0 1px 0 rgba(255,255,255,0.12) !important;
+}
+
+.osp-premium-v3 .osp-trail-card-media img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  filter:
+    saturate(0.90)
+    contrast(1.04)
+    brightness(0.82) !important;
+  transform: scale(1.015);
+}
+
+/* Image-specific crop corrections */
+.osp-premium-v3 .osp-trail-card:nth-child(1) .osp-trail-card-media img {
+  object-position: center 56% !important;
+}
+
+.osp-premium-v3 .osp-trail-card:nth-child(2) .osp-trail-card-media img {
+  object-position: center 48% !important;
+}
+
+.osp-premium-v3 .osp-trail-card:nth-child(3) .osp-trail-card-media img {
+  object-position: center 52% !important;
+}
+
+.osp-premium-v3 .osp-trail-card:nth-child(4) .osp-trail-card-media img {
+  object-position: center 48% !important;
+}
+
+/* Move overlay into the media band, not the whole card */
+.osp-premium-v3 .osp-trail-card-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(140,232,238,0.12), transparent 36%),
+    linear-gradient(180deg, rgba(1,40,72,0.12), rgba(1,40,72,0.44)) !important;
+  pointer-events: none;
+}
+
+.osp-premium-v3 .osp-trail-card-media-overlay {
+  display: none !important;
+}
+
+/* Create a stable content zone */
+.osp-premium-v3 .osp-trail-card .osp-trail-stamp-mark {
+  position: absolute !important;
+  right: 24px !important;
+  top: 168px !important;
+  z-index: 4 !important;
+  width: 66px !important;
+  height: 66px !important;
+  opacity: 0.38 !important;
+  transform: rotate(-7deg) !important;
+}
+
+.osp-premium-v3 .osp-trail-card > span:not(.osp-trail-card-media):not(.osp-trail-card-media-overlay) {
+  position: relative !important;
+  z-index: 3 !important;
+  align-self: flex-start !important;
+  margin: 24px 22px 0 !important;
+  min-height: 30px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 7px 12px !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.055)) !important;
+  border: 1px solid rgba(140,232,238,0.20) !important;
+  color: rgba(255,229,142,0.94) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1 !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.osp-premium-v3 .osp-trail-card h3 {
+  position: relative !important;
+  z-index: 3 !important;
+  margin: 14px 22px 0 !important;
+  min-height: 48px !important;
+  font-size: 21px !important;
+  line-height: 1.07 !important;
+  letter-spacing: -0.035em !important;
+  display: flex !important;
+  align-items: flex-end !important;
+}
+
+.osp-premium-v3 .osp-trail-card p {
+  position: relative !important;
+  z-index: 3 !important;
+  margin: 12px 22px 24px !important;
+  min-height: 58px !important;
+  font-size: 14px !important;
+  line-height: 1.48 !important;
+}
+
+/* Remove old divider line that now cuts the card awkwardly */
+.osp-premium-v3 .osp-trail-card::after {
+  display: none !important;
+}
+
+/* Add bottom depth instead */
+.osp-premium-v3 .osp-trail-card::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background:
+    radial-gradient(circle at 14% 4%, rgba(140,232,238,0.10), transparent 32%),
+    linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.015)) !important;
+  pointer-events: none !important;
+}
+
+/* Desktop hover: premium, no image jumpiness */
+@media (hover: hover) and (pointer: fine) {
+  .osp-premium-v3 .osp-trail-card:hover .osp-trail-card-media {
+    transform: translateY(-2px) !important;
+    border-color: rgba(140,232,238,0.24) !important;
+    box-shadow:
+      0 22px 44px rgba(0, 21, 46, 0.22),
+      inset 0 1px 0 rgba(255,255,255,0.14) !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card:hover .osp-trail-card-media img {
+    transform: scale(1.05) !important;
+    filter:
+      saturate(0.98)
+      contrast(1.05)
+      brightness(0.88) !important;
+    transition:
+      transform 420ms ease,
+      filter 220ms ease !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card:hover .osp-trail-stamp-mark {
+    opacity: 0.52 !important;
+    transform: rotate(-7deg) scale(1.03) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .osp-premium-v3 .osp-trail-card {
+    min-height: 300px !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card-media {
+    height: 124px !important;
+    margin: 20px 18px 0 !important;
+    width: calc(100% - 36px) !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card .osp-trail-stamp-mark {
+    top: 154px !important;
+    right: 22px !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card h3 {
+    font-size: 20px !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .osp-premium-v3 .osp-trail-card {
+    min-height: 292px !important;
+    border-radius: 24px !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card-media {
+    height: 118px !important;
+    border-radius: 18px !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card h3 {
+    min-height: auto !important;
+  }
+
+  .osp-premium-v3 .osp-trail-card p {
+    min-height: auto !important;
+  }
+}
+
+/* OSP_PUBLIC_HOME_TRAIL_CARD_ALIGNMENT_17_END */
+
+
+/* OSP_PUBLIC_HOME_GATEWAY_QR_FULL_CARD_31_START */
+/* Full-card homepage Gateway QR presentation inside Your Siargao Journey, Connected. */
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core {
+  position: relative !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 20px !important;
+  min-height: 320px !important;
+  padding: clamp(24px, 3vw, 36px) !important;
+}
+
+.osp-premium-v3 .osp-gateway-core .osp-pass-glow {
+  opacity: 0.18 !important;
+  pointer-events: none !important;
+}
+
+.osp-premium-v3 .osp-gateway-qr-shell {
+  align-self: flex-end !important;
+  width: clamp(168px, 22vw, 232px) !important;
+  padding: clamp(12px, 1.4vw, 16px) !important;
+  border-radius: 24px !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow:
+    0 24px 48px rgba(0, 31, 61, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.72) !important;
+  z-index: 3 !important;
+}
+
+.osp-premium-v3 .osp-gateway-qr-image {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1 !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 12px !important;
+  background: white !important;
+}
+
+.osp-premium-v3 .osp-gateway-copy {
+  position: relative !important;
+  z-index: 3 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  max-width: 78% !important;
+}
+
+.osp-premium-v3 .osp-gateway-copy strong {
+  font-size: clamp(32px, 3.2vw, 44px) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.osp-premium-v3 .osp-gateway-copy small {
+  display: block !important;
+  font-size: clamp(18px, 1.55vw, 24px) !important;
+  line-height: 1.28 !important;
+  font-weight: 600 !important;
+  color: rgba(240, 248, 255, 0.92) !important;
+  max-width: 18ch !important;
+}
+
+@media (max-width: 900px) {
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core {
+    min-height: 300px !important;
+  }
+
+  .osp-premium-v3 .osp-gateway-qr-shell {
+    width: 186px !important;
+  }
+
+  .osp-premium-v3 .osp-gateway-copy {
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core {
+    align-items: center !important;
+    text-align: center !important;
+    min-height: auto !important;
+    gap: 18px !important;
+  }
+
+  .osp-premium-v3 .osp-gateway-qr-shell {
+    align-self: center !important;
+    width: min(220px, 76vw) !important;
+  }
+
+  .osp-premium-v3 .osp-gateway-copy {
+    align-items: center !important;
+    text-align: center !important;
+    max-width: 100% !important;
+  }
+
+  .osp-premium-v3 .osp-gateway-copy strong {
+    font-size: clamp(28px, 7.2vw, 36px) !important;
+  }
+
+  .osp-premium-v3 .osp-gateway-copy small {
+    max-width: none !important;
+    font-size: clamp(17px, 4.4vw, 21px) !important;
+  }
+}
+/* OSP_PUBLIC_HOME_GATEWAY_QR_FULL_CARD_31_END */
+
+
+/* OSP_PUBLIC_HOME_GATEWAY_QR_CARD_POLISH_31B_START */
+/* Polish Gateway QR card: remove dirty old grid/glow and make QR + copy feel intentional. */
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-rows: 1fr auto !important;
+  align-items: start !important;
+  justify-items: stretch !important;
+  min-height: 330px !important;
+  padding: clamp(28px, 3vw, 40px) !important;
+  gap: 18px 24px !important;
+  isolation: isolate !important;
+}
+
+/* Kill the old decorative fake QR/glow ONLY inside the Gateway QR card. */
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-pass-glow {
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* QR tile: make it intentional, centered inside its own clean scan zone. */
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-qr-shell {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: start !important;
+  justify-self: end !important;
+  width: clamp(178px, 18vw, 224px) !important;
+  padding: clamp(14px, 1.35vw, 18px) !important;
+  border-radius: 26px !important;
+  background: #ffffff !important;
+  box-shadow:
+    0 24px 52px rgba(0, 31, 61, 0.30),
+    0 0 0 1px rgba(255, 255, 255, 0.86),
+    inset 0 0 0 1px rgba(5, 150, 165, 0.08) !important;
+  transform: translate(-4px, 0) !important;
+}
+
+/* Keep the QR functional: no crop, no blend, no decorative filters. */
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-qr-image {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1 !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  opacity: 1 !important;
+}
+
+/* Copy block: anchor with authority, not too low, not floating. */
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  align-self: end !important;
+  justify-self: start !important;
+  max-width: 28rem !important;
+  gap: 12px !important;
+  margin-top: 10px !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy strong {
+  max-width: 13ch !important;
+  font-size: clamp(34px, 3vw, 44px) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.045em !important;
+  text-wrap: balance !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy small {
+  max-width: none !important;
+  font-size: clamp(18px, 1.35vw, 23px) !important;
+  line-height: 1.22 !important;
+  font-weight: 700 !important;
+  color: rgba(240, 248, 255, 0.90) !important;
+}
+
+/* Subtle infrastructure atmosphere without fake QR clutter. */
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: auto -18% -28% 26% !important;
+  height: 58% !important;
+  border-radius: 999px !important;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(243, 174, 38, 0.18), transparent 56%),
+    radial-gradient(circle at 78% 30%, rgba(255, 255, 255, 0.14), transparent 48%) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-qr-shell,
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy {
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+@media (max-width: 900px) {
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core {
+    min-height: 315px !important;
+    padding: 28px !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-qr-shell {
+    width: 190px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: auto !important;
+    padding: 28px 22px !important;
+    gap: 20px !important;
+    text-align: center !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-qr-shell {
+    width: min(224px, 76vw) !important;
+    transform: none !important;
+    align-self: center !important;
+    justify-self: center !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy {
+    align-items: center !important;
+    text-align: center !important;
+    margin-top: 0 !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy strong {
+    max-width: 14ch !important;
+    font-size: clamp(30px, 7.2vw, 38px) !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy small {
+    font-size: clamp(17px, 4.4vw, 21px) !important;
+  }
+}
+/* OSP_PUBLIC_HOME_GATEWAY_QR_CARD_POLISH_31B_END */
+
+
+/* OSP_PUBLIC_HOME_GATEWAY_QR_CARD_CENTER_31C_START */
+/* Centered Gateway QR card composition: QR is the primary object, copy supports it below. */
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  min-height: 330px !important;
+  padding: clamp(30px, 3.2vw, 42px) !important;
+  gap: clamp(18px, 2vw, 24px) !important;
+  isolation: isolate !important;
+}
+
+/* Remove old diagonal/background artifacts inside the Gateway QR card. */
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-pass-glow {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 8% 8% auto auto !important;
+  width: 54% !important;
+  height: 54% !important;
+  border-radius: 999px !important;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(243, 174, 38, 0.16), transparent 58%),
+    radial-gradient(circle at 35% 42%, rgba(255, 255, 255, 0.10), transparent 52%) !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+  filter: blur(2px) !important;
+}
+
+/* Center the scannable tile. */
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-qr-shell {
+  position: relative !important;
+  z-index: 4 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  width: clamp(184px, 19vw, 226px) !important;
+  padding: clamp(14px, 1.45vw, 18px) !important;
+  border-radius: 26px !important;
+  background: #ffffff !important;
+  transform: none !important;
+  box-shadow:
+    0 24px 52px rgba(0, 31, 61, 0.30),
+    0 0 0 1px rgba(255, 255, 255, 0.88),
+    inset 0 0 0 1px rgba(5, 150, 165, 0.08) !important;
+}
+
+/* Preserve scan reliability. */
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-qr-image {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1 !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  border-radius: 10px !important;
+  background: #ffffff !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  opacity: 1 !important;
+}
+
+/* Center the text under QR. */
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy {
+  position: relative !important;
+  z-index: 4 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  max-width: 22rem !important;
+  margin: 0 !important;
+  gap: 9px !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy strong {
+  max-width: 15ch !important;
+  font-size: clamp(32px, 2.75vw, 42px) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -0.045em !important;
+  text-wrap: balance !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy small {
+  max-width: none !important;
+  font-size: clamp(17px, 1.24vw, 21px) !important;
+  line-height: 1.24 !important;
+  font-weight: 750 !important;
+  color: rgba(240, 248, 255, 0.91) !important;
+}
+
+/* Remove grid placement remnants from previous patch. */
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-qr-shell,
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy {
+  grid-column: auto !important;
+  grid-row: auto !important;
+}
+
+@media (max-width: 900px) {
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core {
+    min-height: 320px !important;
+    padding: 30px 24px !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-qr-shell {
+    width: 200px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core {
+    min-height: auto !important;
+    padding: 28px 22px !important;
+    gap: 18px !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-qr-shell {
+    width: min(224px, 76vw) !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy strong {
+    font-size: clamp(30px, 7vw, 38px) !important;
+    max-width: 14ch !important;
+  }
+
+  .osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy small {
+    font-size: clamp(17px, 4.3vw, 21px) !important;
+  }
+}
+/* OSP_PUBLIC_HOME_GATEWAY_QR_CARD_CENTER_31C_END */
+
+
+/* OSP_PUBLIC_HOME_GATEWAY_QR_TEXT_CENTER_31D_START */
+/* Micro-align Gateway QR text exactly under the centered QR tile. */
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core {
+  align-items: center !important;
+  text-align: center !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-qr-shell {
+  align-self: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy {
+  align-self: center !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  width: min(100%, 360px) !important;
+  max-width: 360px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transform: none !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy strong,
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy small {
+  display: block !important;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy strong {
+  max-width: 14ch !important;
+}
+
+.osp-premium-v3 .osp-ecosystem-core.osp-gateway-core .osp-gateway-copy small {
+  max-width: 22ch !important;
+}
+/* OSP_PUBLIC_HOME_GATEWAY_QR_TEXT_CENTER_31D_END */
+
+
+/* OSP_PUBLIC_HEADER_FAVICON_LOGO_POLISH_32_START */
+/* Header OSP mark polish: remove dirty white/circular placeholder shell and use clean transparent mark. */
+
+/* Logo lockup wrapper: compact, transparent, no badge effect. */
+.osp-premium-v3 .osp-commercial-logo,
+.osp-premium-v3 .osp-commercial-brand,
+.osp-premium-v3 .osp-header-brand,
+.osp-premium-v3 .osp-public-brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+/* Logo mark container: kill white tile, circular placeholder, thick border, sticker shadow. */
+.osp-premium-v3 .osp-commercial-logo-mark,
+.osp-premium-v3 .osp-logo-mark,
+.osp-premium-v3 .osp-brand-mark,
+.osp-premium-v3 .osp-header-logo-mark {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+/* Logo image itself: transparent PNG/SVG-style behavior, no white border, no crop. */
+.osp-premium-v3 .osp-commercial-logo-mark img,
+.osp-premium-v3 .osp-logo-mark img,
+.osp-premium-v3 .osp-brand-mark img,
+.osp-premium-v3 .osp-header-logo-mark img,
+.osp-premium-v3 img.osp-commercial-logo-mark,
+.osp-premium-v3 img.osp-logo-mark,
+.osp-premium-v3 img.osp-brand-mark,
+.osp-premium-v3 img.osp-header-logo-mark {
+  display: block !important;
+  width: 46px !important;
+  height: 46px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* If an older pseudo badge exists, remove it. */
+.osp-premium-v3 .osp-commercial-logo-mark::before,
+.osp-premium-v3 .osp-commercial-logo-mark::after,
+.osp-premium-v3 .osp-logo-mark::before,
+.osp-premium-v3 .osp-logo-mark::after,
+.osp-premium-v3 .osp-brand-mark::before,
+.osp-premium-v3 .osp-brand-mark::after,
+.osp-premium-v3 .osp-header-logo-mark::before,
+.osp-premium-v3 .osp-header-logo-mark::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+/* Header sizing refinement so the mark no longer feels bulky. */
+.osp-premium-v3 .osp-commercial-header,
+.osp-premium-v3 .osp-public-header,
+.osp-premium-v3 .osp-header-shell {
+  --osp-header-logo-size: 46px;
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3 .osp-commercial-logo-mark,
+  .osp-premium-v3 .osp-logo-mark,
+  .osp-premium-v3 .osp-brand-mark,
+  .osp-premium-v3 .osp-header-logo-mark {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+  }
+
+  .osp-premium-v3 .osp-commercial-logo-mark img,
+  .osp-premium-v3 .osp-logo-mark img,
+  .osp-premium-v3 .osp-brand-mark img,
+  .osp-premium-v3 .osp-header-logo-mark img,
+  .osp-premium-v3 img.osp-commercial-logo-mark,
+  .osp-premium-v3 img.osp-logo-mark,
+  .osp-premium-v3 img.osp-brand-mark,
+  .osp-premium-v3 img.osp-header-logo-mark {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
+/* OSP_PUBLIC_HEADER_FAVICON_LOGO_POLISH_32_END */
+
+
+/* OSP_PUBLIC_HEADER_LOGO_CLEAN_33_START */
+/* Hard-remove header logo badge shell/circular placeholder and use cleaned transparent mark. */
+
+.osp-premium-v3 .osp-commercial-logo-mark,
+.osp-premium-v3 .osp-commercial-logo-mark *,
+.osp-premium-v3 .osp-logo-mark,
+.osp-premium-v3 .osp-logo-mark *,
+.osp-premium-v3 .osp-brand-mark,
+.osp-premium-v3 .osp-brand-mark *,
+.osp-premium-v3 .osp-header-logo-mark,
+.osp-premium-v3 .osp-header-logo-mark * {
+  box-shadow: none !important;
+}
+
+/* The mark wrapper must not create a visible badge. */
+.osp-premium-v3 .osp-commercial-logo-mark,
+.osp-premium-v3 .osp-logo-mark,
+.osp-premium-v3 .osp-brand-mark,
+.osp-premium-v3 .osp-header-logo-mark {
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  max-width: 46px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  overflow: visible !important;
+}
+
+/* Remove all pseudo-shells that create the circular/rounded geometry. */
+.osp-premium-v3 .osp-commercial-logo-mark::before,
+.osp-premium-v3 .osp-commercial-logo-mark::after,
+.osp-premium-v3 .osp-logo-mark::before,
+.osp-premium-v3 .osp-logo-mark::after,
+.osp-premium-v3 .osp-brand-mark::before,
+.osp-premium-v3 .osp-brand-mark::after,
+.osp-premium-v3 .osp-header-logo-mark::before,
+.osp-premium-v3 .osp-header-logo-mark::after {
+  content: none !important;
+  display: none !important;
+  border: 0 !important;
+  background: none !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* The image is the logo. Nothing else. */
+.osp-premium-v3 .osp-commercial-logo-mark img,
+.osp-premium-v3 .osp-logo-mark img,
+.osp-premium-v3 .osp-brand-mark img,
+.osp-premium-v3 .osp-header-logo-mark img {
+  display: block !important;
+  width: 46px !important;
+  height: 46px !important;
+  max-width: 46px !important;
+  max-height: 46px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* If the image itself carries the class. */
+.osp-premium-v3 img.osp-commercial-logo-mark,
+.osp-premium-v3 img.osp-logo-mark,
+.osp-premium-v3 img.osp-brand-mark,
+.osp-premium-v3 img.osp-header-logo-mark {
+  width: 46px !important;
+  height: 46px !important;
+  object-fit: contain !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Keep lockup aligned after removing shell. */
+.osp-premium-v3 .osp-commercial-logo,
+.osp-premium-v3 .osp-commercial-brand,
+.osp-premium-v3 .osp-header-brand,
+.osp-premium-v3 .osp-public-brand {
+  align-items: center !important;
+  gap: 14px !important;
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3 .osp-commercial-logo-mark,
+  .osp-premium-v3 .osp-logo-mark,
+  .osp-premium-v3 .osp-brand-mark,
+  .osp-premium-v3 .osp-header-logo-mark,
+  .osp-premium-v3 .osp-commercial-logo-mark img,
+  .osp-premium-v3 .osp-logo-mark img,
+  .osp-premium-v3 .osp-brand-mark img,
+  .osp-premium-v3 .osp-header-logo-mark img,
+  .osp-premium-v3 img.osp-commercial-logo-mark,
+  .osp-premium-v3 img.osp-logo-mark,
+  .osp-premium-v3 img.osp-brand-mark,
+  .osp-premium-v3 img.osp-header-logo-mark {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+  }
+}
+/* OSP_PUBLIC_HEADER_LOGO_CLEAN_33_END */
+

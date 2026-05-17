@@ -1,4 +1,12 @@
 import "./globals.css";
+export const metadata = {
+  icons: {
+    icon: "/osp/osp-public-favicon-transparent.png",
+    shortcut: "/osp/osp-public-favicon-transparent.png",
+    apple: "/osp/osp-public-favicon-transparent.png",
+  },
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
