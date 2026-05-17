@@ -263,7 +263,7 @@ export default function TravelerPassPage() {
           'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
       }}
     >
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .osp-pass-surface-hardening-18d {
           --osp-navy: #013863;
           --osp-deep: #002E52;
@@ -358,7 +358,7 @@ export default function TravelerPassPage() {
             filter: none;
           }
         }
-      `}</style>
+      ` }} />
 
       <section
         style={{
