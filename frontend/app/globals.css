@@ -6272,10 +6272,10 @@ html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:active {
   color: #013863 !important;
 }
 
-html body main[data-osp-entry-page="true"] a[href="/traveler/home"],
-html body main[data-osp-entry-page="true"] a[href="/traveler/home"]:hover,
-html body main[data-osp-entry-page="true"] a[href="/traveler/home"]:focus,
-html body main[data-osp-entry-page="true"] a[href="/traveler/home"]:active,
+html body main[data-osp-entry-page="true"] a[href="/traveler/start"],
+html body main[data-osp-entry-page="true"] a[href="/traveler/start"]:hover,
+html body main[data-osp-entry-page="true"] a[href="/traveler/start"]:focus,
+html body main[data-osp-entry-page="true"] a[href="/traveler/start"]:active,
 html body main[data-osp-entry-page="true"] a[href="/traveler/pass"],
 html body main[data-osp-entry-page="true"] a[href="/traveler/pass"]:hover,
 html body main[data-osp-entry-page="true"] a[href="/traveler/pass"]:focus,
@@ -6299,8 +6299,8 @@ html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:active *
 
 html body main[data-osp-entry-page="true"] a[href="/traveler/register"] span,
 html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:hover span,
-html body main[data-osp-entry-page="true"] a[href="/traveler/home"] span,
-html body main[data-osp-entry-page="true"] a[href="/traveler/home"]:hover span,
+html body main[data-osp-entry-page="true"] a[href="/traveler/start"] span,
+html body main[data-osp-entry-page="true"] a[href="/traveler/start"]:hover span,
 html body main[data-osp-entry-page="true"] a[href="/traveler/pass"] span,
 html body main[data-osp-entry-page="true"] a[href="/traveler/pass"]:hover span,
 html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"] span,
@@ -6312,7 +6312,7 @@ html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"]:hove
 html body main[data-osp-entry-page="true"] a[href="/traveler/register"] > span:first-of-type,
 html body main[data-osp-entry-page="true"] a[href="/traveler/register"]:hover > span:first-of-type,
 html body main[data-osp-entry-page="true"] a[href="/traveler/pass"] > span:first-of-type,
-html body main[data-osp-entry-page="true"] a[href="/traveler/home"] > span:first-of-type,
+html body main[data-osp-entry-page="true"] a[href="/traveler/start"] > span:first-of-type,
 html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"] > span:first-of-type {
   background: rgba(255,255,255,0.92) !important;
   background-color: rgba(255,255,255,0.92) !important;
@@ -11018,7 +11018,7 @@ html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"] > sp
 
 
 /* OSP_PUBLIC_HEADER_FAVICON_LOGO_POLISH_32_START */
-/* Header OSP mark polish: remove dirty white/circular placeholder shell and use clean transparent mark. */
+/* Header OSP mark polish: remove dirty white/circular preview shell and use clean transparent mark. */
 
 /* Logo lockup wrapper: compact, transparent, no badge effect. */
 .osp-premium-v3 .osp-commercial-logo,
@@ -11030,7 +11030,7 @@ html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"] > sp
   gap: 14px !important;
 }
 
-/* Logo mark container: kill white tile, circular placeholder, thick border, sticker shadow. */
+/* Logo mark container: kill white tile, circular preview, thick border, sticker shadow. */
 .osp-premium-v3 .osp-commercial-logo-mark,
 .osp-premium-v3 .osp-logo-mark,
 .osp-premium-v3 .osp-brand-mark,
@@ -11124,7 +11124,7 @@ html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"] > sp
 
 
 /* OSP_PUBLIC_HEADER_LOGO_CLEAN_33_START */
-/* Hard-remove header logo badge shell/circular placeholder and use cleaned transparent mark. */
+/* Hard-remove header logo badge shell/circular preview and use cleaned transparent mark. */
 
 .osp-premium-v3 .osp-commercial-logo-mark,
 .osp-premium-v3 .osp-commercial-logo-mark *,
@@ -11243,4 +11243,3867 @@ html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"] > sp
   }
 }
 /* OSP_PUBLIC_HEADER_LOGO_CLEAN_33_END */
+
+
+/* OSP_PASSPORT_TRAILS_PUBLIC_PREMIUM_02_START */
+/* Public /passport-trails premium gateway page. */
+
+.osp-premium-v3.osp-passport-public-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 22% 8%, rgba(5, 150, 165, 0.14), transparent 30%),
+    linear-gradient(180deg, #f4fcfa 0%, #edf8f7 42%, #f7fefc 100%);
+  color: #0b2442;
+}
+
+.osp-passport-public-header {
+  position: sticky;
+  top: 20px;
+  z-index: 40;
+  margin-inline: auto;
+}
+
+.osp-passport-hero {
+  width: min(1180px, calc(100% - 48px));
+  margin: clamp(92px, 10vw, 148px) auto clamp(56px, 7vw, 92px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(360px, 0.78fr);
+  gap: clamp(34px, 5vw, 74px);
+  align-items: center;
+}
+
+.osp-passport-hero-copy {
+  display: grid;
+  gap: 22px;
+}
+
+.osp-section-kicker,
+.osp-passport-section-heading p,
+.osp-passport-local-partner-band p,
+.osp-passport-final-cta p {
+  margin: 0;
+  color: #0596a5;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+}
+
+.osp-passport-hero h1 {
+  margin: 0;
+  max-width: 790px;
+  color: #073963;
+  font-size: clamp(3.05rem, 6vw, 5.8rem);
+  line-height: 0.94;
+  letter-spacing: -0.07em;
+}
+
+.osp-passport-hero-copy > p:not(.osp-section-kicker) {
+  margin: 0;
+  max-width: 680px;
+  color: #526a86;
+  font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+  line-height: 1.68;
+  font-weight: 650;
+}
+
+.osp-passport-hero-actions,
+.osp-passport-final-cta div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.osp-passport-hero-actions a,
+.osp-passport-final-cta a,
+.osp-passport-local-partner-band a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 24px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.osp-passport-hero-actions a:first-child,
+.osp-passport-final-cta a:first-child,
+.osp-passport-local-partner-band a {
+  color: #052d4f;
+  background: linear-gradient(135deg, #f3ae26, #ffd36b);
+  box-shadow: 0 18px 34px rgba(243, 174, 38, 0.24);
+}
+
+.osp-passport-hero-actions a:last-child,
+.osp-passport-final-cta a:last-child {
+  color: #073963;
+  background: rgba(255, 255, 255, 0.74);
+  border: 1px solid rgba(5, 150, 165, 0.18);
+  box-shadow: 0 16px 30px rgba(1, 56, 99, 0.08);
+}
+
+.osp-passport-hero-card {
+  border-radius: 34px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow: 0 32px 70px rgba(1, 56, 99, 0.12);
+}
+
+.osp-passport-card-shell {
+  min-height: 372px;
+  border-radius: 28px;
+  padding: 30px;
+  display: grid;
+  align-content: space-between;
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 24% 78%, rgba(243, 174, 38, 0.26), transparent 28%),
+    radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.28), transparent 32%),
+    linear-gradient(135deg, #02365f 0%, #0596a5 100%);
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.osp-passport-card-shell::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -28% 16%;
+  height: 64%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  z-index: -1;
+}
+
+.osp-passport-card-shell > span {
+  width: fit-content;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #f3ae26;
+  color: #063459;
+  font-size: 0.74rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.osp-passport-card-shell strong {
+  max-width: 15ch;
+  font-size: clamp(2rem, 3.4vw, 3.1rem);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.osp-passport-card-shell div {
+  display: grid;
+  gap: 10px;
+}
+
+.osp-passport-card-shell em {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-style: normal;
+  font-weight: 850;
+  color: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.osp-passport-section {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto clamp(54px, 7vw, 90px);
+}
+
+.osp-passport-section-heading {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.osp-passport-section-heading h2,
+.osp-passport-local-partner-band h2,
+.osp-passport-final-cta h2 {
+  margin: 0;
+  max-width: 780px;
+  color: #073963;
+  font-size: clamp(2.35rem, 4.2vw, 4.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.osp-passport-section-heading span,
+.osp-passport-local-partner-band span {
+  max-width: 760px;
+  color: #526a86;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  font-weight: 620;
+}
+
+.osp-passport-mode-grid,
+.osp-passport-featured-grid,
+.osp-passport-step-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.osp-passport-mode-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.osp-passport-featured-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.osp-passport-step-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.osp-passport-mode-card,
+.osp-passport-trail-card,
+.osp-passport-step-card {
+  min-height: 220px;
+  border-radius: 28px;
+  padding: 26px;
+  text-decoration: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(244, 252, 250, 0.84));
+  border: 1px solid rgba(5, 150, 165, 0.12);
+  box-shadow: 0 22px 46px rgba(1, 56, 99, 0.08);
+}
+
+.osp-passport-mode-card span,
+.osp-passport-trail-card span,
+.osp-passport-step-card span {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 18px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: #073963;
+  background: rgba(243, 174, 38, 0.22);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.osp-passport-mode-card h3,
+.osp-passport-trail-card h3,
+.osp-passport-step-card h3 {
+  margin: 0 0 12px;
+  color: #073963;
+  font-size: clamp(1.24rem, 1.8vw, 1.7rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.osp-passport-mode-card p,
+.osp-passport-trail-card p,
+.osp-passport-step-card p {
+  margin: 0;
+  color: #526a86;
+  font-size: 0.98rem;
+  line-height: 1.58;
+  font-weight: 600;
+}
+
+.osp-passport-trail-card {
+  min-height: 270px;
+  display: flex;
+  flex-direction: column;
+}
+
+.osp-passport-trail-card strong {
+  margin-top: auto;
+  color: #0596a5;
+  font-size: 0.9rem;
+}
+
+.osp-passport-local-partner-band,
+.osp-passport-final-cta {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto clamp(54px, 7vw, 90px);
+  border-radius: 34px;
+  padding: clamp(30px, 5vw, 56px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 26px;
+  align-items: center;
+  background:
+    radial-gradient(circle at 86% 28%, rgba(243, 174, 38, 0.16), transparent 28%),
+    linear-gradient(135deg, #013863, #047886);
+  color: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 30px 70px rgba(1, 56, 99, 0.18);
+}
+
+.osp-passport-local-partner-band h2,
+.osp-passport-final-cta h2 {
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.osp-passport-local-partner-band span {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.osp-passport-final-cta {
+  text-align: center;
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+.osp-passport-final-cta h2 {
+  max-width: 780px;
+}
+
+.osp-passport-final-cta div {
+  justify-content: center;
+}
+
+.osp-passport-public-footer {
+  margin-top: 0;
+}
+
+@media (max-width: 1020px) {
+  .osp-passport-hero,
+  .osp-passport-local-partner-band {
+    grid-template-columns: 1fr;
+  }
+
+  .osp-passport-mode-grid,
+  .osp-passport-featured-grid,
+  .osp-passport-step-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .osp-passport-local-partner-band {
+    justify-items: start;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-passport-public-header {
+    top: 10px;
+  }
+
+  .osp-passport-hero,
+  .osp-passport-section,
+  .osp-passport-local-partner-band,
+  .osp-passport-final-cta {
+    width: min(100% - 28px, 680px);
+  }
+
+  .osp-passport-hero {
+    margin-top: 56px;
+    gap: 28px;
+  }
+
+  .osp-passport-hero h1 {
+    font-size: clamp(2.75rem, 13vw, 4.1rem);
+  }
+
+  .osp-passport-hero-actions,
+  .osp-passport-final-cta div {
+    flex-direction: column;
+  }
+
+  .osp-passport-hero-actions a,
+  .osp-passport-final-cta a,
+  .osp-passport-local-partner-band a {
+    width: 100%;
+  }
+
+  .osp-passport-card-shell {
+    min-height: 330px;
+  }
+
+  .osp-passport-mode-grid,
+  .osp-passport-featured-grid,
+  .osp-passport-step-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* OSP_PASSPORT_TRAILS_PUBLIC_PREMIUM_02_END */
+
+
+/* OSP_PASSPORT_TRAILS_PUBLIC_PREMIUM_02B_START */
+/* Visual QA polish for public /passport-trails: header match, typography restraint, contrast correction. */
+
+/* Page shell: lighter premium mist, less washed vertical stacking. */
+.osp-premium-v3.osp-passport-public-page {
+  background:
+    radial-gradient(circle at 18% 7%, rgba(5, 150, 165, 0.10), transparent 30%),
+    radial-gradient(circle at 80% 22%, rgba(243, 174, 38, 0.07), transparent 24%),
+    linear-gradient(180deg, #f6fdfb 0%, #ecf8f7 46%, #f7fefc 100%) !important;
+}
+
+/* Header must behave like HOME: no purple/visited underline, compact premium lockup. */
+.osp-premium-v3.osp-passport-public-page .osp-commercial-header {
+  width: min(1180px, calc(100% - 48px)) !important;
+  min-height: 78px !important;
+  padding: 14px 22px !important;
+  border-radius: 0 0 26px 26px !important;
+  background:
+    linear-gradient(135deg, rgba(1, 56, 99, 0.96), rgba(3, 72, 111, 0.92)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow: 0 22px 54px rgba(1, 56, 99, 0.16) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-commercial-logo,
+.osp-premium-v3.osp-passport-public-page .osp-commercial-logo:visited,
+.osp-premium-v3.osp-passport-public-page .osp-commercial-logo:hover,
+.osp-premium-v3.osp-passport-public-page .osp-commercial-logo:focus {
+  color: rgba(255, 255, 255, 0.94) !important;
+  text-decoration: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-commercial-logo span:last-child {
+  display: grid !important;
+  gap: 3px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-commercial-logo strong {
+  color: rgba(255, 255, 255, 0.96) !important;
+  text-decoration: none !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  font-size: 0.9rem !important;
+  line-height: 1.05 !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-commercial-logo small {
+  color: rgba(230, 247, 249, 0.72) !important;
+  text-decoration: none !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-commercial-nav a,
+.osp-premium-v3.osp-passport-public-page .osp-commercial-nav a:visited {
+  color: rgba(231, 247, 249, 0.78) !important;
+  text-decoration: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-commercial-nav a:hover {
+  color: rgba(255, 255, 255, 0.98) !important;
+}
+
+/* Header logo: no badge/square dirt, same compact mark behavior as HOME. */
+.osp-premium-v3.osp-passport-public-page .osp-commercial-logo-mark {
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-commercial-logo-mark img {
+  width: 46px !important;
+  height: 46px !important;
+  object-fit: contain !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Hero: reduce bulky typography and improve premium balance. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-hero {
+  margin-top: clamp(82px, 8.5vw, 120px) !important;
+  margin-bottom: clamp(48px, 6vw, 76px) !important;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.75fr) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-section-kicker,
+.osp-premium-v3.osp-passport-public-page .osp-passport-section-heading p,
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band p,
+.osp-premium-v3.osp-passport-public-page .osp-passport-final-cta p {
+  color: #0596a5 !important;
+  letter-spacing: 0.34em !important;
+  font-size: 0.72rem !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-hero h1 {
+  max-width: 720px !important;
+  font-size: clamp(3rem, 5.1vw, 5rem) !important;
+  line-height: 0.96 !important;
+  letter-spacing: -0.065em !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-hero-copy > p:not(.osp-section-kicker) {
+  max-width: 650px !important;
+  font-size: clamp(1rem, 1.38vw, 1.22rem) !important;
+  line-height: 1.6 !important;
+  color: #50668b !important;
+}
+
+/* Hero preview card: cleaner, less crushed, less poster-heavy. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-hero-card {
+  padding: 14px !important;
+  border-radius: 30px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-card-shell {
+  min-height: 330px !important;
+  padding: 26px !important;
+  border-radius: 24px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-card-shell strong {
+  max-width: 14ch !important;
+  font-size: clamp(2rem, 2.9vw, 2.8rem) !important;
+  line-height: 1.01 !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-card-shell em {
+  min-height: 38px !important;
+  font-size: 0.88rem !important;
+}
+
+/* Section headings: premium restraint; no giant heavy walls. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-section {
+  margin-bottom: clamp(46px, 6vw, 76px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-section-heading {
+  margin-bottom: 24px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-section-heading h2,
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band h2,
+.osp-premium-v3.osp-passport-public-page .osp-passport-final-cta h2 {
+  font-size: clamp(2.25rem, 3.75vw, 3.7rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.055em !important;
+}
+
+/* Cards: slightly tighter, more premium rhythm. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-mode-card,
+.osp-premium-v3.osp-passport-public-page .osp-passport-trail-card,
+.osp-premium-v3.osp-passport-public-page .osp-passport-step-card {
+  border-radius: 26px !important;
+  padding: 24px !important;
+  box-shadow: 0 20px 42px rgba(1, 56, 99, 0.07) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-mode-card {
+  min-height: 205px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-trail-card {
+  min-height: 252px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-step-card {
+  min-height: 222px !important;
+}
+
+/* Hard contrast correction for dark CTA bands. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band,
+.osp-premium-v3.osp-passport-public-page .osp-passport-final-cta {
+  background:
+    radial-gradient(circle at 86% 26%, rgba(243, 174, 38, 0.18), transparent 26%),
+    radial-gradient(circle at 18% 82%, rgba(5, 150, 165, 0.22), transparent 36%),
+    linear-gradient(135deg, #013863 0%, #047886 100%) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band p,
+.osp-premium-v3.osp-passport-public-page .osp-passport-final-cta p {
+  color: rgba(87, 230, 235, 0.94) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band h2,
+.osp-premium-v3.osp-passport-public-page .osp-passport-final-cta h2 {
+  color: rgba(255, 255, 255, 0.96) !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.08) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band span {
+  color: rgba(234, 251, 250, 0.84) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band a,
+.osp-premium-v3.osp-passport-public-page .osp-passport-final-cta a:first-child {
+  color: #062b4a !important;
+  background: linear-gradient(135deg, #f3ae26, #ffd36b) !important;
+  box-shadow: 0 18px 38px rgba(243, 174, 38, 0.20) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-final-cta a:last-child {
+  color: rgba(255, 255, 255, 0.94) !important;
+  background: rgba(255, 255, 255, 0.13) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Footer: match public trust footer better. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-public-footer {
+  background: #013863 !important;
+  color: rgba(255, 255, 255, 0.86) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-public-footer a,
+.osp-premium-v3.osp-passport-public-page .osp-passport-public-footer a:visited {
+  color: rgba(231, 247, 249, 0.74) !important;
+  text-decoration: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-public-footer a:hover {
+  color: rgba(255, 255, 255, 0.96) !important;
+}
+
+@media (max-width: 1020px) {
+  .osp-premium-v3.osp-passport-public-page .osp-passport-hero {
+    grid-template-columns: 1fr !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-page .osp-passport-hero-card {
+    max-width: 520px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3.osp-passport-public-page .osp-commercial-header {
+    width: min(100% - 20px, 680px) !important;
+    top: 10px !important;
+    border-radius: 24px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-page .osp-passport-hero {
+    margin-top: 50px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-page .osp-passport-hero h1 {
+    font-size: clamp(2.55rem, 11.4vw, 3.65rem) !important;
+    letter-spacing: -0.062em !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-page .osp-passport-section-heading h2,
+  .osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band h2,
+  .osp-premium-v3.osp-passport-public-page .osp-passport-final-cta h2 {
+    font-size: clamp(2.15rem, 9.5vw, 3.1rem) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-page .osp-passport-card-shell {
+    min-height: 310px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band,
+  .osp-premium-v3.osp-passport-public-page .osp-passport-final-cta {
+    padding: 30px 22px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_PUBLIC_PREMIUM_02B_END */
+
+
+/* OSP_PASSPORT_TRAILS_PUBLIC_PREMIUM_02C_START */
+/* Final premium micro-polish for /passport-trails before route audit. */
+
+/* Slightly tighter header lockup to match HOME rhythm. */
+.osp-premium-v3.osp-passport-public-page .osp-commercial-header {
+  max-width: 1180px !important;
+  min-height: 74px !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-commercial-logo {
+  gap: 12px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-commercial-nav {
+  gap: clamp(20px, 2.3vw, 34px) !important;
+}
+
+/* Hero: reduce bulk just enough; keep impact. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-hero {
+  margin-top: clamp(72px, 7vw, 104px) !important;
+  margin-bottom: clamp(42px, 5.2vw, 68px) !important;
+  gap: clamp(32px, 4.3vw, 62px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-hero h1 {
+  max-width: 700px !important;
+  font-size: clamp(2.85rem, 4.75vw, 4.72rem) !important;
+  line-height: 0.975 !important;
+  letter-spacing: -0.062em !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-hero-copy {
+  gap: 18px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-hero-copy > p:not(.osp-section-kicker) {
+  font-size: clamp(1rem, 1.25vw, 1.16rem) !important;
+  line-height: 1.58 !important;
+  max-width: 620px !important;
+}
+
+/* Hero visual card: a little more elegant, less heavy. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-hero-card {
+  max-width: 420px !important;
+  justify-self: end !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-card-shell {
+  min-height: 318px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-card-shell strong {
+  font-size: clamp(1.9rem, 2.55vw, 2.55rem) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-card-shell > span {
+  padding: 9px 13px !important;
+  font-size: 0.7rem !important;
+}
+
+/* Section rhythm: reduce tall stacked-page feeling. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-section {
+  margin-bottom: clamp(42px, 5.5vw, 68px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-section-heading {
+  gap: 10px !important;
+  margin-bottom: 22px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-section-heading h2 {
+  max-width: 760px !important;
+  font-size: clamp(2.15rem, 3.4vw, 3.35rem) !important;
+  line-height: 1.02 !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-section-heading span {
+  font-size: 1rem !important;
+  line-height: 1.58 !important;
+}
+
+/* Cards: stronger premium hover without becoming SaaS-like. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-mode-card,
+.osp-premium-v3.osp-passport-public-page .osp-passport-trail-card,
+.osp-premium-v3.osp-passport-public-page .osp-passport-step-card {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-mode-card:hover,
+.osp-premium-v3.osp-passport-public-page .osp-passport-trail-card:hover,
+.osp-premium-v3.osp-passport-public-page .osp-passport-step-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(5, 150, 165, 0.22) !important;
+  box-shadow: 0 26px 54px rgba(1, 56, 99, 0.10) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-mode-card h3,
+.osp-premium-v3.osp-passport-public-page .osp-passport-trail-card h3,
+.osp-premium-v3.osp-passport-public-page .osp-passport-step-card h3 {
+  font-size: clamp(1.18rem, 1.55vw, 1.5rem) !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-mode-card p,
+.osp-premium-v3.osp-passport-public-page .osp-passport-trail-card p,
+.osp-premium-v3.osp-passport-public-page .osp-passport-step-card p {
+  font-size: 0.94rem !important;
+}
+
+/* CTA bands: more premium balance, less oversized wall. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band,
+.osp-premium-v3.osp-passport-public-page .osp-passport-final-cta {
+  margin-bottom: clamp(42px, 5.6vw, 72px) !important;
+  padding: clamp(30px, 4.3vw, 48px) !important;
+  border-radius: 32px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band h2 {
+  max-width: 720px !important;
+  font-size: clamp(2.2rem, 3.55vw, 3.5rem) !important;
+  line-height: 1.02 !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band span {
+  max-width: 820px !important;
+  font-size: 1rem !important;
+  line-height: 1.58 !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-final-cta h2 {
+  max-width: 720px !important;
+  font-size: clamp(2.25rem, 3.6vw, 3.65rem) !important;
+  line-height: 1.02 !important;
+}
+
+/* Buttons: decisive but cleaner. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-hero-actions a,
+.osp-premium-v3.osp-passport-public-page .osp-passport-final-cta a,
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band a {
+  min-height: 48px !important;
+  padding-inline: 24px !important;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-hero-actions a:hover,
+.osp-premium-v3.osp-passport-public-page .osp-passport-final-cta a:hover,
+.osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band a:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.02) !important;
+}
+
+/* Footer: reduce visual heaviness and keep compliance-ready structure. */
+.osp-premium-v3.osp-passport-public-page .osp-passport-public-footer {
+  padding-top: 34px !important;
+  padding-bottom: 34px !important;
+}
+
+.osp-premium-v3.osp-passport-public-page .osp-passport-public-footer nav {
+  gap: 12px 18px !important;
+}
+
+@media (max-width: 1020px) {
+  .osp-premium-v3.osp-passport-public-page .osp-passport-hero-card {
+    justify-self: start !important;
+    max-width: 500px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3.osp-passport-public-page .osp-passport-hero {
+    margin-top: 44px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-page .osp-passport-hero h1 {
+    font-size: clamp(2.35rem, 10.6vw, 3.45rem) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-page .osp-passport-section-heading h2,
+  .osp-premium-v3.osp-passport-public-page .osp-passport-local-partner-band h2,
+  .osp-premium-v3.osp-passport-public-page .osp-passport-final-cta h2 {
+    font-size: clamp(2rem, 8.7vw, 2.85rem) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-page .osp-passport-hero-card {
+    max-width: 100% !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-page .osp-passport-card-shell {
+    min-height: 292px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_PUBLIC_PREMIUM_02C_END */
+
+
+/* OSP_PASSPORT_TRAILS_PUBLIC_RESTRUCTURE_03_START */
+/* Composition restructure for /passport-trails: less template-stack, stronger public trail gateway. */
+
+.osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(5, 150, 165, 0.10), transparent 30%),
+    radial-gradient(circle at 82% 30%, rgba(243, 174, 38, 0.06), transparent 24%),
+    linear-gradient(180deg, #f7fefc 0%, #edf8f7 44%, #f7fefc 100%) !important;
+}
+
+/* HOME-style public header alignment. */
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-header {
+  width: min(1180px, calc(100% - 48px)) !important;
+  min-height: 74px !important;
+  top: 18px !important;
+  padding: 12px 22px !important;
+  border-radius: 0 0 26px 26px !important;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(5, 150, 165, 0.22), transparent 26%),
+    linear-gradient(135deg, rgba(1, 56, 99, 0.98), rgba(3, 72, 111, 0.94)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow: 0 22px 54px rgba(1, 56, 99, 0.16) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo:visited,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo:focus,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-nav a,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-nav a:visited {
+  color: rgba(240, 248, 255, 0.92) !important;
+  text-decoration: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo strong {
+  color: rgba(255, 255, 255, 0.96) !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.18em !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo small {
+  color: rgba(230, 247, 249, 0.72) !important;
+  text-decoration: none !important;
+}
+
+/* Hero: pull higher and make composition less heavy. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  width: min(1180px, calc(100% - 48px)) !important;
+  margin: clamp(56px, 5.8vw, 84px) auto clamp(42px, 5.8vw, 76px) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.72fr) !important;
+  gap: clamp(34px, 4.5vw, 66px) !important;
+  align-items: center !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero h1 {
+  max-width: 700px !important;
+  font-size: clamp(2.75rem, 4.45vw, 4.45rem) !important;
+  line-height: 0.99 !important;
+  letter-spacing: -0.06em !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy {
+  gap: 18px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy > p:not(.osp-section-kicker) {
+  max-width: 620px !important;
+  font-size: clamp(1rem, 1.2vw, 1.15rem) !important;
+  line-height: 1.58 !important;
+}
+
+/* Route/stamp preview replaces generic teal board. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+  justify-self: end !important;
+  width: min(100%, 430px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+  min-height: 420px !important;
+  border-radius: 34px !important;
+  padding: 26px !important;
+  display: grid !important;
+  align-content: space-between !important;
+  gap: 22px !important;
+  background:
+    radial-gradient(circle at 18% 74%, rgba(243, 174, 38, 0.25), transparent 25%),
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.20), transparent 26%),
+    linear-gradient(135deg, #02365f 0%, #0596a5 100%) !important;
+  border: 16px solid rgba(255, 255, 255, 0.76) !important;
+  box-shadow: 0 34px 76px rgba(1, 56, 99, 0.15) !important;
+  color: rgba(255, 255, 255, 0.94) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: auto -20% -22% 8% !important;
+  height: 58% !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.13) !important;
+  z-index: -1 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-topline {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  align-items: center !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-topline span {
+  display: inline-flex !important;
+  padding: 9px 13px !important;
+  border-radius: 999px !important;
+  background: #f3ae26 !important;
+  color: #063459 !important;
+  font-size: 0.68rem !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-topline strong {
+  color: rgba(255, 255, 255, 0.74) !important;
+  font-size: 0.78rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.14em !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-route-line {
+  position: relative !important;
+  height: 118px !important;
+  margin: 4px 0 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-route-line::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 10% !important;
+  right: 10% !important;
+  top: 50% !important;
+  height: 3px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, rgba(255,255,255,0.25), rgba(243,174,38,0.78), rgba(255,255,255,0.30)) !important;
+  transform: rotate(-8deg) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-route-line i {
+  position: absolute !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 999px !important;
+  background: #f3ae26 !important;
+  box-shadow: 0 0 0 8px rgba(243, 174, 38, 0.18) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-route-line i:nth-child(1) { left: 8%; top: 56%; }
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-route-line i:nth-child(2) { left: 36%; top: 40%; }
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-route-line i:nth-child(3) { left: 62%; top: 52%; }
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-route-line i:nth-child(4) { left: 84%; top: 34%; }
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-copy h2 {
+  margin: 0 0 10px !important;
+  max-width: 13ch !important;
+  color: rgba(255, 255, 255, 0.98) !important;
+  font-size: clamp(1.85rem, 2.4vw, 2.55rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.055em !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-copy p {
+  margin: 0 !important;
+  color: rgba(236, 252, 252, 0.80) !important;
+  font-size: 0.95rem !important;
+  line-height: 1.5 !important;
+  font-weight: 650 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-preview-chips {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 9px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-preview-chips span {
+  display: inline-flex !important;
+  padding: 9px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-size: 0.82rem !important;
+  font-weight: 800 !important;
+}
+
+/* Choice-path cards. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card {
+  min-height: 250px !important;
+  padding: 26px !important;
+  border-radius: 30px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  gap: 22px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(244, 252, 250, 0.84)) !important;
+  border: 1px solid rgba(5, 150, 165, 0.13) !important;
+  box-shadow: 0 22px 46px rgba(1, 56, 99, 0.08) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card span,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card span,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card span {
+  display: inline-flex !important;
+  width: fit-content !important;
+  margin-bottom: 16px !important;
+  padding: 8px 12px !important;
+  border-radius: 999px !important;
+  background: rgba(243, 174, 38, 0.22) !important;
+  color: #073963 !important;
+  font-size: 0.7rem !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card h3,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card h3,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card h3 {
+  margin: 0 0 12px !important;
+  color: #073963 !important;
+  font-size: clamp(1.3rem, 1.75vw, 1.72rem) !important;
+  line-height: 1.06 !important;
+  letter-spacing: -0.04em !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card p,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card p,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card p {
+  margin: 0 !important;
+  color: #50668b !important;
+  font-size: 0.95rem !important;
+  line-height: 1.56 !important;
+  font-weight: 630 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card > strong {
+  color: #0596a5 !important;
+  font-size: 0.88rem !important;
+}
+
+/* Featured trail hierarchy: 1 major + 3 supporting. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-editorial-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr) !important;
+  gap: 20px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card {
+  text-decoration: none !important;
+  border-radius: 30px !important;
+  border: 1px solid rgba(5, 150, 165, 0.13) !important;
+  box-shadow: 0 22px 46px rgba(1, 56, 99, 0.08) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card {
+  min-height: 420px !important;
+  padding: 30px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background:
+    radial-gradient(circle at 84% 18%, rgba(243, 174, 38, 0.18), transparent 26%),
+    linear-gradient(135deg, rgba(255,255,255,0.96), rgba(234,251,250,0.88)) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card h3 {
+  max-width: 12ch !important;
+  font-size: clamp(2rem, 3.2vw, 3rem) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card p {
+  max-width: 34rem !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card strong,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card strong {
+  margin-top: auto !important;
+  color: #0596a5 !important;
+  font-size: 0.9rem !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-supporting-trails {
+  display: grid !important;
+  gap: 14px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card {
+  min-height: 128px !important;
+  padding: 22px !important;
+  display: grid !important;
+  align-content: start !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+}
+
+/* Local partner panel becomes light trust panel. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel {
+  width: min(1180px, calc(100% - 48px)) !important;
+  margin: 0 auto clamp(46px, 5.8vw, 76px) !important;
+  border-radius: 34px !important;
+  padding: clamp(30px, 4.2vw, 48px) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 28px !important;
+  background:
+    radial-gradient(circle at 90% 20%, rgba(243, 174, 38, 0.13), transparent 26%),
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(244,252,250,0.86)) !important;
+  color: #073963 !important;
+  border: 1px solid rgba(5, 150, 165, 0.13) !important;
+  box-shadow: 0 26px 56px rgba(1, 56, 99, 0.09) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel p {
+  color: #0596a5 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel h2 {
+  max-width: 720px !important;
+  color: #073963 !important;
+  font-size: clamp(2.1rem, 3.3vw, 3.25rem) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel span {
+  max-width: 800px !important;
+  color: #50668b !important;
+  font-size: 1rem !important;
+  line-height: 1.58 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel a {
+  color: #062b4a !important;
+  background: linear-gradient(135deg, #f3ae26, #ffd36b) !important;
+  box-shadow: 0 18px 36px rgba(243, 174, 38, 0.18) !important;
+}
+
+/* Final CTA remains the one dark premium conversion panel. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta {
+  width: min(1180px, calc(100% - 48px)) !important;
+  margin: 0 auto clamp(52px, 6vw, 82px) !important;
+  padding: clamp(34px, 5vw, 58px) !important;
+  border-radius: 34px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta h2 {
+  max-width: 700px !important;
+  color: rgba(255, 255, 255, 0.96) !important;
+  font-size: clamp(2.25rem, 3.55vw, 3.55rem) !important;
+}
+
+/* Footer alignment with public home family. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-footer {
+  background: #013863 !important;
+  color: rgba(255, 255, 255, 0.84) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
+  padding-top: 34px !important;
+  padding-bottom: 34px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-footer a,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-footer a:visited {
+  color: rgba(231, 247, 249, 0.74) !important;
+  text-decoration: none !important;
+}
+
+/* Shared interaction polish. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-step-card {
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-step-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(5, 150, 165, 0.22) !important;
+  box-shadow: 0 28px 58px rgba(1, 56, 99, 0.11) !important;
+}
+
+@media (max-width: 1020px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-editorial-grid,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel {
+    grid-template-columns: 1fr !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+    justify-self: start !important;
+    width: min(100%, 520px) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-commercial-header,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-section,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta {
+    width: min(100% - 28px, 680px) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+    margin-top: 42px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero h1 {
+    font-size: clamp(2.25rem, 10vw, 3.35rem) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 370px !important;
+    border-width: 12px !important;
+    padding: 22px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card {
+    min-height: 330px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel a,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a {
+    width: 100% !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_PUBLIC_RESTRUCTURE_03_END */
+
+
+/* OSP_PASSPORT_TRAILS_HOME_ALIGNMENT_03B_START */
+/* Align /passport-trails header/footer/buttons to HOME public website system. */
+
+/* 1) Header: stop floating lower than HOME. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-header,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-header {
+  top: 0 !important;
+  margin-top: 0 !important;
+  width: min(1180px, calc(100% - 48px)) !important;
+  min-height: 76px !important;
+  padding: 12px 22px !important;
+  border-radius: 0 0 28px 28px !important;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(5, 150, 165, 0.20), transparent 26%),
+    linear-gradient(135deg, rgba(1, 56, 99, 0.98), rgba(3, 72, 111, 0.95)) !important;
+  border-top: 0 !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.10) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 18px 46px rgba(1, 56, 99, 0.16) !important;
+}
+
+/* Keep hero from falling too far under the now-HOME-aligned header. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  margin-top: clamp(44px, 5vw, 70px) !important;
+}
+
+/* Header links: HOME-style clean, no inherited underline/purple. */
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo:visited,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo:focus,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-nav a,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-nav a:visited,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-nav a:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-nav a:focus {
+  color: rgba(238, 250, 252, 0.88) !important;
+  text-decoration: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo strong {
+  color: rgba(255, 255, 255, 0.96) !important;
+  text-decoration: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-logo small {
+  color: rgba(230, 247, 249, 0.74) !important;
+  text-decoration: none !important;
+}
+
+/* 2) Buttons: remove sun-gold as dominant CTA. Use updated HOME teal/navy button family. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:first-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:first-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel a,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-pass-button {
+  color: #062b4a !important;
+  background:
+    linear-gradient(135deg, rgba(9, 151, 167, 0.96), rgba(44, 176, 191, 0.94)) !important;
+  border: 1px solid rgba(129, 235, 241, 0.32) !important;
+  box-shadow:
+    0 18px 34px rgba(5, 150, 165, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:first-child:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:first-child:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel a:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-pass-button:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.04) saturate(1.04) !important;
+}
+
+/* Secondary buttons follow HOME: soft white/mist, not gold. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:last-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:last-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-login {
+  color: #073963 !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  border: 1px solid rgba(5, 150, 165, 0.12) !important;
+  box-shadow: 0 14px 28px rgba(1, 56, 99, 0.08) !important;
+}
+
+/* Remove leftover gold button treatment from local/final CTAs. Gold can remain only as chips/accent. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel a,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:first-child {
+  background:
+    linear-gradient(135deg, #0596a5, #20b6c3) !important;
+  color: #062b4a !important;
+}
+
+/* Hero preview chip may keep warm accent, but softer and smaller. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-topline span {
+  background: rgba(243, 174, 38, 0.92) !important;
+  color: #073963 !important;
+}
+
+/* 3) Footer: use HOME public footer family, not a separate dark block style. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-footer,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-footer {
+  margin-top: 0 !important;
+  background:
+    linear-gradient(135deg, #013863 0%, #02365f 100%) !important;
+  color: rgba(239, 250, 252, 0.84) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-footer a,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-footer a:visited,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-footer a,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-footer a:visited {
+  color: rgba(230, 247, 249, 0.76) !important;
+  text-decoration: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-footer a:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-footer a:hover {
+  color: rgba(255, 255, 255, 0.96) !important;
+}
+
+/* Reduce page-bottom CTA dominance now that HOME-style buttons are applied. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta {
+  background:
+    radial-gradient(circle at 86% 26%, rgba(5, 150, 165, 0.20), transparent 28%),
+    linear-gradient(135deg, #013863 0%, #047886 100%) !important;
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-public-header,
+  .osp-premium-v3.osp-passport-public-restructure .osp-commercial-header {
+    top: 0 !important;
+    width: min(100% - 20px, 680px) !important;
+    border-radius: 0 0 24px 24px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+    margin-top: 36px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_HOME_ALIGNMENT_03B_END */
+
+
+/* OSP_PASSPORT_TRAILS_FINAL_POLISH_03C_START */
+/* Final composition polish for /passport-trails before link audit. */
+
+/* Header: align closer to HOME public shell, no top floating gap. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-header,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-header {
+  top: 0 !important;
+  margin-top: 0 !important;
+  transform: none !important;
+}
+
+/* Hero: keep high enough, reduce first-fold looseness. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  margin-top: clamp(36px, 4.2vw, 58px) !important;
+  margin-bottom: clamp(36px, 4.8vw, 62px) !important;
+}
+
+/* Hero typography: refined, still authoritative. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero h1 {
+  font-size: clamp(2.65rem, 4.18vw, 4.18rem) !important;
+  line-height: 1 !important;
+  max-width: 660px !important;
+}
+
+/* Right trail preview: reduce poster bulk slightly and improve balance. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+  width: min(100%, 405px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  min-height: 390px !important;
+  border-width: 14px !important;
+  padding: 24px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-copy h2 {
+  font-size: clamp(1.72rem, 2.2vw, 2.32rem) !important;
+  max-width: 12.5ch !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-route-line {
+  height: 98px !important;
+}
+
+/* Global section rhythm: less stretched, more premium. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-section {
+  margin-bottom: clamp(36px, 4.8vw, 62px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-section-heading {
+  margin-bottom: 20px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-section-heading h2 {
+  font-size: clamp(2rem, 3.05vw, 3rem) !important;
+  line-height: 1.04 !important;
+  max-width: 720px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-section-heading span {
+  max-width: 680px !important;
+}
+
+/* Choice cards: tighter and cleaner, less empty space. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card {
+  min-height: 224px !important;
+  padding: 24px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card h3 {
+  font-size: clamp(1.22rem, 1.55vw, 1.5rem) !important;
+}
+
+/* Featured trails: fix blank massive left card and improve editorial hierarchy. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-editorial-grid {
+  grid-template-columns: minmax(0, 0.96fr) minmax(360px, 1.04fr) !important;
+  align-items: stretch !important;
+  gap: 18px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card {
+  position: relative !important;
+  overflow: hidden !important;
+  min-height: 330px !important;
+  padding: 28px !important;
+  justify-content: flex-start !important;
+  background:
+    radial-gradient(circle at 82% 24%, rgba(5, 150, 165, 0.16), transparent 26%),
+    radial-gradient(circle at 64% 76%, rgba(243, 174, 38, 0.12), transparent 28%),
+    linear-gradient(135deg, rgba(255,255,255,0.97), rgba(234,251,250,0.9)) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card::after {
+  content: "" !important;
+  position: absolute !important;
+  right: -42px !important;
+  bottom: -42px !important;
+  width: 190px !important;
+  height: 190px !important;
+  border-radius: 999px !important;
+  background:
+    radial-gradient(circle, rgba(5, 150, 165, 0.13), transparent 62%) !important;
+  pointer-events: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card h3 {
+  max-width: 11ch !important;
+  font-size: clamp(1.82rem, 2.65vw, 2.55rem) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card p {
+  max-width: 31rem !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card strong {
+  margin-top: 24px !important;
+}
+
+/* Supporting cards: reduce vertical padding and keep CTA visible. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-supporting-trails {
+  gap: 12px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card {
+  min-height: 116px !important;
+  padding: 20px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card h3 {
+  font-size: clamp(1.18rem, 1.45vw, 1.42rem) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card p {
+  font-size: 0.9rem !important;
+  line-height: 1.46 !important;
+}
+
+/* Steps: more compact and less template-like. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-step-card {
+  min-height: 198px !important;
+  padding: 22px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-step-card h3 {
+  font-size: clamp(1.16rem, 1.5vw, 1.42rem) !important;
+}
+
+/* Local partner light panel: reduce wall height; keep trust feel. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel {
+  margin-bottom: clamp(36px, 4.8vw, 64px) !important;
+  padding: clamp(28px, 3.6vw, 42px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel h2 {
+  font-size: clamp(2rem, 3vw, 3rem) !important;
+  max-width: 650px !important;
+}
+
+/* Final CTA: keep dark only here, but less bulky. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta {
+  margin-bottom: clamp(44px, 5vw, 70px) !important;
+  padding: clamp(32px, 4.2vw, 50px) !important;
+  min-height: auto !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta h2 {
+  font-size: clamp(2.08rem, 3.2vw, 3.18rem) !important;
+  line-height: 1.04 !important;
+}
+
+/* HOME-style buttons: teal primary, mist secondary, no gold dominant CTA. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:first-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:first-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel a,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-pass-button {
+  color: #052d4f !important;
+  background:
+    linear-gradient(135deg, rgba(5, 150, 165, 0.98), rgba(32, 182, 195, 0.96)) !important;
+  border: 1px solid rgba(129, 235, 241, 0.34) !important;
+  box-shadow: 0 16px 34px rgba(5, 150, 165, 0.22) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:last-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:last-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-login {
+  color: #073963 !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(5, 150, 165, 0.12) !important;
+}
+
+/* Footer: HOME-like, restrained. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-footer {
+  padding-top: 32px !important;
+  padding-bottom: 32px !important;
+}
+
+@media (max-width: 1020px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-editorial-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card {
+    min-height: 300px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+    margin-top: 32px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero h1 {
+    font-size: clamp(2.2rem, 9.4vw, 3.1rem) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 340px !important;
+    border-width: 10px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-section-heading h2,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel h2,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta h2 {
+    font-size: clamp(1.92rem, 8vw, 2.7rem) !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_FINAL_POLISH_03C_END */
+
+
+/* OSP_PASSPORT_TRAILS_HOME_SHELL_03D_START */
+/* Match HOME dark first-fold shell, tighten vertical rhythm, reduce blank editorial space. */
+
+/* Public route should feel connected to HOME: dark island first-fold, light content after. */
+.osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+  background:
+    linear-gradient(
+      180deg,
+      #013863 0px,
+      #013863 118px,
+      #023f68 118px,
+      #02365f 450px,
+      #034665 640px,
+      #edf8f7 641px,
+      #f7fefc 100%
+    ) !important;
+}
+
+/* HOME-like header: attached to top shell, no floating gap. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-header,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-header {
+  top: 0 !important;
+  margin-top: 0 !important;
+  width: min(1180px, calc(100% - 48px)) !important;
+  min-height: 76px !important;
+  border-radius: 0 0 28px 28px !important;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(5, 150, 165, 0.24), transparent 28%),
+    linear-gradient(135deg, rgba(1, 56, 99, 0.98), rgba(2, 54, 95, 0.96)) !important;
+  box-shadow: 0 22px 54px rgba(0, 20, 40, 0.20) !important;
+}
+
+/* Pull hero up and set it inside the HOME dark shell. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  margin-top: clamp(38px, 4.4vw, 62px) !important;
+  margin-bottom: clamp(50px, 6vw, 76px) !important;
+  align-items: center !important;
+}
+
+/* Hero copy becomes dark-shell readable, like HOME. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero .osp-section-kicker {
+  color: rgba(87, 230, 235, 0.92) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero h1 {
+  max-width: 690px !important;
+  color: rgba(255, 255, 255, 0.98) !important;
+  font-size: clamp(2.7rem, 4.28vw, 4.28rem) !important;
+  line-height: 0.995 !important;
+  letter-spacing: -0.062em !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy > p:not(.osp-section-kicker) {
+  max-width: 650px !important;
+  color: rgba(231, 247, 249, 0.78) !important;
+}
+
+/* HOME-style buttons on dark shell. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:first-child {
+  color: #062b4a !important;
+  background: linear-gradient(135deg, #0596a5, #20b6c3) !important;
+  border: 1px solid rgba(129, 235, 241, 0.34) !important;
+  box-shadow: 0 18px 36px rgba(5, 150, 165, 0.26) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:last-child {
+  color: #073963 !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Hero visual: slightly tighter so it does not overpower first fold. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+  width: min(100%, 390px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  min-height: 372px !important;
+  border-width: 12px !important;
+  box-shadow: 0 34px 76px rgba(0, 20, 40, 0.22) !important;
+}
+
+/* Start content section closer after dark shell transition. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+  margin-top: clamp(18px, 2.4vw, 34px) !important;
+}
+
+/* Section rhythm tighter and more intentional. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-section {
+  margin-bottom: clamp(34px, 4.6vw, 58px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-section-heading {
+  margin-bottom: 18px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-section-heading h2 {
+  font-size: clamp(1.95rem, 2.9vw, 2.85rem) !important;
+  line-height: 1.04 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-section-heading span {
+  font-size: 0.96rem !important;
+  line-height: 1.55 !important;
+}
+
+/* Choice cards: reduce empty lower space. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card {
+  min-height: 204px !important;
+  padding: 22px !important;
+  gap: 16px !important;
+}
+
+/* Featured layout: reduce oversized blank area in the major card. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-editorial-grid {
+  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr) !important;
+  gap: 16px !important;
+  align-items: start !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card {
+  min-height: 260px !important;
+  padding: 26px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card h3 {
+  font-size: clamp(1.7rem, 2.35vw, 2.26rem) !important;
+  max-width: 10.5ch !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card p {
+  max-width: 29rem !important;
+  font-size: 0.93rem !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card strong {
+  margin-top: 18px !important;
+}
+
+/* Supporting trail cards: compact premium route list. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-supporting-trails {
+  gap: 10px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card {
+  min-height: 104px !important;
+  padding: 18px 20px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card span {
+  margin-bottom: 10px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card h3 {
+  font-size: clamp(1.08rem, 1.34vw, 1.28rem) !important;
+  margin-bottom: 8px !important;
+}
+
+/* Steps: reduce vertical stretch. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-step-card {
+  min-height: 184px !important;
+  padding: 20px !important;
+}
+
+/* Local partner light panel: keep premium but shorter. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel {
+  margin-bottom: clamp(34px, 4.6vw, 58px) !important;
+  padding: clamp(26px, 3.2vw, 38px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel h2 {
+  font-size: clamp(1.92rem, 2.7vw, 2.7rem) !important;
+  max-width: 620px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel a {
+  color: #062b4a !important;
+  background: linear-gradient(135deg, #0596a5, #20b6c3) !important;
+  border: 1px solid rgba(129, 235, 241, 0.34) !important;
+}
+
+/* Final CTA: same button language as HOME, no sun-gold. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta {
+  margin-bottom: clamp(40px, 4.8vw, 64px) !important;
+  padding: clamp(30px, 3.8vw, 46px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta h2 {
+  font-size: clamp(2rem, 3vw, 3rem) !important;
+  max-width: 680px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:first-child {
+  color: #062b4a !important;
+  background: linear-gradient(135deg, #0596a5, #20b6c3) !important;
+  border: 1px solid rgba(129, 235, 241, 0.34) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:last-child {
+  color: #073963 !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Footer closer to HOME: compact, not over-heavy. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-footer {
+  padding-top: 30px !important;
+  padding-bottom: 30px !important;
+  background: linear-gradient(135deg, #013863, #02365f) !important;
+}
+
+@media (max-width: 1020px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #013863 118px,
+        #02365f 560px,
+        #edf8f7 561px,
+        #f7fefc 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-editorial-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #013863 100px,
+        #02365f 620px,
+        #edf8f7 621px,
+        #f7fefc 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero h1 {
+    font-size: clamp(2.12rem, 9.2vw, 3rem) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 332px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_HOME_SHELL_03D_END */
+
+
+/* OSP_PASSPORT_TRAILS_HOME_BLUE_SHELL_03E_START */
+/* Nuclear UI/UX shell continuity: HOME blue shell covers header + hero + trail-mode section. */
+
+/* Extend HOME public gateway shell deeper into the page. */
+.osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+  background:
+    radial-gradient(circle at 16% 12%, rgba(5, 150, 165, 0.28), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.08), transparent 26%),
+    linear-gradient(
+      180deg,
+      #013863 0px,
+      #013863 120px,
+      #02365f 120px,
+      #02365f 780px,
+      #034665 960px,
+      #edf8f7 961px,
+      #f7fefc 100%
+    ) !important;
+}
+
+/* Header should feel embedded in HOME shell, not a separate island. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-header,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-header {
+  top: 0 !important;
+  margin-top: 0 !important;
+  border-radius: 0 0 28px 28px !important;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(5, 150, 165, 0.24), transparent 28%),
+    linear-gradient(135deg, rgba(1, 56, 99, 0.99), rgba(2, 54, 95, 0.97)) !important;
+  box-shadow: 0 22px 54px rgba(0, 20, 40, 0.20) !important;
+}
+
+/* Hero remains part of dark HOME shell. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  margin-top: clamp(42px, 4.6vw, 68px) !important;
+  margin-bottom: clamp(48px, 5.2vw, 72px) !important;
+}
+
+/* Hero copy: HOME-dark-shell readability. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero .osp-section-kicker {
+  color: rgba(87, 230, 235, 0.94) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero h1 {
+  color: rgba(255, 255, 255, 0.98) !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy > p:not(.osp-section-kicker) {
+  color: rgba(231, 247, 249, 0.78) !important;
+}
+
+/* Trail mode section now belongs to the dark shell, not detached light shell. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+  position: relative !important;
+  width: min(1180px, calc(100% - 48px)) !important;
+  margin-top: 0 !important;
+  margin-bottom: clamp(56px, 6vw, 82px) !important;
+  padding: clamp(10px, 1.4vw, 18px) 0 clamp(42px, 5vw, 64px) !important;
+  z-index: 2 !important;
+}
+
+/* Subtle blue-shell continuation behind the choice section. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: -34px -36px 0 !important;
+  border-radius: 40px !important;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(5, 150, 165, 0.22), transparent 30%),
+    radial-gradient(circle at 82% 36%, rgba(255, 255, 255, 0.08), transparent 24%) !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+
+/* Choice section headings must be readable on dark shell. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading p {
+  color: rgba(87, 230, 235, 0.92) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading h2 {
+  color: rgba(255, 255, 255, 0.96) !important;
+  max-width: 720px !important;
+  font-size: clamp(2.1rem, 3.15vw, 3.1rem) !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading span {
+  color: rgba(231, 247, 249, 0.74) !important;
+  max-width: 700px !important;
+}
+
+/* Choice cards become glass-light cards inside the dark blue shell. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card {
+  min-height: 212px !important;
+  padding: 24px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(239, 252, 251, 0.86)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.70) !important;
+  box-shadow:
+    0 28px 64px rgba(0, 20, 40, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow:
+    0 34px 76px rgba(0, 20, 40, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+}
+
+/* Create a premium transition shelf into the light content area. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section {
+  position: relative !important;
+  padding-top: clamp(28px, 4vw, 52px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: -44px !important;
+  width: min(1180px, calc(100vw - 48px)) !important;
+  height: 76px !important;
+  transform: translateX(-50%) !important;
+  border-radius: 999px 999px 0 0 !important;
+  background:
+    linear-gradient(180deg, rgba(237, 248, 247, 0.0), rgba(237, 248, 247, 0.82) 58%, rgba(237, 248, 247, 1) 100%) !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+
+/* Featured section returns to navy text on light shell. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section .osp-passport-section-heading p,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-steps-section .osp-passport-section-heading p {
+  color: #0596a5 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section .osp-passport-section-heading h2,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-steps-section .osp-passport-section-heading h2 {
+  color: #073963 !important;
+}
+
+/* Tighten the editorial feature: no giant blank card. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card {
+  min-height: 248px !important;
+  padding: 24px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-main-trail-card h3 {
+  font-size: clamp(1.62rem, 2.22vw, 2.18rem) !important;
+  max-width: 10.2ch !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-support-trail-card {
+  min-height: 98px !important;
+  padding: 16px 18px !important;
+}
+
+/* Keep all dominant CTAs in HOME teal/navy, not sun-gold. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:first-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel a,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:first-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-pass-button {
+  color: #052d4f !important;
+  background: linear-gradient(135deg, #0596a5, #20b6c3) !important;
+  border: 1px solid rgba(129, 235, 241, 0.34) !important;
+  box-shadow: 0 16px 34px rgba(5, 150, 165, 0.24) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:last-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:last-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-login {
+  color: #073963 !important;
+  background: rgba(255, 255, 255, 0.91) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Footer remains HOME dark base. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-public-footer {
+  background: linear-gradient(135deg, #013863, #02365f) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
+}
+
+/* Reduce lower-page vertical drag. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-steps-section {
+  margin-bottom: clamp(32px, 4vw, 54px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel {
+  margin-bottom: clamp(32px, 4vw, 54px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta {
+  margin-bottom: clamp(38px, 4.8vw, 62px) !important;
+}
+
+/* Responsive shell heights. */
+@media (max-width: 1020px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #013863 108px,
+        #02365f 108px,
+        #02365f 1060px,
+        #034665 1180px,
+        #edf8f7 1181px,
+        #f7fefc 100%
+      ) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #013863 98px,
+        #02365f 98px,
+        #02365f 1220px,
+        #034665 1320px,
+        #edf8f7 1321px,
+        #f7fefc 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+    width: min(100% - 28px, 680px) !important;
+    padding-bottom: 38px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section::before {
+    inset: -22px -14px 0 !important;
+    border-radius: 30px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_HOME_BLUE_SHELL_03E_END */
+
+
+/* OSP_PASSPORT_TRAILS_CHOICE_BLOCK_SPACING_03F_START */
+/* Move down "Choose your trail mode" block so it does not feel swallowed by the hero transition. */
+
+/* Keep the blue shell, but give the choice section a proper visual landing after hero. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+  margin-top: clamp(48px, 5.8vw, 88px) !important;
+  padding-top: clamp(18px, 2vw, 28px) !important;
+  padding-bottom: clamp(48px, 5.4vw, 74px) !important;
+}
+
+/* Move the soft blue glass backing with the section, not over the hero edge. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section::before {
+  inset: 0 -36px 0 !important;
+  border-radius: 42px !important;
+}
+
+/* Make the heading sit cleanly above the cards. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading {
+  margin-bottom: clamp(22px, 2.4vw, 34px) !important;
+}
+
+/* Prevent the intro line from fading into the transition area. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading span {
+  color: rgba(231, 247, 249, 0.82) !important;
+}
+
+/* Slightly reduce hero bottom so total page height does not become too long. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  margin-bottom: clamp(28px, 3.6vw, 48px) !important;
+}
+
+/* Keep first light section transition clean after the moved choice block. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section {
+  padding-top: clamp(34px, 4.2vw, 58px) !important;
+}
+
+/* Desktop composition only: preserve strong first fold while improving the handoff. */
+@media (min-width: 1021px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      radial-gradient(circle at 16% 12%, rgba(5, 150, 165, 0.28), transparent 26%),
+      radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.08), transparent 26%),
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #013863 120px,
+        #02365f 120px,
+        #02365f 840px,
+        #034665 1040px,
+        #edf8f7 1041px,
+        #f7fefc 100%
+      ) !important;
+  }
+}
+
+@media (max-width: 1020px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+    margin-top: clamp(40px, 6vw, 74px) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+    margin-top: 36px !important;
+    padding-top: 20px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section::before {
+    inset: 0 -14px 0 !important;
+    border-radius: 30px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_CHOICE_BLOCK_SPACING_03F_END */
+
+
+/* OSP_PASSPORT_TRAILS_BLUE_SHELL_CUTOFF_03G_START */
+/* Correct 03E overextension: dark shell should not bleed too far below trail-mode cards. */
+
+/* Cut the blue shell earlier. Keep HOME feeling, but stop before Featured section. */
+.osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+  background:
+    radial-gradient(circle at 16% 12%, rgba(5, 150, 165, 0.28), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.08), transparent 26%),
+    linear-gradient(
+      180deg,
+      #013863 0px,
+      #013863 120px,
+      #02365f 120px,
+      #02365f 690px,
+      #034665 760px,
+      #edf8f7 761px,
+      #f7fefc 100%
+    ) !important;
+}
+
+/* Hero stays in the dark shell. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  margin-bottom: clamp(34px, 4vw, 54px) !important;
+}
+
+/* Choice block moves onto the transition shelf, not deep into blue. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+  margin-top: clamp(24px, 3.2vw, 44px) !important;
+  margin-bottom: clamp(52px, 5.8vw, 78px) !important;
+  padding-top: clamp(16px, 1.8vw, 24px) !important;
+  padding-bottom: clamp(34px, 4.2vw, 56px) !important;
+}
+
+/* Remove the heavy blue backing that caused the block to feel swallowed. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section::before {
+  inset: 0 -28px 18px !important;
+  border-radius: 38px !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 150, 165, 0.16),
+      rgba(237, 248, 247, 0.18)
+    ) !important;
+}
+
+/* Heading remains readable while the section sits in the transition zone. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading p {
+  color: rgba(87, 230, 235, 0.94) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading h2 {
+  color: rgba(255, 255, 255, 0.97) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading span {
+  color: rgba(231, 247, 249, 0.78) !important;
+}
+
+/* Cards should feel like light cards sitting on the transition, not submerged in blue. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 252, 250, 0.90)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.78) !important;
+  box-shadow:
+    0 24px 54px rgba(1, 56, 99, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88) !important;
+}
+
+/* Featured Official Trails starts clearly on the light shell. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section {
+  padding-top: clamp(24px, 3.4vw, 46px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section::before {
+  top: -30px !important;
+  height: 58px !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(237, 248, 247, 0),
+      rgba(237, 248, 247, 0.92) 52%,
+      rgba(237, 248, 247, 1) 100%
+    ) !important;
+}
+
+/* Keep Featured headings fully navy on light background. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section .osp-passport-section-heading p {
+  color: #0596a5 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section .osp-passport-section-heading h2 {
+  color: #073963 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section .osp-passport-section-heading span {
+  color: #50668b !important;
+}
+
+/* Desktop background height correction after the choice spacing patch. */
+@media (min-width: 1021px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      radial-gradient(circle at 16% 12%, rgba(5, 150, 165, 0.28), transparent 26%),
+      radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.08), transparent 26%),
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #013863 120px,
+        #02365f 120px,
+        #02365f 700px,
+        #034665 770px,
+        #edf8f7 771px,
+        #f7fefc 100%
+      ) !important;
+  }
+}
+
+@media (max-width: 1020px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #013863 108px,
+        #02365f 108px,
+        #02365f 960px,
+        #034665 1060px,
+        #edf8f7 1061px,
+        #f7fefc 100%
+      ) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #013863 98px,
+        #02365f 98px,
+        #02365f 1040px,
+        #034665 1130px,
+        #edf8f7 1131px,
+        #f7fefc 100%
+      ) !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_BLUE_SHELL_CUTOFF_03G_END */
+
+
+/* OSP_PASSPORT_TRAILS_CHOICE_PANEL_READABILITY_03H_START */
+/* Fix washed-out "Choose your trail mode" panel after blue-shell cutoff. */
+
+/*
+  Final composition decision:
+  - Hero remains HOME dark shell.
+  - Choice block becomes a premium light transition panel.
+  - Heading returns to Deep Island Navy for readability.
+  - Featured section remains clearly on light shell.
+*/
+
+/* Keep the dark shell ending after hero; do not extend blue through the light panel. */
+.osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+  background:
+    radial-gradient(circle at 16% 12%, rgba(5, 150, 165, 0.28), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.08), transparent 26%),
+    linear-gradient(
+      180deg,
+      #013863 0px,
+      #013863 120px,
+      #02365f 120px,
+      #02365f 672px,
+      #034665 730px,
+      #edf8f7 731px,
+      #f7fefc 100%
+    ) !important;
+}
+
+/* Choice section: premium light card/panel, no washed-out cyan glass. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+  position: relative !important;
+  width: min(1180px, calc(100% - 48px)) !important;
+  margin-top: clamp(34px, 4.2vw, 62px) !important;
+  margin-bottom: clamp(46px, 5.2vw, 72px) !important;
+  padding: clamp(30px, 4vw, 48px) !important;
+  border-radius: 38px !important;
+  background:
+    radial-gradient(circle at 84% 16%, rgba(243, 174, 38, 0.10), transparent 25%),
+    radial-gradient(circle at 14% 72%, rgba(5, 150, 165, 0.09), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(244, 252, 250, 0.88)) !important;
+  border: 1px solid rgba(5, 150, 165, 0.12) !important;
+  box-shadow:
+    0 30px 70px rgba(1, 56, 99, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+  z-index: 3 !important;
+}
+
+/* Remove previous blue/cyan backing that caused white text on pale background. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Choice heading: readable light-section typography. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading {
+  margin-bottom: clamp(22px, 2.8vw, 34px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading p {
+  color: #0596a5 !important;
+  text-shadow: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading h2 {
+  color: #073963 !important;
+  max-width: 760px !important;
+  font-size: clamp(2.1rem, 3.1vw, 3.05rem) !important;
+  line-height: 1.04 !important;
+  text-shadow: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading span {
+  color: #50668b !important;
+  max-width: 720px !important;
+  font-size: 0.98rem !important;
+  line-height: 1.58 !important;
+}
+
+/* Choice cards: crisp white cards inside the light transition panel. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-grid {
+  gap: 18px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card {
+  min-height: 206px !important;
+  padding: 24px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 254, 252, 0.92)) !important;
+  border: 1px solid rgba(5, 150, 165, 0.12) !important;
+  box-shadow:
+    0 20px 46px rgba(1, 56, 99, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.90) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(5, 150, 165, 0.20) !important;
+  box-shadow:
+    0 28px 62px rgba(1, 56, 99, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+}
+
+/* Featured section: make sure it starts cleanly after the light panel. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section {
+  padding-top: clamp(14px, 2.2vw, 30px) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Featured text remains light-shell navy/slate. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section .osp-passport-section-heading p {
+  color: #0596a5 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section .osp-passport-section-heading h2 {
+  color: #073963 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section .osp-passport-section-heading span {
+  color: #50668b !important;
+}
+
+/* Keep hero intact and dark. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero h1 {
+  color: rgba(255, 255, 255, 0.98) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy > p:not(.osp-section-kicker) {
+  color: rgba(231, 247, 249, 0.78) !important;
+}
+
+/* Keep HOME button doctrine: teal primary, mist secondary. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:first-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel a,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:first-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-pass-button {
+  color: #052d4f !important;
+  background: linear-gradient(135deg, #0596a5, #20b6c3) !important;
+  border: 1px solid rgba(129, 235, 241, 0.34) !important;
+  box-shadow: 0 16px 34px rgba(5, 150, 165, 0.24) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:last-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:last-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-login {
+  color: #073963 !important;
+  background: rgba(255, 255, 255, 0.91) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Desktop shell cutoff: prevent blue from bleeding into the light panel text. */
+@media (min-width: 1021px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      radial-gradient(circle at 16% 12%, rgba(5, 150, 165, 0.28), transparent 26%),
+      radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.08), transparent 26%),
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #013863 120px,
+        #02365f 120px,
+        #02365f 672px,
+        #034665 730px,
+        #edf8f7 731px,
+        #f7fefc 100%
+      ) !important;
+  }
+}
+
+@media (max-width: 1020px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #013863 108px,
+        #02365f 108px,
+        #02365f 860px,
+        #034665 930px,
+        #edf8f7 931px,
+        #f7fefc 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+    padding: clamp(26px, 4vw, 42px) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #013863 98px,
+        #02365f 98px,
+        #02365f 900px,
+        #034665 970px,
+        #edf8f7 971px,
+        #f7fefc 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+    width: min(100% - 28px, 680px) !important;
+    margin-top: 30px !important;
+    padding: 24px !important;
+    border-radius: 30px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading h2 {
+    font-size: clamp(1.95rem, 8vw, 2.7rem) !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_CHOICE_PANEL_READABILITY_03H_END */
+
+
+/* OSP_PASSPORT_TRAILS_BLUE_VERTICAL_SPACING_03J_FLEXIBLE_START */
+/* Flexible correction: reduce blue hero dead band and pull choice panel into a cleaner premium overlap. */
+
+/*
+  This patch does not depend on 03I marker.
+  Current accepted baseline:
+  - Hero is dark HOME-style.
+  - Choice panel is readable/light from 03H.
+  - Remaining issue is vertical blue spacing and panel handoff.
+*/
+
+/* Make hero shell shorter at the bottom without changing the visual direction. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  padding-top: clamp(126px, 10.8vw, 158px) !important;
+  padding-bottom: clamp(34px, 4.2vw, 54px) !important;
+  margin-bottom: 0 !important;
+}
+
+/* If hero pseudo-shell exists from any previous patch, reduce its fade height. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured::after {
+  height: clamp(28px, 3.4vw, 48px) !important;
+  bottom: -1px !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(3, 70, 101, 0),
+      rgba(237, 248, 247, 0.56) 68%,
+      #edf8f7 100%
+    ) !important;
+}
+
+/* Keep preview card fully inside the hero shell and reduce its height pressure. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+  align-self: center !important;
+  margin-bottom: 0 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  min-height: 356px !important;
+  margin-bottom: 0 !important;
+}
+
+/* Pull the light choice panel closer to the hero to remove the dead band. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+  margin-top: clamp(-22px, -2vw, -12px) !important;
+  margin-bottom: clamp(42px, 5vw, 66px) !important;
+  padding-top: clamp(28px, 3.4vw, 42px) !important;
+  padding-bottom: clamp(30px, 3.8vw, 48px) !important;
+  position: relative !important;
+  z-index: 5 !important;
+  background:
+    radial-gradient(circle at 84% 16%, rgba(243, 174, 38, 0.09), transparent 24%),
+    radial-gradient(circle at 14% 72%, rgba(5, 150, 165, 0.08), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(244, 252, 250, 0.92)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.78) !important;
+  box-shadow:
+    0 30px 70px rgba(1, 56, 99, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.90) !important;
+}
+
+/* Make the overlap intentional, subtle, and premium. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 28px !important;
+  right: 28px !important;
+  top: -1px !important;
+  height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(5, 150, 165, 0.22), transparent) !important;
+  pointer-events: none !important;
+}
+
+/* Choice panel copy remains readable. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading p {
+  color: #0596a5 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading h2 {
+  color: #073963 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading span {
+  color: #50668b !important;
+}
+
+/* Tighten choice cards slightly to reduce total vertical drag. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card {
+  min-height: 196px !important;
+}
+
+/* Keep Featured section close enough after the choice panel. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section {
+  padding-top: clamp(8px, 1.5vw, 22px) !important;
+}
+
+/* Desktop-specific final tune. */
+@media (min-width: 1021px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+    padding-bottom: 44px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+    margin-top: -18px !important;
+  }
+}
+
+@media (max-width: 1020px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+    padding-bottom: 42px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+    margin-top: -10px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+    padding-top: 108px !important;
+    padding-bottom: 36px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+    margin-top: 18px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section::after {
+    left: 18px !important;
+    right: 18px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_BLUE_VERTICAL_SPACING_03J_FLEXIBLE_END */
+
+/* OSP_PASSPORT_TRAILS_BLUE_SHELL_CONTAINMENT_03K_START */
+/*
+  Final containment fix:
+  - Stop using page-level pixel gradient stops as the blue shell controller.
+  - Make the hero section itself own the dark blue shell.
+  - Keep the choice panel on a clean light shell with controlled overlap rhythm.
+*/
+.osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(5, 150, 165, 0.10), transparent 30%),
+    radial-gradient(circle at 84% 34%, rgba(243, 174, 38, 0.08), transparent 28%),
+    linear-gradient(180deg, #eefcfb 0%, #f7fefc 56%, #ffffff 100%) !important;
+  overflow-x: hidden !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  position: relative !important;
+  isolation: isolate !important;
+  width: 100vw !important;
+  max-width: none !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding:
+    clamp(142px, 12vw, 176px)
+    max(24px, calc((100vw - 1120px) / 2))
+    clamp(76px, 7vw, 108px)
+    max(24px, calc((100vw - 1120px) / 2)) !important;
+  background:
+    radial-gradient(circle at 15% 14%, rgba(5, 150, 165, 0.38), transparent 36%),
+    radial-gradient(circle at 82% 52%, rgba(32, 182, 195, 0.20), transparent 38%),
+    linear-gradient(135deg, #003b66 0%, #024b70 46%, #073963 100%) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured::before,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured::after {
+  display: none !important;
+  content: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner {
+  position: relative !important;
+  z-index: 2 !important;
+  max-width: 1120px !important;
+  margin: 0 auto !important;
+  align-items: center !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured .eyebrow,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured h1,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured p {
+  color: rgba(255, 255, 255, 0.97) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured p {
+  color: rgba(232, 250, 249, 0.86) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  margin-bottom: 0 !important;
+  transform: translateY(0) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+  position: relative !important;
+  z-index: 3 !important;
+  max-width: 1120px !important;
+  margin: clamp(56px, 6.4vw, 92px) auto 0 !important;
+  padding: clamp(36px, 4.8vw, 56px) clamp(28px, 4.8vw, 56px) !important;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(5, 150, 165, 0.10), transparent 34%),
+    radial-gradient(circle at 88% 10%, rgba(243, 174, 38, 0.08), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 254, 252, 0.94)) !important;
+  border: 1px solid rgba(5, 150, 165, 0.10) !important;
+  border-radius: 30px !important;
+  box-shadow: 0 26px 72px rgba(3, 57, 99, 0.10) !important;
+  color: #073963 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section::before,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section::after {
+  display: none !important;
+  content: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading p,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading h2,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading span,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section h3,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section article p {
+  color: #073963 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section .osp-passport-section-heading span,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section article p {
+  color: #50668b !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-section {
+  position: relative !important;
+  z-index: 2 !important;
+  margin-top: clamp(64px, 7vw, 100px) !important;
+}
+
+@media (max-width: 900px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+    padding:
+      128px
+      20px
+      58px
+      20px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-section {
+    margin-top: 38px !important;
+    padding: 28px 20px !important;
+    border-radius: 26px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_BLUE_SHELL_CONTAINMENT_03K_END */
+
+/* OSP_PASSPORT_TRAILS_HERO_GRID_CONTAINMENT_03L_START */
+/*
+  Fix after 03K:
+  Blue shell is correct, but hero content overflowed horizontally.
+  This clamps the hero grid, right preview card, and text column inside the shell.
+*/
+.osp-premium-v3.osp-passport-public-page,
+.osp-premium-v3.osp-passport-public-restructure,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  overflow-x: hidden !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner {
+  width: min(1120px, calc(100vw - 48px)) !important;
+  max-width: 1120px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.08fr) minmax(300px, 390px) !important;
+  column-gap: clamp(42px, 5vw, 76px) !important;
+  align-items: center !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy {
+  min-width: 0 !important;
+  max-width: 650px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+  max-width: 650px !important;
+  font-size: clamp(3.15rem, 5vw, 5.35rem) !important;
+  line-height: 0.96 !important;
+  letter-spacing: -0.07em !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy p {
+  max-width: 620px !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  width: min(390px, 100%) !important;
+  max-width: 390px !important;
+  min-width: 0 !important;
+  justify-self: end !important;
+  transform: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card > * {
+  max-width: 100% !important;
+}
+
+@media (max-width: 1080px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px) !important;
+    column-gap: 34px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    width: min(340px, 100%) !important;
+    max-width: 340px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+    font-size: clamp(2.9rem, 5.2vw, 4.6rem) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner {
+    width: min(100%, calc(100vw - 40px)) !important;
+    grid-template-columns: 1fr !important;
+    gap: 34px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    justify-self: start !important;
+    width: min(360px, 100%) !important;
+    max-width: 360px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+    max-width: 100% !important;
+    font-size: clamp(2.65rem, 12vw, 4rem) !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_HERO_GRID_CONTAINMENT_03L_END */
+
+/* OSP_PASSPORT_TRAILS_HERO_VISUAL_CONTAINMENT_03M_START */
+/*
+  Fix after 03L:
+  Right preview wrapper/card still overflows because older visual-width rules can win on the wrapper.
+  This clamps BOTH .osp-passport-trail-preview and .osp-passport-trail-preview-card.
+*/
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner {
+  width: min(1120px, calc(100vw - 56px)) !important;
+  max-width: 1120px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 620px) minmax(0, 360px) !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: clamp(40px, 4.4vw, 68px) !important;
+  overflow: visible !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy {
+  width: 100% !important;
+  max-width: 620px !important;
+  min-width: 0 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+  max-width: 620px !important;
+  font-size: clamp(3rem, 4.7vw, 4.85rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.065em !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy p {
+  max-width: 600px !important;
+}
+
+/* Critical containment: wrapper must not be wider than its grid column. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+  width: 360px !important;
+  max-width: 360px !important;
+  min-width: 0 !important;
+  justify-self: end !important;
+  overflow: visible !important;
+  transform: none !important;
+  margin: 0 !important;
+}
+
+/* Critical containment: card follows wrapper, never viewport. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  width: 360px !important;
+  max-width: 360px !important;
+  min-width: 0 !important;
+  min-height: 500px !important;
+  margin: 0 !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+}
+
+/* Prevent any inner decorative layer from expanding beyond card. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview *,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Avoid clipping the whole page horizontally while preserving the preview itself. */
+.osp-premium-v3.osp-passport-public-page,
+.osp-premium-v3.osp-passport-public-restructure,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  overflow-x: clip !important;
+}
+
+/* Keep hero shell height proportional after card clamp. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  padding-top: clamp(136px, 11vw, 164px) !important;
+  padding-bottom: clamp(70px, 6.2vw, 96px) !important;
+}
+
+/* Medium desktop fallback. */
+@media (max-width: 1180px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner {
+    width: min(1040px, calc(100vw - 48px)) !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 330px) !important;
+    gap: 34px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    width: 330px !important;
+    max-width: 330px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 470px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+    font-size: clamp(2.85rem, 5vw, 4.35rem) !important;
+  }
+}
+
+/* Tablet/mobile: stack cleanly. */
+@media (max-width: 900px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner {
+    width: min(100%, calc(100vw - 40px)) !important;
+    grid-template-columns: 1fr !important;
+    justify-content: start !important;
+    gap: 34px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    width: min(360px, 100%) !important;
+    max-width: min(360px, 100%) !important;
+    justify-self: start !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 430px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_HERO_VISUAL_CONTAINMENT_03M_END */
+
+/* OSP_PASSPORT_TRAILS_HERO_SECTION_CONTAINMENT_03N_START */
+/*
+  Hard containment fix:
+  Previous patches controlled the shell but the visual/copy still escaped because older layout rules
+  were winning on the actual hero children. This forces the real section and all hero descendants into
+  a centered 1120px content island.
+*/
+
+/* Full-width blue shell only. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  position: relative !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding:
+    clamp(138px, 11vw, 166px)
+    0
+    clamp(72px, 6vw, 94px)
+    0 !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 15% 14%, rgba(5, 150, 165, 0.38), transparent 36%),
+    radial-gradient(circle at 82% 52%, rgba(32, 182, 195, 0.20), transparent 38%),
+    linear-gradient(135deg, #003b66 0%, #024b70 46%, #073963 100%) !important;
+}
+
+/* This is the real containment island. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured > * {
+  width: min(1120px, calc(100vw - 48px)) !important;
+  max-width: 1120px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Force the hero inner/grid if present. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured > .osp-passport-hero-inner {
+  width: min(1120px, calc(100vw - 48px)) !important;
+  max-width: 1120px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 610px) minmax(0, 360px) !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 56px !important;
+  overflow: visible !important;
+}
+
+/* Left copy must not stretch into the right side. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy {
+  width: 100% !important;
+  max-width: 610px !important;
+  min-width: 0 !important;
+  justify-self: start !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+  width: 100% !important;
+  max-width: 610px !important;
+  font-size: clamp(3rem, 4.55vw, 4.75rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.064em !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy p {
+  max-width: 590px !important;
+}
+
+/* Right visual must sit inside the right column, never outside the viewport. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+  width: 360px !important;
+  max-width: 360px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  justify-self: end !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  width: 360px !important;
+  max-width: 360px !important;
+  min-width: 0 !important;
+  min-height: 500px !important;
+  margin: 0 !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+}
+
+/* Kill any hidden oversized width on inner decorative content. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview *,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* If the browser still sees any legacy transform/positioning, neutralize it. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  left: auto !important;
+  right: auto !important;
+}
+
+/* Prevent horizontal bleed globally on this page. */
+.osp-premium-v3.osp-passport-public-page,
+.osp-premium-v3.osp-passport-public-restructure {
+  overflow-x: clip !important;
+}
+
+/* Medium desktop. */
+@media (max-width: 1180px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured > *,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner {
+    width: min(1040px, calc(100vw - 48px)) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 320px) !important;
+    gap: 36px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    width: 320px !important;
+    max-width: 320px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 460px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+    font-size: clamp(2.85rem, 5vw, 4.28rem) !important;
+  }
+}
+
+/* Tablet/mobile stack. */
+@media (max-width: 900px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+    padding: 122px 0 56px 0 !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured > *,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner {
+    width: min(100%, calc(100vw - 40px)) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-inner {
+    grid-template-columns: 1fr !important;
+    gap: 34px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    width: min(360px, 100%) !important;
+    max-width: min(360px, 100%) !important;
+    justify-self: start !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 430px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_HERO_SECTION_CONTAINMENT_03N_END */
+
+/* OSP_PASSPORT_TRAILS_DIRECT_HERO_GRID_03Q_START */
+/*
+  Real structure fix:
+  There is no .osp-passport-hero-inner in JSX.
+  The hero section itself has two direct children:
+  1) .osp-passport-hero-copy
+  2) .osp-passport-trail-preview
+
+  Therefore, the section must be the grid controller.
+*/
+
+/* Full-width dark shell, but its content is a centered grid. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding:
+    clamp(138px, 11vw, 166px)
+    max(24px, calc((100vw - 1120px) / 2))
+    clamp(74px, 6.4vw, 98px)
+    max(24px, calc((100vw - 1120px) / 2)) !important;
+
+  display: grid !important;
+  grid-template-columns: minmax(0, 640px) minmax(300px, 380px) !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  column-gap: clamp(34px, 5vw, 72px) !important;
+
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 15% 14%, rgba(5, 150, 165, 0.38), transparent 36%),
+    radial-gradient(circle at 82% 52%, rgba(32, 182, 195, 0.20), transparent 38%),
+    linear-gradient(135deg, #003b66 0%, #024b70 46%, #073963 100%) !important;
+}
+
+/* Neutralize previous dead-wrapper/direct-child width rules. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured > * {
+  width: auto !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Left column containment. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy {
+  width: 100% !important;
+  max-width: 640px !important;
+  min-width: 0 !important;
+  justify-self: start !important;
+  grid-column: 1 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+  width: 100% !important;
+  max-width: 640px !important;
+  font-size: clamp(3.15rem, 4.85vw, 5rem) !important;
+  line-height: 0.97 !important;
+  letter-spacing: -0.068em !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy p {
+  max-width: 610px !important;
+}
+
+/* Right column containment. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+  width: 100% !important;
+  max-width: 380px !important;
+  min-width: 0 !important;
+  justify-self: end !important;
+  grid-column: 2 !important;
+  margin: 0 !important;
+  transform: none !important;
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  overflow: visible !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  width: 100% !important;
+  max-width: 380px !important;
+  min-width: 0 !important;
+  min-height: 520px !important;
+  margin: 0 !important;
+  transform: none !important;
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  box-sizing: border-box !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview *,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Prevent horizontal page bleed. */
+.osp-premium-v3.osp-passport-public-page,
+.osp-premium-v3.osp-passport-public-restructure {
+  overflow-x: clip !important;
+}
+
+/* Medium desktop. */
+@media (max-width: 1180px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 330px) !important;
+    column-gap: 36px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    max-width: 330px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 460px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+    font-size: clamp(2.85rem, 5vw, 4.35rem) !important;
+  }
+}
+
+/* Tablet/mobile stack. */
+@media (max-width: 900px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured {
+    padding: 122px 20px 56px 20px !important;
+    grid-template-columns: 1fr !important;
+    row-gap: 34px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+    grid-column: 1 !important;
+    justify-self: start !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    width: min(360px, 100%) !important;
+    max-width: min(360px, 100%) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 430px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_DIRECT_HERO_GRID_03Q_END */
+
+/* OSP_PASSPORT_TRAILS_HERO_BOX_MODEL_FIX_03R_START */
+/*
+  Real blocker:
+  03Q made the hero section the grid controller, which is correct.
+  But width:100% + large left/right padding + default content-box caused the hero to exceed viewport width.
+  overflow:hidden then clipped the right preview card.
+
+  Fix:
+  - Force border-box on the hero shell.
+  - Use full-width shell safely.
+  - Keep the grid columns inside the padded content area.
+*/
+
+/* Mathematical containment: padding must be included in hero width. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  padding-left: max(24px, calc((100vw - 1120px) / 2)) !important;
+  padding-right: max(24px, calc((100vw - 1120px) / 2)) !important;
+  grid-template-columns: minmax(0, 620px) minmax(300px, 360px) !important;
+  column-gap: clamp(32px, 4vw, 58px) !important;
+  justify-content: space-between !important;
+}
+
+/* Do not let any direct child inherit old full-width containment rules. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured > .osp-passport-hero-copy,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured > .osp-passport-trail-preview {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+}
+
+/* Left column. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy {
+  max-width: 620px !important;
+  grid-column: 1 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+  max-width: 620px !important;
+  font-size: clamp(3rem, 4.55vw, 4.72rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.066em !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy p {
+  max-width: 590px !important;
+}
+
+/* Right visual: slightly smaller, fully inside visible shell. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+  grid-column: 2 !important;
+  justify-self: end !important;
+  width: 360px !important;
+  max-width: 360px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  width: 360px !important;
+  max-width: 360px !important;
+  min-width: 0 !important;
+  min-height: 500px !important;
+  margin: 0 !important;
+  transform: none !important;
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Strong safety: no child inside preview can expand beyond its card. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview *,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card * {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+}
+
+/* Medium desktop: keep both columns visible. */
+@media (max-width: 1180px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 320px) !important;
+    column-gap: 32px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    width: 320px !important;
+    max-width: 320px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 455px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+    font-size: clamp(2.85rem, 4.9vw, 4.25rem) !important;
+  }
+}
+
+/* Tablet/mobile stack. */
+@media (max-width: 900px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured {
+    padding: 122px 20px 56px 20px !important;
+    grid-template-columns: 1fr !important;
+    row-gap: 34px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+    grid-column: 1 !important;
+    justify-self: start !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    width: min(360px, 100%) !important;
+    max-width: min(360px, 100%) !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 430px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_HERO_BOX_MODEL_FIX_03R_END */
+
+/* OSP_PASSPORT_TRAILS_HERO_TOP_RHYTHM_03S_START */
+/*
+  Final rhythm fix after 03R:
+  Hero containment is now correct. Remove excessive blue dead space below the header
+  by reducing hero top padding while preserving right-card containment.
+*/
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured {
+  padding-top: clamp(104px, 8.2vw, 124px) !important;
+  padding-bottom: clamp(72px, 6vw, 92px) !important;
+}
+
+/* Keep hero content vertically premium and not too low. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy {
+  align-self: center !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview {
+  align-self: center !important;
+}
+
+/* Slightly tighten the top of the visual card to match the lifted hero rhythm. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  min-height: 492px !important;
+}
+
+/* Keep copy scale stable after lifting. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-copy h1 {
+  font-size: clamp(3rem, 4.55vw, 4.72rem) !important;
+  line-height: 0.98 !important;
+}
+
+/* Medium desktop rhythm. */
+@media (max-width: 1180px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured {
+    padding-top: 104px !important;
+    padding-bottom: 76px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+    min-height: 448px !important;
+  }
+}
+
+/* Tablet/mobile rhythm. */
+@media (max-width: 900px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured {
+    padding-top: 104px !important;
+    padding-bottom: 52px !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_HERO_TOP_RHYTHM_03S_END */
+
+/* OSP_PASSPORT_TRAILS_HEADER_BACKPLATE_03T_START */
+/*
+  HOME parity fix:
+  Passport Trails header was sitting on a pale/light top band.
+  HOME has a dark navy backplate behind the floating header.
+  This adds the same dark top shell behind the header without touching hero grid containment.
+*/
+
+/* Make the top of the page dark before the hero starts. */
+.osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+  position: relative !important;
+  background:
+    linear-gradient(180deg, #073963 0px, #034665 128px, #eefcfb 129px, #f7fefc 100%) !important;
+  overflow-x: clip !important;
+}
+
+/* Dedicated dark backplate behind floating header. */
+.osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 50% !important;
+  width: 100vw !important;
+  height: clamp(122px, 10vw, 148px) !important;
+  transform: translateX(-50%) !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(circle at 16% 28%, rgba(5, 150, 165, 0.30), transparent 34%),
+    radial-gradient(circle at 74% 18%, rgba(255, 255, 255, 0.08), transparent 30%),
+    linear-gradient(135deg, #013863 0%, #024b70 48%, #073963 100%) !important;
+}
+
+/* Keep actual content above the backplate. */
+.osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Header must visually sit inside the dark backplate, same as HOME. */
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-header {
+  position: relative !important;
+  z-index: 5 !important;
+  margin-top: 0 !important;
+  background:
+    linear-gradient(135deg, rgba(1, 56, 99, 0.96), rgba(2, 75, 112, 0.96)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow:
+    0 24px 70px rgba(1, 24, 43, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09) !important;
+}
+
+/* The hero starts after the header backplate and keeps the full dark shell. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured {
+  margin-top: 0 !important;
+}
+
+/* Make the transition from header backplate into hero seamless. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero.osp-passport-hero-restructured {
+  background:
+    radial-gradient(circle at 15% 14%, rgba(5, 150, 165, 0.38), transparent 36%),
+    radial-gradient(circle at 82% 52%, rgba(32, 182, 195, 0.20), transparent 38%),
+    linear-gradient(135deg, #003b66 0%, #024b70 46%, #073963 100%) !important;
+}
+
+/* Mobile/tablet: keep dark backplate compact. */
+@media (max-width: 900px) {
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure::before {
+    height: 118px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-page.osp-passport-public-restructure {
+    background:
+      linear-gradient(180deg, #073963 0px, #034665 112px, #eefcfb 113px, #f7fefc 100%) !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_HEADER_BACKPLATE_03T_END */
+
+/* OSP_PASSPORT_TRAILS_FINAL_INTERACTION_HARDENING_03U_START */
+/*
+  Final public Passport Trails polish:
+  - Same premium interaction language as HOME.
+  - Better CTA focus/hover/tap treatment.
+  - Cleaner card rhythm.
+  - No route/layout surgery.
+*/
+
+.osp-premium-v3.osp-passport-public-restructure a {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure a:focus-visible,
+.osp-premium-v3.osp-passport-public-restructure button:focus-visible {
+  outline: 3px solid rgba(243, 174, 38, 0.72) !important;
+  outline-offset: 4px !important;
+  border-radius: 999px !important;
+}
+
+/* HOME-style primary CTA behavior. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:first-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:first-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-pass-button {
+  min-height: 46px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #052d4f !important;
+  background: linear-gradient(135deg, #0596a5 0%, #20b6c3 100%) !important;
+  border: 1px solid rgba(129, 235, 241, 0.38) !important;
+  box-shadow:
+    0 18px 38px rgba(5, 150, 165, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26) !important;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease !important;
+}
+
+/* HOME-style secondary CTA behavior. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:last-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:last-child,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-login {
+  min-height: 46px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #073963 !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(255, 255, 255, 0.62) !important;
+  box-shadow:
+    0 16px 34px rgba(1, 56, 99, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.80) !important;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-pass-button:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-login:hover {
+  transform: translateY(-2px) !important;
+  filter: saturate(1.04) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a:active,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta a:active,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-pass-button:active,
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-login:active {
+  transform: translateY(0) scale(0.99) !important;
+}
+
+/* Hero preview micro-polish. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card {
+  box-shadow:
+    0 26px 70px rgba(1, 24, 43, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card span,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-trail-preview-card p {
+  text-wrap: balance !important;
+}
+
+/* Cards: premium, clickable-feeling, not generic. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-card,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-step-card {
+  position: relative !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(5, 150, 165, 0.10) !important;
+  box-shadow:
+    0 20px 48px rgba(1, 56, 99, 0.075),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-card:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-step-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(5, 150, 165, 0.20) !important;
+  box-shadow:
+    0 28px 64px rgba(1, 56, 99, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.90) !important;
+}
+
+/* Link text inside cards should feel intentional, not default link blue. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-card a,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card a {
+  color: #0596a5 !important;
+  font-weight: 850 !important;
+  text-decoration: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-card a:hover,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card a:hover {
+  color: #037887 !important;
+}
+
+/* Local partner panel: keep light, premium, non-heavy. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-local-light-panel {
+  border: 1px solid rgba(5, 150, 165, 0.10) !important;
+  box-shadow:
+    0 28px 72px rgba(1, 56, 99, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+}
+
+/* Final CTA: align with HOME button language, no sun-gold dominant button. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta {
+  box-shadow:
+    0 34px 90px rgba(1, 56, 99, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Footer parity polish. */
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-footer a {
+  color: rgba(232, 250, 249, 0.78) !important;
+  text-decoration: none !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-commercial-footer a:hover {
+  color: #ffffff !important;
+}
+
+/* Responsive polish. */
+@media (max-width: 900px) {
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta-actions {
+    gap: 12px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-actions a,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-final-cta-actions a {
+    width: 100% !important;
+    max-width: 320px !important;
+  }
+
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-choice-card,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-featured-card,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-step-card {
+    transform: none !important;
+  }
+}
+/* OSP_PASSPORT_TRAILS_FINAL_INTERACTION_HARDENING_03U_END */
 
