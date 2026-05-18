@@ -23431,3 +23431,1095 @@ body:has(.osp-public-header) {
 
 /* OSP-SIGN-IN-AUTH-GATEWAY-FINAL-SUPER-PREMIUM-01D END */
 
+
+/* OSP-PUBLIC-EXPLORE-EXACT-CONTRAST-PREMIUM-HARDENING-01D START */
+
+/*
+  Public /explore exact-selector premium contrast hardening.
+  Frozen-page rule:
+  - No layout rewrite
+  - No copy change
+  - No route change
+  - No traveler app impact
+  - No broad structural selector shortcuts
+*/
+
+/* Hero shell: premium depth only, preserves existing layout */
+.osp-public-discovery-page .osp-public-discovery-hero {
+  background:
+    radial-gradient(circle at 12% 14%, rgba(5, 150, 165, 0.42), transparent 31%),
+    radial-gradient(circle at 88% 12%, rgba(243, 174, 38, 0.18), transparent 26%),
+    radial-gradient(circle at 58% 115%, rgba(234, 251, 250, 0.13), transparent 44%),
+    linear-gradient(135deg, #022b4d 0%, #013863 47%, #003b66 100%) !important;
+}
+
+/* Hero H1: lock to white/readable against dark OSP shell */
+.osp-public-discovery-page .osp-public-discovery-copy h1 {
+  color: rgba(255, 255, 255, 0.985) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  text-shadow:
+    0 30px 72px rgba(0, 22, 42, 0.52),
+    0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Hero lede: readable but not shouting */
+.osp-public-discovery-page .osp-public-discovery-lede {
+  color: rgba(255, 255, 255, 0.86) !important;
+  opacity: 1 !important;
+  text-shadow: 0 16px 38px rgba(0, 22, 42, 0.32);
+}
+
+/* Hero kicker: crisp premium cyan/gold energy */
+.osp-public-discovery-page .osp-public-discovery-copy > .osp-public-discovery-kicker {
+  color: #35d6e4 !important;
+  opacity: 1 !important;
+  text-shadow: 0 14px 32px rgba(0, 22, 42, 0.32);
+}
+
+/* Hero action buttons: premium visible CTA treatment */
+.osp-public-discovery-page .osp-public-discovery-hero .osp-public-discovery-primary {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.24), transparent 34%),
+    linear-gradient(135deg, #f3ae26 0%, #ffd36b 50%, #f6aa16 100%) !important;
+  color: #061f38 !important;
+  border: 1px solid rgba(255, 211, 107, 0.68) !important;
+  box-shadow:
+    0 30px 64px rgba(243, 174, 38, 0.34),
+    0 12px 26px rgba(0, 22, 42, 0.16),
+    inset 0 2px 0 rgba(255, 255, 255, 0.36) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-hero .osp-public-discovery-secondary {
+  color: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(255, 255, 255, 0.26) !important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.14), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.075)) !important;
+  box-shadow:
+    0 18px 42px rgba(0, 22, 42, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.13) !important;
+}
+
+/* Right public gateway card: premium glass, not flat teal */
+.osp-public-discovery-page .osp-public-discovery-pass-card {
+  color: rgba(255, 255, 255, 0.90) !important;
+  border-color: rgba(234, 251, 250, 0.52) !important;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(53, 214, 228, 0.18), transparent 34%),
+    radial-gradient(circle at 94% 6%, rgba(243, 174, 38, 0.12), transparent 30%),
+    linear-gradient(145deg, rgba(5, 150, 165, 0.78), rgba(1, 56, 99, 0.66)) !important;
+  box-shadow:
+    0 48px 118px rgba(0, 22, 42, 0.40),
+    0 18px 46px rgba(5, 150, 165, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-card::before {
+  opacity: 0.95 !important;
+}
+
+/* Right card title contrast */
+.osp-public-discovery-page .osp-public-discovery-pass-card h2 {
+  color: rgba(255, 255, 255, 0.975) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  text-shadow:
+    0 28px 66px rgba(0, 22, 42, 0.52),
+    0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Right card body */
+.osp-public-discovery-page .osp-public-discovery-pass-card > p:not(.osp-public-discovery-pass-pill) {
+  color: rgba(255, 255, 255, 0.86) !important;
+  opacity: 1 !important;
+}
+
+/* Pill must remain premium and readable */
+.osp-public-discovery-page .osp-public-discovery-pass-pill {
+  color: #061f38 !important;
+  background:
+    linear-gradient(135deg, #f3ae26 0%, #ffd36b 52%, #f6aa16 100%) !important;
+  border: 1px solid rgba(255, 211, 107, 0.70) !important;
+  box-shadow:
+    0 24px 52px rgba(243, 174, 38, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
+}
+
+/* Right card microcards: better readable glass */
+.osp-public-discovery-page .osp-public-discovery-pass-grid > div {
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.15), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.135), rgba(255, 255, 255, 0.078)) !important;
+  box-shadow:
+    0 18px 40px rgba(0, 22, 42, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.11) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-grid strong {
+  color: rgba(255, 255, 255, 0.96) !important;
+  opacity: 1 !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-grid span {
+  color: rgba(255, 255, 255, 0.82) !important;
+  opacity: 1 !important;
+}
+
+/* Light discovery sections: keep strong navy readability */
+.osp-public-discovery-page .osp-public-discovery-section-head h2,
+.osp-public-discovery-page .osp-public-discovery-flow-copy h2 {
+  color: #013863 !important;
+  text-shadow: none !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-section-head p:not(.osp-public-discovery-kicker) {
+  color: #50668b !important;
+}
+
+/* Premium card hover depth without changing layout */
+.osp-public-discovery-page .osp-public-discovery-card,
+.osp-public-discovery-page .osp-public-discovery-flow-card,
+.osp-public-discovery-page .osp-public-discovery-gateway-card {
+  transition:
+    transform 190ms ease,
+    box-shadow 190ms ease,
+    border-color 190ms ease,
+    background 190ms ease !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .osp-public-discovery-page .osp-public-discovery-card:hover,
+  .osp-public-discovery-page .osp-public-discovery-flow-card:hover,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card:hover {
+    transform: translateY(-4px) !important;
+    border-color: rgba(5, 150, 165, 0.24) !important;
+    box-shadow:
+      0 26px 66px rgba(1, 56, 99, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.90) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-primary:hover,
+  .osp-public-discovery-page .osp-public-discovery-secondary:hover {
+    transform: translateY(-2px) !important;
+  }
+}
+
+/* Final CTA dark block: exact contrast lock */
+.osp-public-discovery-page .osp-public-discovery-final {
+  color: rgba(255, 255, 255, 0.90) !important;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(53, 214, 228, 0.18), transparent 34%),
+    radial-gradient(circle at 92% 8%, rgba(243, 174, 38, 0.13), transparent 30%),
+    linear-gradient(135deg, #022b4d 0%, #013863 52%, #003b66 100%) !important;
+  border: 1px solid rgba(234, 251, 250, 0.22) !important;
+  box-shadow:
+    0 42px 106px rgba(0, 22, 42, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.11) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-final h2 {
+  color: rgba(255, 255, 255, 0.975) !important;
+  opacity: 1 !important;
+  filter: none !important;
+  text-shadow:
+    0 28px 68px rgba(0, 22, 42, 0.52),
+    0 1px 0 rgba(255, 255, 255, 0.07) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-final .osp-public-discovery-kicker {
+  color: #35d6e4 !important;
+  text-shadow: 0 14px 32px rgba(0, 22, 42, 0.28);
+}
+
+/* Final CTA secondary should be readable on dark */
+.osp-public-discovery-page .osp-public-discovery-final .osp-public-discovery-secondary {
+  color: rgba(255, 255, 255, 0.94) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.075)) !important;
+}
+
+/* Focus visible for accessibility */
+.osp-public-discovery-page .osp-public-discovery-primary:focus-visible,
+.osp-public-discovery-page .osp-public-discovery-secondary:focus-visible,
+.osp-public-discovery-page a:focus-visible {
+  outline: 3px solid rgba(255, 211, 107, 0.62) !important;
+  outline-offset: 4px !important;
+}
+
+/* Mobile only: keep text readable but not oversized */
+@media (max-width: 640px) {
+  .osp-public-discovery-page .osp-public-discovery-copy h1 {
+    font-size: clamp(2.22rem, 11vw, 3.35rem) !important;
+    line-height: 0.98 !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-card h2,
+  .osp-public-discovery-page .osp-public-discovery-final h2 {
+    font-size: clamp(1.8rem, 8.5vw, 2.55rem) !important;
+    line-height: 1.04 !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-card {
+    box-shadow:
+      0 32px 82px rgba(0, 22, 42, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.20) !important;
+  }
+}
+
+/* OSP-PUBLIC-EXPLORE-EXACT-CONTRAST-PREMIUM-HARDENING-01D END */
+
+
+/* OSP-PUBLIC-EXPLORE-GLOBAL-PREMIUM-SURFACE-HARDENING-01E START */
+
+/*
+  Final /explore premium surface layer.
+  Exact page selectors only.
+  Preserves frozen layout, copy, routes, and traveler app separation.
+*/
+
+/* Page-level atmosphere */
+.osp-public-discovery-page {
+  background:
+    radial-gradient(circle at 50% 8%, rgba(234, 251, 250, 0.72), transparent 32%),
+    linear-gradient(180deg, #f4fcfa 0%, #ffffff 34%, #f4fcfa 100%) !important;
+}
+
+/* Header-to-hero visual continuity */
+.osp-public-discovery-page .osp-public-discovery-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.osp-public-discovery-page .osp-public-discovery-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0)),
+    radial-gradient(circle at 48% 105%, rgba(255,255,255,0.10), transparent 44%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.osp-public-discovery-page .osp-public-discovery-hero-inner {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero refinement: clean executive spacing without redesign */
+.osp-public-discovery-page .osp-public-discovery-copy h1 {
+  letter-spacing: -0.078em !important;
+  font-weight: 790 !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-lede {
+  max-width: 720px !important;
+  font-weight: 690 !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-kicker {
+  font-weight: 950 !important;
+  letter-spacing: 0.28em !important;
+}
+
+/* CTA buttons: apply premium template language */
+.osp-public-discovery-page .osp-public-discovery-primary,
+.osp-public-discovery-page .osp-public-discovery-secondary {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 190ms ease,
+    box-shadow 190ms ease,
+    border-color 190ms ease,
+    background 190ms ease,
+    color 190ms ease !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-primary::after,
+.osp-public-discovery-page .osp-public-discovery-secondary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.28) 35%, transparent 62%);
+  transform: translateX(-120%);
+  transition: transform 420ms ease;
+  pointer-events: none;
+}
+
+.osp-public-discovery-page .osp-public-discovery-primary {
+  font-weight: 950 !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-secondary {
+  font-weight: 900 !important;
+}
+
+/* Hero pass card: stronger transparent gateway surface */
+.osp-public-discovery-page .osp-public-discovery-pass-card {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-card::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 28px;
+  border: 1px solid rgba(255,255,255,0.075);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255,255,255,0.13), transparent 32%),
+    radial-gradient(circle at 96% 8%, rgba(243,174,38,0.06), transparent 34%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-pill {
+  font-weight: 950 !important;
+  letter-spacing: 0.22em !important;
+}
+
+/* Hero microcards: template-consistent depth */
+.osp-public-discovery-page .osp-public-discovery-pass-grid > div {
+  transition:
+    transform 190ms ease,
+    border-color 190ms ease,
+    box-shadow 190ms ease,
+    background 190ms ease !important;
+}
+
+/* Light sections: premium spacious cards, no generic SaaS flatness */
+.osp-public-discovery-page .osp-public-discovery-section {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(5,150,165,0.045), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,252,250,0.86)) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-section-head h2,
+.osp-public-discovery-page .osp-public-discovery-flow-copy h2 {
+  letter-spacing: -0.068em !important;
+  font-weight: 790 !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-section-head p:not(.osp-public-discovery-kicker) {
+  font-weight: 690 !important;
+  line-height: 1.72 !important;
+}
+
+/* Discovery layer cards */
+.osp-public-discovery-page .osp-public-discovery-card,
+.osp-public-discovery-page .osp-public-discovery-flow-card,
+.osp-public-discovery-page .osp-public-discovery-gateway-card {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(5,150,165,0.13) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(5,150,165,0.062), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,253,252,0.88)) !important;
+  box-shadow:
+    0 22px 58px rgba(1,56,99,0.075),
+    inset 0 1px 0 rgba(255,255,255,0.92) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-card::before,
+.osp-public-discovery-page .osp-public-discovery-flow-card::before,
+.osp-public-discovery-page .osp-public-discovery-gateway-card::before {
+  content: "";
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 0;
+  height: 3px;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, rgba(243,174,38,0), rgba(243,174,38,0.46), rgba(5,150,165,0.36), rgba(243,174,38,0));
+  opacity: 0.62;
+  pointer-events: none;
+}
+
+.osp-public-discovery-page .osp-public-discovery-card h3,
+.osp-public-discovery-page .osp-public-discovery-flow-card h3,
+.osp-public-discovery-page .osp-public-discovery-gateway-card h3 {
+  color: #013863 !important;
+  letter-spacing: -0.035em !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-card p:not(.osp-public-discovery-card-kicker),
+.osp-public-discovery-page .osp-public-discovery-flow-card p:not(.osp-public-discovery-card-kicker),
+.osp-public-discovery-page .osp-public-discovery-gateway-card p {
+  color: #50668b !important;
+  font-weight: 670 !important;
+  line-height: 1.66 !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-card-kicker {
+  color: #013863 !important;
+  background:
+    linear-gradient(135deg, rgba(255,211,107,0.28), rgba(234,251,250,0.76)) !important;
+  border: 1px solid rgba(243,174,38,0.15) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.76);
+}
+
+.osp-public-discovery-page .osp-public-discovery-card a,
+.osp-public-discovery-page .osp-public-discovery-gateway-card a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #0596a5 !important;
+  font-weight: 950 !important;
+  text-decoration: none !important;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.osp-public-discovery-page .osp-public-discovery-card a::after,
+.osp-public-discovery-page .osp-public-discovery-gateway-card a::after {
+  content: "→";
+  transform: translateX(0);
+  transition: transform 180ms ease;
+}
+
+/* Website-to-app flow cards */
+.osp-public-discovery-page .osp-public-discovery-flow {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(5,150,165,0.045), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(244,252,250,0.90)) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-flow-card {
+  border-radius: 26px !important;
+}
+
+/* Final CTA: template-level trust gateway treatment */
+.osp-public-discovery-page .osp-public-discovery-final {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.osp-public-discovery-page .osp-public-discovery-final::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(53,214,228,0.12), transparent 34%),
+    radial-gradient(circle at 90% 10%, rgba(243,174,38,0.09), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.osp-public-discovery-page .osp-public-discovery-final > * {
+  position: relative;
+  z-index: 1;
+}
+
+.osp-public-discovery-page .osp-public-discovery-final h2 {
+  letter-spacing: -0.072em !important;
+  font-weight: 790 !important;
+}
+
+/* Desktop hover: premium motion only where pointer supports it */
+@media (hover: hover) and (pointer: fine) {
+  .osp-public-discovery-page .osp-public-discovery-primary:hover,
+  .osp-public-discovery-page .osp-public-discovery-secondary:hover {
+    transform: translateY(-3px) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-primary:hover::after,
+  .osp-public-discovery-page .osp-public-discovery-secondary:hover::after {
+    transform: translateX(120%);
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-primary:hover {
+    box-shadow:
+      0 38px 82px rgba(243,174,38,0.40),
+      0 16px 34px rgba(0,22,42,0.20),
+      inset 0 2px 0 rgba(255,255,255,0.42) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-secondary:hover {
+    border-color: rgba(255,255,255,0.34) !important;
+    box-shadow:
+      0 24px 52px rgba(0,22,42,0.22),
+      inset 0 1px 0 rgba(255,255,255,0.16) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-grid > div:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255,255,255,0.34) !important;
+    box-shadow:
+      0 24px 52px rgba(0,22,42,0.26),
+      inset 0 1px 0 rgba(255,255,255,0.16) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-card:hover,
+  .osp-public-discovery-page .osp-public-discovery-flow-card:hover,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card:hover {
+    transform: translateY(-4px) !important;
+    border-color: rgba(5,150,165,0.24) !important;
+    box-shadow:
+      0 30px 76px rgba(1,56,99,0.12),
+      inset 0 1px 0 rgba(255,255,255,0.96) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-card:hover a,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card:hover a {
+    color: #007f91 !important;
+    transform: translateX(2px);
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-card:hover a::after,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card:hover a::after {
+    transform: translateX(4px);
+  }
+}
+
+/* Accessibility */
+.osp-public-discovery-page a:focus-visible {
+  outline: 3px solid rgba(255,211,107,0.62) !important;
+  outline-offset: 4px !important;
+}
+
+/* Mobile/touch: reduce heaviness, preserve premium */
+@media (max-width: 720px) {
+  .osp-public-discovery-page .osp-public-discovery-card,
+  .osp-public-discovery-page .osp-public-discovery-flow-card,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card {
+    box-shadow:
+      0 18px 44px rgba(1,56,99,0.075),
+      inset 0 1px 0 rgba(255,255,255,0.92) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-card::before,
+  .osp-public-discovery-page .osp-public-discovery-flow-card::before,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card::before {
+    left: 20px;
+    right: 20px;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-final h2 {
+    letter-spacing: -0.058em !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .osp-public-discovery-page .osp-public-discovery-primary,
+  .osp-public-discovery-page .osp-public-discovery-secondary,
+  .osp-public-discovery-page .osp-public-discovery-card,
+  .osp-public-discovery-page .osp-public-discovery-flow-card,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card,
+  .osp-public-discovery-page .osp-public-discovery-pass-grid > div,
+  .osp-public-discovery-page .osp-public-discovery-card a,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card a {
+    transition: none !important;
+  }
+}
+
+/* OSP-PUBLIC-EXPLORE-GLOBAL-PREMIUM-SURFACE-HARDENING-01E END */
+
+
+/* OSP-PUBLIC-EXPLORE-HERO-VIEWPORT-COMPACT-HARDENING-01F START */
+
+/*
+  /explore hero viewport calibration.
+  The page is frozen structurally. This only tightens the first fold:
+  - smaller vertical hero footprint
+  - controlled headline scale
+  - tighter right gateway card
+  - no copy/layout/routing changes
+*/
+
+.osp-public-discovery-page .osp-public-discovery-hero {
+  min-height: auto !important;
+  padding-top: clamp(54px, 6.4vw, 86px) !important;
+  padding-bottom: clamp(54px, 6.2vw, 82px) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-hero-inner {
+  align-items: center !important;
+  gap: clamp(34px, 5vw, 68px) !important;
+}
+
+/* Reduce hero headline enough to complete the fold while preserving authority */
+.osp-public-discovery-page .osp-public-discovery-copy h1 {
+  max-width: 760px !important;
+  font-size: clamp(4.15rem, 6.85vw, 7.15rem) !important;
+  line-height: 0.94 !important;
+  letter-spacing: -0.076em !important;
+}
+
+/* Slightly tighter lede and action stack */
+.osp-public-discovery-page .osp-public-discovery-lede {
+  max-width: 690px !important;
+  margin-top: clamp(18px, 2vw, 24px) !important;
+  font-size: clamp(1rem, 1.18vw, 1.18rem) !important;
+  line-height: 1.62 !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-actions {
+  margin-top: clamp(24px, 2.6vw, 34px) !important;
+}
+
+/* Right gateway card: compact but still premium */
+.osp-public-discovery-page .osp-public-discovery-pass-card {
+  padding: clamp(24px, 2.8vw, 36px) !important;
+  border-radius: clamp(30px, 3vw, 42px) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-card::after {
+  inset: 10px !important;
+  border-radius: clamp(22px, 2.4vw, 32px) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-card h2 {
+  font-size: clamp(2.35rem, 3.55vw, 4.15rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.07em !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-card > p:not(.osp-public-discovery-pass-pill) {
+  margin-top: clamp(16px, 1.8vw, 22px) !important;
+  font-size: clamp(0.95rem, 1.05vw, 1.05rem) !important;
+  line-height: 1.55 !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-grid {
+  margin-top: clamp(18px, 2vw, 24px) !important;
+  gap: clamp(10px, 1.2vw, 14px) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-grid > div {
+  padding: clamp(14px, 1.4vw, 18px) !important;
+  min-height: auto !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-grid strong {
+  font-size: clamp(0.84rem, 0.9vw, 0.96rem) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-grid span {
+  margin-top: 7px !important;
+  font-size: clamp(0.78rem, 0.84vw, 0.9rem) !important;
+  line-height: 1.42 !important;
+}
+
+/* Mid-size desktop/laptop calibration */
+@media (max-width: 1280px) {
+  .osp-public-discovery-page .osp-public-discovery-copy h1 {
+    font-size: clamp(3.85rem, 6.6vw, 6.35rem) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-card h2 {
+    font-size: clamp(2.18rem, 3.4vw, 3.55rem) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-hero {
+    padding-top: 58px !important;
+    padding-bottom: 62px !important;
+  }
+}
+
+/* Tablet: stack safely, but avoid oversized hero */
+@media (max-width: 980px) {
+  .osp-public-discovery-page .osp-public-discovery-hero-inner {
+    gap: 32px !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-copy h1 {
+    font-size: clamp(3.3rem, 10vw, 5.4rem) !important;
+    max-width: 720px !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-card {
+    max-width: 720px !important;
+    width: 100% !important;
+  }
+}
+
+/* Mobile: keep strong but app-like compact */
+@media (max-width: 640px) {
+  .osp-public-discovery-page .osp-public-discovery-hero {
+    padding-top: 42px !important;
+    padding-bottom: 44px !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-copy h1 {
+    font-size: clamp(2.45rem, 11.2vw, 3.55rem) !important;
+    line-height: 0.98 !important;
+    letter-spacing: -0.062em !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-lede {
+    margin-top: 16px !important;
+    line-height: 1.55 !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-card {
+    padding: 20px !important;
+    border-radius: 28px !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-card h2 {
+    font-size: clamp(1.88rem, 8.2vw, 2.55rem) !important;
+    line-height: 1.03 !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* OSP-PUBLIC-EXPLORE-HERO-VIEWPORT-COMPACT-HARDENING-01F END */
+
+
+/* OSP-PUBLIC-EXPLORE-HERO-TYPOGRAPHY-CALIBRATION-01H START */
+
+/*
+  Final /explore hero typography calibration.
+  Keeps premium authority but prevents oversized public-gateway hero feeling.
+  No copy, route, or structure changes.
+*/
+
+.osp-public-discovery-page .osp-public-discovery-copy h1 {
+  font-size: clamp(3.45rem, 5.6vw, 5.95rem) !important;
+  line-height: 0.96 !important;
+  letter-spacing: -0.068em !important;
+  max-width: 700px !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-card h2 {
+  font-size: clamp(2.05rem, 3vw, 3.25rem) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -0.058em !important;
+  max-width: 480px !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-lede {
+  max-width: 640px !important;
+  font-size: clamp(0.98rem, 1.04vw, 1.1rem) !important;
+  line-height: 1.58 !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-card > p:not(.osp-public-discovery-pass-pill) {
+  font-size: clamp(0.92rem, 0.98vw, 1rem) !important;
+  line-height: 1.5 !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-hero {
+  padding-top: clamp(50px, 5.7vw, 76px) !important;
+  padding-bottom: clamp(50px, 5.8vw, 78px) !important;
+}
+
+/* Laptop calibration */
+@media (max-width: 1280px) {
+  .osp-public-discovery-page .osp-public-discovery-copy h1 {
+    font-size: clamp(3.2rem, 5.55vw, 5.35rem) !important;
+    max-width: 660px !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-card h2 {
+    font-size: clamp(1.95rem, 2.9vw, 3rem) !important;
+  }
+}
+
+/* Tablet calibration */
+@media (max-width: 980px) {
+  .osp-public-discovery-page .osp-public-discovery-copy h1 {
+    font-size: clamp(3rem, 8.8vw, 4.75rem) !important;
+    max-width: 660px !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-card h2 {
+    font-size: clamp(1.9rem, 6vw, 2.85rem) !important;
+  }
+}
+
+/* Mobile calibration */
+@media (max-width: 640px) {
+  .osp-public-discovery-page .osp-public-discovery-copy h1 {
+    font-size: clamp(2.22rem, 10vw, 3.08rem) !important;
+    line-height: 1 !important;
+    letter-spacing: -0.056em !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-card h2 {
+    font-size: clamp(1.68rem, 7.6vw, 2.24rem) !important;
+    line-height: 1.04 !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-lede {
+    font-size: 0.96rem !important;
+  }
+}
+
+/* OSP-PUBLIC-EXPLORE-HERO-TYPOGRAPHY-CALIBRATION-01H END */
+
+
+/* OSP-PUBLIC-EXPLORE-FINAL-TRUST-INTERACTION-HARDENING-01I START */
+
+/*
+  Final /explore trust interaction layer.
+  No layout, copy, route, or typography scale changes.
+  Only: buttons, hover, transparent strokes, shadows, focus states.
+*/
+
+/* Universal premium transition for approved /explore interactive surfaces */
+.osp-public-discovery-page .osp-public-discovery-primary,
+.osp-public-discovery-page .osp-public-discovery-secondary,
+.osp-public-discovery-page .osp-public-discovery-card,
+.osp-public-discovery-page .osp-public-discovery-flow-card,
+.osp-public-discovery-page .osp-public-discovery-gateway-card,
+.osp-public-discovery-page .osp-public-discovery-pass-card,
+.osp-public-discovery-page .osp-public-discovery-pass-grid > div {
+  will-change: transform, box-shadow, border-color;
+  transition:
+    transform 190ms ease,
+    box-shadow 190ms ease,
+    border-color 190ms ease,
+    background 190ms ease,
+    color 190ms ease,
+    filter 190ms ease !important;
+}
+
+/* Primary CTA: premium gold trust button */
+.osp-public-discovery-page .osp-public-discovery-primary {
+  border: 1px solid rgba(255, 211, 107, 0.72) !important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,255,255,0.32), transparent 34%),
+    linear-gradient(135deg, #f3ae26 0%, #ffd36b 52%, #f6aa16 100%) !important;
+  color: #061f38 !important;
+  box-shadow:
+    0 34px 74px rgba(243, 174, 38, 0.36),
+    0 14px 28px rgba(0, 22, 42, 0.17),
+    inset 0 2px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -1px 0 rgba(116, 72, 0, 0.14) !important;
+}
+
+/* Secondary CTA: transparent premium glass button */
+.osp-public-discovery-page .osp-public-discovery-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.26) !important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,255,255,0.16), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.075)) !important;
+  color: rgba(255,255,255,0.94) !important;
+  box-shadow:
+    0 20px 48px rgba(0, 22, 42, 0.21),
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    inset 0 -1px 0 rgba(255,255,255,0.04) !important;
+}
+
+/* Light-section CTA links stay teal but gain authority */
+.osp-public-discovery-page .osp-public-discovery-card a,
+.osp-public-discovery-page .osp-public-discovery-gateway-card a {
+  color: #008d9f !important;
+  text-shadow: 0 10px 24px rgba(5,150,165,0.08);
+}
+
+/* Transparent glowing border overlays for cards */
+.osp-public-discovery-page .osp-public-discovery-card::after,
+.osp-public-discovery-page .osp-public-discovery-flow-card::after,
+.osp-public-discovery-page .osp-public-discovery-gateway-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,0.84),
+      rgba(5,150,165,0.18),
+      rgba(243,174,38,0.12),
+      rgba(255,255,255,0.46)
+    );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.72;
+  transition: opacity 190ms ease;
+}
+
+/* Right hero pass-card outer trust stroke */
+.osp-public-discovery-page .osp-public-discovery-pass-card {
+  box-shadow:
+    0 54px 132px rgba(0, 22, 42, 0.42),
+    0 22px 52px rgba(5, 150, 165, 0.20),
+    inset 0 1px 0 rgba(255,255,255,0.24),
+    inset 0 -1px 0 rgba(255,255,255,0.055) !important;
+}
+
+.osp-public-discovery-page .osp-public-discovery-pass-card::after {
+  border-color: rgba(255,255,255,0.105) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 0 1px rgba(5,150,165,0.05);
+}
+
+/* Microcard depth */
+.osp-public-discovery-page .osp-public-discovery-pass-grid > div {
+  box-shadow:
+    0 20px 44px rgba(0,22,42,0.24),
+    inset 0 1px 0 rgba(255,255,255,0.14),
+    inset 0 -1px 0 rgba(255,255,255,0.045) !important;
+}
+
+/* Light cards: serious product-gateway depth */
+.osp-public-discovery-page .osp-public-discovery-card,
+.osp-public-discovery-page .osp-public-discovery-flow-card,
+.osp-public-discovery-page .osp-public-discovery-gateway-card {
+  box-shadow:
+    0 24px 62px rgba(1, 56, 99, 0.085),
+    0 8px 22px rgba(5, 150, 165, 0.035),
+    inset 0 1px 0 rgba(255,255,255,0.94),
+    inset 0 -1px 0 rgba(5,150,165,0.035) !important;
+}
+
+/* Final CTA panel: trust gateway depth */
+.osp-public-discovery-page .osp-public-discovery-final {
+  box-shadow:
+    0 48px 122px rgba(0, 22, 42, 0.34),
+    0 18px 42px rgba(5, 150, 165, 0.12),
+    inset 0 1px 0 rgba(255,255,255,0.13),
+    inset 0 -1px 0 rgba(255,255,255,0.04) !important;
+}
+
+/* Desktop hover effects */
+@media (hover: hover) and (pointer: fine) {
+  .osp-public-discovery-page .osp-public-discovery-primary:hover {
+    transform: translateY(-3px) scale(1.006) !important;
+    filter: saturate(1.06);
+    box-shadow:
+      0 42px 88px rgba(243, 174, 38, 0.44),
+      0 18px 36px rgba(0, 22, 42, 0.20),
+      inset 0 2px 0 rgba(255,255,255,0.46),
+      inset 0 -1px 0 rgba(116,72,0,0.16) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-secondary:hover {
+    transform: translateY(-3px) scale(1.004) !important;
+    border-color: rgba(255,255,255,0.36) !important;
+    background:
+      radial-gradient(circle at 18% 0%, rgba(255,255,255,0.20), transparent 34%),
+      linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.09)) !important;
+    box-shadow:
+      0 26px 58px rgba(0,22,42,0.24),
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      inset 0 -1px 0 rgba(255,255,255,0.055) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-card:hover {
+    transform: translateY(-3px) !important;
+    border-color: rgba(234,251,250,0.66) !important;
+    box-shadow:
+      0 62px 146px rgba(0,22,42,0.46),
+      0 26px 62px rgba(5,150,165,0.22),
+      inset 0 1px 0 rgba(255,255,255,0.26),
+      inset 0 -1px 0 rgba(255,255,255,0.06) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-pass-grid > div:hover {
+    transform: translateY(-3px) !important;
+    border-color: rgba(255,255,255,0.36) !important;
+    background:
+      radial-gradient(circle at 16% 0%, rgba(255,255,255,0.19), transparent 34%),
+      linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.092)) !important;
+    box-shadow:
+      0 26px 58px rgba(0,22,42,0.29),
+      inset 0 1px 0 rgba(255,255,255,0.17),
+      inset 0 -1px 0 rgba(255,255,255,0.055) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-card:hover,
+  .osp-public-discovery-page .osp-public-discovery-flow-card:hover,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card:hover {
+    transform: translateY(-5px) !important;
+    border-color: rgba(5,150,165,0.26) !important;
+    box-shadow:
+      0 34px 86px rgba(1,56,99,0.13),
+      0 10px 26px rgba(5,150,165,0.05),
+      inset 0 1px 0 rgba(255,255,255,0.98),
+      inset 0 -1px 0 rgba(5,150,165,0.045) !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-card:hover::after,
+  .osp-public-discovery-page .osp-public-discovery-flow-card:hover::after,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card:hover::after {
+    opacity: 1;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-card:hover a,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card:hover a {
+    color: #006f82 !important;
+  }
+}
+
+/* Active/tap states */
+.osp-public-discovery-page .osp-public-discovery-primary:active,
+.osp-public-discovery-page .osp-public-discovery-secondary:active,
+.osp-public-discovery-page .osp-public-discovery-card a:active,
+.osp-public-discovery-page .osp-public-discovery-gateway-card a:active {
+  transform: translateY(0) scale(0.992) !important;
+}
+
+/* Premium keyboard accessibility */
+.osp-public-discovery-page a:focus-visible,
+.osp-public-discovery-page button:focus-visible {
+  outline: 3px solid rgba(255,211,107,0.68) !important;
+  outline-offset: 4px !important;
+  box-shadow:
+    0 0 0 7px rgba(243,174,38,0.16),
+    0 18px 44px rgba(1,56,99,0.14) !important;
+}
+
+/* Touch devices: no jumpy hover feeling */
+@media (hover: none) {
+  .osp-public-discovery-page .osp-public-discovery-primary,
+  .osp-public-discovery-page .osp-public-discovery-secondary,
+  .osp-public-discovery-page .osp-public-discovery-card,
+  .osp-public-discovery-page .osp-public-discovery-flow-card,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card,
+  .osp-public-discovery-page .osp-public-discovery-pass-card,
+  .osp-public-discovery-page .osp-public-discovery-pass-grid > div {
+    will-change: auto;
+  }
+}
+
+/* Motion safety */
+@media (prefers-reduced-motion: reduce) {
+  .osp-public-discovery-page .osp-public-discovery-primary,
+  .osp-public-discovery-page .osp-public-discovery-secondary,
+  .osp-public-discovery-page .osp-public-discovery-card,
+  .osp-public-discovery-page .osp-public-discovery-flow-card,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card,
+  .osp-public-discovery-page .osp-public-discovery-pass-card,
+  .osp-public-discovery-page .osp-public-discovery-pass-grid > div,
+  .osp-public-discovery-page .osp-public-discovery-card a,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card a {
+    transition: none !important;
+  }
+
+  .osp-public-discovery-page .osp-public-discovery-primary:hover,
+  .osp-public-discovery-page .osp-public-discovery-secondary:hover,
+  .osp-public-discovery-page .osp-public-discovery-card:hover,
+  .osp-public-discovery-page .osp-public-discovery-flow-card:hover,
+  .osp-public-discovery-page .osp-public-discovery-gateway-card:hover,
+  .osp-public-discovery-page .osp-public-discovery-pass-card:hover,
+  .osp-public-discovery-page .osp-public-discovery-pass-grid > div:hover {
+    transform: none !important;
+  }
+}
+
+/* OSP-PUBLIC-EXPLORE-FINAL-TRUST-INTERACTION-HARDENING-01I END */
+

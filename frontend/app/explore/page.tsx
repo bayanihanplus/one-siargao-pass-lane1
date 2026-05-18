@@ -82,11 +82,10 @@ export default function ExplorePage() {
         <div className="osp-public-discovery-hero-inner">
           <div className="osp-public-discovery-copy">
             <p className="osp-public-discovery-kicker">Explore Siargao</p>
-            <h1>Discover Siargao through trusted trails, stays, tours, and local partners.</h1>
+            <h1>Explore Siargao with One Siargao Pass.</h1>
             <p className="osp-public-discovery-lede">
-              One Siargao Pass™ gives travelers a clearer public gateway for understanding official
-              trails, local tours, stays, rentals, surf schools, food culture, wellness, and
-              partner-operated island services.
+              Discover official trails, local partners, stays, tours, and island services before
+              continuing into your OSP Pass when action is needed.
             </p>
 
             <div className="osp-public-discovery-actions">
@@ -101,10 +100,10 @@ export default function ExplorePage() {
 
           <aside className="osp-public-discovery-pass-card" aria-label="Public website gateway">
             <p className="osp-public-discovery-pass-pill">Public Website Gateway</p>
-            <h2>Explore publicly. Continue inside the pass when action is needed.</h2>
+            <h2>Explore first. Continue when ready.</h2>
             <p>
-              The website explains the island ecosystem. The Traveler App handles saved progress,
-              QR identity, scans, booking continuation, and payment-linked journey records.
+              The public website helps you understand Siargao before moving into saved progress,
+              QR identity, bookings, scans, and payment-linked journey records.
             </p>
 
             <div className="osp-public-discovery-pass-grid">
