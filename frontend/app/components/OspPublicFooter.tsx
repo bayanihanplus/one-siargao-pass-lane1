@@ -8,7 +8,7 @@ const gatewayLinks = [
 
 const partnerLinks = [
   { href: "/operators", label: "Local Partners" },
-  { href: "/ota", label: "Partners" },
+  { href: "/ota", label: "Travel Partners" },
   { href: "/developers", label: "Developers" },
 ];
 

@@ -1,188 +1,205 @@
-// OSP_PUBLIC_EXPLORE_PREMIUM_REBUILD_01C
-// OSP_PUBLIC_EXPLORE_FINISH_COPY_01E
 import Link from "next/link";
+import OspPublicFooter from "../components/OspPublicFooter";
 import OspPublicHeader from "../components/OspPublicHeader";
 
-import OspPublicFooter from "../components/OspPublicFooter";
-const discoveryPillars = [
+const discoveryLayers = [
   {
-    eyebrow: "Official route layer",
+    eyebrow: "Official Route Layer",
     title: "Passport Trails™",
-    body: "Curated trail families, verified stops, stamps, and continuation paths for travelers who want structure without losing island freedom.",
+    body:
+      "Curated trail families, verified stops, stamps, and continuation paths for travelers who want structure without losing island freedom.",
     href: "/passport-trails",
     cta: "View Trails",
-    tone: "navy",
   },
   {
-    eyebrow: "Local operator layer",
+    eyebrow: "Local Operator Layer",
     title: "Tours & Island Routes",
-    body: "Island hopping, land routes, Sugba Lagoon, Bucas Grande, surf routes, and other partner-operated experiences.",
+    body:
+      "Island hopping, land routes, Sugba Lagoon, Bucas Grande, surf routes, and partner-operated experiences organized for clearer discovery.",
     href: "/operators",
     cta: "View Local Partners",
-    tone: "teal",
   },
   {
-    eyebrow: "Stay readiness layer",
+    eyebrow: "Stay Readiness Layer",
     title: "Stays & Check-in",
-    body: "Accommodation discovery that prepares for verified stays, OSP Pass continuity, and future QR-connected check-in records.",
+    body:
+      "Accommodation discovery that prepares for verified stays, OSP Pass continuity, and future QR-connected check-in records.",
     href: "/operators",
     cta: "Explore Stay Partners",
-    tone: "mist",
   },
   {
-    eyebrow: "Island services layer",
+    eyebrow: "Island Services Layer",
     title: "Rentals, Surf, Food & Care",
-    body: "Transport, gear, surf schools, food culture, wellness, beauty, health, and local support lanes organized for traveler clarity.",
+    body:
+      "Transport, gear, surf schools, food culture, wellness, beauty, health, and local support lanes organized for traveler clarity.",
     href: "/operators",
     cta: "See Service Partners",
-    tone: "sand",
   },
 ];
 
-const appBridge = [
-  ["Public website", "Learn what OSP connects before entering app-only actions."],
-  ["Traveler App", "Use saved progress, pass identity, QR, scan, bookings, and payments when ready."],
-  ["Local partners", "Keep fulfillment partner-operated while OSP improves discovery, trust, and routing."],
-  ["Destination layer", "Prepare for clearer visibility, smoother coordination, and better journey continuity."],
+const appFlow = [
+  {
+    eyebrow: "Public Website",
+    title: "Explore before entering app-only actions",
+    body:
+      "The public website explains the Siargao ecosystem, builds trust, and routes visitors into the right gateway before requiring saved app state.",
+  },
+  {
+    eyebrow: "Traveler Pass",
+    title: "Continue when the journey needs identity",
+    body:
+      "The Traveler App handles saved progress, QR identity, scans, booking continuation, and payment-linked journey records when action is needed.",
+  },
 ];
 
-const routeCards = [
+const gateways = [
   {
-    label: "Official Passport Trails",
-    text: "Use the public Passport Trails gateway for trail families and official route education.",
+    title: "Passport Trails",
+    body: "For official route education, trail families, stamps, stops, and structured island exploration.",
     href: "/passport-trails",
+    cta: "Open Trails",
   },
   {
-    label: "Local Partners",
-    text: "For operator, stay, rental, surf, food, wellness, and care partner discovery.",
+    title: "Local Partners",
+    body: "For tours, stays, rentals, surf, food, wellness, health, care, and local service participation.",
     href: "/operators",
+    cta: "View Partners",
   },
   {
-    label: "Booking Partners",
-    text: "For OTA, travel agency, and distribution partner access.",
+    title: "Travel Partners",
+    body: "For travel agencies, tour desks, booking partners, and distribution channels preparing Siargao access.",
     href: "/ota",
+    cta: "Partner Access",
   },
 ];
 
-// OSP_PUBLIC_FOOTER_INSERT_MISSING_01K
-// OSP_PUBLIC_FOOTER_RESTORE_INSIDE_MAIN_01N
-export default function PublicExplorePage() {
+export default function ExplorePage() {
   return (
-    <main className="osp-premium-v3 osp-public-explore-page">
+    <main className="osp-public-discovery-page">
       <OspPublicHeader />
-      
 
-      <section className="osp-public-explore-hero" aria-labelledby="public-explore-title">
-        <div className="osp-public-explore-hero-copy">
-          <p className="osp-public-kicker">Explore Siargao</p>
-          <h1 id="public-explore-title">Discover Siargao through trusted trails, stays, tours, and local partners.</h1>
-          <p>
-            This public Explore gateway helps travelers understand what One Siargao Pass connects:
-            official trails, local tours, stays, rentals, surf schools, food culture, wellness,
-            and partner-operated island services.
-          </p>
+      <section className="osp-public-discovery-hero">
+        <div className="osp-public-discovery-hero-inner">
+          <div className="osp-public-discovery-copy">
+            <p className="osp-public-discovery-kicker">Explore Siargao</p>
+            <h1>Discover Siargao through trusted trails, stays, tours, and local partners.</h1>
+            <p className="osp-public-discovery-lede">
+              One Siargao Pass™ gives travelers a clearer public gateway for understanding official
+              trails, local tours, stays, rentals, surf schools, food culture, wellness, and
+              partner-operated island services.
+            </p>
 
-          <div className="osp-public-explore-actions">
-            <Link href="/passport-trails">Explore Passport Trails</Link>
-            <Link href="/traveler/start">Get Your Pass</Link>
+            <div className="osp-public-discovery-actions">
+              <Link href="/passport-trails" className="osp-public-discovery-primary">
+                Explore Passport Trails
+              </Link>
+              <Link href="/traveler/start" className="osp-public-discovery-secondary">
+                Get Your Pass
+              </Link>
+            </div>
           </div>
+
+          <aside className="osp-public-discovery-pass-card" aria-label="Public website gateway">
+            <p className="osp-public-discovery-pass-pill">Public Website Gateway</p>
+            <h2>Explore publicly. Continue inside the pass when action is needed.</h2>
+            <p>
+              The website explains the island ecosystem. The Traveler App handles saved progress,
+              QR identity, scans, booking continuation, and payment-linked journey records.
+            </p>
+
+            <div className="osp-public-discovery-pass-grid">
+              <div>
+                <strong>Public website</strong>
+                <span>Understand what OSP connects before entering app-only actions.</span>
+              </div>
+              <div>
+                <strong>Traveler App</strong>
+                <span>Use saved progress, pass identity, QR, scan, bookings, and payments when ready.</span>
+              </div>
+              <div>
+                <strong>Local partners</strong>
+                <span>Keep fulfillment partner-operated while OSP improves discovery and routing.</span>
+              </div>
+              <div>
+                <strong>Destination layer</strong>
+                <span>Prepare for clearer visibility, smoother coordination, and journey continuity.</span>
+              </div>
+            </div>
+          </aside>
         </div>
-
-        <aside className="osp-public-explore-command-card" aria-label="Explore gateway summary">
-          <span>Public Website Gateway</span>
-          <h2>Explore publicly. Continue inside the pass when action is needed.</h2>
-          <p>
-            The website explains the island ecosystem. The Traveler App handles saved progress,
-            QR identity, scans, booking continuation, and payment-linked journey records.
-          </p>
-
-          <div className="osp-public-explore-signal-grid">
-            {appBridge.map(([label, text]) => (
-              <article key={label}>
-                <strong>{label}</strong>
-                <small>{text}</small>
-              </article>
-            ))}
-          </div>
-        </aside>
       </section>
 
-      <section className="osp-public-explore-section" aria-labelledby="explore-layers-title">
-        <div className="osp-public-explore-heading">
-          <p className="osp-public-kicker">Discovery layers</p>
-          <h2 id="explore-layers-title">One public gateway for the major ways travelers experience Siargao.</h2>
-          <span>
-            Explore is not just a list of services. It is the public-facing map of how OSP connects
-            travelers, local partners, official trails, access points, and trusted journey coordination.
-          </span>
+      <section className="osp-public-discovery-section">
+        <div className="osp-public-discovery-section-head">
+          <p className="osp-public-discovery-kicker">Discovery Layers</p>
+          <h2>One public gateway for the major ways travelers experience Siargao.</h2>
+          <p>
+            Explore is not a generic list of services. It is the public-facing map of how OSP connects
+            travelers, official trails, local partners, access points, and trusted journey pathways.
+          </p>
         </div>
 
-        <div className="osp-public-explore-layer-grid">
-          {discoveryPillars.map((pillar) => (
-            <Link href={pillar.href} className={`osp-public-explore-layer osp-public-explore-layer-${pillar.tone}`} key={pillar.title}>
-              <span>{pillar.eyebrow}</span>
-              <h3>{pillar.title}</h3>
-              <p>{pillar.body}</p>
-              <strong>{pillar.cta}</strong>
-            </Link>
+        <div className="osp-public-discovery-card-grid">
+          {discoveryLayers.map((item) => (
+            <article className="osp-public-discovery-card" key={item.title}>
+              <p className="osp-public-discovery-card-kicker">{item.eyebrow}</p>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+              <Link href={item.href}>{item.cta}</Link>
+            </article>
           ))}
         </div>
       </section>
 
-      <section className="osp-public-explore-bridge" aria-labelledby="public-to-app-title">
-        <div>
-          <p className="osp-public-kicker">Website to app flow</p>
-          <h2 id="public-to-app-title">Explore first. Continue in the app when action is needed.</h2>
+      <section className="osp-public-discovery-flow">
+        <div className="osp-public-discovery-flow-copy">
+          <p className="osp-public-discovery-kicker">Website to App Flow</p>
+          <h2>Explore first. Continue in the app when action is needed.</h2>
         </div>
 
-        <div className="osp-public-explore-bridge-grid">
-          <article>
-            <span>Public Explore</span>
-            <h3>Website discovery</h3>
-            <p>
-              Explains the ecosystem, improves trust, and routes visitors into the right public
-              or partner gateway without forcing them into app-only screens too early.
-            </p>
-          </article>
-
-          <article>
-            <span>Traveler Explore</span>
-            <h3>Traveler App experience</h3>
-            <p>
-              Handles app-shell browsing, saved traveler state, booking continuation, QR-linked
-              journeys, and personalized traveler actions.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section className="osp-public-explore-route-section" aria-labelledby="route-safely-title">
-        <div className="osp-public-explore-heading">
-          <p className="osp-public-kicker">Route safely</p>
-          <h2 id="route-safely-title">Choose the right gateway depending on what you need next.</h2>
-        </div>
-
-        <div className="osp-public-explore-route-grid">
-          {routeCards.map((card) => (
-            <Link href={card.href} className="osp-public-explore-route-card" key={card.label}>
-              <h3>{card.label}</h3>
-              <p>{card.text}</p>
-              <strong>Continue</strong>
-            </Link>
+        <div className="osp-public-discovery-flow-stack">
+          {appFlow.map((item) => (
+            <article className="osp-public-discovery-flow-card" key={item.title}>
+              <p className="osp-public-discovery-card-kicker">{item.eyebrow}</p>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
           ))}
         </div>
       </section>
 
-      <section className="osp-public-explore-cta">
-        <p className="osp-public-kicker">Ready to continue?</p>
+      <section className="osp-public-discovery-section">
+        <div className="osp-public-discovery-section-head">
+          <p className="osp-public-discovery-kicker">Choose the Right Gateway</p>
+          <h2>Route visitors clearly depending on what they need next.</h2>
+        </div>
+
+        <div className="osp-public-discovery-gateway-grid">
+          {gateways.map((item) => (
+            <article className="osp-public-discovery-gateway-card" key={item.title}>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+              <Link href={item.href}>{item.cta}</Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="osp-public-discovery-final">
+        <p className="osp-public-discovery-kicker">Ready to Continue?</p>
         <h2>Move from public discovery into your connected Siargao journey.</h2>
-        <div>
-          <Link href="/traveler/start">Get Your Pass</Link>
-          <Link href="/passport-trails">View Passport Trails</Link>
+
+        <div className="osp-public-discovery-actions osp-public-discovery-actions-center">
+          <Link href="/traveler/start" className="osp-public-discovery-primary">
+            Get Your Pass
+          </Link>
+          <Link href="/passport-trails" className="osp-public-discovery-secondary">
+            View Passport Trails
+          </Link>
         </div>
       </section>
-    
+
       <OspPublicFooter />
-</main>
+    </main>
   );
 }

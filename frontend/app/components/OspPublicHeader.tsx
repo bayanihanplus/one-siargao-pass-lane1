@@ -7,7 +7,7 @@ const navItems = [
   { href: "/passport-trails", label: "Passport Trails", match: ["/passport-trails"] },
   { href: "/explore", label: "Explore", match: ["/explore"] },
   { href: "/operators", label: "Local Partners", match: ["/operators"] },
-  { href: "/ota", label: "Partners", match: ["/ota"] },
+  { href: "/ota", label: "Travel Partners", match: ["/ota"] },
 ];
 
 function isActive(pathname: string, matches: string[]) {
