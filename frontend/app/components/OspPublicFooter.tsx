@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const gatewayLinks = [
-  { href: "/traveler/start", label: "Get Your Pass" },
+  { href: "/osp-pass", label: "Get Your Pass" },
   { href: "/explore", label: "Explore" },
   { href: "/passport-trails", label: "Passport Trails" },
 ];

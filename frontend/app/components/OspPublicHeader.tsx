@@ -51,7 +51,7 @@ export default function OspPublicHeader() {
           <Link className="osp-public-signin" href="/login?mode=returning">
             Sign in
           </Link>
-          <Link className="osp-public-pass-cta" href="/traveler/start">
+          <Link className="osp-public-pass-cta" href="/osp-pass">
             Get Your Pass
           </Link>
         </div>
