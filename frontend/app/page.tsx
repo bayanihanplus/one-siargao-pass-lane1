@@ -1,8 +1,11 @@
+// OSP_PUBLIC_EXPLORE_ROUTE_LINK_FIX_01B
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import OspPublicHeader from "./components/OspPublicHeader";
 
+import OspPublicFooter from "./components/OspPublicFooter";
 type BookingLane = {
   key: string;
   label: string;
@@ -152,13 +155,14 @@ const trailHighlights = [
   },
 ];
 
+// OSP_PUBLIC_HOME_EXPLORE_CARDS_ROUTE_TO_PUBLIC_EXPLORE_01C
 const exploreCards = [
-  ["Tours", "Island hopping, land tours, private routes, and partner-led experiences.", "/traveler/explore/tours"],
-  ["Stays", "Traveler-ready stays with future OSP Pass and QR check-in connection.", "/traveler/explore/stays"],
+  ["Tours", "Island hopping, land tours, private routes, and partner-led experiences.", "/explore"],
+  ["Stays", "Traveler-ready stays with future OSP Pass and QR check-in connection.", "/explore"],
   ["Site Access", "Check approved access points such as Cloud 9 and future site access locations.", "/traveler/site-access/cloud-9"],
-  ["Surf Schools", "Lessons, instructors, beginner support, and surf-side services.", "/traveler/explore/surf-schools"],
-  ["Rentals", "Transport, gear, mobility, and local rental partners.", "/traveler/explore/rentals"],
-  ["Food & Wellness", "Restaurants, cafés, wellness, recovery, beauty, and care services.", "/traveler/explore/food-culture"],
+  ["Surf Schools", "Lessons, instructors, beginner support, and surf-side services.", "/explore"],
+  ["Rentals", "Transport, gear, mobility, and local rental partners.", "/explore"],
+  ["Food & Wellness", "Restaurants, cafés, wellness, recovery, beauty, and care services.", "/explore"],
 ];
 
 function buildQuery(params: Record<string, string>) {
@@ -201,30 +205,9 @@ export default function HomePage() {
 
   return (
     <main className="osp-commercial-page osp-premium-v3">
+      <OspPublicHeader />
       <section className="osp-premium-hero-shell">
-        <header className="osp-commercial-header">
-        <a className="osp-commercial-brand" href="/" aria-label="One Siargao Pass home">
-          <span className="osp-commercial-brand-mark osp-brand-logo-mark">
-              <img src="/osp/osp-public-header-logo-clean.png" alt="" aria-hidden="true" />
-            </span>
-          <span>
-            <strong>One Siargao Pass™</strong>
-            <small>Siargao’s trusted travel gateway</small>
-          </span>
-        </a>
-
-        <nav className="osp-commercial-nav" aria-label="Public website navigation">
-          <a href="/passport-trails">Passport Trails</a>
-          <a href="/traveler/explore">Explore</a>
-          <a href="/operators">Local Partners</a>
-          <a href="/ota">Partners</a>
-        </nav>
-
-        <div className="osp-commercial-header-actions">
-          <a className="osp-commercial-login" href="/login?mode=returning">Sign in</a>
-          <a className="osp-commercial-pass-button" href="/traveler/start">Get Your Pass</a>
-        </div>
-      </header>
+        
 
       <section className="osp-commercial-hero" aria-label="One Siargao Pass public booking gateway">
         <div className="osp-commercial-hero-bg" aria-hidden="true" />
@@ -538,29 +521,8 @@ export default function HomePage() {
           <a className="osp-commercial-login" href="/developers">Developers</a>
         </div>
       </section>
-
-      <footer className="osp-commercial-footer">
-        <div className="osp-footer-brand-block">
-          <span className="osp-footer-logo-mark" aria-hidden="true">
-            <img src="/osp/osp-public-header-logo-clean.png" alt="" />
-          </span>
-          <strong>One Siargao Pass™</strong>
-          <span>Premium public trust gateway for Siargao traveler access, local bookings, and connected journeys.</span>
-          <div className="osp-footer-contact">
-            <span>749 Tourism Road, General Luna, Siargao, General Luna, Philippines, 8419</span>
-            <a href="tel:+639277216212">0927 721 6212</a>
-          </div>
-        </div>
-        <nav aria-label="Footer links">
-          <a href="/privacy">Privacy</a>
-          <a href="/terms">Terms</a>
-          <a href="/support">Support</a>
-          <a href="/operator-terms">Operator Terms</a>
-          <a href="/ota-terms">Partner Terms</a>
-          <a href="/api-terms">API Terms</a>
-          <a href="/developers">Developers</a>
-        </nav>
-      </footer>
-    </main>
+    
+      <OspPublicFooter />
+</main>
   );
 }

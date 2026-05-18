@@ -1,3 +1,5 @@
+import OspPublicHeader from "../components/OspPublicHeader";
+import OspPublicFooter from "../components/OspPublicFooter";
 const trailModes = [
   {
     eyebrow: "Partner Tour",
@@ -50,36 +52,13 @@ const howItWorks = [
   ["Continue later", "Keep your journey connected across this visit and future returns."],
 ];
 
+// OSP_PUBLIC_FOOTER_INSERT_MISSING_01K
+// OSP_PUBLIC_FOOTER_RESTORE_INSIDE_MAIN_01N
 export default function PassportTrailsPublicPage() {
   return (
     <main className="osp-premium-v3 osp-passport-public-page osp-passport-public-restructure">
-      <header className="osp-commercial-header osp-passport-public-header">
-        <a className="osp-commercial-logo" href="/" aria-label="One Siargao Pass home">
-          <span className="osp-commercial-logo-mark" aria-hidden="true">
-            <img src="/osp/osp-public-header-logo-clean.png" alt="" />
-          </span>
-          <span>
-            <strong>One Siargao Pass™</strong>
-            <small>Siargao’s trusted travel gateway</small>
-          </span>
-        </a>
-
-        <nav className="osp-commercial-nav" aria-label="Public website navigation">
-          <a href="/passport-trails">Passport Trails</a>
-          <a href="/traveler/explore">Explore</a>
-          <a href="/operators">Local Partners</a>
-          <a href="/ota">Partners</a>
-        </nav>
-
-        <div className="osp-commercial-header-actions">
-          <a className="osp-commercial-login" href="/login?mode=returning">
-            Sign in
-          </a>
-          <a className="osp-commercial-pass-button" href="/traveler/start" aria-label="Get your One Siargao Pass">
-            Get Your Pass
-          </a>
-        </div>
-      </header>
+      <OspPublicHeader />
+      
 
       <section className="osp-passport-hero osp-passport-hero-restructured">
         <div className="osp-passport-hero-copy">
@@ -223,33 +202,12 @@ export default function PassportTrailsPublicPage() {
         <h2>Start your Passport Trails journey with One Siargao Pass.</h2>
         <div>
           <a href="/traveler/start" aria-label="Get your One Siargao Pass">Get Your Pass</a>
-          <a href="/traveler/explore" aria-label="Explore Siargao services and trails">Explore Siargao</a>
+          <a href="/explore" aria-label="Explore Siargao services and trails">Explore Siargao</a>
         </div>
       </section>
+    
+      <OspPublicFooter />
+</main>
 
-      <footer className="osp-commercial-footer osp-passport-public-footer">
-        <div className="osp-commercial-footer-brand">
-          <strong>One Siargao Pass</strong>
-          <span>
-            A trusted digital gateway for Siargao travelers, local partners,
-            booking partners, and authorized destination stakeholders.
-          </span>
-        </div>
-
-        <nav aria-label="Public website footer navigation">
-          <a href="/traveler/start" aria-label="Get your One Siargao Pass">Get Your Pass</a>
-          <a href="/traveler/explore">Explore</a>
-          <a href="/operators">Local Partners</a>
-          <a href="/ota">Partners</a>
-          <a href="/developers">Developers</a>
-          <a href="/privacy">Privacy</a>
-          <a href="/terms">Terms</a>
-          <a href="/support">Support</a>
-          <a href="/operator-terms">Operator Terms</a>
-          <a href="/ota-terms">Partner Terms</a>
-          <a href="/api-terms">API Terms</a>
-        </nav>
-      </footer>
-    </main>
   );
 }

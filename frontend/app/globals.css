@@ -15107,3 +15107,2654 @@ html body main[data-osp-entry-page="true"] a[href="/traveler/passport-map"] > sp
 }
 /* OSP_PASSPORT_TRAILS_FINAL_INTERACTION_HARDENING_03U_END */
 
+/* OSP_PUBLIC_EXPLORE_WEBSITE_PAGE_01B_START */
+.osp-premium-v3.osp-public-explore-page {
+  min-height: 100vh !important;
+  overflow-x: clip !important;
+  background:
+    linear-gradient(180deg, #073963 0px, #034665 128px, #eefcfb 129px, #f7fefc 100%) !important;
+  color: #073963 !important;
+}
+
+.osp-premium-v3.osp-public-explore-page::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 50% !important;
+  width: 100vw !important;
+  height: 148px !important;
+  transform: translateX(-50%) !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(circle at 16% 28%, rgba(5, 150, 165, 0.30), transparent 34%),
+    linear-gradient(135deg, #013863 0%, #024b70 48%, #073963 100%) !important;
+}
+
+.osp-premium-v3.osp-public-explore-page > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.osp-public-explore-hero {
+  width: min(1120px, calc(100% - 48px)) !important;
+  margin: 0 auto !important;
+  padding: clamp(112px, 9vw, 138px) 0 clamp(74px, 7vw, 104px) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 650px) minmax(310px, 400px) !important;
+  gap: clamp(40px, 6vw, 76px) !important;
+  align-items: center !important;
+}
+
+.osp-public-kicker {
+  margin: 0 0 18px !important;
+  color: #16d7df !important;
+  font-size: 0.78rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.42em !important;
+  text-transform: uppercase !important;
+}
+
+.osp-public-explore-hero-copy h1 {
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-size: clamp(3.15rem, 5vw, 5.15rem) !important;
+  line-height: 0.95 !important;
+  letter-spacing: -0.07em !important;
+  max-width: 680px !important;
+}
+
+.osp-public-explore-hero-copy > p:not(.osp-public-kicker) {
+  margin: 22px 0 0 !important;
+  max-width: 650px !important;
+  color: rgba(232, 250, 249, 0.84) !important;
+  font-size: 1.05rem !important;
+  line-height: 1.65 !important;
+  font-weight: 750 !important;
+}
+
+.osp-public-explore-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+  margin-top: 30px !important;
+}
+
+.osp-public-explore-actions a,
+.osp-public-explore-cta a:first-child {
+  min-height: 46px !important;
+  padding: 0 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  color: #052d4f !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+  background: linear-gradient(135deg, #0596a5 0%, #20b6c3 100%) !important;
+  border: 1px solid rgba(129, 235, 241, 0.38) !important;
+  box-shadow: 0 18px 38px rgba(5, 150, 165, 0.24) !important;
+}
+
+.osp-public-explore-actions a:last-child,
+.osp-public-explore-cta a:last-child {
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: #073963 !important;
+  border-color: rgba(255, 255, 255, 0.62) !important;
+}
+
+.osp-public-explore-card {
+  border-radius: 32px !important;
+  padding: 34px !important;
+  min-height: 420px !important;
+  color: #ffffff !important;
+  background:
+    radial-gradient(circle at 76% 72%, rgba(80, 210, 219, 0.32), transparent 38%),
+    linear-gradient(145deg, rgba(1, 56, 99, 0.96), rgba(5, 150, 165, 0.86)) !important;
+  border: 10px solid rgba(232, 250, 249, 0.78) !important;
+  box-shadow: 0 30px 80px rgba(1, 24, 43, 0.28) !important;
+}
+
+.osp-public-explore-card > span {
+  display: inline-flex !important;
+  padding: 10px 18px !important;
+  border-radius: 999px !important;
+  color: #073963 !important;
+  background: #f3ae26 !important;
+  font-size: 0.76rem !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+}
+
+.osp-public-explore-card h2 {
+  margin: 28px 0 0 !important;
+  color: #ffffff !important;
+  font-size: clamp(2.1rem, 3.2vw, 3.25rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.055em !important;
+}
+
+.osp-public-explore-card p {
+  margin: 18px 0 0 !important;
+  color: rgba(255, 255, 255, 0.82) !important;
+  font-weight: 750 !important;
+  line-height: 1.55 !important;
+}
+
+.osp-public-explore-card div {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  margin-top: 24px !important;
+}
+
+.osp-public-explore-card strong {
+  padding: 9px 12px !important;
+  border-radius: 999px !important;
+  color: rgba(255, 255, 255, 0.90) !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  font-size: 0.78rem !important;
+}
+
+.osp-public-explore-section {
+  width: min(1120px, calc(100% - 48px)) !important;
+  margin: 0 auto !important;
+  padding: 78px 0 88px !important;
+}
+
+.osp-public-explore-heading {
+  max-width: 760px !important;
+}
+
+.osp-public-explore-heading h2,
+.osp-public-explore-cta h2 {
+  margin: 0 !important;
+  color: #073963 !important;
+  font-size: clamp(2.5rem, 4vw, 4.2rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.065em !important;
+}
+
+.osp-public-explore-heading span {
+  display: block !important;
+  margin-top: 18px !important;
+  color: #50668b !important;
+  font-size: 1rem !important;
+  line-height: 1.65 !important;
+  font-weight: 750 !important;
+}
+
+.osp-public-explore-grid {
+  margin-top: 36px !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.osp-public-explore-lane {
+  min-height: 260px !important;
+  padding: 26px !important;
+  border-radius: 28px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  text-decoration: none !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  border: 1px solid rgba(5, 150, 165, 0.12) !important;
+  box-shadow: 0 24px 58px rgba(1, 56, 99, 0.08) !important;
+  transition: transform 180ms ease, box-shadow 180ms ease !important;
+}
+
+.osp-public-explore-lane:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 30px 70px rgba(1, 56, 99, 0.12) !important;
+}
+
+.osp-public-explore-lane span {
+  width: fit-content !important;
+  padding: 8px 13px !important;
+  border-radius: 999px !important;
+  color: #073963 !important;
+  background: rgba(243, 174, 38, 0.16) !important;
+  font-size: 0.72rem !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+.osp-public-explore-lane h3 {
+  margin: 22px 0 0 !important;
+  color: #073963 !important;
+  font-size: 1.5rem !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.osp-public-explore-lane p {
+  margin: 14px 0 0 !important;
+  color: #50668b !important;
+  line-height: 1.55 !important;
+  font-weight: 750 !important;
+}
+
+.osp-public-explore-lane strong {
+  margin-top: auto !important;
+  color: #0596a5 !important;
+  font-size: 0.86rem !important;
+}
+
+.osp-public-explore-cta {
+  width: min(1120px, calc(100% - 48px)) !important;
+  margin: 0 auto 86px !important;
+  padding: clamp(46px, 6vw, 72px) !important;
+  border-radius: 34px !important;
+  text-align: center !important;
+  background:
+    radial-gradient(circle at 76% 28%, rgba(32, 182, 195, 0.34), transparent 32%),
+    linear-gradient(135deg, #003b66 0%, #0596a5 100%) !important;
+  box-shadow: 0 34px 90px rgba(1, 56, 99, 0.20) !important;
+}
+
+.osp-public-explore-cta h2 {
+  color: #ffffff !important;
+  max-width: 760px !important;
+  margin: 0 auto !important;
+}
+
+.osp-public-explore-cta div {
+  display: flex !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+  margin-top: 28px !important;
+}
+
+@media (max-width: 900px) {
+  .osp-public-explore-hero {
+    width: min(100% - 32px, 520px) !important;
+    padding-top: 108px !important;
+    grid-template-columns: 1fr !important;
+  }
+
+  .osp-public-explore-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .osp-public-explore-section,
+  .osp-public-explore-cta {
+    width: min(100% - 32px, 520px) !important;
+  }
+}
+/* OSP_PUBLIC_EXPLORE_WEBSITE_PAGE_01B_END */
+
+/* OSP_PUBLIC_EXPLORE_PREMIUM_REBUILD_01C_START */
+.osp-premium-v3.osp-public-explore-page {
+  min-height: 100vh !important;
+  overflow-x: clip !important;
+  background:
+    radial-gradient(circle at 16% 9%, rgba(5, 150, 165, 0.18), transparent 26%),
+    linear-gradient(180deg, #073963 0px, #034665 128px, #eefcfb 129px, #f7fefc 64%, #ffffff 100%) !important;
+  color: #073963 !important;
+}
+
+.osp-premium-v3.osp-public-explore-page::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 auto auto 50% !important;
+  width: 100vw !important;
+  height: 148px !important;
+  transform: translateX(-50%) !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(circle at 16% 28%, rgba(5, 150, 165, 0.30), transparent 34%),
+    radial-gradient(circle at 72% 18%, rgba(255, 255, 255, 0.08), transparent 30%),
+    linear-gradient(135deg, #013863 0%, #024b70 48%, #073963 100%) !important;
+}
+
+.osp-premium-v3.osp-public-explore-page > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.osp-public-explore-hero {
+  width: min(1120px, calc(100% - 48px)) !important;
+  margin: 0 auto !important;
+  padding: clamp(112px, 9vw, 138px) 0 clamp(72px, 7vw, 102px) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 650px) minmax(320px, 420px) !important;
+  gap: clamp(40px, 6vw, 76px) !important;
+  align-items: center !important;
+}
+
+.osp-public-kicker {
+  margin: 0 0 18px !important;
+  color: #16d7df !important;
+  font-size: 0.78rem !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.42em !important;
+  text-transform: uppercase !important;
+}
+
+.osp-public-explore-hero-copy h1 {
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-size: clamp(3.1rem, 4.9vw, 5.1rem) !important;
+  line-height: 0.95 !important;
+  letter-spacing: -0.07em !important;
+  max-width: 690px !important;
+}
+
+.osp-public-explore-hero-copy > p:not(.osp-public-kicker) {
+  margin: 22px 0 0 !important;
+  max-width: 650px !important;
+  color: rgba(232, 250, 249, 0.84) !important;
+  font-size: 1.05rem !important;
+  line-height: 1.65 !important;
+  font-weight: 750 !important;
+}
+
+.osp-public-explore-actions,
+.osp-public-explore-cta div {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+  margin-top: 30px !important;
+}
+
+.osp-public-explore-actions a,
+.osp-public-explore-cta a:first-child {
+  min-height: 46px !important;
+  padding: 0 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  color: #052d4f !important;
+  font-weight: 950 !important;
+  text-decoration: none !important;
+  background: linear-gradient(135deg, #0596a5 0%, #20b6c3 100%) !important;
+  border: 1px solid rgba(129, 235, 241, 0.38) !important;
+  box-shadow: 0 18px 38px rgba(5, 150, 165, 0.24) !important;
+  transition: transform 180ms ease, box-shadow 180ms ease !important;
+}
+
+.osp-public-explore-actions a:hover,
+.osp-public-explore-cta a:hover,
+.osp-public-explore-layer:hover,
+.osp-public-explore-route-card:hover {
+  transform: translateY(-3px) !important;
+}
+
+.osp-public-explore-actions a:last-child,
+.osp-public-explore-cta a:last-child {
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: #073963 !important;
+  border-color: rgba(255, 255, 255, 0.62) !important;
+}
+
+.osp-public-explore-command-card {
+  border-radius: 32px !important;
+  padding: 34px !important;
+  min-height: 450px !important;
+  color: #ffffff !important;
+  background:
+    radial-gradient(circle at 76% 72%, rgba(80, 210, 219, 0.32), transparent 38%),
+    linear-gradient(145deg, rgba(1, 56, 99, 0.96), rgba(5, 150, 165, 0.86)) !important;
+  border: 10px solid rgba(232, 250, 249, 0.78) !important;
+  box-shadow: 0 30px 80px rgba(1, 24, 43, 0.28) !important;
+}
+
+.osp-public-explore-command-card > span {
+  display: inline-flex !important;
+  padding: 10px 18px !important;
+  border-radius: 999px !important;
+  color: #073963 !important;
+  background: #f3ae26 !important;
+  font-size: 0.72rem !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+}
+
+.osp-public-explore-command-card h2 {
+  margin: 28px 0 0 !important;
+  color: #ffffff !important;
+  font-size: clamp(2.05rem, 3.1vw, 3.18rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.055em !important;
+}
+
+.osp-public-explore-command-card p {
+  margin: 18px 0 0 !important;
+  color: rgba(255, 255, 255, 0.84) !important;
+  font-weight: 750 !important;
+  line-height: 1.55 !important;
+}
+
+.osp-public-explore-signal-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin-top: 24px !important;
+}
+
+.osp-public-explore-signal-grid article {
+  padding: 14px !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.13) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+.osp-public-explore-signal-grid strong,
+.osp-public-explore-signal-grid small {
+  display: block !important;
+}
+
+.osp-public-explore-signal-grid strong {
+  color: #ffffff !important;
+  font-size: 0.86rem !important;
+}
+
+.osp-public-explore-signal-grid small {
+  margin-top: 6px !important;
+  color: rgba(255, 255, 255, 0.74) !important;
+  line-height: 1.38 !important;
+  font-weight: 700 !important;
+}
+
+.osp-public-explore-section,
+.osp-public-explore-bridge,
+.osp-public-explore-route-section {
+  width: min(1120px, calc(100% - 48px)) !important;
+  margin: 0 auto !important;
+  padding: 78px 0 88px !important;
+}
+
+.osp-public-explore-heading {
+  max-width: 800px !important;
+}
+
+.osp-public-explore-heading h2,
+.osp-public-explore-bridge h2,
+.osp-public-explore-cta h2 {
+  margin: 0 !important;
+  color: #073963 !important;
+  font-size: clamp(2.45rem, 4vw, 4.15rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.065em !important;
+}
+
+.osp-public-explore-heading span {
+  display: block !important;
+  margin-top: 18px !important;
+  color: #50668b !important;
+  font-size: 1rem !important;
+  line-height: 1.65 !important;
+  font-weight: 750 !important;
+}
+
+.osp-public-explore-layer-grid {
+  margin-top: 36px !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.osp-public-explore-layer,
+.osp-public-explore-route-card {
+  min-height: 282px !important;
+  padding: 26px !important;
+  border-radius: 28px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  text-decoration: none !important;
+  background: rgba(255, 255, 255, 0.90) !important;
+  border: 1px solid rgba(5, 150, 165, 0.12) !important;
+  box-shadow: 0 24px 58px rgba(1, 56, 99, 0.08) !important;
+  transition: transform 180ms ease, box-shadow 180ms ease !important;
+}
+
+.osp-public-explore-layer:hover,
+.osp-public-explore-route-card:hover {
+  box-shadow: 0 30px 70px rgba(1, 56, 99, 0.12) !important;
+}
+
+.osp-public-explore-layer span {
+  width: fit-content !important;
+  padding: 8px 13px !important;
+  border-radius: 999px !important;
+  color: #073963 !important;
+  background: rgba(243, 174, 38, 0.16) !important;
+  font-size: 0.72rem !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+.osp-public-explore-layer h3,
+.osp-public-explore-route-card h3 {
+  margin: 22px 0 0 !important;
+  color: #073963 !important;
+  font-size: 1.48rem !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.osp-public-explore-layer p,
+.osp-public-explore-route-card p {
+  margin: 14px 0 0 !important;
+  color: #50668b !important;
+  line-height: 1.55 !important;
+  font-weight: 750 !important;
+}
+
+.osp-public-explore-layer strong,
+.osp-public-explore-route-card strong {
+  margin-top: auto !important;
+  color: #0596a5 !important;
+  font-size: 0.86rem !important;
+}
+
+.osp-public-explore-bridge {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) !important;
+  gap: 28px !important;
+  align-items: start !important;
+}
+
+.osp-public-explore-bridge-grid {
+  display: grid !important;
+  gap: 16px !important;
+}
+
+.osp-public-explore-bridge-grid article {
+  padding: 26px !important;
+  border-radius: 26px !important;
+  background: rgba(255, 255, 255, 0.90) !important;
+  border: 1px solid rgba(5, 150, 165, 0.12) !important;
+  box-shadow: 0 22px 52px rgba(1, 56, 99, 0.075) !important;
+}
+
+.osp-public-explore-bridge-grid span {
+  color: #0596a5 !important;
+  font-size: 0.76rem !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+.osp-public-explore-bridge-grid h3 {
+  margin: 12px 0 0 !important;
+  color: #073963 !important;
+  font-size: 1.5rem !important;
+  letter-spacing: -0.04em !important;
+}
+
+.osp-public-explore-bridge-grid p {
+  margin: 10px 0 0 !important;
+  color: #50668b !important;
+  line-height: 1.6 !important;
+  font-weight: 750 !important;
+}
+
+.osp-public-explore-route-grid {
+  margin-top: 32px !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.osp-public-explore-cta {
+  width: min(1120px, calc(100% - 48px)) !important;
+  margin: 0 auto 86px !important;
+  padding: clamp(46px, 6vw, 72px) !important;
+  border-radius: 34px !important;
+  text-align: center !important;
+  background:
+    radial-gradient(circle at 76% 28%, rgba(32, 182, 195, 0.34), transparent 32%),
+    linear-gradient(135deg, #003b66 0%, #0596a5 100%) !important;
+  box-shadow: 0 34px 90px rgba(1, 56, 99, 0.20) !important;
+}
+
+.osp-public-explore-cta h2 {
+  color: #ffffff !important;
+  max-width: 780px !important;
+  margin: 0 auto !important;
+}
+
+.osp-public-explore-cta div {
+  justify-content: center !important;
+}
+
+.osp-public-explore-page a:focus-visible {
+  outline: 3px solid rgba(243, 174, 38, 0.72) !important;
+  outline-offset: 4px !important;
+  border-radius: 18px !important;
+}
+
+@media (max-width: 980px) {
+  .osp-public-explore-hero,
+  .osp-public-explore-bridge {
+    grid-template-columns: 1fr !important;
+  }
+
+  .osp-public-explore-layer-grid,
+  .osp-public-explore-route-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .osp-public-explore-hero,
+  .osp-public-explore-section,
+  .osp-public-explore-bridge,
+  .osp-public-explore-route-section,
+  .osp-public-explore-cta {
+    width: min(100% - 32px, 520px) !important;
+  }
+
+  .osp-public-explore-hero {
+    padding-top: 108px !important;
+  }
+
+  .osp-public-explore-layer-grid,
+  .osp-public-explore-route-grid,
+  .osp-public-explore-signal-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .osp-public-explore-command-card {
+    min-height: auto !important;
+    padding: 28px !important;
+  }
+
+  .osp-public-explore-hero-copy h1 {
+    font-size: clamp(2.65rem, 12vw, 4rem) !important;
+  }
+}
+/* OSP_PUBLIC_EXPLORE_PREMIUM_REBUILD_01C_END */
+
+/* OSP_PUBLIC_EXPLORE_VISUAL_HARDENING_01D_START */
+/* Fix public /explore readability after premium rebuild:
+   - restore HOME-like dark hero shell
+   - force readable hero text
+   - neutralize unreadable teal cards
+   - harden CTA/footer contrast
+*/
+
+.osp-premium-v3.osp-public-explore-page {
+  background:
+    linear-gradient(180deg, #013863 0px, #034665 152px, #004b6f 153px, #003b66 760px, #eefcfb 761px, #f8fffd 100%) !important;
+  color: #073963 !important;
+}
+
+.osp-premium-v3.osp-public-explore-page::before {
+  height: 760px !important;
+  background:
+    radial-gradient(circle at 14% 24%, rgba(5, 150, 165, 0.34), transparent 30%),
+    radial-gradient(circle at 78% 20%, rgba(255, 255, 255, 0.10), transparent 28%),
+    radial-gradient(circle at 56% 58%, rgba(5, 150, 165, 0.20), transparent 34%),
+    linear-gradient(135deg, #013863 0%, #034665 48%, #073963 100%) !important;
+}
+
+.osp-public-explore-hero {
+  padding-top: clamp(120px, 9vw, 148px) !important;
+  padding-bottom: clamp(74px, 7vw, 108px) !important;
+  min-height: 620px !important;
+}
+
+.osp-public-explore-hero-copy h1 {
+  color: #ffffff !important;
+  text-shadow: 0 18px 42px rgba(1, 24, 43, 0.22) !important;
+}
+
+.osp-public-explore-hero-copy > p:not(.osp-public-kicker) {
+  color: rgba(232, 250, 249, 0.86) !important;
+}
+
+.osp-public-explore-hero .osp-public-kicker {
+  color: #4deaf0 !important;
+}
+
+.osp-public-explore-command-card {
+  color: #ffffff !important;
+}
+
+.osp-public-explore-command-card h2,
+.osp-public-explore-command-card p,
+.osp-public-explore-command-card strong,
+.osp-public-explore-command-card small {
+  color: #ffffff !important;
+}
+
+.osp-public-explore-command-card p,
+.osp-public-explore-signal-grid small {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+/* Pull first content panel cleanly into the light area without washing out text */
+.osp-public-explore-section:first-of-type {
+  margin-top: 0 !important;
+  padding-top: clamp(74px, 8vw, 104px) !important;
+}
+
+/* Make all discovery cards readable. No dark text on teal backgrounds. */
+.osp-public-explore-layer,
+.osp-public-explore-route-card {
+  background:
+    radial-gradient(circle at 86% 10%, rgba(243, 174, 38, 0.10), transparent 30%),
+    rgba(255, 255, 255, 0.94) !important;
+  color: #073963 !important;
+  border: 1px solid rgba(5, 150, 165, 0.14) !important;
+}
+
+.osp-public-explore-layer h3,
+.osp-public-explore-layer p,
+.osp-public-explore-layer strong,
+.osp-public-explore-route-card h3,
+.osp-public-explore-route-card p,
+.osp-public-explore-route-card strong {
+  color: #073963 !important;
+}
+
+.osp-public-explore-layer p,
+.osp-public-explore-route-card p {
+  color: #50668b !important;
+}
+
+.osp-public-explore-layer strong,
+.osp-public-explore-route-card strong {
+  color: #0596a5 !important;
+}
+
+.osp-public-explore-layer span {
+  color: #073963 !important;
+  background: rgba(243, 174, 38, 0.18) !important;
+}
+
+/* Optional premium emphasis only on the first card, still readable */
+.osp-public-explore-layer:first-child {
+  background:
+    radial-gradient(circle at 82% 16%, rgba(5, 150, 165, 0.16), transparent 32%),
+    rgba(255, 255, 255, 0.96) !important;
+}
+
+/* Bridge cards must stay clean white, not washed teal */
+.osp-public-explore-bridge-grid article {
+  background: rgba(255, 255, 255, 0.94) !important;
+}
+
+.osp-public-explore-bridge-grid h3,
+.osp-public-explore-bridge-grid p {
+  color: #073963 !important;
+}
+
+.osp-public-explore-bridge-grid p {
+  color: #50668b !important;
+}
+
+/* CTA button fix: prevent raw default link rendering */
+.osp-public-explore-cta div a,
+.osp-public-explore-actions a {
+  min-height: 46px !important;
+  padding: 0 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  font-weight: 950 !important;
+  text-decoration: none !important;
+  border: 1px solid rgba(129, 235, 241, 0.38) !important;
+  box-shadow: 0 18px 38px rgba(5, 150, 165, 0.22) !important;
+}
+
+.osp-public-explore-cta div a:first-child,
+.osp-public-explore-actions a:first-child {
+  color: #052d4f !important;
+  background: linear-gradient(135deg, #0596a5 0%, #20b6c3 100%) !important;
+}
+
+.osp-public-explore-cta div a:last-child,
+.osp-public-explore-actions a:last-child {
+  color: #073963 !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-color: rgba(255, 255, 255, 0.70) !important;
+}
+
+/* Footer contrast hardening for public Explore */
+.osp-public-explore-page .osp-commercial-footer {
+  background: #013863 !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.osp-public-explore-page .osp-commercial-footer strong,
+.osp-public-explore-page .osp-commercial-footer p,
+.osp-public-explore-page .osp-commercial-footer a {
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.osp-public-explore-page .osp-commercial-footer p {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+/* Prevent unreadable oversized white text on light sections */
+.osp-public-explore-section h2,
+.osp-public-explore-bridge h2,
+.osp-public-explore-route-section h2 {
+  color: #073963 !important;
+}
+
+.osp-public-explore-section .osp-public-kicker,
+.osp-public-explore-bridge .osp-public-kicker,
+.osp-public-explore-route-section .osp-public-kicker {
+  color: #0596a5 !important;
+}
+
+@media (max-width: 680px) {
+  .osp-premium-v3.osp-public-explore-page {
+    background:
+      linear-gradient(180deg, #013863 0px, #034665 132px, #004b6f 133px, #003b66 900px, #eefcfb 901px, #f8fffd 100%) !important;
+  }
+
+  .osp-premium-v3.osp-public-explore-page::before {
+    height: 900px !important;
+  }
+
+  .osp-public-explore-hero {
+    min-height: auto !important;
+  }
+}
+/* OSP_PUBLIC_EXPLORE_VISUAL_HARDENING_01D_END */
+
+/* OSP_PUBLIC_EXPLORE_FINISH_01E_START */
+/* Final /explore polish:
+   - keep full hero inside dark HOME-like shell
+   - eliminate unreadable teal cards
+   - standardize card system
+   - suppress raw/technical visual drift
+*/
+
+.osp-premium-v3.osp-public-explore-page {
+  background:
+    linear-gradient(
+      180deg,
+      #013863 0px,
+      #034665 148px,
+      #004b6f 149px,
+      #003b66 920px,
+      #eefcfb 921px,
+      #f8fffd 100%
+    ) !important;
+}
+
+.osp-premium-v3.osp-public-explore-page::before {
+  height: 920px !important;
+  background:
+    radial-gradient(circle at 15% 24%, rgba(5, 150, 165, 0.34), transparent 30%),
+    radial-gradient(circle at 58% 46%, rgba(5, 150, 165, 0.18), transparent 34%),
+    radial-gradient(circle at 80% 22%, rgba(255, 255, 255, 0.10), transparent 28%),
+    linear-gradient(135deg, #013863 0%, #034665 48%, #073963 100%) !important;
+}
+
+.osp-public-explore-hero {
+  min-height: 720px !important;
+  padding-top: clamp(120px, 8.6vw, 142px) !important;
+  padding-bottom: clamp(96px, 7.4vw, 132px) !important;
+  align-items: center !important;
+}
+
+.osp-public-explore-hero-copy {
+  max-width: 660px !important;
+}
+
+.osp-public-explore-hero-copy h1 {
+  max-width: 660px !important;
+  color: #ffffff !important;
+  font-size: clamp(3.25rem, 4.55vw, 4.85rem) !important;
+  line-height: 0.94 !important;
+  letter-spacing: -0.07em !important;
+  text-wrap: balance !important;
+  text-shadow: 0 22px 50px rgba(1, 24, 43, 0.24) !important;
+}
+
+.osp-public-explore-hero-copy > p:not(.osp-public-kicker) {
+  max-width: 620px !important;
+  color: rgba(232, 250, 249, 0.88) !important;
+  font-size: 1.02rem !important;
+  line-height: 1.62 !important;
+}
+
+.osp-public-explore-command-card {
+  width: min(390px, 100%) !important;
+  justify-self: end !important;
+  min-height: 486px !important;
+  padding: 32px !important;
+  border-radius: 32px !important;
+  border: 10px solid rgba(232, 250, 249, 0.78) !important;
+  background:
+    radial-gradient(circle at 74% 74%, rgba(80, 210, 219, 0.34), transparent 40%),
+    linear-gradient(145deg, rgba(1, 56, 99, 0.98), rgba(5, 150, 165, 0.88)) !important;
+  box-shadow: 0 34px 90px rgba(1, 24, 43, 0.32) !important;
+}
+
+.osp-public-explore-command-card h2 {
+  font-size: clamp(2rem, 2.8vw, 2.9rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.055em !important;
+}
+
+.osp-public-explore-signal-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.osp-public-explore-signal-grid article {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+.osp-public-explore-signal-grid article,
+.osp-public-explore-signal-grid article * {
+  color: #ffffff !important;
+}
+
+.osp-public-explore-signal-grid small {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+/* Start content cleanly after dark hero shell */
+.osp-public-explore-section:first-of-type {
+  padding-top: clamp(92px, 8vw, 120px) !important;
+}
+
+/* Standardize all primary card surfaces */
+.osp-public-explore-layer-grid > .osp-public-explore-layer,
+.osp-public-explore-route-grid > .osp-public-explore-route-card {
+  min-height: 282px !important;
+  background:
+    radial-gradient(circle at 88% 14%, rgba(243, 174, 38, 0.12), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(249, 255, 253, 0.94)) !important;
+  border: 1px solid rgba(5, 150, 165, 0.13) !important;
+  box-shadow: 0 24px 58px rgba(1, 56, 99, 0.085) !important;
+}
+
+.osp-public-explore-layer-grid > .osp-public-explore-layer *,
+.osp-public-explore-route-grid > .osp-public-explore-route-card * {
+  color: #073963 !important;
+}
+
+.osp-public-explore-layer-grid > .osp-public-explore-layer p,
+.osp-public-explore-route-grid > .osp-public-explore-route-card p {
+  color: #50668b !important;
+}
+
+.osp-public-explore-layer-grid > .osp-public-explore-layer strong,
+.osp-public-explore-route-grid > .osp-public-explore-route-card strong {
+  color: #0596a5 !important;
+}
+
+/* Kill accidental tone-card teal backgrounds from earlier versions */
+.osp-public-explore-layer-teal,
+.osp-public-explore-layer-mist,
+.osp-public-explore-layer-sand,
+.osp-public-explore-route-card:nth-child(2) {
+  background:
+    radial-gradient(circle at 88% 14%, rgba(243, 174, 38, 0.12), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(249, 255, 253, 0.94)) !important;
+}
+
+.osp-public-explore-layer-teal *,
+.osp-public-explore-layer-mist *,
+.osp-public-explore-layer-sand *,
+.osp-public-explore-route-card:nth-child(2) * {
+  color: #073963 !important;
+}
+
+.osp-public-explore-layer-teal p,
+.osp-public-explore-layer-mist p,
+.osp-public-explore-layer-sand p,
+.osp-public-explore-route-card:nth-child(2) p {
+  color: #50668b !important;
+}
+
+.osp-public-explore-layer-teal strong,
+.osp-public-explore-layer-mist strong,
+.osp-public-explore-layer-sand strong,
+.osp-public-explore-route-card:nth-child(2) strong {
+  color: #0596a5 !important;
+}
+
+.osp-public-explore-layer span {
+  color: #073963 !important;
+  background: rgba(243, 174, 38, 0.18) !important;
+}
+
+/* Make second-level sections feel intentional and premium */
+.osp-public-explore-bridge {
+  align-items: center !important;
+}
+
+.osp-public-explore-bridge-grid article {
+  min-height: 156px !important;
+  background:
+    radial-gradient(circle at 88% 16%, rgba(5, 150, 165, 0.08), transparent 34%),
+    rgba(255, 255, 255, 0.96) !important;
+}
+
+.osp-public-explore-route-section {
+  padding-top: 48px !important;
+}
+
+.osp-public-explore-route-grid {
+  align-items: stretch !important;
+}
+
+.osp-public-explore-cta {
+  margin-top: 24px !important;
+  margin-bottom: 86px !important;
+  background:
+    radial-gradient(circle at 78% 28%, rgba(32, 182, 195, 0.36), transparent 32%),
+    linear-gradient(135deg, #003b66 0%, #0596a5 100%) !important;
+}
+
+/* CTA and footer last-mile contrast */
+.osp-public-explore-cta div a,
+.osp-public-explore-actions a {
+  text-decoration: none !important;
+}
+
+.osp-public-explore-cta div a:last-child,
+.osp-public-explore-actions a:last-child {
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #073963 !important;
+}
+
+.osp-public-explore-page .osp-commercial-footer,
+.osp-public-explore-page .osp-commercial-footer * {
+  color: rgba(255, 255, 255, 0.84) !important;
+}
+
+.osp-public-explore-page .osp-commercial-footer p {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+/* Reduce oversized lower headings slightly */
+.osp-public-explore-heading h2,
+.osp-public-explore-bridge h2,
+.osp-public-explore-route-section h2 {
+  font-size: clamp(2.35rem, 3.55vw, 3.65rem) !important;
+  letter-spacing: -0.06em !important;
+  text-wrap: balance !important;
+}
+
+/* Hard stop visual safety: no low-contrast text on colored cards */
+.osp-public-explore-layer-grid > a[style],
+.osp-public-explore-route-grid > a[style] {
+  color: #073963 !important;
+}
+
+@media (max-width: 980px) {
+  .osp-premium-v3.osp-public-explore-page {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #034665 132px,
+        #004b6f 133px,
+        #003b66 1080px,
+        #eefcfb 1081px,
+        #f8fffd 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-public-explore-page::before {
+    height: 1080px !important;
+  }
+
+  .osp-public-explore-command-card {
+    justify-self: start !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .osp-premium-v3.osp-public-explore-page {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #034665 128px,
+        #004b6f 129px,
+        #003b66 1200px,
+        #eefcfb 1201px,
+        #f8fffd 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-public-explore-page::before {
+    height: 1200px !important;
+  }
+
+  .osp-public-explore-hero {
+    min-height: auto !important;
+    padding-top: 108px !important;
+    padding-bottom: 78px !important;
+  }
+
+  .osp-public-explore-hero-copy h1 {
+    font-size: clamp(2.45rem, 11vw, 3.65rem) !important;
+  }
+
+  .osp-public-explore-command-card {
+    width: 100% !important;
+    min-height: auto !important;
+  }
+}
+/* OSP_PUBLIC_EXPLORE_FINISH_01E_END */
+
+/* OSP_PUBLIC_EXPLORE_LASTMILE_POLISH_01F_START */
+/* Final public /explore polish:
+   - tighten hero-to-content rhythm
+   - force all lower cards to premium white/mist
+   - remove accidental teal card surfaces
+   - compact lower section spacing
+*/
+
+.osp-premium-v3.osp-public-explore-page {
+  background:
+    linear-gradient(
+      180deg,
+      #013863 0px,
+      #034665 148px,
+      #004b6f 149px,
+      #003b66 860px,
+      #eefcfb 861px,
+      #f8fffd 100%
+    ) !important;
+}
+
+.osp-premium-v3.osp-public-explore-page::before {
+  height: 860px !important;
+}
+
+.osp-public-explore-hero {
+  min-height: 670px !important;
+  padding-top: clamp(112px, 8vw, 136px) !important;
+  padding-bottom: clamp(70px, 6vw, 92px) !important;
+}
+
+.osp-public-explore-hero-copy h1 {
+  font-size: clamp(3.1rem, 4.35vw, 4.65rem) !important;
+  line-height: 0.95 !important;
+}
+
+.osp-public-explore-command-card {
+  min-height: 460px !important;
+  padding: 30px !important;
+}
+
+.osp-public-explore-command-card h2 {
+  font-size: clamp(1.95rem, 2.55vw, 2.7rem) !important;
+}
+
+.osp-public-explore-signal-grid article {
+  min-height: 98px !important;
+}
+
+/* Tighten the first content section so it does not feel detached from hero */
+.osp-public-explore-section:first-of-type {
+  padding-top: clamp(62px, 6vw, 84px) !important;
+  padding-bottom: clamp(54px, 5.5vw, 72px) !important;
+}
+
+.osp-public-explore-section,
+.osp-public-explore-bridge,
+.osp-public-explore-route-section {
+  padding-top: clamp(54px, 5.8vw, 76px) !important;
+  padding-bottom: clamp(56px, 5.8vw, 78px) !important;
+}
+
+/* Force every discovery and route card to the same readable premium white system.
+   This intentionally overrules earlier tone classes. */
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer-navy,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer-teal,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer-mist,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer-sand,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-route-grid a.osp-public-explore-route-card,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-route-grid a.osp-public-explore-route-card:nth-child(1),
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-route-grid a.osp-public-explore-route-card:nth-child(2),
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-route-grid a.osp-public-explore-route-card:nth-child(3) {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(243, 174, 38, 0.11), transparent 34%),
+    radial-gradient(circle at 20% 84%, rgba(5, 150, 165, 0.045), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.985), rgba(249, 255, 253, 0.955)) !important;
+  border: 1px solid rgba(5, 150, 165, 0.13) !important;
+  box-shadow: 0 22px 54px rgba(1, 56, 99, 0.078) !important;
+  color: #073963 !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer *,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-route-grid a.osp-public-explore-route-card * {
+  color: #073963 !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer p,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-route-grid a.osp-public-explore-route-card p {
+  color: #50668b !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer strong,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-route-grid a.osp-public-explore-route-card strong {
+  color: #0596a5 !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer span {
+  color: #073963 !important;
+  background: rgba(243, 174, 38, 0.18) !important;
+}
+
+/* Reduce heavy card footprint slightly. */
+.osp-public-explore-layer,
+.osp-public-explore-route-card {
+  min-height: 246px !important;
+  padding: 24px !important;
+  border-radius: 26px !important;
+}
+
+.osp-public-explore-layer h3,
+.osp-public-explore-route-card h3 {
+  font-size: 1.36rem !important;
+  line-height: 1.08 !important;
+}
+
+.osp-public-explore-layer p,
+.osp-public-explore-route-card p {
+  font-size: 0.95rem !important;
+  line-height: 1.55 !important;
+}
+
+/* Better lower-section hierarchy. */
+.osp-public-explore-heading h2,
+.osp-public-explore-bridge h2,
+.osp-public-explore-route-section h2 {
+  font-size: clamp(2.25rem, 3.25vw, 3.35rem) !important;
+  max-width: 780px !important;
+}
+
+.osp-public-explore-heading span,
+.osp-public-explore-heading > p:not(.osp-public-kicker) {
+  max-width: 760px !important;
+}
+
+.osp-public-explore-bridge {
+  gap: clamp(28px, 5vw, 58px) !important;
+}
+
+.osp-public-explore-bridge-grid article {
+  border-radius: 26px !important;
+  min-height: 142px !important;
+  padding: 24px !important;
+}
+
+/* CTA block final proportion. */
+.osp-public-explore-cta {
+  width: min(1060px, calc(100% - 48px)) !important;
+  margin-top: 8px !important;
+  margin-bottom: 72px !important;
+  padding: clamp(44px, 5.3vw, 62px) !important;
+  border-radius: 34px !important;
+}
+
+.osp-public-explore-cta h2 {
+  font-size: clamp(2.35rem, 3.6vw, 3.7rem) !important;
+  max-width: 760px !important;
+}
+
+/* Keep footer readable and aligned. */
+.osp-public-explore-page .osp-commercial-footer {
+  padding-top: 42px !important;
+  padding-bottom: 42px !important;
+}
+
+.osp-public-explore-page .osp-commercial-footer p {
+  color: rgba(255, 255, 255, 0.76) !important;
+}
+
+/* Avoid accidental raw/unstyled link state */
+.osp-public-explore-page a {
+  text-decoration: none !important;
+}
+
+.osp-public-explore-page a:hover {
+  text-decoration: none !important;
+}
+
+/* Desktop-only: ensure hero right card never visually collides with first light section */
+@media (min-width: 981px) {
+  .osp-public-explore-command-card {
+    transform: translateY(8px) !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .osp-premium-v3.osp-public-explore-page {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #034665 132px,
+        #004b6f 133px,
+        #003b66 1060px,
+        #eefcfb 1061px,
+        #f8fffd 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-public-explore-page::before {
+    height: 1060px !important;
+  }
+
+  .osp-public-explore-hero {
+    min-height: auto !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .osp-premium-v3.osp-public-explore-page {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #034665 128px,
+        #004b6f 129px,
+        #003b66 1180px,
+        #eefcfb 1181px,
+        #f8fffd 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-public-explore-page::before {
+    height: 1180px !important;
+  }
+
+  .osp-public-explore-layer,
+  .osp-public-explore-route-card {
+    min-height: auto !important;
+  }
+
+  .osp-public-explore-cta {
+    width: min(100% - 32px, 520px) !important;
+  }
+}
+/* OSP_PUBLIC_EXPLORE_LASTMILE_POLISH_01F_END */
+
+/* OSP_PUBLIC_EXPLORE_HERO_SHELL_CONTAINMENT_01G_START */
+/* Fix /explore hero shell cut:
+   The right hero card is taller than the current dark-shell boundary.
+   Extend the dark shell to fully contain the hero composition and start the light content after it.
+*/
+
+.osp-premium-v3.osp-public-explore-page {
+  background:
+    linear-gradient(
+      180deg,
+      #013863 0px,
+      #034665 148px,
+      #004b6f 149px,
+      #003b66 980px,
+      #eefcfb 981px,
+      #f8fffd 100%
+    ) !important;
+}
+
+.osp-premium-v3.osp-public-explore-page::before {
+  height: 980px !important;
+  background:
+    radial-gradient(circle at 15% 24%, rgba(5, 150, 165, 0.34), transparent 30%),
+    radial-gradient(circle at 58% 46%, rgba(5, 150, 165, 0.18), transparent 34%),
+    radial-gradient(circle at 80% 22%, rgba(255, 255, 255, 0.10), transparent 28%),
+    linear-gradient(135deg, #013863 0%, #034665 48%, #073963 100%) !important;
+}
+
+.osp-public-explore-hero {
+  min-height: 760px !important;
+  padding-top: clamp(112px, 8vw, 136px) !important;
+  padding-bottom: 138px !important;
+  align-items: center !important;
+}
+
+.osp-public-explore-command-card {
+  transform: translateY(0) !important;
+  align-self: center !important;
+  margin-bottom: 0 !important;
+}
+
+/* Start light content only after the blue shell has visually completed. */
+.osp-public-explore-section:first-of-type {
+  padding-top: clamp(86px, 7vw, 112px) !important;
+  margin-top: 0 !important;
+}
+
+/* Ensure the command card does not visually bleed into the light shell. */
+.osp-public-explore-command-card::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: -18px !important;
+  z-index: -1 !important;
+  border-radius: 40px !important;
+  background: rgba(232, 250, 249, 0.08) !important;
+  pointer-events: none !important;
+}
+
+/* Keep lower cards readable despite older tone classes. */
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-route-grid a.osp-public-explore-route-card {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(243, 174, 38, 0.11), transparent 34%),
+    radial-gradient(circle at 20% 84%, rgba(5, 150, 165, 0.045), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.985), rgba(249, 255, 253, 0.955)) !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer *,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-route-grid a.osp-public-explore-route-card * {
+  color: #073963 !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer p,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-route-grid a.osp-public-explore-route-card p {
+  color: #50668b !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-layer-grid a.osp-public-explore-layer strong,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-route-grid a.osp-public-explore-route-card strong {
+  color: #0596a5 !important;
+}
+
+@media (max-width: 980px) {
+  .osp-premium-v3.osp-public-explore-page {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #034665 132px,
+        #004b6f 133px,
+        #003b66 1160px,
+        #eefcfb 1161px,
+        #f8fffd 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-public-explore-page::before {
+    height: 1160px !important;
+  }
+
+  .osp-public-explore-hero {
+    min-height: auto !important;
+    padding-bottom: 96px !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .osp-premium-v3.osp-public-explore-page {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #034665 128px,
+        #004b6f 129px,
+        #003b66 1280px,
+        #eefcfb 1281px,
+        #f8fffd 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-public-explore-page::before {
+    height: 1280px !important;
+  }
+
+  .osp-public-explore-hero {
+    padding-bottom: 82px !important;
+  }
+}
+/* OSP_PUBLIC_EXPLORE_HERO_SHELL_CONTAINMENT_01G_END */
+
+/* OSP_PUBLIC_EXPLORE_HERO_VERTICAL_ALIGNMENT_01H_START */
+/* Lift /explore hero composition closer to header while keeping the blue shell containment intact. */
+
+.osp-public-explore-hero {
+  min-height: 720px !important;
+  padding-top: clamp(72px, 5.8vw, 96px) !important;
+  padding-bottom: 132px !important;
+  align-items: center !important;
+}
+
+.osp-public-explore-hero-copy,
+.osp-public-explore-command-card {
+  transform: translateY(-34px) !important;
+}
+
+.osp-public-explore-command-card {
+  align-self: center !important;
+}
+
+/* Preserve shell cut point from 01G, but avoid dead-air feeling above hero. */
+.osp-premium-v3.osp-public-explore-page {
+  background:
+    linear-gradient(
+      180deg,
+      #013863 0px,
+      #034665 148px,
+      #004b6f 149px,
+      #003b66 950px,
+      #eefcfb 951px,
+      #f8fffd 100%
+    ) !important;
+}
+
+.osp-premium-v3.osp-public-explore-page::before {
+  height: 950px !important;
+}
+
+.osp-public-explore-section:first-of-type {
+  padding-top: clamp(72px, 6vw, 96px) !important;
+}
+
+@media (max-width: 980px) {
+  .osp-public-explore-hero-copy,
+  .osp-public-explore-command-card {
+    transform: translateY(-18px) !important;
+  }
+
+  .osp-public-explore-hero {
+    padding-top: 88px !important;
+    padding-bottom: 96px !important;
+  }
+
+  .osp-premium-v3.osp-public-explore-page {
+    background:
+      linear-gradient(
+        180deg,
+        #013863 0px,
+        #034665 132px,
+        #004b6f 133px,
+        #003b66 1120px,
+        #eefcfb 1121px,
+        #f8fffd 100%
+      ) !important;
+  }
+
+  .osp-premium-v3.osp-public-explore-page::before {
+    height: 1120px !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .osp-public-explore-hero-copy,
+  .osp-public-explore-command-card {
+    transform: translateY(0) !important;
+  }
+
+  .osp-public-explore-hero {
+    padding-top: 92px !important;
+    padding-bottom: 82px !important;
+  }
+}
+/* OSP_PUBLIC_EXPLORE_HERO_VERTICAL_ALIGNMENT_01H_END */
+
+/* OSP_PUBLIC_SHELL_COMPONENTIZE_02A_START */
+.osp-public-header,
+.osp-public-footer,
+.osp-public-header *,
+.osp-public-footer * {
+  box-sizing: border-box !important;
+}
+
+.osp-public-header {
+  width: 100% !important;
+  position: relative !important;
+  z-index: 20 !important;
+  margin: 0 !important;
+  padding: 20px 0 0 !important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(5, 150, 165, 0.22), transparent 34%),
+    linear-gradient(135deg, #013863 0%, #064b70 48%, #013b66 100%) !important;
+}
+
+.osp-public-header-shell {
+  width: min(1120px, calc(100% - 48px)) !important;
+  min-height: 76px !important;
+  margin: 0 auto !important;
+  padding: 12px 18px !important;
+  border-radius: 0 0 28px 28px !important;
+  display: grid !important;
+  grid-template-columns: minmax(260px, 1fr) auto auto !important;
+  align-items: center !important;
+  gap: 28px !important;
+  background: rgba(1, 56, 99, 0.78) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 24px 70px rgba(0, 34, 62, 0.26) !important;
+  backdrop-filter: blur(18px) !important;
+}
+
+.osp-public-brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.osp-public-brand-mark {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 13px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  flex: 0 0 auto !important;
+}
+
+.osp-public-brand-mark img {
+  width: 30px !important;
+  height: 30px !important;
+  display: block !important;
+  object-fit: contain !important;
+}
+
+.osp-public-brand-copy {
+  display: grid !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+}
+
+.osp-public-brand-copy strong {
+  color: #ffffff !important;
+  font-size: 0.92rem !important;
+  line-height: 1.1 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+.osp-public-brand-copy small {
+  color: rgba(236, 252, 255, 0.72) !important;
+  font-size: 0.74rem !important;
+  line-height: 1.1 !important;
+  font-weight: 750 !important;
+  white-space: nowrap !important;
+}
+
+.osp-public-nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 30px !important;
+}
+
+.osp-public-nav a {
+  color: rgba(236, 252, 255, 0.82) !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.13em !important;
+  font-size: 0.76rem !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+.osp-public-nav a:hover {
+  color: #ffffff !important;
+}
+
+.osp-public-header-actions {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+}
+
+.osp-public-signin,
+.osp-public-pass-cta {
+  min-height: 46px !important;
+  padding: 0 22px !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-decoration: none !important;
+  font-size: 0.82rem !important;
+  font-weight: 950 !important;
+  white-space: nowrap !important;
+}
+
+.osp-public-signin {
+  background: #ffffff !important;
+  color: #013863 !important;
+  box-shadow: 0 14px 32px rgba(0, 23, 48, 0.16) !important;
+}
+
+.osp-public-pass-cta {
+  background: linear-gradient(135deg, #0db6c6 0%, #0596a5 100%) !important;
+  color: #002b4a !important;
+  box-shadow: 0 18px 38px rgba(5, 150, 165, 0.28) !important;
+}
+
+.osp-public-footer {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 42px 0 38px !important;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(5, 150, 165, 0.16), transparent 34%),
+    linear-gradient(135deg, #013863 0%, #01466f 48%, #013b66 100%) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.86) !important;
+}
+
+.osp-public-footer-shell {
+  width: min(1120px, calc(100% - 48px)) !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(360px, 540px) minmax(320px, 1fr) !important;
+  align-items: start !important;
+  gap: 52px !important;
+}
+
+.osp-public-footer-brand {
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+  max-width: 560px !important;
+}
+
+.osp-public-footer-logo {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, 0.09) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2) !important;
+}
+
+.osp-public-footer-logo img {
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.osp-public-footer-copy {
+  min-width: 0 !important;
+  max-width: 480px !important;
+}
+
+.osp-public-footer-copy strong {
+  display: block !important;
+  margin: 0 0 10px !important;
+  font-size: 1rem !important;
+  line-height: 1.18 !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+}
+
+.osp-public-footer-copy p {
+  max-width: 460px !important;
+  margin: 0 0 12px !important;
+  font-size: 0.88rem !important;
+  line-height: 1.58 !important;
+  font-weight: 650 !important;
+  color: rgba(236, 252, 255, 0.78) !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+.osp-public-footer-powered {
+  margin-top: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.15em !important;
+  font-size: 0.68rem !important;
+  line-height: 1.4 !important;
+  font-weight: 950 !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.osp-public-footer-address {
+  margin-top: 18px !important;
+  padding-top: 16px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  max-width: 460px !important;
+}
+
+.osp-public-footer-phone {
+  display: inline-flex !important;
+  margin-top: 0 !important;
+  color: #ffffff !important;
+  font-size: 0.88rem !important;
+  line-height: 1.2 !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+}
+
+.osp-public-footer-links {
+  justify-self: end !important;
+  max-width: 620px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 13px 20px !important;
+}
+
+.osp-public-footer-links a {
+  display: inline-flex !important;
+  color: rgba(236, 252, 255, 0.76) !important;
+  font-size: 0.82rem !important;
+  line-height: 1.1 !important;
+  font-weight: 850 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+}
+
+.osp-public-footer-links a:hover {
+  color: #ffffff !important;
+}
+
+@media (max-width: 980px) {
+  .osp-public-header-shell {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+    gap: 16px !important;
+  }
+
+  .osp-public-nav {
+    flex-wrap: wrap !important;
+    gap: 14px 20px !important;
+  }
+
+  .osp-public-footer-shell {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+
+  .osp-public-footer-links {
+    justify-self: start !important;
+    justify-content: flex-start !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .osp-public-header {
+    padding-top: 10px !important;
+  }
+
+  .osp-public-header-shell {
+    width: min(100% - 24px, 520px) !important;
+    padding: 12px !important;
+  }
+
+  .osp-public-brand-copy strong {
+    font-size: 0.76rem !important;
+  }
+
+  .osp-public-brand-copy small {
+    font-size: 0.68rem !important;
+  }
+
+  .osp-public-nav {
+    display: none !important;
+  }
+
+  .osp-public-header-actions {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .osp-public-signin,
+  .osp-public-pass-cta {
+    min-height: 42px !important;
+    padding: 0 14px !important;
+  }
+
+  .osp-public-footer {
+    padding: 36px 0 34px !important;
+  }
+
+  .osp-public-footer-shell {
+    width: min(100% - 32px, 560px) !important;
+  }
+}
+/* OSP_PUBLIC_SHELL_COMPONENTIZE_02A_END */
+
+/* OSP_PUBLIC_SHELL_FOOTER_HOVER_FINAL_02C_START */
+/* Final public footer polish: prevent footer links from rendering like hard boxed nav buttons. */
+.osp-public-footer .osp-public-footer-links,
+.osp-public-footer .osp-footer-links,
+.osp-public-footer nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-wrap: wrap !important;
+  gap: 14px 18px !important;
+}
+
+.osp-public-footer a,
+.osp-public-footer .osp-public-footer-links a,
+.osp-public-footer .osp-footer-links a,
+.osp-public-footer nav a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: rgba(232, 250, 252, 0.78) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0.01em !important;
+  text-decoration: none !important;
+}
+
+.osp-public-footer a:hover,
+.osp-public-footer .osp-public-footer-links a:hover,
+.osp-public-footer .osp-footer-links a:hover,
+.osp-public-footer nav a:hover {
+  color: #ffffff !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.osp-public-footer a:focus-visible,
+.osp-public-footer .osp-public-footer-links a:focus-visible,
+.osp-public-footer .osp-footer-links a:focus-visible,
+.osp-public-footer nav a:focus-visible {
+  outline: 2px solid rgba(42, 214, 224, 0.72) !important;
+  outline-offset: 4px !important;
+  border-radius: 8px !important;
+}
+
+.osp-public-footer .osp-footer-powered-by {
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+}
+
+.osp-public-footer .osp-footer-address,
+.osp-public-footer .osp-footer-phone {
+  max-width: 520px !important;
+  color: rgba(232, 250, 252, 0.78) !important;
+  line-height: 1.55 !important;
+}
+
+@media (max-width: 760px) {
+  .osp-public-footer .osp-public-footer-links,
+  .osp-public-footer .osp-footer-links,
+  .osp-public-footer nav {
+    justify-content: flex-start !important;
+    gap: 12px 16px !important;
+  }
+}
+/* OSP_PUBLIC_SHELL_FOOTER_HOVER_FINAL_02C_END */
+
+/* OSP_PUBLIC_SHELL_HEADER_FOOTER_STATE_FIX_02D_START */
+/* Final shared public shell lock: route-aware header state, top alignment, and non-button footer links. */
+
+.osp-public-header {
+  position: absolute !important;
+  top: 24px !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 40 !important;
+  width: 100% !important;
+  pointer-events: none !important;
+  padding: 0 18px !important;
+  margin: 0 !important;
+}
+
+.osp-public-header-shell {
+  pointer-events: auto !important;
+  width: min(1120px, calc(100vw - 36px)) !important;
+  min-height: 74px !important;
+  margin: 0 auto !important;
+  padding: 12px 14px 12px 16px !important;
+  display: grid !important;
+  grid-template-columns: minmax(250px, 1fr) auto auto !important;
+  align-items: center !important;
+  gap: 22px !important;
+  border-radius: 0 0 28px 28px !important;
+  background:
+    linear-gradient(135deg, rgba(0, 62, 104, 0.88), rgba(0, 48, 87, 0.88)),
+    rgba(0, 56, 96, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.10) !important;
+  box-shadow: 0 18px 44px rgba(0, 32, 58, 0.22) !important;
+  backdrop-filter: blur(18px) !important;
+}
+
+.osp-public-brand,
+.osp-public-brand:hover,
+.osp-public-brand:focus,
+.osp-public-brand:active {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-decoration: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  transform: none !important;
+}
+
+.osp-public-logo-mark {
+  width: 40px !important;
+  height: 40px !important;
+  flex: 0 0 auto !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255,255,255,0.08) !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+}
+
+.osp-public-logo-mark img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+.osp-public-brand-copy {
+  display: grid !important;
+  gap: 2px !important;
+}
+
+.osp-public-brand-copy strong {
+  color: #ffffff !important;
+  font-size: 15px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  line-height: 1.05 !important;
+}
+
+.osp-public-brand-copy small {
+  color: rgba(232, 250, 252, 0.82) !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+.osp-public-nav {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+}
+
+.osp-public-nav a,
+.osp-public-nav a:hover,
+.osp-public-nav a:focus,
+.osp-public-nav a:active {
+  min-height: 42px !important;
+  padding: 0 15px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  color: rgba(255, 255, 255, 0.84) !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.osp-public-nav a:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+}
+
+.osp-public-nav a.is-active,
+.osp-public-nav a[aria-current="page"] {
+  color: #00375f !important;
+  background: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.74) !important;
+  box-shadow: 0 12px 26px rgba(0, 26, 46, 0.20) !important;
+}
+
+.osp-public-actions {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+}
+
+.osp-public-signin,
+.osp-public-signin:hover,
+.osp-public-signin:focus,
+.osp-public-signin:active {
+  min-height: 48px !important;
+  padding: 0 24px !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  color: #00375f !important;
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  font-weight: 950 !important;
+  text-decoration: none !important;
+  box-shadow: 0 14px 30px rgba(0, 26, 46, 0.18) !important;
+  transform: none !important;
+}
+
+.osp-public-pass-cta,
+.osp-public-pass-cta:hover,
+.osp-public-pass-cta:focus,
+.osp-public-pass-cta:active {
+  min-height: 48px !important;
+  padding: 0 25px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #24c5cf, #0694a4) !important;
+  color: #002f55 !important;
+  border: 1px solid rgba(255, 255, 255, 0.20) !important;
+  font-weight: 950 !important;
+  text-decoration: none !important;
+  box-shadow: 0 16px 34px rgba(0, 34, 60, 0.24) !important;
+  transform: none !important;
+}
+
+/* Public hero compensation because header is absolute. */
+.osp-premium-v3.osp-public-home-page,
+.osp-premium-v3.osp-passport-public-restructure,
+.osp-premium-v3.osp-public-explore-page {
+  padding-top: 0 !important;
+}
+
+.osp-premium-v3.osp-public-home-page .osp-public-hero,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+  padding-top: 138px !important;
+}
+
+/* Footer links must never inherit button/card treatment. */
+.osp-public-footer a,
+.osp-public-footer a:hover,
+.osp-public-footer a:focus,
+.osp-public-footer a:active,
+.osp-public-footer a[aria-current="page"],
+.osp-public-footer .is-active {
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+  outline-offset: 4px !important;
+  color: rgba(232, 250, 252, 0.78) !important;
+  text-decoration: none !important;
+}
+
+.osp-public-footer a:hover {
+  color: #ffffff !important;
+}
+
+@media (max-width: 980px) {
+  .osp-public-header {
+    top: 14px !important;
+    padding: 0 14px !important;
+  }
+
+  .osp-public-header-shell {
+    width: min(720px, calc(100vw - 28px)) !important;
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+    gap: 12px !important;
+    padding: 14px !important;
+    border-radius: 0 0 24px 24px !important;
+  }
+
+  .osp-public-nav,
+  .osp-public-actions {
+    flex-wrap: wrap !important;
+  }
+
+  .osp-premium-v3.osp-public-home-page .osp-public-hero,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+  .osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+    padding-top: 220px !important;
+  }
+}
+/* OSP_PUBLIC_SHELL_HEADER_FOOTER_STATE_FIX_02D_END */
+
+/* OSP_PUBLIC_SHELL_HEADER_TOP_LOCK_02E_START */
+/* Pin shared public header to the top edge and remove dead hero top spacing. */
+
+.osp-public-header {
+  top: 0 !important;
+  padding: 0 18px !important;
+  margin: 0 !important;
+}
+
+.osp-public-header-shell {
+  margin-top: 0 !important;
+  border-radius: 0 0 28px 28px !important;
+}
+
+/* Keep the blue hero background starting immediately behind the header. */
+.osp-premium-v3.osp-public-home-page .osp-public-hero,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+  padding-top: 104px !important;
+}
+
+/* Home hero specifically needs compact top rhythm after the header is pinned. */
+.osp-premium-v3.osp-public-home-page .osp-public-hero {
+  min-height: 760px !important;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(35, 205, 218, 0.22), transparent 34%),
+    radial-gradient(circle at 74% 12%, rgba(255, 255, 255, 0.14), transparent 30%),
+    linear-gradient(135deg, #005d77 0%, #004b70 34%, #003b66 100%) !important;
+}
+
+/* Passport and Explore keep the same shell logic but without the floating header gap. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(35, 205, 218, 0.20), transparent 34%),
+    radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.10), transparent 30%),
+    linear-gradient(135deg, #005a74 0%, #004765 36%, #003b66 100%) !important;
+}
+
+@media (max-width: 980px) {
+  .osp-public-header {
+    top: 0 !important;
+    padding: 0 12px !important;
+  }
+
+  .osp-public-header-shell {
+    border-radius: 0 0 22px 22px !important;
+  }
+
+  .osp-premium-v3.osp-public-home-page .osp-public-hero,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+  .osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+    padding-top: 194px !important;
+  }
+}
+/* OSP_PUBLIC_SHELL_HEADER_TOP_LOCK_02E_END */
+
+
+/* OSP_PUBLIC_SHARED_HEADER_TOP_LOCK_02F_START */
+/* Final shared public header top lock.
+   Goal:
+   - shared header sits flush at top
+   - no floating gap above header
+   - hero starts cleanly below header
+   - only public shared header affected
+*/
+
+.osp-public-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 90 !important;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+  inset-block-start: 0 !important;
+}
+
+.osp-public-header-shell {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border-radius: 0 0 24px 24px !important;
+  overflow: hidden !important;
+}
+
+/* Kill any accidental spacer above the shared header */
+.osp-premium-v3 .osp-public-header + * {
+  margin-top: 0 !important;
+}
+
+/* Home / Passport / Explore hero sections must begin directly below the header */
+.osp-premium-v3.osp-public-home-page .osp-public-hero,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+  padding-top: 112px !important;
+}
+
+/* Ensure the top blue strip is not visually separated */
+.osp-premium-v3.osp-public-home-page .osp-public-hero {
+  margin-top: 0 !important;
+}
+
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured {
+  margin-top: 0 !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+  margin-top: 0 !important;
+}
+
+/* Mobile */
+@media (max-width: 980px) {
+  .osp-public-header {
+    top: 0 !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .osp-public-header-shell {
+    border-radius: 0 0 20px 20px !important;
+  }
+
+  .osp-premium-v3.osp-public-home-page .osp-public-hero,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+  .osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+    padding-top: 168px !important;
+  }
+}
+/* OSP_PUBLIC_SHARED_HEADER_TOP_LOCK_02F_END */
+
+
+/* OSP_PUBLIC_HEADER_TRUE_TOP_FIXED_02G_START */
+/* Final override: public header must be a true fixed top shell, not part of hero spacing. */
+
+html,
+body {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.osp-public-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  inset: 0 0 auto 0 !important;
+  z-index: 999 !important;
+  width: 100vw !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 18px !important;
+  transform: none !important;
+  translate: none !important;
+  pointer-events: none !important;
+}
+
+.osp-public-header-shell {
+  pointer-events: auto !important;
+  margin: 0 auto !important;
+  transform: none !important;
+  translate: none !important;
+  top: 0 !important;
+  width: min(1120px, calc(100vw - 36px)) !important;
+  min-height: 72px !important;
+  border-radius: 0 0 28px 28px !important;
+}
+
+/* Since header is now fixed, every public hero must carry the safe offset. */
+.osp-premium-v3.osp-public-home-page .osp-public-hero,
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+  padding-top: 118px !important;
+  margin-top: 0 !important;
+}
+
+/* Kill any header spacer / page-shell offset that may be inherited from earlier footer/header patches. */
+.osp-premium-v3,
+.osp-premium-v3 > main,
+.osp-premium-v3 main {
+  margin-top: 0 !important;
+}
+
+.osp-premium-v3 .osp-public-header {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.osp-premium-v3 .osp-public-header-shell {
+  margin-top: 0 !important;
+}
+
+/* Public home blue shell must begin at the viewport top behind the fixed header. */
+.osp-premium-v3.osp-public-home-page .osp-public-hero {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(35, 205, 218, 0.22), transparent 34%),
+    radial-gradient(circle at 74% 12%, rgba(255, 255, 255, 0.14), transparent 30%),
+    linear-gradient(135deg, #005d77 0%, #004b70 34%, #003b66 100%) !important;
+}
+
+/* Public Passport/Explore hero shells follow the same top behavior. */
+.osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(35, 205, 218, 0.20), transparent 34%),
+    radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.10), transparent 30%),
+    linear-gradient(135deg, #005a74 0%, #004765 36%, #003b66 100%) !important;
+}
+
+@media (max-width: 980px) {
+  .osp-public-header {
+    padding: 0 12px !important;
+  }
+
+  .osp-public-header-shell {
+    width: min(720px, calc(100vw - 24px)) !important;
+    border-radius: 0 0 22px 22px !important;
+  }
+
+  .osp-premium-v3.osp-public-home-page .osp-public-hero,
+  .osp-premium-v3.osp-passport-public-restructure .osp-passport-hero-restructured,
+  .osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+    padding-top: 188px !important;
+  }
+}
+/* OSP_PUBLIC_HEADER_TRUE_TOP_FIXED_02G_END */
+
+
+/* OSP_PUBLIC_FOOTER_FINAL_SHARED_02H_FIX_START */
+/* Final shared public footer. One component. One style block. No inherited active pills. */
+
+.osp-public-footer {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 42px 18px 48px !important;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(5, 150, 165, 0.18), transparent 30%),
+    linear-gradient(135deg, #003b66 0%, #004366 48%, #003a60 100%) !important;
+  color: #ffffff !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  overflow: hidden !important;
+}
+
+.osp-public-footer-shell {
+  width: min(1120px, calc(100vw - 36px)) !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(280px, 520px) minmax(280px, 1fr) !important;
+  align-items: start !important;
+  gap: 44px !important;
+}
+
+.osp-public-footer-brand {
+  display: grid !important;
+  grid-template-columns: 46px minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 16px !important;
+  min-width: 0 !important;
+}
+
+.osp-public-footer-logo {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 13px !important;
+  overflow: hidden !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+  box-shadow: 0 12px 28px rgba(0, 18, 36, 0.20) !important;
+}
+
+.osp-public-footer-logo img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+.osp-public-footer-copy {
+  display: grid !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+}
+
+.osp-public-footer-copy strong {
+  color: #ffffff !important;
+  font-size: 16px !important;
+  font-weight: 950 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.osp-public-footer-copy p {
+  max-width: 520px !important;
+  margin: 0 !important;
+  color: rgba(232, 250, 252, 0.78) !important;
+  font-size: 14px !important;
+  font-weight: 750 !important;
+  line-height: 1.55 !important;
+}
+
+.osp-public-footer-copy small {
+  display: block !important;
+  margin-top: 4px !important;
+  color: rgba(255, 255, 255, 0.86) !important;
+  font-size: 11px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.17em !important;
+  line-height: 1.5 !important;
+  text-transform: uppercase !important;
+}
+
+.osp-public-footer-copy address {
+  max-width: 520px !important;
+  margin: 6px 0 0 !important;
+  padding-top: 12px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
+  color: rgba(232, 250, 252, 0.72) !important;
+  font-size: 13px !important;
+  font-style: normal !important;
+  font-weight: 750 !important;
+  line-height: 1.5 !important;
+}
+
+.osp-public-footer-phone,
+.osp-public-footer-phone:hover,
+.osp-public-footer-phone:focus,
+.osp-public-footer-phone:active {
+  width: fit-content !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: 950 !important;
+  line-height: 1.4 !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+.osp-public-footer-links {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: flex-start !important;
+  justify-content: flex-end !important;
+  gap: 12px 18px !important;
+  max-width: 560px !important;
+  justify-self: end !important;
+}
+
+.osp-public-footer-links a,
+.osp-public-footer-links a:hover,
+.osp-public-footer-links a:focus,
+.osp-public-footer-links a:active,
+.osp-public-footer-links a[aria-current="page"],
+.osp-public-footer-links .is-active {
+  width: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline-offset: 4px !important;
+  color: rgba(232, 250, 252, 0.78) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  line-height: 1.5 !important;
+  text-decoration: none !important;
+  transform: none !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+.osp-public-footer-links a:hover,
+.osp-public-footer-links a:focus {
+  color: #ffffff !important;
+  text-decoration: underline !important;
+  text-underline-offset: 4px !important;
+}
+
+@media (max-width: 860px) {
+  .osp-public-footer {
+    padding: 36px 16px 42px !important;
+  }
+
+  .osp-public-footer-shell {
+    width: min(640px, calc(100vw - 32px)) !important;
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+
+  .osp-public-footer-links {
+    justify-content: flex-start !important;
+    justify-self: start !important;
+    max-width: 100% !important;
+  }
+}
+/* OSP_PUBLIC_FOOTER_FINAL_SHARED_02H_FIX_END */
+
