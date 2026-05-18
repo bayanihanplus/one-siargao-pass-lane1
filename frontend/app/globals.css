@@ -18219,250 +18219,7 @@ body:has(.osp-public-header) {
 /* OSP_PUBLIC_SHELL_NAV_FOOTER_HARDENING_03A_END */
 
 
-/* OSP_PUBLIC_SHELL_PREMIUM_UI_HARDENING_03B_START */
-/*
-  Premium public shell hardening inspired by CABrainworks:
-  - More refined executive/tourism typography
-  - Dark premium shell depth
-  - Cleaner transparent border cards
-  - Better gradient CTA behavior
-  - Less bulky, more polished spacing rhythm
-*/
 
-:root {
-  --osp-premium-navy: #013863;
-  --osp-premium-deep: #002f55;
-  --osp-premium-teal: #0596a5;
-  --osp-premium-teal-2: #087f99;
-  --osp-premium-gold: #f3ae26;
-  --osp-premium-mist: #eafbfa;
-  --osp-premium-slate: #50668b;
-  --osp-premium-white: #ffffff;
-  --osp-premium-border-light: rgba(255, 255, 255, 0.18);
-  --osp-premium-border-dark: rgba(1, 56, 99, 0.12);
-  --osp-premium-shadow-soft: 0 22px 60px rgba(1, 56, 99, 0.16);
-  --osp-premium-shadow-deep: 0 28px 80px rgba(0, 38, 72, 0.32);
-}
-
-/* GLOBAL PUBLIC TYPOGRAPHY RHYTHM */
-.osp-premium-v3,
-.osp-public-explore-page,
-.osp-passport-public-restructure {
-  text-rendering: geometricPrecision !important;
-  -webkit-font-smoothing: antialiased !important;
-  font-feature-settings: "kern" 1, "liga" 1, "ss01" 1 !important;
-}
-
-.osp-premium-v3 h1,
-.osp-premium-v3 h2,
-.osp-premium-v3 h3,
-.osp-public-explore-page h1,
-.osp-public-explore-page h2,
-.osp-public-explore-page h3,
-.osp-passport-public-restructure h1,
-.osp-passport-public-restructure h2,
-.osp-passport-public-restructure h3 {
-  letter-spacing: -0.055em !important;
-  line-height: 0.98 !important;
-  font-weight: 760 !important;
-}
-
-.osp-premium-v3 p,
-.osp-public-explore-page p,
-.osp-passport-public-restructure p {
-  line-height: 1.68 !important;
-  letter-spacing: -0.012em !important;
-  font-weight: 520 !important;
-}
-
-/* PREMIUM HEADER SHELL */
-.osp-public-header {
-  background:
-    radial-gradient(circle at 12% 0%, rgba(5, 150, 165, 0.34), transparent 34%),
-    linear-gradient(135deg, rgba(1, 56, 99, 0.98), rgba(0, 47, 85, 0.96)) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 18px 60px rgba(0, 42, 76, 0.18) !important;
-}
-
-.osp-public-header-shell {
-  min-height: 72px !important;
-  align-items: center !important;
-}
-
-.osp-public-brand-copy strong {
-  letter-spacing: 0.15em !important;
-  font-weight: 850 !important;
-}
-
-.osp-public-brand-copy small {
-  color: rgba(255, 255, 255, 0.72) !important;
-  font-weight: 650 !important;
-}
-
-/* BUTTON GRADIENT HARDENING */
-.osp-public-header .osp-public-pass-cta,
-.osp-public-pass-cta,
-.osp-public-primary-button,
-.osp-public-button-primary,
-.osp-public-cta-primary,
-.osp-public-explore-page a[class*="primary"],
-.osp-premium-v3 a[class*="primary"] {
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 32%),
-    linear-gradient(135deg, #0596a5 0%, #087f99 48%, #013863 115%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.22) !important;
-  color: #ffffff !important;
-  box-shadow:
-    0 18px 42px rgba(5, 150, 165, 0.26),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
-}
-
-.osp-public-header .osp-public-pass-cta:hover,
-.osp-public-pass-cta:hover,
-.osp-public-primary-button:hover,
-.osp-public-button-primary:hover,
-.osp-public-cta-primary:hover,
-.osp-public-explore-page a[class*="primary"]:hover,
-.osp-premium-v3 a[class*="primary"]:hover {
-  transform: translateY(-1px) !important;
-  box-shadow:
-    0 24px 56px rgba(5, 150, 165, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
-}
-
-/* SECONDARY BUTTONS: GLASS, NOT HEAVY */
-.osp-public-secondary-button,
-.osp-public-button-secondary,
-.osp-premium-v3 a[class*="secondary"],
-.osp-public-explore-page a[class*="secondary"] {
-  background: rgba(255, 255, 255, 0.10) !important;
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  color: rgba(255, 255, 255, 0.92) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(14px) !important;
-}
-
-/* PREMIUM TRANSPARENT BORDER CARD LANGUAGE */
-.osp-premium-v3 [class*="card"],
-.osp-public-explore-page [class*="card"],
-.osp-passport-public-restructure [class*="card"],
-.osp-premium-v3 [class*="panel"],
-.osp-public-explore-page [class*="panel"],
-.osp-passport-public-restructure [class*="panel"] {
-  border-color: rgba(1, 56, 99, 0.12) !important;
-}
-
-.osp-premium-v3 [class*="glass"],
-.osp-public-explore-page [class*="glass"],
-.osp-passport-public-restructure [class*="glass"] {
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06)) !important;
-  box-shadow: 0 24px 70px rgba(1, 56, 99, 0.16) !important;
-  backdrop-filter: blur(18px) !important;
-}
-
-/* HERO REFINEMENT */
-.osp-premium-v3 [class*="hero"] h1,
-.osp-public-explore-page [class*="hero"] h1,
-.osp-passport-public-restructure [class*="hero"] h1 {
-  max-width: 980px !important;
-  text-wrap: balance !important;
-}
-
-.osp-premium-v3 [class*="hero"] p,
-.osp-public-explore-page [class*="hero"] p,
-.osp-passport-public-restructure [class*="hero"] p {
-  max-width: 840px !important;
-  text-wrap: pretty !important;
-}
-
-/* CHIP / BADGE CLEANUP */
-.osp-premium-v3 [class*="chip"],
-.osp-public-explore-page [class*="chip"],
-.osp-passport-public-restructure [class*="chip"],
-.osp-premium-v3 [class*="badge"],
-.osp-public-explore-page [class*="badge"],
-.osp-passport-public-restructure [class*="badge"] {
-  border-radius: 999px !important;
-  font-weight: 760 !important;
-  letter-spacing: 0.035em !important;
-  box-shadow: none !important;
-}
-
-/* FOOTER PREMIUM POLISH */
-.osp-public-footer {
-  position: relative !important;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(5, 150, 165, 0.24), transparent 34%),
-    linear-gradient(135deg, #013863 0%, #003a64 48%, #002f55 100%) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
-}
-
-.osp-public-footer::before {
-  content: "" !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 50% !important;
-  width: min(1100px, calc(100vw - 64px)) !important;
-  height: 1px !important;
-  transform: translateX(-50%) !important;
-  background: linear-gradient(90deg, transparent, rgba(243, 174, 38, 0.46), transparent) !important;
-  pointer-events: none !important;
-}
-
-.osp-public-footer-brand-copy strong {
-  color: #ffffff !important;
-  font-size: 1rem !important;
-  letter-spacing: -0.02em !important;
-}
-
-.osp-public-footer-brand-copy p,
-.osp-public-footer-brand-copy small,
-.osp-public-footer-contact,
-.osp-public-footer-address,
-.osp-public-footer-meta {
-  color: rgba(255, 255, 255, 0.72) !important;
-}
-
-.osp-public-footer-nav a,
-.osp-public-footer-links a {
-  position: relative !important;
-  color: rgba(255, 255, 255, 0.76) !important;
-  transition: color 160ms ease, transform 160ms ease !important;
-}
-
-.osp-public-footer-nav a:hover,
-.osp-public-footer-links a:hover {
-  color: #ffffff !important;
-  transform: translateY(-1px) !important;
-}
-
-/* MOBILE TYPOGRAPHY: LESS BULKY */
-@media (max-width: 760px) {
-  .osp-premium-v3 h1,
-  .osp-public-explore-page h1,
-  .osp-passport-public-restructure h1 {
-    letter-spacing: -0.048em !important;
-    line-height: 1.02 !important;
-  }
-
-  .osp-premium-v3 h2,
-  .osp-public-explore-page h2,
-  .osp-passport-public-restructure h2 {
-    letter-spacing: -0.04em !important;
-    line-height: 1.06 !important;
-  }
-
-  .osp-public-header-shell {
-    min-height: 64px !important;
-  }
-
-  .osp-public-footer::before {
-    width: calc(100vw - 32px) !important;
-  }
-}
-/* OSP_PUBLIC_SHELL_PREMIUM_UI_HARDENING_03B_END */
 
 
 /* OSP_PUBLIC_FOOTER_COMPONENT_REDESIGN_04A_START */
@@ -19065,4 +18822,1007 @@ body:has(.osp-public-header) {
   }
 }
 /* OSP_PUBLIC_FOOTER_WIDTH_ALIGNMENT_04D_END */
+
+
+/* OSP_OPERATORS_LOCAL_PARTNER_GATEWAY_02A_START */
+.osp-local-partners-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at 12% 0%, rgba(5, 150, 165, 0.18), transparent 28%),
+    linear-gradient(180deg, #f4fcfa 0%, #ffffff 38%, #eafbfa 100%);
+  color: #0b2442;
+  overflow-x: hidden;
+}
+
+.osp-local-partners-hero {
+  position: relative;
+  padding: clamp(54px, 7vw, 92px) 0 clamp(46px, 6vw, 76px);
+  background: radial-gradient(circle at 18% 8%, rgba(5, 150, 165, 0.30), transparent 32%),
+    radial-gradient(circle at 88% 0%, rgba(243, 174, 38, 0.15), transparent 28%),
+    linear-gradient(135deg, #013863 0%, #003b66 52%, #022b4d 100%);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.osp-local-partners-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(243, 174, 38, 0.52), transparent);
+}
+
+.osp-local-partners-hero-shell,
+.osp-local-partners-section,
+.osp-local-partners-final-cta {
+  width: min(1200px, calc(100vw - 96px));
+  margin-inline: auto;
+}
+
+.osp-local-partners-hero-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.82fr);
+  gap: clamp(40px, 6vw, 86px);
+  align-items: center;
+}
+
+.osp-local-partners-hero-copy h1 {
+  max-width: 780px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.96);
+  font-size: clamp(2.65rem, 5.5vw, 5.25rem);
+  font-weight: 780;
+  letter-spacing: -0.065em;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+
+.osp-local-partners-hero-copy > p:not(.osp-local-partners-eyebrow) {
+  max-width: 720px;
+  margin: 22px 0 0;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: clamp(1rem, 1.6vw, 1.18rem);
+  font-weight: 520;
+  line-height: 1.72;
+  letter-spacing: -0.014em;
+}
+
+.osp-local-partners-eyebrow {
+  margin: 0 0 14px;
+  color: #f3ae26;
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.osp-local-partners-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
+}
+
+.osp-local-partners-primary,
+.osp-local-partners-secondary {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0 24px;
+  font-size: 0.92rem;
+  font-weight: 850;
+  text-decoration: none;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.osp-local-partners-primary {
+  color: #10243f;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.20), transparent 34%),
+    linear-gradient(135deg, #ffd36b 0%, #f3ae26 48%, #f9b320 100%);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  box-shadow: 0 18px 42px rgba(243, 174, 38, 0.28);
+}
+
+.osp-local-partners-secondary {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.osp-local-partners-primary:hover,
+.osp-local-partners-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.osp-local-partners-trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.osp-local-partners-trust-row span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  border-radius: 999px;
+  padding: 0 14px;
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 0.78rem;
+  font-weight: 760;
+}
+
+.osp-local-partners-hero-panel {
+  display: grid;
+  gap: 18px;
+  padding: clamp(24px, 3vw, 34px);
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.055));
+  box-shadow: 0 30px 90px rgba(0, 36, 68, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(18px);
+}
+
+.osp-local-partners-panel-top span {
+  color: #f3ae26;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.osp-local-partners-panel-top strong {
+  display: block;
+  margin-top: 12px;
+  color: #ffffff;
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  font-weight: 760;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.osp-local-partners-panel-top p {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.70);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.osp-local-partners-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.osp-local-partners-mini-grid span {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  border-radius: 16px;
+  padding: 0 14px;
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.075);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.82rem;
+  font-weight: 760;
+}
+
+.osp-local-partners-section {
+  padding: clamp(54px, 7vw, 92px) 0 0;
+}
+
+.osp-local-partners-section-heading {
+  max-width: 780px;
+  margin-bottom: clamp(24px, 4vw, 42px);
+}
+
+.osp-local-partners-section-heading h2,
+.osp-local-partners-pathway-card h2,
+.osp-local-partners-control-card h2,
+.osp-local-partners-final-cta h2 {
+  margin: 0;
+  color: #013863;
+  font-size: clamp(2rem, 4vw, 3.75rem);
+  font-weight: 760;
+  letter-spacing: -0.058em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.osp-local-partners-section-heading p:not(.osp-local-partners-eyebrow),
+.osp-local-partners-pathway-card p,
+.osp-local-partners-control-card p,
+.osp-local-partners-final-cta p {
+  margin: 16px 0 0;
+  color: #50668b;
+  font-size: 1rem;
+  font-weight: 520;
+  line-height: 1.68;
+  letter-spacing: -0.012em;
+}
+
+.osp-local-partners-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.osp-local-partners-card,
+.osp-local-partners-benefit-grid article,
+.osp-local-partners-surface-grid article {
+  position: relative;
+  display: grid;
+  align-content: start;
+  min-height: 240px;
+  padding: 24px;
+  border-radius: 26px;
+  border: 1px solid rgba(1, 56, 99, 0.11);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(234, 251, 250, 0.72));
+  box-shadow: 0 22px 60px rgba(1, 56, 99, 0.10);
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.osp-local-partners-card:hover,
+.osp-local-partners-benefit-grid article:hover,
+.osp-local-partners-surface-grid article:hover {
+  transform: translateY(-3px);
+  border-color: rgba(5, 150, 165, 0.24);
+  box-shadow: 0 28px 72px rgba(1, 56, 99, 0.14);
+}
+
+.osp-local-partners-card p {
+  margin: 0 0 14px;
+  color: #0596a5;
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.osp-local-partners-card h3,
+.osp-local-partners-benefit-grid h3,
+.osp-local-partners-surface-grid h3 {
+  margin: 0;
+  color: #013863;
+  font-size: 1.24rem;
+  font-weight: 780;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+}
+
+.osp-local-partners-card span,
+.osp-local-partners-benefit-grid p,
+.osp-local-partners-surface-grid p {
+  margin-top: 12px;
+  color: #50668b;
+  font-size: 0.94rem;
+  line-height: 1.58;
+}
+
+.osp-local-partners-card a {
+  align-self: end;
+  margin-top: 22px;
+  color: #013863;
+  font-size: 0.88rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.osp-local-partners-benefits {
+  padding-top: clamp(52px, 6vw, 82px);
+}
+
+.osp-local-partners-benefit-grid,
+.osp-local-partners-surface-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.osp-local-partners-benefit-grid article,
+.osp-local-partners-surface-grid article {
+  min-height: 210px;
+}
+
+.osp-local-partners-pathway-card,
+.osp-local-partners-control-card,
+.osp-local-partners-final-cta {
+  border-radius: 32px;
+  border: 1px solid rgba(1, 56, 99, 0.12);
+  background: radial-gradient(circle at 10% 0%, rgba(5, 150, 165, 0.12), transparent 30%),
+    linear-gradient(145deg, #ffffff, #eafbfa);
+  box-shadow: 0 28px 78px rgba(1, 56, 99, 0.12);
+}
+
+.osp-local-partners-pathway-card {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
+  gap: clamp(30px, 5vw, 70px);
+  padding: clamp(28px, 5vw, 54px);
+  align-items: start;
+}
+
+.osp-local-partners-pathway-card ol {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.osp-local-partners-pathway-card li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(1, 56, 99, 0.08);
+}
+
+.osp-local-partners-pathway-card li span {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f3ae26, #ffd36b);
+  box-shadow: 0 8px 18px rgba(243, 174, 38, 0.20);
+}
+
+.osp-local-partners-pathway-card li strong {
+  color: #013863;
+  font-size: 0.95rem;
+  font-weight: 760;
+  line-height: 1.42;
+}
+
+.osp-local-partners-surfaces {
+  padding-top: clamp(52px, 6vw, 82px);
+}
+
+.osp-local-partners-surface-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.osp-local-partners-control-card {
+  padding: clamp(30px, 5vw, 58px);
+  max-width: 980px;
+}
+
+.osp-local-partners-control-card .osp-local-partners-primary {
+  margin-top: 24px;
+}
+
+.osp-local-partners-final-cta {
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  align-items: center;
+  margin-top: clamp(58px, 7vw, 96px);
+  margin-bottom: clamp(34px, 5vw, 62px);
+  padding: clamp(28px, 5vw, 52px);
+  background: radial-gradient(circle at 12% 0%, rgba(5, 150, 165, 0.20), transparent 32%),
+    linear-gradient(135deg, #013863, #003b66);
+}
+
+.osp-local-partners-final-cta h2 {
+  color: #ffffff;
+}
+
+.osp-local-partners-final-cta p {
+  max-width: 720px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@media (max-width: 1040px) {
+  .osp-local-partners-hero-shell,
+  .osp-local-partners-pathway-card {
+    grid-template-columns: 1fr;
+  }
+
+  .osp-local-partners-card-grid,
+  .osp-local-partners-benefit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .osp-local-partners-surface-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .osp-local-partners-final-cta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 680px) {
+  .osp-local-partners-hero-shell,
+  .osp-local-partners-section,
+  .osp-local-partners-final-cta {
+    width: min(100% - 28px, 560px);
+  }
+
+  .osp-local-partners-hero {
+    padding-top: 42px;
+  }
+
+  .osp-local-partners-hero-copy h1 {
+    font-size: clamp(2.35rem, 13vw, 3.45rem);
+  }
+
+  .osp-local-partners-actions,
+  .osp-local-partners-primary,
+  .osp-local-partners-secondary {
+    width: 100%;
+  }
+
+  .osp-local-partners-card-grid,
+  .osp-local-partners-benefit-grid,
+  .osp-local-partners-surface-grid,
+  .osp-local-partners-mini-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .osp-local-partners-card,
+  .osp-local-partners-benefit-grid article,
+  .osp-local-partners-surface-grid article {
+    min-height: auto;
+  }
+}
+/* OSP_OPERATORS_LOCAL_PARTNER_GATEWAY_02A_END */
+
+
+/* OSP_OPERATORS_LOCAL_PARTNER_GATEWAY_VISUAL_HARDENING_02B_START */
+/*
+  /operators visual hardening:
+  - Dark sections must use high-contrast white/light foregrounds.
+  - Hero and final CTA headlines must not inherit dark navy text.
+  - Preserve approved Local Partners Gateway structure.
+*/
+
+.osp-local-partners-page .osp-local-partners-hero .osp-local-partners-hero-copy h1 {
+  color: #ffffff !important;
+  text-shadow: 0 18px 48px rgba(0, 31, 58, 0.34) !important;
+  opacity: 1 !important;
+}
+
+.osp-local-partners-page .osp-local-partners-hero .osp-local-partners-hero-copy > p:not(.osp-local-partners-eyebrow) {
+  color: rgba(255, 255, 255, 0.82) !important;
+  text-shadow: 0 10px 28px rgba(0, 31, 58, 0.22) !important;
+}
+
+.osp-local-partners-page .osp-local-partners-hero .osp-local-partners-eyebrow,
+.osp-local-partners-page .osp-local-partners-final-cta .osp-local-partners-eyebrow {
+  color: #f3ae26 !important;
+  opacity: 1 !important;
+}
+
+.osp-local-partners-page .osp-local-partners-final-cta h2 {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  text-shadow: 0 16px 42px rgba(0, 31, 58, 0.34) !important;
+}
+
+.osp-local-partners-page .osp-local-partners-final-cta p {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.osp-local-partners-page .osp-local-partners-final-cta {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(5, 150, 165, 0.22), transparent 32%),
+    radial-gradient(circle at 86% 18%, rgba(243, 174, 38, 0.12), transparent 30%),
+    linear-gradient(135deg, #013863 0%, #003b66 52%, #022b4d 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 30px 86px rgba(1, 56, 99, 0.18) !important;
+}
+
+.osp-local-partners-page .osp-local-partners-final-cta .osp-local-partners-primary {
+  color: #10243f !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.20), transparent 34%),
+    linear-gradient(135deg, #ffd36b 0%, #f3ae26 48%, #f9b320 100%) !important;
+  box-shadow: 0 20px 46px rgba(243, 174, 38, 0.30) !important;
+}
+
+/* Slightly refine hero scale after contrast repair */
+.osp-local-partners-page .osp-local-partners-hero-copy h1 {
+  max-width: 840px !important;
+  font-size: clamp(2.75rem, 5.25vw, 5.05rem) !important;
+  letter-spacing: -0.062em !important;
+  line-height: 0.98 !important;
+}
+
+.osp-local-partners-page .osp-local-partners-hero-panel {
+  border-color: rgba(255, 255, 255, 0.20) !important;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(5, 150, 165, 0.16), transparent 32%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.065)) !important;
+}
+
+/* Keep light sections premium but less bulky */
+.osp-local-partners-page .osp-local-partners-section-heading h2,
+.osp-local-partners-page .osp-local-partners-pathway-card h2,
+.osp-local-partners-page .osp-local-partners-control-card h2 {
+  color: #013863 !important;
+  font-weight: 740 !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card,
+.osp-local-partners-page .osp-local-partners-benefit-grid article,
+.osp-local-partners-page .osp-local-partners-surface-grid article {
+  background:
+    radial-gradient(circle at 8% 0%, rgba(5, 150, 165, 0.065), transparent 36%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(234, 251, 250, 0.76)) !important;
+}
+
+@media (max-width: 680px) {
+  .osp-local-partners-page .osp-local-partners-hero-copy h1 {
+    font-size: clamp(2.35rem, 12vw, 3.35rem) !important;
+    line-height: 1.02 !important;
+  }
+
+  .osp-local-partners-page .osp-local-partners-final-cta h2 {
+    font-size: clamp(2rem, 10vw, 3rem) !important;
+    line-height: 1.04 !important;
+  }
+}
+/* OSP_OPERATORS_LOCAL_PARTNER_GATEWAY_VISUAL_HARDENING_02B_END */
+
+
+
+
+
+/* OSP_OPERATORS_LANE_CARD_CTA_HARDENING_02C_START */
+/*
+  /operators lane card CTA hardening:
+  - Replace weak text-link psychology with premium secondary pill CTA.
+  - Keep gold reserved for main conversion CTAs.
+  - Lane CTAs use ocean-teal / navy glass language.
+*/
+
+.osp-local-partners-page .osp-local-partners-card {
+  grid-template-rows: auto auto auto 1fr auto !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta,
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta:visited {
+  align-self: end !important;
+  justify-self: start !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  min-height: 42px !important;
+  margin-top: 24px !important;
+  padding: 0 16px 0 18px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(5, 150, 165, 0.24) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.24), transparent 34%),
+    linear-gradient(135deg, rgba(5, 150, 165, 0.16), rgba(1, 56, 99, 0.08)) !important;
+  color: #013863 !important;
+  box-shadow:
+    0 14px 32px rgba(1, 56, 99, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.44) !important;
+  font-size: 0.86rem !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.01em !important;
+  text-decoration: none !important;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta span {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta strong {
+  display: inline-flex !important;
+  width: 24px !important;
+  height: 24px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #0596a5, #087f99) !important;
+  color: #ffffff !important;
+  font-size: 0.88rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  box-shadow: 0 8px 18px rgba(5, 150, 165, 0.24) !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card:hover > a.osp-local-partners-card-cta,
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta:hover,
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta:focus-visible {
+  transform: translateY(-1px) !important;
+  border-color: rgba(5, 150, 165, 0.42) !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.30), transparent 34%),
+    linear-gradient(135deg, rgba(5, 150, 165, 0.22), rgba(1, 56, 99, 0.10)) !important;
+  box-shadow:
+    0 18px 42px rgba(1, 56, 99, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+  outline: none !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta:focus-visible {
+  box-shadow:
+    0 18px 42px rgba(1, 56, 99, 0.14),
+    0 0 0 4px rgba(5, 150, 165, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+}
+
+/* Mobile: make the decision trigger easier to tap */
+@media (max-width: 680px) {
+  .osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta {
+    width: 100% !important;
+    justify-content: space-between !important;
+    min-height: 46px !important;
+    padding-inline: 18px 12px !important;
+  }
+}
+/* OSP_OPERATORS_LANE_CARD_CTA_HARDENING_02C_END */
+
+
+/* OSP_OPERATORS_LANE_CARD_CTA_PREMIUM_HARDENING_02D_START */
+/*
+  /operators lane-card CTA premium hardening:
+  - More distinctive secondary action button
+  - Stronger hover/focus state
+  - Better bottom alignment across unequal card text
+  - Gold remains reserved for main conversion CTAs
+*/
+
+.osp-local-partners-page .osp-local-partners-card {
+  display: grid !important;
+  grid-template-rows: auto auto auto minmax(20px, 1fr) auto !important;
+  min-height: 260px !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta,
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta:visited {
+  position: relative !important;
+  isolation: isolate !important;
+  align-self: end !important;
+  justify-self: start !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  min-height: 44px !important;
+  margin-top: 26px !important;
+  padding: 0 13px 0 19px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(5, 150, 165, 0.34) !important;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(255, 255, 255, 0.62), transparent 42%),
+    linear-gradient(135deg, rgba(234, 251, 250, 0.94), rgba(214, 244, 245, 0.76)) !important;
+  color: #013863 !important;
+  box-shadow:
+    0 16px 38px rgba(1, 56, 99, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62) !important;
+  font-size: 0.88rem !important;
+  font-weight: 880 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.012em !important;
+  text-decoration: none !important;
+  overflow: hidden !important;
+  transition:
+    transform 170ms ease,
+    box-shadow 170ms ease,
+    border-color 170ms ease,
+    background 170ms ease,
+    color 170ms ease !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 1px !important;
+  z-index: -1 !important;
+  border-radius: inherit !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.34), rgba(5, 150, 165, 0.045)) !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta span {
+  display: inline-flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta strong {
+  display: inline-flex !important;
+  width: 26px !important;
+  height: 26px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  border-radius: 999px !important;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 34%),
+    linear-gradient(135deg, #0596a5, #087f99) !important;
+  color: #ffffff !important;
+  font-size: 0.9rem !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  box-shadow:
+    0 9px 20px rgba(5, 150, 165, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.20) !important;
+  transform: translateX(0) !important;
+  transition: transform 170ms ease, box-shadow 170ms ease !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card:hover > a.osp-local-partners-card-cta,
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta:hover,
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta:focus-visible {
+  transform: translateY(-2px) !important;
+  border-color: rgba(5, 150, 165, 0.54) !important;
+  color: #012f55 !important;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(255, 255, 255, 0.72), transparent 42%),
+    linear-gradient(135deg, rgba(234, 251, 250, 1), rgba(205, 241, 244, 0.88)) !important;
+  box-shadow:
+    0 22px 50px rgba(1, 56, 99, 0.16),
+    0 0 0 1px rgba(5, 150, 165, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  outline: none !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card:hover > a.osp-local-partners-card-cta strong,
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta:hover strong,
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta:focus-visible strong {
+  transform: translateX(2px) !important;
+  box-shadow:
+    0 12px 26px rgba(5, 150, 165, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.24) !important;
+}
+
+.osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta:focus-visible {
+  box-shadow:
+    0 22px 50px rgba(1, 56, 99, 0.16),
+    0 0 0 4px rgba(5, 150, 165, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+}
+
+/* Prevent card CTAs from inheriting public primary/gold/global action styling */
+.osp-local-partners-page .osp-local-partners-card a.osp-local-partners-card-cta {
+  filter: none !important;
+}
+
+/* Desktop micro alignment: keep all lane CTAs visually level */
+.osp-local-partners-page .osp-local-partners-card p + h3 + span {
+  display: block !important;
+}
+
+/* Mobile: stronger tap target and full-width decision trigger */
+@media (max-width: 680px) {
+  .osp-local-partners-page .osp-local-partners-card {
+    min-height: auto !important;
+  }
+
+  .osp-local-partners-page .osp-local-partners-card > a.osp-local-partners-card-cta {
+    width: 100% !important;
+    justify-content: space-between !important;
+    min-height: 48px !important;
+    padding-inline: 20px 13px !important;
+  }
+}
+/* OSP_OPERATORS_LANE_CARD_CTA_PREMIUM_HARDENING_02D_END */
+
+
+/* OSP_LOCAL_PARTNERS_FOOTER_WIDTH_REPAIR_02G_START */
+/*
+  Safe /operators footer width repair:
+  - Width alignment only.
+  - Do NOT alter footer background, glass card styling, inner grid, typography, or colors.
+  - The footer should keep the last approved visual design and only match the final CTA outer width.
+*/
+
+.osp-local-partners-page {
+  --osp-local-partners-wide-container: min(1200px, calc(100vw - 96px));
+}
+
+/* Match final CTA and footer shell/card outer width only */
+.osp-local-partners-page .osp-local-partners-final-cta,
+.osp-local-partners-page .osp-public-footer-shell {
+  width: var(--osp-local-partners-wide-container) !important;
+  max-width: var(--osp-local-partners-wide-container) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+.osp-local-partners-page .osp-public-footer-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Keep the footer top accent aligned with the same shell width, without changing visual styling */
+.osp-local-partners-page .osp-public-footer::before {
+  width: var(--osp-local-partners-wide-container) !important;
+  max-width: var(--osp-local-partners-wide-container) !important;
+}
+
+/* Responsive safety mirrors the existing public container behavior */
+@media (max-width: 1040px) {
+  .osp-local-partners-page {
+    --osp-local-partners-wide-container: min(100% - 40px, 760px);
+  }
+}
+
+@media (max-width: 680px) {
+  .osp-local-partners-page {
+    --osp-local-partners-wide-container: min(100% - 28px, 560px);
+  }
+}
+/* OSP_LOCAL_PARTNERS_FOOTER_WIDTH_REPAIR_02G_END */
+
+
+/* OSP_EXPLORE_HERO_DARK_HEIGHT_REPAIR_03J_START */
+/*
+  /explore hero final height repair:
+  - Target only the named hero owner.
+  - Keep hero background dark; do NOT fade to light inside the hero.
+  - Clip excess blue height by reducing bottom padding and margin.
+  - Do not touch cards, panels, footer, home, operators, or passport trails.
+*/
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+  min-height: auto !important;
+  height: auto !important;
+  padding-bottom: clamp(8px, 1.4vw, 18px) !important;
+  margin-bottom: clamp(34px, 4vw, 52px) !important;
+  overflow: visible !important;
+  box-shadow: none !important;
+  background:
+    radial-gradient(circle at 14% 8%, rgba(5, 150, 165, 0.28), transparent 32%),
+    radial-gradient(circle at 88% 0%, rgba(243, 174, 38, 0.06), transparent 28%),
+    linear-gradient(135deg, #013863 0%, #003b66 54%, #022b4d 100%) !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero::after {
+  display: none !important;
+  content: none !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-section:first-of-type {
+  padding-top: clamp(28px, 3.4vw, 46px) !important;
+  margin-top: 0 !important;
+  background: transparent !important;
+}
+
+@media (max-width: 760px) {
+  .osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+    min-height: auto !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 34px !important;
+  }
+
+  .osp-premium-v3.osp-public-explore-page .osp-public-explore-section:first-of-type {
+    padding-top: 32px !important;
+  }
+}
+/* OSP_EXPLORE_HERO_DARK_HEIGHT_REPAIR_03J_END */
+
+
+/* OSP_EXPLORE_PAGE_FINAL_PREMIUM_HARDENING_03K_START */
+/*
+  /explore final premium hardening:
+  - Scoped only to the public Explore page.
+  - No global card/panel/footer/header selectors.
+  - Improves button depth, hover, shadows, and section rhythm.
+*/
+
+/* Better page-level light surface */
+.osp-premium-v3.osp-public-explore-page {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(5, 150, 165, 0.08), transparent 38%),
+    linear-gradient(180deg, #f4fcfa 0%, #ffffff 46%, #eafbfa 100%) !important;
+}
+
+/* Keep hero premium but controlled */
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Premium CTA behavior inside Explore hero only */
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero a {
+  transform: translateZ(0) !important;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero a:hover {
+  transform: translateY(-2px) !important;
+  box-shadow:
+    0 18px 42px rgba(0, 36, 68, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.30) !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-hero a:focus-visible {
+  outline: 3px solid rgba(243, 174, 38, 0.72) !important;
+  outline-offset: 4px !important;
+}
+
+/* Premium cards/tiles inside Explore content sections only */
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-section article,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-section .osp-public-explore-card,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-section .osp-public-explore-layer-card {
+  border: 1px solid rgba(1, 56, 99, 0.10) !important;
+  box-shadow:
+    0 22px 58px rgba(0, 36, 68, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84) !important;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-section article:hover,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-section .osp-public-explore-card:hover,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-section .osp-public-explore-layer-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(5, 150, 165, 0.22) !important;
+  box-shadow:
+    0 28px 72px rgba(0, 36, 68, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+}
+
+/* Section links / text CTAs inside Explore content only */
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-section a {
+  transition:
+    color 160ms ease,
+    transform 160ms ease,
+    text-decoration-color 160ms ease !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-section a:hover {
+  color: #007f8d !important;
+  text-decoration-color: rgba(5, 150, 165, 0.45) !important;
+}
+
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-section a:focus-visible {
+  outline: 3px solid rgba(243, 174, 38, 0.58) !important;
+  outline-offset: 4px !important;
+  border-radius: 12px !important;
+}
+
+/* Refined section spacing without changing layout structure */
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-section {
+  scroll-margin-top: 110px !important;
+}
+
+/* Final CTA shell polish inside Explore page only */
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-cta,
+.osp-premium-v3.osp-public-explore-page .osp-public-explore-final-cta {
+  box-shadow:
+    0 28px 76px rgba(0, 36, 68, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+@media (max-width: 760px) {
+  .osp-premium-v3.osp-public-explore-page .osp-public-explore-hero a:hover,
+  .osp-premium-v3.osp-public-explore-page .osp-public-explore-section article:hover,
+  .osp-premium-v3.osp-public-explore-page .osp-public-explore-section .osp-public-explore-card:hover,
+  .osp-premium-v3.osp-public-explore-page .osp-public-explore-section .osp-public-explore-layer-card:hover {
+    transform: none !important;
+  }
+}
+/* OSP_EXPLORE_PAGE_FINAL_PREMIUM_HARDENING_03K_END */
 
