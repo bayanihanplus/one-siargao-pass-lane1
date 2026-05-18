@@ -22291,3 +22291,1143 @@ body:has(.osp-public-header) {
 
 /* OSP-GET-YOUR-PASS-FINAL-PREMIUM-LINK-HARDENING-01D END */
 
+
+/* OSP-SIGN-IN-AUTH-GATEWAY-UI-01B START */
+.osp-login-gateway-page {
+  min-height: 100vh;
+  background: #f4fcfa;
+  color: #0b2442;
+  overflow-x: hidden;
+}
+
+.osp-login-gateway-page * {
+  box-sizing: border-box;
+}
+
+.osp-login-gateway-shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.osp-login-gateway-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 92px 0 88px;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(5, 150, 165, 0.36), transparent 30%),
+    radial-gradient(circle at 88% 9%, rgba(243, 174, 38, 0.18), transparent 26%),
+    radial-gradient(circle at 52% 118%, rgba(234, 251, 250, 0.12), transparent 44%),
+    linear-gradient(135deg, #022b4d 0%, #013863 47%, #003b66 100%);
+}
+
+.osp-login-gateway-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0)),
+    radial-gradient(circle at 50% 120%, rgba(255,255,255,0.08), transparent 42%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.osp-login-gateway-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(400px, 0.82fr);
+  gap: 36px;
+  align-items: center;
+}
+
+.osp-login-gateway-copy {
+  max-width: 650px;
+}
+
+.osp-login-gateway-eyebrow,
+.osp-login-form-eyebrow {
+  margin: 0 0 12px;
+  color: #ffd36b;
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.osp-login-gateway-copy h1 {
+  margin: 0;
+  color: rgba(255,255,255,0.97);
+  font-size: clamp(2.7rem, 5vw, 5rem);
+  line-height: 0.96;
+  letter-spacing: -0.068em;
+  font-weight: 780;
+  text-shadow: 0 22px 54px rgba(0, 22, 42, 0.36);
+}
+
+.osp-login-gateway-lead {
+  max-width: 610px;
+  margin: 22px 0 0;
+  color: rgba(255,255,255,0.8);
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  line-height: 1.68;
+}
+
+.osp-login-gateway-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 24px;
+}
+
+.osp-login-gateway-chips span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.09);
+  color: rgba(255,255,255,0.88);
+  font-size: 0.82rem;
+  font-weight: 850;
+  backdrop-filter: blur(14px);
+}
+
+.osp-login-gateway-trust {
+  display: grid;
+  gap: 5px;
+  max-width: 500px;
+  margin-top: 26px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,0.22);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(5,150,165,0.16), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.075));
+  color: rgba(255,255,255,0.76);
+  box-shadow:
+    0 24px 62px rgba(0,22,42,0.24),
+    0 1px 0 rgba(255,255,255,0.12) inset;
+}
+
+.osp-login-gateway-trust strong {
+  color: #ffd36b;
+}
+
+.osp-login-card {
+  position: relative;
+  padding: 26px;
+  border-radius: 32px;
+  border: 1px solid rgba(255,255,255,0.38);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255,255,255,0.98), transparent 36%),
+    radial-gradient(circle at 96% 8%, rgba(5,150,165,0.12), transparent 34%),
+    linear-gradient(145deg, rgba(255,255,255,0.965), rgba(234,251,250,0.86));
+  box-shadow:
+    0 46px 126px rgba(0,22,42,0.36),
+    0 22px 58px rgba(5,150,165,0.10),
+    0 1px 0 rgba(255,255,255,0.96) inset;
+  backdrop-filter: blur(18px);
+}
+
+.osp-login-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.72), rgba(5,150,165,0.2), rgba(243,174,38,0.14), rgba(255,255,255,0.16));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.osp-login-card h2 {
+  margin: 0;
+  color: #092f54;
+  font-size: clamp(1.8rem, 2.7vw, 2.65rem);
+  line-height: 1.02;
+  letter-spacing: -0.058em;
+  font-weight: 790;
+}
+
+.osp-login-form-note,
+.osp-login-session-card p {
+  margin: 10px 0 18px;
+  color: #4b638a;
+  line-height: 1.56;
+}
+
+.osp-login-alert,
+.osp-login-error {
+  margin: 0 0 14px;
+  padding: 13px 14px;
+  border-radius: 16px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.osp-login-alert {
+  color: #6a4300;
+  background: rgba(255, 211, 107, 0.22);
+  border: 1px solid rgba(243, 174, 38, 0.24);
+}
+
+.osp-login-error {
+  color: #9f1c12;
+  background: rgba(255, 236, 232, 0.9);
+  border: 1px solid rgba(180, 35, 24, 0.16);
+}
+
+.osp-login-social-stack {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.osp-login-social-button {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 10px 14px;
+  border-radius: 18px;
+  text-decoration: none;
+  transition: transform 190ms ease, box-shadow 190ms ease, border-color 190ms ease, filter 190ms ease;
+}
+
+.osp-login-social-button:hover {
+  transform: translateY(-2px);
+}
+
+.osp-login-social-google {
+  color: #10234a;
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(15,23,42,0.10);
+  box-shadow:
+    0 16px 34px rgba(1,56,99,0.08),
+    0 1px 0 rgba(255,255,255,0.88) inset;
+}
+
+.osp-login-social-apple {
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255,255,255,0.12), transparent 34%),
+    #111827;
+  border: 1px solid rgba(15,23,42,0.18);
+  box-shadow:
+    0 18px 38px rgba(0,22,42,0.18),
+    0 1px 0 rgba(255,255,255,0.12) inset;
+}
+
+.osp-login-social-icon {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: rgba(244,252,250,0.9);
+  color: #10234a;
+  font-weight: 950;
+}
+
+.osp-login-social-apple .osp-login-social-icon {
+  background: rgba(255,255,255,0.12);
+  color: #ffffff;
+  font-size: 1.15rem;
+}
+
+.osp-login-social-button strong,
+.osp-login-social-button small {
+  display: block;
+}
+
+.osp-login-social-button strong {
+  font-size: 0.95rem;
+}
+
+.osp-login-social-button small {
+  margin-top: 2px;
+  opacity: 0.68;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.osp-login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: #66799b;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.osp-login-divider::before,
+.osp-login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(5,150,165,0.16);
+}
+
+.osp-login-form {
+  display: grid;
+  gap: 13px;
+}
+
+.osp-login-field {
+  display: grid;
+  gap: 7px;
+}
+
+.osp-login-field span {
+  color: #092f54;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.56);
+}
+
+.osp-login-field input {
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid rgba(5,150,165,0.16);
+  border-radius: 17px;
+  padding: 0 14px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,253,252,0.96));
+  color: #082845;
+  font-size: 0.95rem;
+  font-weight: 760;
+  outline: none;
+  box-shadow:
+    0 12px 26px rgba(1,56,99,0.065),
+    0 1px 0 rgba(255,255,255,0.9) inset;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.osp-login-field input:focus {
+  transform: translateY(-1px);
+  border-color: rgba(5,150,165,0.72);
+  box-shadow:
+    0 0 0 4px rgba(5,150,165,0.15),
+    0 18px 36px rgba(1,56,99,0.12),
+    0 1px 0 rgba(255,255,255,0.96) inset;
+}
+
+.osp-login-password-wrap {
+  position: relative;
+}
+
+.osp-login-password-wrap input {
+  padding-right: 74px;
+}
+
+.osp-login-show-password {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  height: 36px;
+  min-width: 58px;
+  border: 1px solid rgba(5,150,165,0.16);
+  border-radius: 13px;
+  background: rgba(234,251,250,0.86);
+  color: #0b2442;
+  font-size: 0.78rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease;
+}
+
+.osp-login-show-password:hover {
+  transform: translateY(-1px);
+  border-color: rgba(5,150,165,0.30);
+  box-shadow: 0 10px 22px rgba(1,56,99,0.10);
+}
+
+.osp-login-submit,
+.osp-login-primary-button,
+.osp-login-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 0.96rem;
+  font-weight: 950;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 190ms ease, box-shadow 190ms ease, border-color 190ms ease, filter 190ms ease;
+}
+
+.osp-login-submit,
+.osp-login-primary-button {
+  border: 1px solid rgba(255,211,107,0.62);
+  background: linear-gradient(135deg, #f3ae26 0%, #ffd36b 50%, #f6aa16 100%);
+  color: #061f38;
+  box-shadow:
+    0 30px 64px rgba(243,174,38,0.38),
+    0 12px 24px rgba(0,22,42,0.14),
+    0 2px 0 rgba(255,255,255,0.34) inset;
+}
+
+.osp-login-submit:hover,
+.osp-login-primary-button:hover {
+  transform: translateY(-3px) scale(1.008);
+  box-shadow:
+    0 38px 78px rgba(243,174,38,0.44),
+    0 14px 30px rgba(0,22,42,0.16),
+    0 2px 0 rgba(255,255,255,0.38) inset;
+}
+
+.osp-login-secondary-button {
+  border: 1px solid rgba(5,150,165,0.18);
+  background: rgba(255,255,255,0.78);
+  color: #0b2442;
+  box-shadow:
+    0 16px 34px rgba(1,56,99,0.10),
+    0 1px 0 rgba(255,255,255,0.88) inset;
+}
+
+.osp-login-secondary-button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(5,150,165,0.32);
+  box-shadow:
+    0 22px 44px rgba(1,56,99,0.14),
+    0 1px 0 rgba(255,255,255,0.94) inset;
+}
+
+.osp-login-helper-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  color: #66799b;
+  font-size: 0.82rem;
+  font-weight: 760;
+}
+
+.osp-login-helper-row a {
+  color: #013863;
+  font-weight: 950;
+  text-decoration: none;
+}
+
+.osp-login-link-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.osp-login-link-strip a {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  border-radius: 15px;
+  border: 1px solid rgba(5,150,165,0.14);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.82), rgba(234,251,250,0.72));
+  color: #0b2442;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-decoration: none;
+  transition: transform 170ms ease, box-shadow 170ms ease, border-color 170ms ease;
+}
+
+.osp-login-link-strip a:hover {
+  transform: translateY(-2px);
+  border-color: rgba(5,150,165,0.26);
+  box-shadow: 0 14px 28px rgba(1,56,99,0.10);
+}
+
+.osp-login-session-card {
+  position: relative;
+}
+
+.osp-login-session-mark {
+  width: 52px;
+  height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f3ae26, #ffd36b);
+  color: #06233e;
+  font-size: 1.35rem;
+  font-weight: 950;
+  box-shadow:
+    0 22px 46px rgba(243,174,38,0.32),
+    0 2px 0 rgba(255,255,255,0.30) inset;
+}
+
+.osp-login-session-summary {
+  display: grid;
+  gap: 4px;
+  margin: 18px 0;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(5,150,165,0.16);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.9), rgba(234,251,250,0.74));
+  box-shadow:
+    0 12px 26px rgba(1,56,99,0.06),
+    0 1px 0 rgba(255,255,255,0.86) inset;
+}
+
+.osp-login-session-summary span {
+  color: #66799b;
+  font-size: 0.76rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.osp-login-session-summary strong {
+  color: #0b2442;
+  word-break: break-word;
+}
+
+.osp-login-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 980px) {
+  .osp-login-gateway-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .osp-login-gateway-copy {
+    max-width: 760px;
+  }
+}
+
+@media (max-width: 640px) {
+  .osp-login-gateway-shell {
+    width: min(100% - 24px, 1120px);
+  }
+
+  .osp-login-gateway-hero {
+    padding: 62px 0 58px;
+  }
+
+  .osp-login-gateway-copy h1 {
+    font-size: clamp(2.22rem, 12vw, 3.42rem);
+  }
+
+  .osp-login-card {
+    padding: 20px;
+    border-radius: 26px;
+  }
+
+  .osp-login-link-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .osp-login-helper-row,
+  .osp-login-action-row {
+    flex-direction: column;
+  }
+
+  .osp-login-primary-button,
+  .osp-login-secondary-button,
+  .osp-login-submit {
+    width: 100%;
+  }
+}
+/* OSP-SIGN-IN-AUTH-GATEWAY-UI-01B END */
+
+
+/* OSP-SIGN-IN-AUTH-GATEWAY-EYELEVEL-HARDENING-01C START */
+
+/* HARD CONTRAST LOCK — prevent old login CSS from darkening hero text */
+.osp-login-gateway-page .osp-login-gateway-hero .osp-login-gateway-copy h1 {
+  color: rgba(255, 255, 255, 0.985) !important;
+  opacity: 1 !important;
+  text-shadow:
+    0 26px 62px rgba(0, 22, 42, 0.42),
+    0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+.osp-login-gateway-page .osp-login-gateway-hero .osp-login-gateway-lead {
+  color: rgba(255, 255, 255, 0.84) !important;
+  opacity: 1 !important;
+}
+
+.osp-login-gateway-page .osp-login-gateway-hero .osp-login-gateway-eyebrow {
+  color: #ffd36b !important;
+  opacity: 1 !important;
+  text-shadow: 0 12px 30px rgba(0, 22, 42, 0.26);
+}
+
+/* Cleaner above-fold authority */
+.osp-login-gateway-page .osp-login-gateway-hero {
+  padding: 82px 0 78px !important;
+  background:
+    radial-gradient(circle at 11% 15%, rgba(5, 150, 165, 0.42), transparent 31%),
+    radial-gradient(circle at 88% 10%, rgba(243, 174, 38, 0.20), transparent 25%),
+    radial-gradient(circle at 58% 112%, rgba(234, 251, 250, 0.14), transparent 44%),
+    linear-gradient(135deg, #022b4d 0%, #013863 46%, #003b66 100%) !important;
+}
+
+.osp-login-gateway-page .osp-login-gateway-grid {
+  align-items: center !important;
+}
+
+/* Left trust card — sharper and more premium */
+.osp-login-gateway-page .osp-login-gateway-trust {
+  border-color: rgba(255, 255, 255, 0.26) !important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(5, 150, 165, 0.19), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.135), rgba(255, 255, 255, 0.08)) !important;
+  box-shadow:
+    0 28px 70px rgba(0, 22, 42, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.14) inset !important;
+}
+
+.osp-login-gateway-page .osp-login-gateway-trust span {
+  color: rgba(255, 255, 255, 0.80) !important;
+}
+
+/* Chips — better contrast and premium borders */
+.osp-login-gateway-page .osp-login-gateway-chips span {
+  color: rgba(255, 255, 255, 0.92) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.09)) !important;
+  box-shadow:
+    0 12px 24px rgba(0, 22, 42, 0.14),
+    0 1px 0 rgba(255, 255, 255, 0.10) inset;
+}
+
+/* Login card — stronger pass-gateway glass surface */
+.osp-login-gateway-page .osp-login-card {
+  border-color: rgba(255, 255, 255, 0.48) !important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 1), transparent 36%),
+    radial-gradient(circle at 100% 8%, rgba(5, 150, 165, 0.14), transparent 34%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.975), rgba(234, 251, 250, 0.88)) !important;
+  box-shadow:
+    0 54px 138px rgba(0, 22, 42, 0.40),
+    0 26px 66px rgba(5, 150, 165, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.98) inset,
+    0 -1px 0 rgba(5, 150, 165, 0.06) inset !important;
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease !important;
+}
+
+.osp-login-gateway-page .osp-login-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.58) !important;
+  box-shadow:
+    0 62px 150px rgba(0, 22, 42, 0.44),
+    0 30px 72px rgba(5, 150, 165, 0.14),
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 -1px 0 rgba(5, 150, 165, 0.07) inset !important;
+}
+
+.osp-login-gateway-page .osp-login-card::before {
+  opacity: 0.94 !important;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.92),
+      rgba(5, 150, 165, 0.22),
+      rgba(243, 174, 38, 0.17),
+      rgba(255, 255, 255, 0.22)
+    ) !important;
+}
+
+/* Form title/readability */
+.osp-login-gateway-page .osp-login-card h2 {
+  color: #082f53 !important;
+  letter-spacing: -0.062em !important;
+}
+
+.osp-login-gateway-page .osp-login-form-note {
+  color: #466188 !important;
+}
+
+/* Social buttons — more premium, but still honest rollout state */
+.osp-login-gateway-page .osp-login-social-button {
+  border-radius: 20px !important;
+  min-height: 60px !important;
+}
+
+.osp-login-gateway-page .osp-login-social-google {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.90), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 253, 252, 0.94)) !important;
+  border-color: rgba(5, 150, 165, 0.14) !important;
+  box-shadow:
+    0 18px 38px rgba(1, 56, 99, 0.10),
+    0 1px 0 rgba(255, 255, 255, 0.94) inset !important;
+}
+
+.osp-login-gateway-page .osp-login-social-google:hover {
+  border-color: rgba(5, 150, 165, 0.28) !important;
+  box-shadow:
+    0 24px 48px rgba(1, 56, 99, 0.14),
+    0 1px 0 rgba(255, 255, 255, 0.98) inset !important;
+}
+
+.osp-login-gateway-page .osp-login-social-apple {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.16), transparent 36%),
+    linear-gradient(180deg, #172033, #0f172a) !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow:
+    0 22px 48px rgba(0, 22, 42, 0.24),
+    0 1px 0 rgba(255, 255, 255, 0.13) inset !important;
+}
+
+.osp-login-gateway-page .osp-login-social-apple:hover {
+  filter: saturate(1.05);
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow:
+    0 28px 58px rgba(0, 22, 42, 0.30),
+    0 1px 0 rgba(255, 255, 255, 0.16) inset !important;
+}
+
+/* Field polish */
+.osp-login-gateway-page .osp-login-field span {
+  color: #082f53 !important;
+}
+
+.osp-login-gateway-page .osp-login-field input {
+  min-height: 52px !important;
+  border-color: rgba(5, 150, 165, 0.17) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(249, 254, 253, 0.98)) !important;
+  color: #082845 !important;
+  box-shadow:
+    0 14px 30px rgba(1, 56, 99, 0.075),
+    0 1px 0 rgba(255, 255, 255, 0.94) inset !important;
+}
+
+.osp-login-gateway-page .osp-login-field input:hover {
+  border-color: rgba(5, 150, 165, 0.30) !important;
+  box-shadow:
+    0 18px 36px rgba(1, 56, 99, 0.10),
+    0 1px 0 rgba(255, 255, 255, 0.98) inset !important;
+}
+
+.osp-login-gateway-page .osp-login-field input:focus {
+  border-color: rgba(5, 150, 165, 0.76) !important;
+  box-shadow:
+    0 0 0 4px rgba(5, 150, 165, 0.16),
+    0 22px 42px rgba(1, 56, 99, 0.13),
+    0 1px 0 rgba(255, 255, 255, 1) inset !important;
+}
+
+/* Show password button */
+.osp-login-gateway-page .osp-login-show-password {
+  background:
+    linear-gradient(180deg, rgba(234, 251, 250, 0.96), rgba(222, 246, 244, 0.90)) !important;
+  border-color: rgba(5, 150, 165, 0.20) !important;
+  color: #082f53 !important;
+  box-shadow:
+    0 10px 22px rgba(1, 56, 99, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.84) inset !important;
+}
+
+.osp-login-gateway-page .osp-login-show-password:hover {
+  transform: translateY(-1px);
+  border-color: rgba(5, 150, 165, 0.36) !important;
+  box-shadow:
+    0 14px 28px rgba(1, 56, 99, 0.13),
+    0 1px 0 rgba(255, 255, 255, 0.92) inset !important;
+}
+
+/* PRIMARY LOGIN CTA — force Sun Gold, not teal */
+.osp-login-gateway-page .osp-login-submit {
+  min-height: 56px !important;
+  border: 1px solid rgba(255, 211, 107, 0.66) !important;
+  background:
+    linear-gradient(135deg, #f3ae26 0%, #ffd36b 50%, #f6aa16 100%) !important;
+  color: #061f38 !important;
+  box-shadow:
+    0 34px 70px rgba(243, 174, 38, 0.42),
+    0 14px 28px rgba(0, 22, 42, 0.16),
+    0 2px 0 rgba(255, 255, 255, 0.40) inset !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.osp-login-gateway-page .osp-login-submit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.30) 32%, transparent 58%);
+  transform: translateX(-120%);
+  transition: transform 420ms ease;
+  pointer-events: none;
+}
+
+.osp-login-gateway-page .osp-login-submit:hover {
+  transform: translateY(-3px) scale(1.008) !important;
+  filter: saturate(1.05);
+  box-shadow:
+    0 42px 84px rgba(243, 174, 38, 0.48),
+    0 16px 34px rgba(0, 22, 42, 0.18),
+    0 2px 0 rgba(255, 255, 255, 0.44) inset !important;
+}
+
+.osp-login-gateway-page .osp-login-submit:hover::after {
+  transform: translateX(120%);
+}
+
+.osp-login-gateway-page .osp-login-submit:active {
+  transform: translateY(0) scale(0.996) !important;
+}
+
+/* Helper row */
+.osp-login-gateway-page .osp-login-helper-row {
+  align-items: center;
+}
+
+.osp-login-gateway-page .osp-login-helper-row a {
+  color: #013863 !important;
+  text-decoration: none !important;
+}
+
+.osp-login-gateway-page .osp-login-helper-row a:hover {
+  color: #0596a5 !important;
+}
+
+/* Link strip — make stakeholder paths feel premium but not noisy */
+.osp-login-gateway-page .osp-login-link-strip a {
+  min-height: 44px !important;
+  border-color: rgba(5, 150, 165, 0.16) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.78), transparent 36%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.90), rgba(234, 251, 250, 0.78)) !important;
+  box-shadow:
+    0 14px 30px rgba(1, 56, 99, 0.075),
+    0 1px 0 rgba(255, 255, 255, 0.84) inset !important;
+}
+
+.osp-login-gateway-page .osp-login-link-strip a:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(5, 150, 165, 0.30) !important;
+  box-shadow:
+    0 20px 40px rgba(1, 56, 99, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.92) inset !important;
+}
+
+/* Global focus ring for auth gateway */
+.osp-login-gateway-page a:focus-visible,
+.osp-login-gateway-page button:focus-visible,
+.osp-login-gateway-page input:focus-visible {
+  outline: 3px solid rgba(255, 211, 107, 0.56);
+  outline-offset: 4px;
+}
+
+/* Session state */
+.osp-login-gateway-page .osp-login-session-card h2 {
+  color: #082f53 !important;
+}
+
+.osp-login-gateway-page .osp-login-primary-button {
+  background:
+    linear-gradient(135deg, #f3ae26 0%, #ffd36b 50%, #f6aa16 100%) !important;
+  color: #061f38 !important;
+  border-color: rgba(255, 211, 107, 0.66) !important;
+}
+
+.osp-login-gateway-page .osp-login-secondary-button {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(234, 251, 250, 0.84)) !important;
+  color: #0b2442 !important;
+}
+
+/* Avoid old login card height issues and preserve footer spacing */
+.osp-login-gateway-page .osp-login-gateway-hero + .osp-public-footer {
+  margin-top: 0 !important;
+}
+
+/* Mobile compaction */
+@media (max-width: 640px) {
+  .osp-login-gateway-page .osp-login-gateway-hero {
+    padding: 56px 0 54px !important;
+  }
+
+  .osp-login-gateway-page .osp-login-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .osp-login-gateway-page .osp-login-submit:hover,
+  .osp-login-gateway-page .osp-login-link-strip a:hover,
+  .osp-login-gateway-page .osp-login-social-button:hover {
+    transform: translateY(-2px) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .osp-login-gateway-page .osp-login-card,
+  .osp-login-gateway-page .osp-login-submit,
+  .osp-login-gateway-page .osp-login-link-strip a,
+  .osp-login-gateway-page .osp-login-social-button,
+  .osp-login-gateway-page .osp-login-show-password {
+    transition: none !important;
+  }
+
+  .osp-login-gateway-page .osp-login-card:hover,
+  .osp-login-gateway-page .osp-login-submit:hover,
+  .osp-login-gateway-page .osp-login-link-strip a:hover,
+  .osp-login-gateway-page .osp-login-social-button:hover,
+  .osp-login-gateway-page .osp-login-show-password:hover {
+    transform: none !important;
+  }
+}
+
+/* OSP-SIGN-IN-AUTH-GATEWAY-EYELEVEL-HARDENING-01C END */
+
+
+/* OSP-SIGN-IN-AUTH-GATEWAY-FINAL-SUPER-PREMIUM-01D START */
+
+/* Final public-auth composition: premium, compact, stable */
+.osp-login-gateway-page .osp-login-gateway-hero {
+  min-height: calc(100vh - 96px);
+  display: flex;
+  align-items: center;
+}
+
+/* Ultra-hard contrast lock against old login/page CSS inheritance */
+.osp-login-gateway-page .osp-login-gateway-copy h1,
+.osp-login-gateway-page .osp-login-gateway-hero h1 {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.osp-login-gateway-page .osp-login-gateway-copy p,
+.osp-login-gateway-page .osp-login-gateway-copy span,
+.osp-login-gateway-page .osp-login-gateway-copy strong {
+  opacity: 1 !important;
+}
+
+/* Refined premium left column */
+.osp-login-gateway-page .osp-login-gateway-copy {
+  transform: translateY(-2px);
+}
+
+.osp-login-gateway-page .osp-login-gateway-lead {
+  max-width: 560px !important;
+}
+
+/* Add subtle executive glow to login card without making it noisy */
+.osp-login-gateway-page .osp-login-card {
+  isolation: isolate;
+}
+
+.osp-login-gateway-page .osp-login-card::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border-radius: 24px;
+  border: 1px solid rgba(5, 150, 165, 0.055);
+  background:
+    radial-gradient(circle at 16% 0%, rgba(255,255,255,0.30), transparent 36%),
+    radial-gradient(circle at 96% 6%, rgba(5,150,165,0.045), transparent 30%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.osp-login-gateway-page .osp-login-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Make the social providers feel clearly clickable but still honest pending rollout */
+.osp-login-gateway-page .osp-login-social-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.osp-login-gateway-page .osp-login-social-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.22) 35%, transparent 62%);
+  transform: translateX(-120%);
+  transition: transform 420ms ease;
+  pointer-events: none;
+}
+
+.osp-login-gateway-page .osp-login-social-button:hover::after {
+  transform: translateX(120%);
+}
+
+.osp-login-gateway-page .osp-login-social-button small {
+  letter-spacing: -0.005em;
+}
+
+/* Premium divider */
+.osp-login-gateway-page .osp-login-divider {
+  margin: 20px 0 16px !important;
+}
+
+.osp-login-gateway-page .osp-login-divider span {
+  color: #60769c !important;
+}
+
+/* Primary CTA must be the strongest action on the card */
+.osp-login-gateway-page .osp-login-submit {
+  margin-top: 2px;
+  letter-spacing: -0.015em;
+}
+
+.osp-login-gateway-page .osp-login-submit:focus-visible,
+.osp-login-gateway-page .osp-login-primary-button:focus-visible,
+.osp-login-gateway-page .osp-login-secondary-button:focus-visible {
+  outline: 3px solid rgba(255, 211, 107, 0.62) !important;
+  outline-offset: 4px !important;
+}
+
+/* Helper row: clean, not cramped */
+.osp-login-gateway-page .osp-login-helper-row {
+  margin-top: 16px !important;
+  padding: 0 2px;
+}
+
+.osp-login-gateway-page .osp-login-helper-row span {
+  color: #7890b1 !important;
+}
+
+/* Stakeholder helper links: premium micro-cards */
+.osp-login-gateway-page .osp-login-link-strip {
+  margin-top: 20px !important;
+}
+
+.osp-login-gateway-page .osp-login-link-strip a {
+  position: relative;
+  overflow: hidden;
+  letter-spacing: -0.015em;
+}
+
+.osp-login-gateway-page .osp-login-link-strip a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,0.82),
+      rgba(5,150,165,0.15),
+      rgba(243,174,38,0.10)
+    );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.78;
+  transition: opacity 200ms ease;
+}
+
+.osp-login-gateway-page .osp-login-link-strip a:hover::before {
+  opacity: 1;
+}
+
+/* Password reveal button: stronger tap target */
+.osp-login-gateway-page .osp-login-show-password {
+  min-width: 62px !important;
+  font-weight: 950 !important;
+}
+
+/* Field inputs: prevent washed-out text */
+.osp-login-gateway-page .osp-login-field input,
+.osp-login-gateway-page .osp-login-password-wrap input {
+  caret-color: #0596a5;
+}
+
+.osp-login-gateway-page .osp-login-field input::placeholder {
+  color: rgba(80, 102, 139, 0.76) !important;
+  font-weight: 760 !important;
+}
+
+/* Session state remains premium if user is already signed in */
+.osp-login-gateway-page .osp-login-session-summary {
+  box-shadow:
+    0 16px 34px rgba(1,56,99,0.08),
+    0 1px 0 rgba(255,255,255,0.88) inset !important;
+}
+
+.osp-login-gateway-page .osp-login-action-row {
+  margin-top: 18px;
+}
+
+/* Footer transition: no awkward hard cut */
+.osp-login-gateway-page .osp-public-footer {
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Mobile: keep form above fold and avoid oversized hero copy */
+@media (max-width: 980px) {
+  .osp-login-gateway-page .osp-login-gateway-hero {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .osp-login-gateway-page .osp-login-gateway-hero {
+    padding: 46px 0 48px !important;
+  }
+
+  .osp-login-gateway-page .osp-login-gateway-copy {
+    transform: none;
+  }
+
+  .osp-login-gateway-page .osp-login-gateway-copy h1 {
+    font-size: clamp(2.08rem, 11vw, 3.18rem) !important;
+    line-height: 0.98 !important;
+  }
+
+  .osp-login-gateway-page .osp-login-gateway-lead {
+    margin-top: 16px !important;
+    font-size: 0.98rem !important;
+  }
+
+  .osp-login-gateway-page .osp-login-gateway-chips {
+    margin-top: 18px !important;
+  }
+
+  .osp-login-gateway-page .osp-login-gateway-trust {
+    margin-top: 18px !important;
+  }
+
+  .osp-login-gateway-page .osp-login-card {
+    padding: 18px !important;
+  }
+
+  .osp-login-gateway-page .osp-login-card h2 {
+    font-size: clamp(1.62rem, 8vw, 2.22rem) !important;
+  }
+
+  .osp-login-gateway-page .osp-login-social-button {
+    min-height: 56px !important;
+  }
+
+  .osp-login-gateway-page .osp-login-social-button small {
+    font-size: 0.74rem !important;
+  }
+}
+
+/* OSP-SIGN-IN-AUTH-GATEWAY-FINAL-SUPER-PREMIUM-01D END */
+
