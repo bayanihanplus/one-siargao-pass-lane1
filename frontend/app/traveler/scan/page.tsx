@@ -18,6 +18,54 @@ type DetectedQr = {
   rawValue: string;
 };
 
+
+// OSP_SCAN_HARDENING_01A
+const ospScanShellStyle = {
+  minHeight: "100svh",
+  background:
+    "radial-gradient(circle at 50% 0%, rgba(14, 165, 170, 0.20), transparent 34%), linear-gradient(180deg, #effdfa 0%, #f8fffd 52%, #fffaf0 100%)",
+  color: "#082f49",
+};
+
+const ospScannerCardStyle = {
+  background:
+    "linear-gradient(180deg, rgba(3, 58, 92, 0.98) 0%, rgba(2, 44, 72, 0.98) 100%)",
+  border: "1px solid rgba(255,255,255,0.16)",
+  boxShadow:
+    "0 28px 80px rgba(2, 44, 72, 0.26), inset 0 1px 0 rgba(255,255,255,0.12)",
+};
+
+const ospScanReadableTextStyle = {
+  color: "rgba(255,255,255,0.92)",
+  textShadow: "0 1px 2px rgba(0,0,0,0.22)",
+};
+
+const ospScanHeadlineStyle = {
+  color: "#ffffff",
+  fontWeight: 850,
+  letterSpacing: "-0.03em",
+  textShadow: "0 1px 3px rgba(0,0,0,0.28)",
+};
+
+const ospScanMutedTextStyle = {
+  color: "rgba(255,255,255,0.78)",
+  textShadow: "0 1px 2px rgba(0,0,0,0.22)",
+};
+
+const ospScanGoldButtonStyle = {
+  background: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+  color: "#082f49",
+  boxShadow: "0 12px 28px rgba(245, 158, 11, 0.28)",
+};
+
+const ospScanPrimaryButtonStyle = {
+  background: "linear-gradient(135deg, #0891b2 0%, #0f766e 100%)",
+  color: "#ffffff",
+  boxShadow: "0 14px 30px rgba(8, 145, 178, 0.24)",
+};
+
+
+
 export default function TravelerScanPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -371,7 +419,7 @@ export default function TravelerScanPage() {
                         letterSpacing: "-0.025em",
                       }}
                     >
-                      Camera permission needed
+                      Camera access needed
                     </p>
                     <p
                       style={{
@@ -383,7 +431,7 @@ export default function TravelerScanPage() {
                         maxWidth: 260,
                       }}
                     >
-                      Allow camera access to scan a supported OSP QR point.
+                      Allow camera access for this live domain, then start the OSP QR reader.
                     </p>
                     <button
                       type="button"
@@ -593,7 +641,7 @@ export default function TravelerScanPage() {
                     textShadow: "0 2px 14px rgba(0,46,82,0.55)",
                   }}
                 >
-                  {uploadedImageName ? `Uploaded: ${uploadedImageName}` : "Align a QR code inside the square."}
+                  {uploadedImageName ? `Uploaded: ${uploadedImageName}` : "Align an OSP QR code inside the square."}
                 </p>
               )}
 
