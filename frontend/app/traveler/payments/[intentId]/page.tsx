@@ -784,7 +784,7 @@ function AccommodationPaymentGatewayPreview({ preview, paymentStatus }: { previe
   }
 
   return (
-    <main
+    <main className="osp-traveler-bottom-tab-safe-page"
       style={{
         minHeight: "100vh",
         background:

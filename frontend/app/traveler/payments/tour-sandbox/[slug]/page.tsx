@@ -134,7 +134,7 @@ export default function TourSandboxPaymentPage({
       ];
 
   return (
-    <main
+    <main className="osp-traveler-bottom-tab-safe-page"
       style={{
         minHeight: "100vh",
         background:

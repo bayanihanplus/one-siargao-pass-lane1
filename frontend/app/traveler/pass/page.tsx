@@ -252,7 +252,7 @@ function ActionCard({
 export default function TravelerPassPage() {
   return (
     <main
-      className="osp-pass-surface-hardening-18d"
+      className="osp-pass-surface-hardening-18d osp-traveler-bottom-tab-safe-page"
       style={{
         minHeight: "100vh",
         background:

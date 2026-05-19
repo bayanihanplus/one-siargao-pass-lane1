@@ -461,7 +461,7 @@ export default async function ToursMarketplacePage() {
   const visibleMarketplaceCards = marketplaceCards.slice(0, 12);
 
   return (
-    <main
+    <main className="osp-traveler-bottom-tab-safe-page"
       data-osp-traveler-surface="true"
       style={{
         minHeight: "100vh",

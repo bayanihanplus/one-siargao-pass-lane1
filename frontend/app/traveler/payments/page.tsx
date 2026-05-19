@@ -173,7 +173,7 @@ export default async function TravelerPaymentsPage({ searchParams }: TravelerPay
     const checkoutHref = `/traveler/payments/tour_sandbox_${routeProduct}?${checkoutParams.toString()}`;
 
     return (
-      <main
+      <main className="osp-traveler-bottom-tab-safe-page"
         style={{
           minHeight: "100vh",
           background:

@@ -260,7 +260,7 @@ function Heading({ children }: { children: React.ReactNode }) {
 
 export default function GeneralLunaIslandHoppingExplorePage() {
   return (
-    <main
+    <main className="osp-traveler-bottom-tab-safe-page"
       style={{
         minHeight: "100vh",
         background:

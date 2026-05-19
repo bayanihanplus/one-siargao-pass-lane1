@@ -168,10 +168,10 @@ function getFeaturedServiceCardMediaUrl(service: FeaturedService) {
 
 function getFeaturedServiceCardCta(service: FeaturedService) {
   if (service.slug && LOCKED_TOUR_POSTER_BY_SLUG[service.slug]) {
-    return service.ctaLabel || "View Trip Options";
+    return service.ctaLabel || "View route options";
   }
 
-  return service.ctaLabel || "View details";
+  return service.ctaLabel || "View trusted details";
 }
 
 
@@ -191,9 +191,9 @@ const LOCKED_FEATURED_VERIFIED_ROUTE_CARDS: FeaturedService[] = [
     operatorLabel: "Approved local fulfillment",
     availabilityLabel: "Choose route",
     urgencyLabel: "Clear port + fees",
-    bookingModeLabel: "View Trip Options",
+    bookingModeLabel: "View route options",
     pricingReady: false,
-    ctaLabel: "View Trip Options",
+    ctaLabel: "View route options",
     routeProductCode: "GENERAL_LUNA_ROUTE_GROUP",
     portCode: "GENERAL_LUNA_PORT",
     pricingMode: "Route options before payment",
@@ -216,9 +216,9 @@ const LOCKED_FEATURED_VERIFIED_ROUTE_CARDS: FeaturedService[] = [
     operatorLabel: "Del Carmen route context",
     availabilityLabel: "Choose route",
     urgencyLabel: "Published route prices",
-    bookingModeLabel: "View Trip Options",
+    bookingModeLabel: "View route options",
     pricingReady: false,
-    ctaLabel: "View Trip Options",
+    ctaLabel: "View route options",
     routeProductCode: "DEL_CARMEN_ROUTE_GROUP",
     portCode: "DEL_CARMEN_PORT",
     pricingMode: "Published route price + entrance fee",
@@ -241,9 +241,9 @@ const LOCKED_FEATURED_VERIFIED_ROUTE_CARDS: FeaturedService[] = [
     operatorLabel: "Dapa / Socorro route context",
     availabilityLabel: "Request first",
     urgencyLabel: "Confirmed before payment",
-    bookingModeLabel: "View Trip Options",
+    bookingModeLabel: "View route options",
     pricingReady: false,
-    ctaLabel: "View Trip Options",
+    ctaLabel: "View route options",
     routeProductCode: "BUCAS_SOHOTON_ROUTE_GROUP",
     portCode: "DAPA_PORT",
     pricingMode: "Request-to-confirm",
@@ -447,17 +447,17 @@ function formatBookingModeLabel(mode?: string) {
   if (value === "REQUEST_TO_CONFIRM") return "Request to confirm";
   if (value === "INSTANT_BOOKING") return "Instant booking";
 
-  return "View details";
+  return "View trusted details";
 }
 
 function getFeaturedCtaLabel(service: MarketplaceService) {
   const ctaMode = String(service.booking?.ctaMode || "").toUpperCase();
 
-  if (ctaMode === "START_ISLAND_HOPPING_REQUEST") return "View regulated details";
+  if (ctaMode === "START_ISLAND_HOPPING_REQUEST") return "View regulated route";
   if (ctaMode === "REQUEST_AVAILABILITY") return "Request availability";
   if (ctaMode === "ADD_TO_TRAIL") return "Add to trail";
 
-  return "View details";
+  return "View trusted details";
 }
 
 function getGovernanceSummary(service: MarketplaceService) {
@@ -606,7 +606,7 @@ const fallbackFeaturedServices: FeaturedService[] = [
     category: "Food & Culture",
     title: "Food & Culture",
     body: "Cafés, restaurants, local food, and curated island stops.",
-    price: "View spots",
+    price: "View trusted spots",
     href: "/traveler/explore/food-culture",
     tags: ["Curated", "Local discovery"],
     tone: "trail",
@@ -639,6 +639,26 @@ const fallbackFeaturedServices: FeaturedService[] = [
 ];
 
 const categories = [
+  {
+    category: "Transport",
+    title: "Transport",
+    body: "Pickup, drop-off, and local movement support from approved local partners.",
+    price: "Request to confirm",
+    href: "/traveler/explore/transport",
+    tags: ["Transport", "Pickup", "Partner supported"],
+    tone: "ocean",
+    sourceLabel: "Partner-supported",
+    visualBackground: softCardSurfaces.aqua,
+    mediaUrl: "/osp/explore/rentals/private-transport.png",
+    mediaTruth: "OSP transport lane asset",
+    operatorLabel: "Approved local transport support",
+    availabilityLabel: "Request confirmation",
+    urgencyLabel: "TRANSPORT_SUPPORT_READY",
+    bookingModeLabel: "Request support",
+    pricingReady: false,
+    ctaLabel: "View transport options",
+  },
+
   { label: "Siargao Tour Operators", href: "/traveler/explore/stays", icon: "🚐" },
   { label: "Rentals", href: "/traveler/explore/rentals", icon: "🛵" },
   { label: "Surfing Schools", href: "/traveler/explore/surf-schools", icon: "🏄" },
@@ -710,7 +730,7 @@ type ExploreSearchParams = {
 
 const filterOptions = [
   { label: "All", href: "/traveler/explore", value: "ALL", dictionaryKey: "explore.filters.all" },
-  { label: "Stays", href: "/traveler/explore/stays", value: "STAYS", dictionaryKey: "explore.filters.stays" },
+  { label: "Trusted Stays", href: "/traveler/explore/stays", value: "STAYS", dictionaryKey: "explore.filters.stays" },
   { label: "Tours", href: "/traveler/explore/tours", value: "TOURS", dictionaryKey: "explore.filters.tours" },
   { label: "Rentals", href: "/traveler/explore/rentals", value: "RENTALS", dictionaryKey: "explore.filters.rentals" },
   { label: "Surf", href: "/traveler/explore/surf-schools", value: "SURF", dictionaryKey: "explore.filters.surf" },
@@ -774,6 +794,24 @@ function compactFeaturedText(value: string, max = 42) {
   const clean = String(value || "").replace(/\s+/g, " ").trim();
   if (clean.length <= max) return clean;
   return `${clean.slice(0, max - 1).trim()}…`;
+}
+
+
+// OSP_EXPLORE_NUCLEAR_TRUST_11A
+const ospExploreNuclearTrustBadges = [
+  "Verified route",
+  "Pass-ready",
+  "Bookable",
+];
+
+function OspExploreNuclearTrustRail() {
+  return (
+    <div className="osp-explore-nuclear-trust-rail" aria-label="OSP trusted route signals">
+      {ospExploreNuclearTrustBadges.map((badge) => (
+        <span key={badge}>{badge}</span>
+      ))}
+    </div>
+  );
 }
 
 function Header({ dictionary }: { dictionary: TravelerDictionary }) {
@@ -868,7 +906,7 @@ function Header({ dictionary }: { dictionary: TravelerDictionary }) {
           textAlign: "center",
         }}
       >
-        {tr(dictionary, "explore.header.body", "Find trusted routes, stays, and local services.")}
+        {tr(dictionary, "explore.header.body", "Trusted routes, stays, tours, and pass-ready services.")}
       </p>
     </header>
   );
@@ -922,7 +960,7 @@ function SearchRow({
           <input
             name="q"
             defaultValue={q}
-            placeholder={tr(dictionary, "explore.search.placeholder", "Search Siargao…")}
+            placeholder="Find trusted routes and services…"
             style={{
               width: "100%",
               border: 0,
@@ -937,7 +975,7 @@ function SearchRow({
 
           <button
             type="submit"
-            aria-label={tr(dictionary, "explore.search.aria", "Search Explore Siargao")}
+            aria-label="Find trusted routes and services"
             style={{
               minHeight: 34,
               borderRadius: 14,
@@ -1013,7 +1051,7 @@ function SearchRow({
 function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
   const actions = [
     {
-      label: "Passport Trails",
+      label: "Official Trails",
       labelKey: "explore.primary.passportTrails",
       note: "Routes",
       noteKey: "explore.primary.routes",
@@ -1035,7 +1073,7 @@ function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
       mediaUrl: "/osp/explore/top-discovery/verified-tours.png",
     },
     {
-      label: "Stays",
+      label: "Trusted Stays",
       labelKey: "explore.primary.stays",
       note: "Places",
       noteKey: "explore.primary.places",
@@ -1048,7 +1086,7 @@ function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
   ];
 
   return (
-    <section style={{ display: "grid", gap: 9 }}>
+    <section className="osp-explore-hero-section-11c osp-explore-hero-section-11d osp-explore-hero-section-11e" style={{ display: "grid", gap: 9 }}>
       <div
         style={{
           borderRadius: 24,
@@ -1090,8 +1128,9 @@ function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
             textShadow: "0 5px 18px rgba(0,0,0,0.70)",
           }}
         >
-          {tr(dictionary, "explore.hero.title", "Discover Siargao your way")}
+          Discover Siargao with trusted local routes
         </h2>
+          <OspExploreNuclearTrustRail />
       </div>
 
       <div
@@ -1190,7 +1229,7 @@ function LaneGrid({ dictionary }: { dictionary: TravelerDictionary }) {
   ];
 
   return (
-    <section style={{ display: "grid", gap: 8 }}>
+    <section className="osp-explore-lane-section-11c osp-explore-lane-section-11d osp-explore-lane-section-11e" style={{ display: "grid", gap: 8 }}>
       <div style={{ display: "flex", alignItems: "end", justifyContent: "space-between", gap: 10 }}>
         <h2 style={{ margin: 0, color: "#013863", fontSize: 18.5, lineHeight: 1.05, letterSpacing: "-0.02em" }}>
           {tr(dictionary, "explore.lanes.title", "Explore by lane")}
@@ -1267,6 +1306,23 @@ function LaneGrid({ dictionary }: { dictionary: TravelerDictionary }) {
   );
 }
 
+
+// OSP_EXPLORE_FEATURED_SERVICE_READINESS_11B
+function OspFeaturedServiceReadinessChips({ service }: { service: FeaturedService }) {
+  const chips = [
+    service.pricingReady ? "Pricing ready" : service.pricingMode === "REQUEST_TO_CONFIRM" ? "Request confirmation" : "Verified service",
+    service.availabilityLabel || service.bookingModeLabel || "Pass-ready",
+  ].filter(Boolean).slice(0, 2);
+
+  return (
+    <div className="osp-explore-featured-readiness-chips" aria-label="Service readiness">
+      {chips.map((chip) => (
+        <span key={chip}>{chip}</span>
+      ))}
+    </div>
+  );
+}
+
 function FeaturedServices({
   services,
   marketplaceMode,
@@ -1279,7 +1335,7 @@ function FeaturedServices({
   const displayServices = getFeaturedVerifiedServicesForDisplay(services);
 
   return (
-    <section style={{ display: "grid", gap: 8 }}>
+    <section className="osp-explore-featured-section-11c osp-explore-featured-section-11d osp-explore-featured-section-11e" style={{ display: "grid", gap: 8 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", gap: 10 }}>
         <h2 style={{ margin: 0, color: "#013863", fontSize: 19.5, lineHeight: 1.04, letterSpacing: "-0.025em" }}>
           {tr(dictionary, "explore.featured.title", "Featured verified services")}
@@ -1398,7 +1454,7 @@ function FeaturedServices({
                     fontWeight: 950,
                   }}
                 >
-                  {tr(dictionary, "explore.cards.cta", "View")}
+                  {getFeaturedServiceCardCta(service)}
                 </span>
               </div>
             </Link>
@@ -1409,122 +1465,128 @@ function FeaturedServices({
   );
 }
 
-function MoreWaysToExplore({ services, dictionary }: { services: FeaturedService[]; dictionary: TravelerDictionary }) {
-  if (!services.length) return null;
+function getMoreWaysIdentityIcon(service: FeaturedService) {
+  const title = `${service.title} ${service.category}`.toLowerCase();
 
-  const shortcuts: Array<{ title: string; titleKey?: string; href: string; icon: string; surface: string; mediaUrl?: string | null }> = [
-    ...services.slice(0, 5).map((service) => {
-      const title = service.title;
-      const key = title.toLowerCase();
-      const icon = key.includes("rental") ? "🛵" : key.includes("surf") ? "🏄" : key.includes("food") ? "🍽️" : key.includes("beauty") || key.includes("health") ? "✨" : "🧭";
-      const surface = key.includes("rental")
-        ? softCardSurfaces.aqua
-        : key.includes("surf")
-          ? softCardSurfaces.blue
-          : key.includes("food")
-            ? softCardSurfaces.sand
-            : key.includes("beauty") || key.includes("health")
-              ? softCardSurfaces.gold
-              : softCardSurfaces.pearl;
-      const mediaUrl = key.includes("cloud 9")
-        ? "/osp/explore/more-ways/cloud-9-site-access.png"
-        : key.includes("tour operators")
-          ? "/osp/explore/more-ways/siargao-tour-operators.png"
-          : key.includes("rental")
-            ? "/osp/explore/more-ways/rentals.png"
-            : key.includes("surf")
-              ? "/osp/explore/more-ways/surfing-schools.png"
-              : key.includes("food")
-                ? "/osp/explore/more-ways/food-culture.png"
-                : null;
-      return { title, href: getFeaturedServiceCardHref(service), icon, surface, mediaUrl };
-    }),
-    {
-      title: "Site Access",
-      titleKey: "explore.moreWays.siteAccess",
-      href: "/traveler/site-access/cloud-9",
-      icon: "🎟️",
-      surface: softCardSurfaces.mist,
-      mediaUrl: "/osp/explore/more-ways/site-access.png",
-    },
-  ];
+  if (title.includes("tour")) return "🌴";
+  if (title.includes("rental")) return "🛵";
+  if (title.includes("transport") || title.includes("pickup") || title.includes("drop-off") || title.includes("transfer")) return "🚐";
+  if (title.includes("surf")) return "〰️";
+  if (title.includes("food") || title.includes("culture")) return "◐";
+  if (title.includes("beauty") || title.includes("health") || title.includes("care")) return "✦";
+  if (title.includes("site") || title.includes("access")) return "▣";
+
+  return "•";
+}
+
+function getMoreWaysMediaUrl(service: FeaturedService) {
+  const key = `${service.title} ${service.category} ${service.href}`.toLowerCase();
+
+  if (key.includes("tour operator") || key.includes("operators") || key.includes("/tours")) {
+    return "/osp/explore/more-ways/siargao-tour-operators.png";
+  }
+
+  if (key.includes("rental")) {
+    return "/osp/explore/more-ways/rentals.png";
+  }
+
+  if (key.includes("transport") || key.includes("pickup") || key.includes("drop-off") || key.includes("transfer")) {
+    return "/osp/explore/rentals/private-transport.png";
+  }
+
+  if (key.includes("surf")) {
+    return "/osp/explore/more-ways/surfing-schools.png";
+  }
+
+  if (key.includes("food") || key.includes("culture")) {
+    return "/osp/explore/more-ways/food-culture.png";
+  }
+
+  if (key.includes("beauty") || key.includes("health") || key.includes("care")) {
+    return "/osp/explore/by-lane/care.png";
+  }
+
+  if (key.includes("site") || key.includes("access") || key.includes("cloud")) {
+    return "/osp/explore/more-ways/site-access.png";
+  }
+
+  return getFeaturedServiceCardMediaUrl(service);
+}
+
+
+function MoreWaysToExplore({ services, dictionary }: { services: FeaturedService[]; dictionary: TravelerDictionary }) {
+  const transportMoreWaysService: FeaturedService = {
+    category: "Transport",
+    title: "Transport",
+    body: "Pickup, drop-off, and local movement support from approved local partners.",
+    price: "Request to confirm",
+    href: "/traveler/explore/transport",
+    tags: ["Transport", "Pickup", "Partner supported"],
+    tone: "ocean",
+    sourceLabel: "Partner-supported",
+    visualBackground: softCardSurfaces.aqua,
+    mediaUrl: "/osp/explore/rentals/private-transport.png",
+    mediaTruth: "OSP transport lane asset",
+    operatorLabel: "Approved local transport support",
+    availabilityLabel: "Request confirmation",
+    urgencyLabel: "TRANSPORT_SUPPORT_READY",
+    bookingModeLabel: "Request support",
+    pricingReady: false,
+    ctaLabel: "View transport options",
+  };
+
+  const baseServices = services
+    .filter((service) => !`${service.title} ${service.category} ${service.href}`.toLowerCase().includes("transport"))
+    .slice(0, 5);
+
+  const displayedServices = [...baseServices, transportMoreWaysService];
+
+  if (!displayedServices.length) {
+    return null;
+  }
 
   return (
-    <section style={{ display: "grid", gap: 8 }}>
-      <h2 style={{ margin: 0, color: "#013863", fontSize: 18.2, lineHeight: 1.05, letterSpacing: "-0.02em" }}>
-        {tr(dictionary, "explore.moreWays.title", "More ways to explore")}
-      </h2>
+    <section className="osp-explore-more-ways-section-11g" aria-label="More trusted ways to explore">
+      <div className="osp-explore-section-heading-11g">
+        <h2>More trusted ways to explore</h2>
+      </div>
 
-      <div
-        aria-label="More Explore shortcuts"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-          gap: 8,
-        }}
-      >
-        {shortcuts.map((service) => (
-          <Link
-            key={service.title}
-            href={service.href}
-            style={{
-              minHeight: 78,
-              borderRadius: 18,
-              background: service.mediaUrl ? "#013863" : service.surface,
-              backgroundImage: service.mediaUrl
-                ? `linear-gradient(180deg, rgba(1,56,99,0.04), rgba(1,56,99,0.72)), url(${service.mediaUrl})`
-                : undefined,
-              backgroundSize: service.mediaUrl ? "cover" : undefined,
-              backgroundPosition: service.mediaUrl ? "center" : undefined,
-              border: service.mediaUrl ? "1px solid rgba(255,255,255,0.28)" : "1px solid rgba(5,150,165,0.13)",
-              boxShadow: service.mediaUrl ? "0 14px 28px rgba(1,56,99,0.18)" : premiumCardShadow.soft,
-              color: service.mediaUrl ? "#ffffff" : "#013863",
-              textDecoration: "none",
-              padding: 10,
-              display: "grid",
-              gridTemplateColumns: "28px 1fr",
-              gap: 8,
-              alignItems: "center",
-              overflow: "hidden",
-              textShadow: service.mediaUrl ? "0 2px 10px rgba(0,0,0,0.62)" : "none",
-              ...premiumTapStyle,
-            }}
-          >
-            <span
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 12,
-                display: "grid",
-                placeItems: "center",
-                background: service.mediaUrl ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.72)",
-                boxShadow: service.mediaUrl ? "0 8px 18px rgba(0,0,0,0.22)" : "0 6px 14px rgba(1,56,99,0.045)",
-                fontSize: 15,
-              }}
+      <div className="osp-more-ways-grid-11g">
+        {displayedServices.map((service) => {
+          const mediaUrl = getMoreWaysMediaUrl(service);
+          const label = service.titleKey ? tr(dictionary, service.titleKey, service.title) : service.title;
+
+          return (
+            <Link
+              key={`${service.href}-${service.title}`}
+              href={service.href}
+              className="osp-more-ways-card-11g"
+              style={premiumTapStyle}
             >
-              {service.icon}
-            </span>
-            <strong
-              style={{
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-                fontSize: 11.5,
-                lineHeight: 1.08,
-                fontWeight: 950,
-                color: service.mediaUrl ? "#ffffff" : "inherit",
-                WebkitTextFillColor: service.mediaUrl ? "#ffffff" : "inherit",
-              }}
-            >
-              {service.title}
-            </strong>
-          </Link>
-        ))}
+              {mediaUrl ? (
+                <img src={mediaUrl} alt="" className="osp-more-ways-media-11g" />
+              ) : (
+                <div className="osp-more-ways-media-fallback-11g" />
+              )}
+
+              <span className="osp-more-ways-overlay-11g" aria-hidden="true" />
+
+              <span className="osp-more-ways-label-cluster-11g">
+                <span className="osp-more-ways-icon-11g" aria-hidden="true">
+                  {getMoreWaysIdentityIcon(service)}
+                </span>
+                <span className="osp-more-ways-label-11g">
+                  {label}
+                </span>
+              </span>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
 }
+
 
 export default async function TravelerExplorePage({
   searchParams,
@@ -1555,7 +1617,7 @@ export default async function TravelerExplorePage({
   ).slice(0, 5);
 
   return (
-    <main
+    <main className="osp-traveler-explore-premium-page osp-traveler-bottom-tab-safe-page"
       style={{
         maxWidth: 430,
         margin: "0 auto",
@@ -1572,8 +1634,9 @@ export default async function TravelerExplorePage({
         <Header dictionary={dictionary} />
         <SearchRow q={q} category={category} dictionary={dictionary} />
         <HeroCard dictionary={dictionary} />
-        <LaneGrid dictionary={dictionary} />
         <FeaturedServices services={backendFeaturedServices} marketplaceMode={marketplace.mode} dictionary={dictionary} />
+
+        <LaneGrid dictionary={dictionary} />
         <MoreWaysToExplore services={previewExploreServices} dictionary={dictionary} />
       </div>
 
@@ -1581,3 +1644,29 @@ export default async function TravelerExplorePage({
     </main>
   );
 }
+
+// OSP_EXPLORE_NUCLEAR_TRUST_COPY_11A_COMPLETE
+
+// OSP_EXPLORE_VISUAL_DISCIPLINE_11B_COMPLETE
+
+// OSP_EXPLORE_ICON_GEOMETRY_DISCIPLINE_11C_COMPLETE
+
+// OSP_EXPLORE_MORE_WAYS_LABEL_REPAIR_11D_COMPLETE
+
+// OSP_EXPLORE_CARD_IDENTITY_CLUSTER_11E_COMPLETE
+
+// OSP_EXPLORE_MORE_WAYS_IDENTITY_REPAIR_11F_COMPLETE
+
+// OSP_EXPLORE_MORE_WAYS_JSX_LABEL_FIX_11G_COMPLETE
+
+// OSP_EXPLORE_MORE_WAYS_MEDIA_RESTORE_11H_COMPLETE
+
+// OSP_EXPLORE_MORE_WAYS_MEDIA_MAP_11I_COMPLETE
+
+// OSP_EXPLORE_TRANSPORT_LANE_11L_COMPLETE
+
+// OSP_EXPLORE_TRANSPORT_MORE_WAYS_FORCE_11M_COMPLETE
+
+// OSP_EXPLORE_TRANSPORT_TONE_FIX_11M2_COMPLETE
+
+// OSP_EXPLORE_TRANSPORT_TONE_FIX_11M3_COMPLETE

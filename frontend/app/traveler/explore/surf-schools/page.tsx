@@ -529,7 +529,7 @@ export default async function SurfSchoolsExplorePage() {
   const apiCards = dedupeCards((payload.services || []).map(mapServiceToSurfCard)).slice(0, 12);
 
   return (
-    <main
+    <main className="osp-traveler-bottom-tab-safe-page"
       data-osp-traveler-surface="true"
       style={{
         minHeight: "100vh",

@@ -2032,7 +2032,7 @@ export default async function TravelerSettingsPage({
   ];
 
   return (
-    <main
+    <main className="osp-traveler-bottom-tab-safe-page"
       style={{
         maxWidth: 430,
         margin: "0 auto",

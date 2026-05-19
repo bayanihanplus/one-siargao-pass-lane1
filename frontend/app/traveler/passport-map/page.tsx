@@ -21,7 +21,7 @@ async function getSpmTravelerPreview() {
 export default async function TravelerPassportMapPage() {
   const spmPreview = await getSpmTravelerPreview();
   return (
-    <main
+    <main className="osp-traveler-bottom-tab-safe-page"
       style={{
         minHeight: "100vh",
         overflowX: "hidden",

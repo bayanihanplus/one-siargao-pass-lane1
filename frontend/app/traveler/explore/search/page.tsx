@@ -25,7 +25,7 @@ export default function ExploreSearchPage({ searchParams }: ExploreSearchPagePro
   const q = normalizeQuery(searchParams?.q);
 
   return (
-    <main
+    <main className="osp-traveler-bottom-tab-safe-page"
       style={{
         minHeight: "100vh",
         background: "linear-gradient(180deg, #effafa 0%, #ffffff 45%, #f7fbfc 100%)",

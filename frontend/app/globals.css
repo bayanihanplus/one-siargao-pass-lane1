@@ -24523,3 +24523,663 @@ body:has(.osp-public-header) {
 
 /* OSP-PUBLIC-EXPLORE-FINAL-TRUST-INTERACTION-HARDENING-01I END */
 
+
+/* OSP-TRAVELER-EXPLORE-SUPER-PREMIUM-TRUST-NUCLEAR-11A START */
+.osp-traveler-explore-premium-page {
+  padding-bottom: max(156px, env(safe-area-inset-bottom));
+}
+
+.osp-traveler-explore-premium-page a,
+.osp-traveler-explore-premium-page button {
+  border-radius: 18px !important;
+}
+
+.osp-traveler-explore-premium-page a[aria-current="page"],
+.osp-traveler-explore-premium-page button[aria-current="page"] {
+  border-radius: 20px !important;
+}
+
+.osp-traveler-explore-premium-page img {
+  border-radius: 18px;
+}
+
+.osp-explore-nuclear-trust-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+  max-width: 100%;
+}
+
+.osp-explore-nuclear-trust-rail span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 6px 9px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(8, 91, 111, 0.16);
+  color: #063b5c;
+  font-size: 9.5px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 18px rgba(2, 44, 72, 0.1);
+  backdrop-filter: blur(12px);
+}
+
+/* Refine the visible Explore page rhythm without touching global traveler nav component. */
+.osp-traveler-explore-premium-page section {
+  scroll-margin-bottom: 150px;
+}
+
+.osp-traveler-explore-premium-page h1,
+.osp-traveler-explore-premium-page h2,
+.osp-traveler-explore-premium-page h3 {
+  letter-spacing: -0.035em;
+}
+
+.osp-traveler-explore-premium-page p {
+  text-wrap: pretty;
+}
+
+/* Reduce bubble feel on compact action chips while keeping tactile tap areas. */
+.osp-traveler-explore-premium-page [role="button"],
+.osp-traveler-explore-premium-page input,
+.osp-traveler-explore-premium-page label {
+  border-radius: 16px !important;
+}
+
+@media (max-width: 430px) {
+  .osp-traveler-explore-premium-page {
+    padding-bottom: max(164px, env(safe-area-inset-bottom));
+  }
+
+  .osp-explore-nuclear-trust-rail {
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .osp-explore-nuclear-trust-rail span {
+    min-height: 22px;
+    padding: 5px 8px;
+    font-size: 8.8px;
+    border-radius: 11px;
+  }
+}
+/* OSP-TRAVELER-EXPLORE-SUPER-PREMIUM-TRUST-NUCLEAR-11A END */
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* OSP-TRAVELER-EXPLORE-MORE-WAYS-MEDIA-RESTORE-11H START */
+
+/* Keep approved page rhythm and bottom-nav spacing. */
+.osp-traveler-explore-premium-page {
+  padding-bottom: max(124px, env(safe-area-inset-bottom)) !important;
+}
+
+/* Keep mature geometry, without flattening the More Ways media cards. */
+.osp-traveler-explore-premium-page a,
+.osp-traveler-explore-premium-page button,
+.osp-traveler-explore-premium-page input {
+  border-radius: 12px !important;
+}
+
+.osp-traveler-explore-premium-page article,
+.osp-traveler-explore-premium-page section > div,
+.osp-traveler-explore-premium-page img {
+  border-radius: 14px !important;
+}
+
+/* Preserve Explore by lane: centered text remains hero, micro icon remains lower-left support. */
+.osp-explore-lane-section-11e a,
+.osp-explore-lane-section-11e article,
+.osp-explore-lane-section-11d a,
+.osp-explore-lane-section-11d article {
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: 14px !important;
+}
+
+.osp-explore-lane-section-11e a > span:first-child,
+.osp-explore-lane-section-11e article > span:first-child,
+.osp-explore-lane-section-11e a > div:first-child,
+.osp-explore-lane-section-11e article > div:first-child,
+.osp-explore-lane-section-11d a > span:first-child,
+.osp-explore-lane-section-11d article > span:first-child,
+.osp-explore-lane-section-11d a > div:first-child,
+.osp-explore-lane-section-11d article > div:first-child {
+  position: absolute !important;
+  left: 9px !important;
+  bottom: 9px !important;
+  top: auto !important;
+  right: auto !important;
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  min-height: 22px !important;
+  max-width: 22px !important;
+  max-height: 22px !important;
+  border-radius: 7px !important;
+  opacity: 0.82 !important;
+  z-index: 4 !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+
+/* More trusted ways: restore media-led premium card. */
+.osp-explore-more-ways-section-11g {
+  margin-top: 18px !important;
+}
+
+.osp-explore-section-heading-11g {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 10px !important;
+}
+
+.osp-explore-section-heading-11g h2 {
+  margin: 0 !important;
+  color: #063b5c !important;
+  font-size: 21px !important;
+  line-height: 1.05 !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.04em !important;
+}
+
+.osp-more-ways-grid-11g {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+/* Critical fix: card stays image-led, not a muted placeholder block. */
+.osp-more-ways-card-11g {
+  position: relative !important;
+  display: block !important;
+  min-height: 86px !important;
+  overflow: hidden !important;
+  border-radius: 14px !important;
+  background: #063b5c !important;
+  box-shadow: 0 16px 34px rgba(2, 44, 72, 0.12) !important;
+  text-decoration: none !important;
+  isolation: isolate !important;
+}
+
+.osp-more-ways-media-11g,
+.osp-more-ways-media-fallback-11g {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 14px !important;
+}
+
+.osp-more-ways-media-11g {
+  object-fit: cover !important;
+  opacity: 1 !important;
+  filter: saturate(1.06) contrast(1.02) brightness(0.96) !important;
+  transform: scale(1.01) !important;
+}
+
+.osp-more-ways-media-fallback-11g {
+  background:
+    radial-gradient(circle at 15% 10%, rgba(20, 184, 166, 0.20), transparent 34%),
+    linear-gradient(135deg, rgba(235, 252, 250, 0.98), rgba(255, 249, 235, 0.96)) !important;
+}
+
+/* Restore image emotion: only a subtle lower readability gradient, not full-card washout. */
+.osp-more-ways-overlay-11g {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  border-radius: 14px !important;
+  background:
+    linear-gradient(180deg, rgba(2, 44, 72, 0.02) 0%, rgba(2, 44, 72, 0.10) 48%, rgba(2, 44, 72, 0.48) 100%),
+    linear-gradient(90deg, rgba(2, 44, 72, 0.28) 0%, rgba(2, 44, 72, 0.08) 62%, rgba(2, 44, 72, 0.02) 100%) !important;
+}
+
+/* Compact lower-left identity chip: readable, not full-width bar. */
+.osp-more-ways-label-cluster-11g {
+  position: absolute !important;
+  left: 10px !important;
+  bottom: 10px !important;
+  z-index: 2 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  max-width: calc(100% - 20px) !important;
+  min-height: 24px !important;
+  padding: 5px 8px !important;
+  border-radius: 8px !important;
+  background: rgba(2, 44, 72, 0.56) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 8px 18px rgba(2, 44, 72, 0.14) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.osp-more-ways-icon-11g {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  border-radius: 6px !important;
+  color: #f8c24a !important;
+  font-size: 9px !important;
+  line-height: 1 !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+}
+
+.osp-more-ways-label-11g {
+  display: block !important;
+  color: #ffffff !important;
+  font-size: 10.5px !important;
+  font-weight: 850 !important;
+  line-height: 1.06 !important;
+  letter-spacing: -0.015em !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+/* Preserve clean Featured Services card behavior. */
+.osp-explore-featured-section-11e article,
+.osp-explore-featured-section-11e a,
+.osp-explore-featured-section-11d article,
+.osp-explore-featured-section-11d a {
+  border-radius: 14px !important;
+}
+
+.osp-explore-featured-section-11e button,
+.osp-explore-featured-section-11e a[role="button"],
+.osp-explore-featured-section-11e a[href],
+.osp-explore-featured-section-11d button,
+.osp-explore-featured-section-11d a[role="button"],
+.osp-explore-featured-section-11d a[href] {
+  border-radius: 10px !important;
+}
+
+/* Keep section rhythm stable. */
+.osp-traveler-explore-premium-page h2 {
+  margin-top: 16px !important;
+  margin-bottom: 9px !important;
+}
+
+.osp-traveler-explore-premium-page > *:last-child {
+  margin-bottom: 6px !important;
+}
+
+@media (max-width: 430px) {
+  .osp-traveler-explore-premium-page {
+    padding-bottom: max(128px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .osp-more-ways-grid-11g {
+    gap: 9px !important;
+  }
+
+  .osp-more-ways-card-11g {
+    min-height: 82px !important;
+  }
+
+  .osp-more-ways-label-cluster-11g {
+    left: 9px !important;
+    bottom: 9px !important;
+    gap: 5px !important;
+    max-width: calc(100% - 18px) !important;
+    min-height: 23px !important;
+    padding: 5px 7px !important;
+  }
+
+  .osp-more-ways-icon-11g {
+    width: 15px !important;
+    height: 15px !important;
+    min-width: 15px !important;
+    font-size: 8.5px !important;
+  }
+
+  .osp-more-ways-label-11g {
+    font-size: 10px !important;
+  }
+}
+/* OSP-TRAVELER-EXPLORE-MORE-WAYS-MEDIA-RESTORE-11H END */
+
+
+/* OSP-TRAVELER-EXPLORE-MORE-WAYS-MEDIA-MAP-11I START */
+
+/* 11I: ensure More Ways mapped media is visually dominant and not fallback-muted. */
+.osp-more-ways-card-11g {
+  background: #063b5c !important;
+}
+
+.osp-more-ways-media-11g {
+  display: block !important;
+  opacity: 1 !important;
+  z-index: 0 !important;
+  object-fit: cover !important;
+  filter: saturate(1.08) contrast(1.03) brightness(0.98) !important;
+}
+
+.osp-more-ways-media-fallback-11g {
+  z-index: 0 !important;
+}
+
+.osp-more-ways-overlay-11g {
+  z-index: 1 !important;
+  background:
+    linear-gradient(180deg, rgba(2, 44, 72, 0.00) 0%, rgba(2, 44, 72, 0.08) 50%, rgba(2, 44, 72, 0.46) 100%),
+    linear-gradient(90deg, rgba(2, 44, 72, 0.22) 0%, rgba(2, 44, 72, 0.06) 64%, rgba(2, 44, 72, 0.02) 100%) !important;
+}
+
+.osp-more-ways-label-cluster-11g {
+  z-index: 2 !important;
+}
+
+/* OSP-TRAVELER-EXPLORE-MORE-WAYS-MEDIA-MAP-11I END */
+
+/* OSP-TRAVELER-EXPLORE-MORE-WAYS-MICRO-CHIP-11J START */
+
+/* Final micro refinement: match More Ways chip scale to the rest of Explore cards. */
+.osp-more-ways-label-cluster-11g {
+  gap: 4px !important;
+  min-height: 20px !important;
+  padding: 4px 6px !important;
+  border-radius: 7px !important;
+  background: rgba(2, 44, 72, 0.50) !important;
+  box-shadow: 0 6px 14px rgba(2, 44, 72, 0.12) !important;
+}
+
+.osp-more-ways-icon-11g {
+  width: 13px !important;
+  height: 13px !important;
+  min-width: 13px !important;
+  border-radius: 5px !important;
+  font-size: 7.5px !important;
+}
+
+.osp-more-ways-label-11g {
+  font-size: 9px !important;
+  line-height: 1.05 !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.01em !important;
+}
+
+@media (max-width: 430px) {
+  .osp-more-ways-label-cluster-11g {
+    gap: 4px !important;
+    min-height: 19px !important;
+    padding: 4px 6px !important;
+    border-radius: 7px !important;
+  }
+
+  .osp-more-ways-icon-11g {
+    width: 12px !important;
+    height: 12px !important;
+    min-width: 12px !important;
+    font-size: 7px !important;
+  }
+
+  .osp-more-ways-label-11g {
+    font-size: 8.8px !important;
+  }
+}
+/* OSP-TRAVELER-EXPLORE-MORE-WAYS-MICRO-CHIP-11J END */
+
+/* OSP-TRAVELER-EXPLORE-MORE-WAYS-BOTTOM-RIGHT-CHIP-11K START */
+
+/* Final More Ways visual refinement:
+   move label chip to bottom-right so the banner image reads cleaner. */
+.osp-more-ways-label-cluster-11g {
+  left: auto !important;
+  right: 9px !important;
+  bottom: 9px !important;
+  max-width: calc(100% - 18px) !important;
+  justify-content: flex-end !important;
+  background: rgba(2, 44, 72, 0.48) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 6px 14px rgba(2, 44, 72, 0.12) !important;
+}
+
+/* Keep the identity readable but visually quieter. */
+.osp-more-ways-icon-11g {
+  opacity: 0.88 !important;
+}
+
+.osp-more-ways-label-11g {
+  text-align: right !important;
+}
+
+/* Shift the readability gradient toward the lower-right chip. */
+.osp-more-ways-overlay-11g {
+  background:
+    linear-gradient(180deg, rgba(2, 44, 72, 0.00) 0%, rgba(2, 44, 72, 0.06) 52%, rgba(2, 44, 72, 0.40) 100%),
+    linear-gradient(270deg, rgba(2, 44, 72, 0.30) 0%, rgba(2, 44, 72, 0.08) 58%, rgba(2, 44, 72, 0.02) 100%) !important;
+}
+
+@media (max-width: 430px) {
+  .osp-more-ways-label-cluster-11g {
+    right: 8px !important;
+    bottom: 8px !important;
+    max-width: calc(100% - 16px) !important;
+  }
+}
+/* OSP-TRAVELER-EXPLORE-MORE-WAYS-BOTTOM-RIGHT-CHIP-11K END */
+
+/* OSP-TRAVELER-EXPLORE-TRANSPORT-LANE-11L START */
+.osp-transport-lane-page {
+  min-height: 100vh;
+  padding: 18px 14px max(136px, env(safe-area-inset-bottom));
+  background:
+    radial-gradient(circle at 50% 0%, rgba(20, 184, 166, 0.16), transparent 34%),
+    linear-gradient(180deg, #effdfa 0%, #fffdf6 100%);
+  color: #063b5c;
+}
+
+.osp-transport-lane-shell {
+  width: min(100%, 430px);
+  margin: 0 auto;
+}
+
+.osp-transport-lane-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.osp-transport-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #063b5c;
+  text-decoration: none;
+  font-weight: 900;
+  box-shadow: 0 12px 26px rgba(2, 44, 72, 0.08);
+}
+
+.osp-transport-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 11px;
+  border-radius: 999px;
+  background: rgba(243, 174, 38, 0.16);
+  color: #8a5a00;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.075em;
+}
+
+.osp-transport-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 244px;
+  border-radius: 24px;
+  background:
+    linear-gradient(90deg, rgba(1, 56, 99, 0.92) 0%, rgba(1, 56, 99, 0.70) 52%, rgba(1, 56, 99, 0.18) 100%),
+    url("/osp/explore/rentals/private-transport.png");
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 24px 54px rgba(2, 44, 72, 0.18);
+}
+
+.osp-transport-hero-copy {
+  position: absolute;
+  left: 20px;
+  right: 18px;
+  bottom: 22px;
+  color: #ffffff;
+}
+
+.osp-transport-kicker {
+  display: block;
+  margin-bottom: 8px;
+  color: #f8c24a;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+}
+
+.osp-transport-hero h1 {
+  max-width: 330px;
+  margin: 0;
+  font-size: 30px;
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+}
+
+.osp-transport-hero p {
+  max-width: 330px;
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  line-height: 1.42;
+  font-weight: 700;
+}
+
+.osp-transport-panel,
+.osp-transport-request-card {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(8, 91, 111, 0.10);
+  box-shadow: 0 18px 40px rgba(2, 44, 72, 0.10);
+}
+
+.osp-transport-panel h2,
+.osp-transport-request-card h2 {
+  margin: 0 0 12px;
+  color: #063b5c;
+  font-size: 20px;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.osp-transport-option-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.osp-transport-option-card {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 11px;
+  align-items: start;
+  padding: 13px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(234, 251, 250, 0.98), rgba(255, 251, 235, 0.88));
+  border: 1px solid rgba(8, 91, 111, 0.10);
+}
+
+.osp-transport-option-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: rgba(5, 150, 165, 0.12);
+  font-size: 16px;
+}
+
+.osp-transport-option-card h3 {
+  margin: 0;
+  color: #063b5c;
+  font-size: 14px;
+  line-height: 1.15;
+}
+
+.osp-transport-option-card p,
+.osp-transport-request-card p {
+  margin: 6px 0 0;
+  color: rgba(6, 59, 92, 0.70);
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.osp-transport-request-card span {
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: #087f8f;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.osp-transport-request-card button {
+  margin-top: 14px;
+  min-height: 44px;
+  width: 100%;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(8, 91, 111, 0.12);
+  color: rgba(6, 59, 92, 0.62);
+  font-weight: 950;
+}
+/* OSP-TRAVELER-EXPLORE-TRANSPORT-LANE-11L END */
+
+/* OSP-TRAVELER-BOTTOM-TAB-SAFE-GAP-UNIVERSAL-11N START */
+
+/* Universal Traveler Bottom Tab content breathing space.
+   This controls page content, not the Bottom Tab component itself. */
+:root {
+  --osp-traveler-bottom-tab-safe-gap: 108px;
+}
+
+.osp-traveler-bottom-tab-safe-page {
+  padding-bottom: max(var(--osp-traveler-bottom-tab-safe-gap), env(safe-area-inset-bottom)) !important;
+}
+
+/* Keep Explore page aligned with the universal safe gap after More Ways approval. */
+.osp-traveler-explore-premium-page {
+  padding-bottom: max(var(--osp-traveler-bottom-tab-safe-gap), env(safe-area-inset-bottom)) !important;
+}
+
+@media (max-width: 430px) {
+  :root {
+    --osp-traveler-bottom-tab-safe-gap: 112px;
+  }
+}
+/* OSP-TRAVELER-BOTTOM-TAB-SAFE-GAP-UNIVERSAL-11N END */

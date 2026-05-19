@@ -2527,7 +2527,7 @@ export default async function TravelerHomePage() {
 
   if (!user) {
     return (
-      <main
+      <main className="osp-traveler-bottom-tab-safe-page"
         style={{
           width: "100%",
           maxWidth: 960,

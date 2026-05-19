@@ -207,7 +207,7 @@ function Heading({ children }: { children: React.ReactNode }) {
 
 export default function PrivateSiargaoLandRouteExplorePage() {
   return (
-    <main
+    <main className="osp-traveler-bottom-tab-safe-page"
       style={{
         minHeight: "100vh",
         background:
