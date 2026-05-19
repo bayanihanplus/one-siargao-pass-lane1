@@ -1007,7 +1007,7 @@ async function TravelerHomeQuickAccessGrid() {
     {
       title: mksPoint?.displayName || "Malinao Skate Park",
       subtitle: "Validated LGU site-visit access.",
-      href: mksPoint?.qrDefinition?.publicScanUrl || "/traveler/passport-map",
+      href: mksPoint?.qrDefinition?.publicScanUrl || "/traveler/site-access/malinao-skate-park",
       status: mksPoint?.accessRule === "SITE_VISIT_LOG" ? "Validated" : "Validated",
       button: "View Point",
       icon: (
@@ -1033,7 +1033,7 @@ async function TravelerHomeQuickAccessGrid() {
     {
       title: afamPoint?.displayName || "AFAM / Catangnan Bridge",
       subtitle: "Validated scenic LGU site-visit access.",
-      href: afamPoint?.qrDefinition?.publicScanUrl || "/traveler/passport-map",
+      href: afamPoint?.qrDefinition?.publicScanUrl || "/traveler/site-access/afam-catangnan-bridge",
       status: afamPoint?.accessRule === "SITE_VISIT_LOG" ? "Site Visit" : "Site Visit",
       button: "View Point",
       icon: (
