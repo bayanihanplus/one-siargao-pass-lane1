@@ -113,6 +113,7 @@ const careEssentials: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=massage%20spa%20Siargao",
     tone: "aqua",
     icon: "💆",
+    imageUrl: "/osp/explore/care-wellness/massage-spa.png",
     featured: true,
   },
   {
@@ -127,6 +128,7 @@ const careEssentials: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=salon%20hair%20Siargao",
     tone: "sand",
     icon: "✂️",
+    imageUrl: "/osp/explore/care-wellness/salon-hair.png",
   },
   {
     id: "nails-lashes-brows",
@@ -140,6 +142,7 @@ const careEssentials: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=nails%20lashes%20brows%20Siargao",
     tone: "rose",
     icon: "💅",
+    imageUrl: "/osp/explore/care-wellness/nails-lashes-brows.png",
   },
   {
     id: "hair-grooming",
@@ -153,6 +156,7 @@ const careEssentials: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=hair%20grooming%20Siargao",
     tone: "gold",
     icon: "🪒",
+    imageUrl: "/osp/explore/care-wellness/hair-grooming.png",
   },
   {
     id: "wellness-yoga",
@@ -166,6 +170,7 @@ const careEssentials: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=wellness%20yoga%20Siargao",
     tone: "aqua",
     icon: "🧘",
+    imageUrl: "/osp/explore/care-wellness/wellness-yoga.png",
   },
   {
     id: "stretching-recovery",
@@ -179,6 +184,7 @@ const careEssentials: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=stretching%20recovery%20Siargao",
     tone: "blue",
     icon: "🌿",
+    imageUrl: "/osp/explore/care-wellness/stretching-recovery.png",
   },
   {
     id: "laundry-wash-care",
@@ -192,6 +198,7 @@ const careEssentials: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=laundry%20wash%20service%20Siargao",
     tone: "slate",
     icon: "🧺",
+    imageUrl: "/osp/explore/care-wellness/laundry-wash-care.png",
   },
   {
     id: "traveler-care-support",
@@ -205,6 +212,7 @@ const careEssentials: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=traveler%20care%20support%20Siargao",
     tone: "gold",
     icon: "✨",
+    imageUrl: "/osp/explore/care-wellness/traveler-care-support.png",
   },
 ];
 
@@ -221,6 +229,7 @@ const governedSupport: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=clinic%20support%20Siargao",
     tone: "slate",
     icon: "🏥",
+    imageUrl: "/osp/explore/care-wellness/clinic-support.png",
     governed: true,
   },
   {
@@ -235,6 +244,7 @@ const governedSupport: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=emergency%20doctor%20support%20Siargao",
     tone: "slate",
     icon: "🚑",
+    imageUrl: "/osp/explore/care-wellness/doctor-emergency.png",
     governed: true,
   },
   {
@@ -249,6 +259,7 @@ const governedSupport: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=medical%20treatment%20guidance%20Siargao",
     tone: "slate",
     icon: "🩺",
+    imageUrl: "/osp/explore/care-wellness/diagnosis-treatment.png",
     governed: true,
   },
   {
@@ -263,6 +274,7 @@ const governedSupport: CareCard[] = [
     href: "/traveler/settings?panel=assistant&topic=pharmacy%20prescription%20support%20Siargao",
     tone: "slate",
     icon: "💊",
+    imageUrl: "/osp/explore/care-wellness/prescription-pharmacy.png",
     governed: true,
   },
 ];
