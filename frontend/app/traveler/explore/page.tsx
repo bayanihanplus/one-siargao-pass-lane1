@@ -1021,6 +1021,7 @@ function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
       icon: "🧭",
       tone: softCardSurfaces.aqua,
       text: "#013863",
+      mediaUrl: "/osp/explore/top-discovery/passport-trails-routes.png",
     },
     {
       label: "Verified Tours",
@@ -1031,6 +1032,7 @@ function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
       icon: "⛵",
       tone: softCardSurfaces.blue,
       text: "#013863",
+      mediaUrl: "/osp/explore/top-discovery/verified-tours.png",
     },
     {
       label: "Stays",
@@ -1041,6 +1043,7 @@ function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
       icon: "🏝️",
       tone: softCardSurfaces.sand,
       text: "#013863",
+      mediaUrl: "/osp/explore/top-discovery/stays.png",
     },
   ];
 
@@ -1107,14 +1110,22 @@ function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
               minHeight: 78,
               borderRadius: 20,
               padding: 10,
-              background: action.tone,
-              border: "1px solid rgba(5,150,165,0.13)",
-              boxShadow: premiumCardShadow.soft,
-              color: action.text,
+              background: action.mediaUrl ? "#013863" : action.tone,
+              backgroundImage: action.mediaUrl
+                ? `linear-gradient(180deg, rgba(1,56,99,0.04), rgba(1,56,99,0.72)), url(${action.mediaUrl})`
+                : undefined,
+              backgroundSize: action.mediaUrl ? "cover" : undefined,
+              backgroundPosition: action.mediaUrl ? "center" : undefined,
+              border: action.mediaUrl
+                ? "1px solid rgba(255,255,255,0.28)"
+                : "1px solid rgba(5,150,165,0.13)",
+              boxShadow: action.mediaUrl ? "0 14px 28px rgba(1,56,99,0.18)" : premiumCardShadow.soft,
+              color: action.mediaUrl ? "#ffffff" : action.text,
               textDecoration: "none",
               display: "grid",
               alignContent: "space-between",
               overflow: "hidden",
+              textShadow: action.mediaUrl ? "0 2px 10px rgba(0,0,0,0.62)" : "none",
               ...premiumTapStyle,
             }}
           >
@@ -1125,8 +1136,8 @@ function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
                 borderRadius: 13,
                 display: "grid",
                 placeItems: "center",
-                background: "rgba(255,255,255,0.76)",
-                boxShadow: "0 6px 14px rgba(1,56,99,0.045)",
+                background: action.mediaUrl ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.76)",
+                boxShadow: action.mediaUrl ? "0 8px 18px rgba(0,0,0,0.22)" : "0 6px 14px rgba(1,56,99,0.045)",
                 fontSize: 17,
                 lineHeight: 1,
               }}
@@ -1134,10 +1145,29 @@ function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
               {action.icon}
             </span>
             <span>
-              <strong style={{ display: "block", fontSize: 11.4, lineHeight: 1.05, fontWeight: 950 }}>
+              <strong
+                style={{
+                  display: "block",
+                  fontSize: 11.4,
+                  lineHeight: 1.05,
+                  fontWeight: 950,
+                  color: action.mediaUrl ? "#ffffff" : "inherit",
+                  WebkitTextFillColor: action.mediaUrl ? "#ffffff" : "inherit",
+                }}
+              >
                 {tr(dictionary, action.labelKey, action.label)}
               </strong>
-              <span style={{ display: "block", marginTop: 3, fontSize: 9.2, opacity: 0.78, fontWeight: 850 }}>
+              <span
+                style={{
+                  display: "block",
+                  marginTop: 3,
+                  fontSize: 9.2,
+                  opacity: action.mediaUrl ? 0.94 : 0.78,
+                  fontWeight: 850,
+                  color: action.mediaUrl ? "rgba(255,255,255,0.9)" : "inherit",
+                  WebkitTextFillColor: action.mediaUrl ? "rgba(255,255,255,0.9)" : "inherit",
+                }}
+              >
                 {tr(dictionary, action.noteKey, action.note)}
               </span>
             </span>
@@ -1148,14 +1178,15 @@ function HeroCard({ dictionary }: { dictionary: TravelerDictionary }) {
   );
 }
 
+
 function LaneGrid({ dictionary }: { dictionary: TravelerDictionary }) {
   const shortcuts = [
-    { title: "Tours", titleKey: "explore.lanes.tours", icon: "⛵", href: "/traveler/explore/tours", surface: softCardSurfaces.blue },
-    { title: "Rentals", titleKey: "explore.lanes.rentals", icon: "🛵", href: "/traveler/explore/rentals", surface: softCardSurfaces.aqua },
-    { title: "Surf", titleKey: "explore.lanes.surf", icon: "🏄", href: "/traveler/explore/surf-schools", surface: softCardSurfaces.pearl },
-    { title: "Food", titleKey: "explore.lanes.food", icon: "🍽️", href: "/traveler/explore/food-culture", surface: softCardSurfaces.sand },
-    { title: "Care", titleKey: "explore.lanes.care", icon: "✨", href: "/traveler/explore/beauty-health", surface: softCardSurfaces.gold },
-    { title: "Stays", titleKey: "explore.lanes.stays", icon: "🏝️", href: "/traveler/explore/stays", surface: softCardSurfaces.mist },
+    { title: "Tours", titleKey: "explore.lanes.tours", icon: "⛵", href: "/traveler/explore/tours", surface: softCardSurfaces.blue, mediaUrl: "/osp/explore/by-lane/tours.png" },
+    { title: "Rentals", titleKey: "explore.lanes.rentals", icon: "🛵", href: "/traveler/explore/rentals", surface: softCardSurfaces.aqua, mediaUrl: "/osp/explore/by-lane/rentals.png" },
+    { title: "Surf", titleKey: "explore.lanes.surf", icon: "🏄", href: "/traveler/explore/surf-schools", surface: softCardSurfaces.pearl, mediaUrl: "/osp/explore/by-lane/surf.png" },
+    { title: "Food", titleKey: "explore.lanes.food", icon: "🍽️", href: "/traveler/explore/food-culture", surface: softCardSurfaces.sand, mediaUrl: "/osp/explore/by-lane/food.png" },
+    { title: "Care", titleKey: "explore.lanes.care", icon: "✨", href: "/traveler/explore/beauty-health", surface: softCardSurfaces.gold, mediaUrl: "/osp/explore/by-lane/care.png" },
+    { title: "Stays", titleKey: "explore.lanes.stays", icon: "🏝️", href: "/traveler/explore/stays", surface: softCardSurfaces.mist, mediaUrl: "/osp/explore/by-lane/stays.png" },
   ];
 
   return (
@@ -1185,15 +1216,21 @@ function LaneGrid({ dictionary }: { dictionary: TravelerDictionary }) {
               minHeight: 74,
               borderRadius: 18,
               padding: 9,
-              background: item.surface,
-              border: "1px solid rgba(5,150,165,0.13)",
-              boxShadow: premiumCardShadow.soft,
+              background: item.mediaUrl ? "#013863" : item.surface,
+              backgroundImage: item.mediaUrl
+                ? `linear-gradient(180deg, rgba(1,56,99,0.04), rgba(1,56,99,0.72)), url(${item.mediaUrl})`
+                : undefined,
+              backgroundSize: item.mediaUrl ? "cover" : undefined,
+              backgroundPosition: item.mediaUrl ? "center" : undefined,
+              border: item.mediaUrl ? "1px solid rgba(255,255,255,0.28)" : "1px solid rgba(5,150,165,0.13)",
+              boxShadow: item.mediaUrl ? "0 14px 28px rgba(1,56,99,0.18)" : premiumCardShadow.soft,
               textDecoration: "none",
-              color: "#013863",
+              color: item.mediaUrl ? "#ffffff" : "#013863",
               display: "grid",
               placeItems: "center",
               textAlign: "center",
               gap: 5,
+              textShadow: item.mediaUrl ? "0 2px 10px rgba(0,0,0,0.62)" : "none",
               ...premiumTapStyle,
             }}
           >
@@ -1204,15 +1241,25 @@ function LaneGrid({ dictionary }: { dictionary: TravelerDictionary }) {
                 borderRadius: 13,
                 display: "grid",
                 placeItems: "center",
-                background: "rgba(255,255,255,0.72)",
-                boxShadow: "0 6px 14px rgba(1,56,99,0.045)",
+                background: item.mediaUrl ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.72)",
+                boxShadow: item.mediaUrl ? "0 8px 18px rgba(0,0,0,0.22)" : "0 6px 14px rgba(1,56,99,0.045)",
                 fontSize: 17,
                 lineHeight: 1,
               }}
             >
               {item.icon}
             </span>
-            <strong style={{ fontSize: 10.8, lineHeight: 1.05, fontWeight: 950 }}>{tr(dictionary, item.titleKey, item.title)}</strong>
+            <strong
+              style={{
+                fontSize: 10.8,
+                lineHeight: 1.05,
+                fontWeight: 950,
+                color: item.mediaUrl ? "#ffffff" : "inherit",
+                WebkitTextFillColor: item.mediaUrl ? "#ffffff" : "inherit",
+              }}
+            >
+              {tr(dictionary, item.titleKey, item.title)}
+            </strong>
           </Link>
         ))}
       </div>
@@ -1365,7 +1412,7 @@ function FeaturedServices({
 function MoreWaysToExplore({ services, dictionary }: { services: FeaturedService[]; dictionary: TravelerDictionary }) {
   if (!services.length) return null;
 
-  const shortcuts: Array<{ title: string; titleKey?: string; href: string; icon: string; surface: string }> = [
+  const shortcuts: Array<{ title: string; titleKey?: string; href: string; icon: string; surface: string; mediaUrl?: string | null }> = [
     ...services.slice(0, 5).map((service) => {
       const title = service.title;
       const key = title.toLowerCase();
@@ -1379,7 +1426,18 @@ function MoreWaysToExplore({ services, dictionary }: { services: FeaturedService
             : key.includes("beauty") || key.includes("health")
               ? softCardSurfaces.gold
               : softCardSurfaces.pearl;
-      return { title, href: getFeaturedServiceCardHref(service), icon, surface };
+      const mediaUrl = key.includes("cloud 9")
+        ? "/osp/explore/more-ways/cloud-9-site-access.png"
+        : key.includes("tour operators")
+          ? "/osp/explore/more-ways/siargao-tour-operators.png"
+          : key.includes("rental")
+            ? "/osp/explore/more-ways/rentals.png"
+            : key.includes("surf")
+              ? "/osp/explore/more-ways/surfing-schools.png"
+              : key.includes("food")
+                ? "/osp/explore/more-ways/food-culture.png"
+                : null;
+      return { title, href: getFeaturedServiceCardHref(service), icon, surface, mediaUrl };
     }),
     {
       title: "Site Access",
@@ -1387,6 +1445,7 @@ function MoreWaysToExplore({ services, dictionary }: { services: FeaturedService
       href: "/traveler/site-access/cloud-9",
       icon: "🎟️",
       surface: softCardSurfaces.mist,
+      mediaUrl: "/osp/explore/more-ways/site-access.png",
     },
   ];
 
@@ -1411,10 +1470,15 @@ function MoreWaysToExplore({ services, dictionary }: { services: FeaturedService
             style={{
               minHeight: 78,
               borderRadius: 18,
-              background: service.surface,
-              border: "1px solid rgba(5,150,165,0.13)",
-              boxShadow: premiumCardShadow.soft,
-              color: "#013863",
+              background: service.mediaUrl ? "#013863" : service.surface,
+              backgroundImage: service.mediaUrl
+                ? `linear-gradient(180deg, rgba(1,56,99,0.04), rgba(1,56,99,0.72)), url(${service.mediaUrl})`
+                : undefined,
+              backgroundSize: service.mediaUrl ? "cover" : undefined,
+              backgroundPosition: service.mediaUrl ? "center" : undefined,
+              border: service.mediaUrl ? "1px solid rgba(255,255,255,0.28)" : "1px solid rgba(5,150,165,0.13)",
+              boxShadow: service.mediaUrl ? "0 14px 28px rgba(1,56,99,0.18)" : premiumCardShadow.soft,
+              color: service.mediaUrl ? "#ffffff" : "#013863",
               textDecoration: "none",
               padding: 10,
               display: "grid",
@@ -1422,6 +1486,7 @@ function MoreWaysToExplore({ services, dictionary }: { services: FeaturedService
               gap: 8,
               alignItems: "center",
               overflow: "hidden",
+              textShadow: service.mediaUrl ? "0 2px 10px rgba(0,0,0,0.62)" : "none",
               ...premiumTapStyle,
             }}
           >
@@ -1432,8 +1497,8 @@ function MoreWaysToExplore({ services, dictionary }: { services: FeaturedService
                 borderRadius: 12,
                 display: "grid",
                 placeItems: "center",
-                background: "rgba(255,255,255,0.72)",
-                boxShadow: "0 6px 14px rgba(1,56,99,0.045)",
+                background: service.mediaUrl ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.72)",
+                boxShadow: service.mediaUrl ? "0 8px 18px rgba(0,0,0,0.22)" : "0 6px 14px rgba(1,56,99,0.045)",
                 fontSize: 15,
               }}
             >
@@ -1448,6 +1513,8 @@ function MoreWaysToExplore({ services, dictionary }: { services: FeaturedService
                 fontSize: 11.5,
                 lineHeight: 1.08,
                 fontWeight: 950,
+                color: service.mediaUrl ? "#ffffff" : "inherit",
+                WebkitTextFillColor: service.mediaUrl ? "#ffffff" : "inherit",
               }}
             >
               {service.title}

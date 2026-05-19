@@ -14,6 +14,7 @@ type StayPreview = {
   settlementLabel: string;
   tags: string[];
   gradient: string;
+  imageUrl?: string;
 };
 
 const stayTypes = ["All", "Hotels", "Resorts", "Villas", "Hostels", "Homestays", "Guesthouses"];
@@ -31,6 +32,7 @@ const previewStays: StayPreview[] = [
     settlementLabel: "Request first",
     tags: ["Surf access", "QR stay capable"],
     gradient: "linear-gradient(135deg, #013863 0%, #003B66 62%, #014B78 100%)",
+    imageUrl: "/osp/explore/stays/general-luna-surf-stay.png",
   },
   {
     slug: "preview-cloud-9-family-villa",
@@ -44,6 +46,7 @@ const previewStays: StayPreview[] = [
     settlementLabel: "Configurable",
     tags: ["Family", "Private villa"],
     gradient: "linear-gradient(135deg, #013863 0%, #014B78 55%, #F3AE26 145%)",
+    imageUrl: "/osp/explore/stays/cloud-9-family-villa.png",
   },
   {
     slug: "preview-barkada-hostel-siargao",
@@ -57,6 +60,7 @@ const previewStays: StayPreview[] = [
     settlementLabel: "Request-to-confirm",
     tags: ["Groups", "Budget"],
     gradient: "linear-gradient(135deg, #013863 0%, #003B66 55%, #0097A7 100%)",
+    imageUrl: "/osp/explore/stays/barkada-hostel-siargao.png",
   },
   {
     slug: "preview-town-center-inn",
@@ -70,6 +74,7 @@ const previewStays: StayPreview[] = [
     settlementLabel: "Request first",
     tags: ["Local host", "Town access"],
     gradient: "linear-gradient(135deg, #013863 0%, #003B66 62%, #014B78 100%)",
+    imageUrl: "/osp/explore/stays/town-center-inn.png",
   },
   {
     slug: "preview-palm-lane-resort",
@@ -83,6 +88,7 @@ const previewStays: StayPreview[] = [
     settlementLabel: "Request first",
     tags: ["Couples", "Beach"],
     gradient: "linear-gradient(135deg, #013863 0%, #014B78 58%, #0097A7 120%)",
+    imageUrl: "/osp/explore/stays/palm-lane-resort.png",
   },
   {
     slug: "preview-daku-view-guesthouse",
@@ -96,6 +102,7 @@ const previewStays: StayPreview[] = [
     settlementLabel: "Request first",
     tags: ["Simple stay", "Local"],
     gradient: "linear-gradient(135deg, #013863 0%, #003B66 60%, #F3AE26 150%)",
+    imageUrl: "/osp/explore/stays/daku-view-guesthouse.png",
   },
 ];
 
@@ -332,7 +339,9 @@ function StayRowCard({ stay, featured = false }: { stay: StayPreview; featured?:
       <div
         style={{
           borderRadius: 20,
-          background: stay.gradient,
+          background: stay.imageUrl
+            ? `linear-gradient(180deg, rgba(1,56,99,0.08), rgba(1,56,99,0.74)), url(${stay.imageUrl}) center/cover`
+            : stay.gradient,
           minHeight: featured ? 130 : 104,
           padding: 11,
           color: "#FFFFFF",

@@ -129,6 +129,7 @@ const essentials: SurfCard[] = [
     href: "/traveler/settings?panel=assistant&topic=beginner%20surf%20lesson%20Siargao",
     tone: "aqua",
     icon: "🏄",
+    imageUrl: "/osp/explore/surf-schools/beginner-surf-lessons.png",
     featured: true,
   },
   {
@@ -143,6 +144,7 @@ const essentials: SurfCard[] = [
     href: "/traveler/settings?panel=assistant&topic=intermediate%20surf%20coaching%20Siargao",
     tone: "blue",
     icon: "🌊",
+    imageUrl: "/osp/explore/surf-schools/intermediate-coaching.png",
   },
   {
     id: "advanced-progression",
@@ -156,6 +158,7 @@ const essentials: SurfCard[] = [
     href: "/traveler/settings?panel=assistant&topic=advanced%20surf%20coaching%20Siargao",
     tone: "slate",
     icon: "🏄‍♂️",
+    imageUrl: "/osp/explore/surf-schools/advanced-progression-coaching.png",
   },
   {
     id: "private-lesson",
@@ -169,6 +172,7 @@ const essentials: SurfCard[] = [
     href: "/traveler/settings?panel=assistant&topic=private%20surf%20lesson%20Siargao",
     tone: "gold",
     icon: "👤",
+    imageUrl: "/osp/explore/surf-schools/private-lesson.png",
   },
   {
     id: "group-lesson",
@@ -182,6 +186,7 @@ const essentials: SurfCard[] = [
     href: "/traveler/settings?panel=assistant&topic=group%20surf%20lesson%20Siargao",
     tone: "sand",
     icon: "👥",
+    imageUrl: "/osp/explore/surf-schools/group-lesson.png",
   },
   {
     id: "board-rental-addon",
@@ -195,6 +200,7 @@ const essentials: SurfCard[] = [
     href: "/traveler/explore/rentals",
     tone: "aqua",
     icon: "🏄",
+    imageUrl: "/osp/explore/surf-schools/board-rental-add-on.png",
   },
   {
     id: "kids-first-timer",
@@ -208,6 +214,7 @@ const essentials: SurfCard[] = [
     href: "/traveler/settings?panel=assistant&topic=kids%20first%20timer%20surf%20lesson%20Siargao",
     tone: "sand",
     icon: "🌤️",
+    imageUrl: "/osp/explore/surf-schools/kids-first-timer-friendly.png",
   },
   {
     id: "instructor-led-surf-day",
@@ -221,6 +228,7 @@ const essentials: SurfCard[] = [
     href: "/traveler/settings?panel=assistant&topic=instructor%20led%20surf%20day%20Siargao",
     tone: "blue",
     icon: "🧭",
+    imageUrl: "/osp/explore/surf-schools/instructor-led-surf-day.png",
   },
 ];
 

@@ -119,6 +119,7 @@ const essentials: FoodCard[] = [
     href: "/traveler/settings?panel=assistant&topic=cafe%20stops%20Siargao",
     tone: "sand",
     icon: "☕",
+    imageUrl: "/osp/explore/food-culture/cafe-stops.png",
     featured: true,
   },
   {
@@ -133,6 +134,7 @@ const essentials: FoodCard[] = [
     href: "/traveler/settings?panel=assistant&topic=local%20restaurants%20Siargao",
     tone: "gold",
     icon: "🍽️",
+    imageUrl: "/osp/explore/food-culture/local-restaurants.png",
   },
   {
     id: "seafood-grill",
@@ -146,6 +148,7 @@ const essentials: FoodCard[] = [
     href: "/traveler/settings?panel=assistant&topic=seafood%20grill%20Siargao",
     tone: "aqua",
     icon: "🐟",
+    imageUrl: "/osp/explore/food-culture/seafood-grill.png",
   },
   {
     id: "breakfast-brunch",
@@ -159,6 +162,7 @@ const essentials: FoodCard[] = [
     href: "/traveler/settings?panel=assistant&topic=breakfast%20brunch%20Siargao",
     tone: "sand",
     icon: "🍳",
+    imageUrl: "/osp/explore/food-culture/breakfast-brunch.png",
   },
   {
     id: "dessert-snacks",
@@ -172,6 +176,7 @@ const essentials: FoodCard[] = [
     href: "/traveler/settings?panel=assistant&topic=dessert%20snacks%20Siargao",
     tone: "gold",
     icon: "🍰",
+    imageUrl: "/osp/explore/food-culture/dessert-snacks.png",
   },
   {
     id: "culture-food-stops",
@@ -185,6 +190,7 @@ const essentials: FoodCard[] = [
     href: "/traveler/settings?panel=assistant&topic=local%20culture%20food%20stops%20Siargao",
     tone: "violet",
     icon: "🧺",
+    imageUrl: "/osp/explore/food-culture/local-culture-stops.png",
   },
   {
     id: "healthy-wellness-food",
@@ -198,6 +204,7 @@ const essentials: FoodCard[] = [
     href: "/traveler/settings?panel=assistant&topic=healthy%20wellness%20food%20Siargao",
     tone: "aqua",
     icon: "🥗",
+    imageUrl: "/osp/explore/food-culture/healthy-wellness-food.png",
   },
   {
     id: "market-local-produce",
@@ -211,6 +218,7 @@ const essentials: FoodCard[] = [
     href: "/traveler/settings?panel=assistant&topic=market%20local%20produce%20Siargao",
     tone: "slate",
     icon: "🥭",
+    imageUrl: "/osp/explore/food-culture/market-local-produce.png",
   },
 ];
 

@@ -129,6 +129,7 @@ const essentials: RentalCard[] = [
     href: "/traveler/settings?panel=assistant&topic=motorbike%20scooter%20rental",
     tone: "aqua",
     icon: "🛵",
+    imageUrl: "/osp/explore/rentals/motorbike-scooter-rental.png",
     featured: true,
   },
   {
@@ -143,6 +144,7 @@ const essentials: RentalCard[] = [
     href: "/traveler/settings?panel=assistant&topic=e-bike%20bicycle%20rental",
     tone: "sand",
     icon: "🚲",
+    imageUrl: "/osp/explore/rentals/e-bike-bicycle-rental.png",
   },
   {
     id: "car-van",
@@ -156,6 +158,7 @@ const essentials: RentalCard[] = [
     href: "/traveler/settings?panel=assistant&topic=car%20van%20rental",
     tone: "blue",
     icon: "🚐",
+    imageUrl: "/osp/explore/rentals/car-van-rental.png",
   },
   {
     id: "airport-dapa-pickup",
@@ -169,6 +172,7 @@ const essentials: RentalCard[] = [
     href: "/traveler/settings?panel=assistant&topic=airport%20dapa%20pickup",
     tone: "gold",
     icon: "🚕",
+    imageUrl: "/osp/explore/rentals/airport-dapa-pickup.png",
   },
   {
     id: "private-transport",
@@ -182,6 +186,7 @@ const essentials: RentalCard[] = [
     href: "/traveler/settings?panel=assistant&topic=private%20transport%20siargao",
     tone: "slate",
     icon: "🚘",
+    imageUrl: "/osp/explore/rentals/private-transport.png",
   },
   {
     id: "surfboard-rental",
@@ -195,6 +200,7 @@ const essentials: RentalCard[] = [
     href: "/traveler/explore/surf-schools",
     tone: "aqua",
     icon: "🏄",
+    imageUrl: "/osp/explore/rentals/surfboard-rental.png",
   },
   {
     id: "drone-rental",
@@ -208,6 +214,7 @@ const essentials: RentalCard[] = [
     href: "/traveler/settings?panel=assistant&topic=drone%20rental%20siargao",
     tone: "sand",
     icon: "📷",
+    imageUrl: "/osp/explore/rentals/drone-rental.png",
   },
   {
     id: "gopro-gear",
@@ -221,6 +228,7 @@ const essentials: RentalCard[] = [
     href: "/traveler/settings?panel=assistant&topic=gopro%20gear%20rental",
     tone: "gold",
     icon: "🎒",
+    imageUrl: "/osp/explore/rentals/gopro-gear-rentals.png",
   },
 ];
 
