@@ -35,8 +35,8 @@ const bottomTabSafeSpacerStyle = {
 
 const TABS: TabItem[] = [
   { key: "home", label: "Home", href: "/traveler/home", dictionaryKey: "traveler.bottomTab.home" },
-  { key: "trails", label: "Trails", href: "/traveler/passport-trails", dictionaryKey: "traveler.bottomTab.trails" },
   { key: "explore", label: "Explore", href: "/traveler/explore", dictionaryKey: "traveler.bottomTab.explore" },
+  { key: "trails", label: "Trails", href: "/traveler/passport-trails", dictionaryKey: "traveler.bottomTab.trails" },
   { key: "profile", label: "Profile", href: "/traveler/settings", dictionaryKey: "traveler.bottomTab.profile" },
 ];
 
@@ -105,7 +105,7 @@ export default function SpmTravelerBottomTabBar({
     <nav
       aria-label="SPM traveler bottom tab"
       data-osp-component="spm-traveler-bottom-tab"
-      data-osp-lock="SPM_HOME_TRAILS_QR_EXPLORE_PROFILE"
+      data-osp-lock="SPM_HOME_EXPLORE_QR_TRAILS_PROFILE"
       style={{
         position: "fixed",
         left: "50%",
@@ -319,3 +319,5 @@ function QrIcon({ active }: { active: boolean }) {
     </svg>
   );
 }
+
+// OSP_SPM_BOTTOM_TAB_SPATIAL_ORDER_12C_COMPLETE
