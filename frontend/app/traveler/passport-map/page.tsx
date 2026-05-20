@@ -417,6 +417,10 @@ function SpmBuildYourOwnTrailSection() {
         padding: 16,
         background:
           "linear-gradient(145deg, rgba(255,255,255,0.98), rgba(234,251,250,0.98))",
+        backgroundImage:
+          "linear-gradient(90deg, rgba(239,252,251,0.92) 0%, rgba(239,252,251,0.74) 48%, rgba(239,252,251,0.42) 100%), url(/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
         border: "1px solid rgba(5,150,165,0.16)",
         boxShadow: "0 16px 38px rgba(1,56,99,0.08)",
       }}
@@ -534,6 +538,10 @@ function SpmGuideSupportProvidedBy() {
         borderRadius: 28,
         padding: 16,
         background: "#FFFFFF",
+        backgroundImage:
+          "linear-gradient(90deg, rgba(255,255,255,0.90) 0%, rgba(255,255,255,0.70) 50%, rgba(255,255,255,0.38) 100%), url(/osp/spm/passport-map/flexible-trail/guided-when-needed.png)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
         border: "1px solid rgba(1,56,99,0.10)",
         boxShadow: "0 16px 38px rgba(1,56,99,0.075)",
       }}
@@ -854,6 +862,14 @@ function StopPreviewCard(props: {
         borderRadius: 23,
         padding: 10,
         background: props.soft,
+            backgroundImage:
+              props.stopName === "Cloud 9"
+                ? "linear-gradient(180deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.50) 52%, rgba(255,255,255,0.76) 100%), url(/osp/spm/passport-map/verified-stops/cloud-9-surf-landmark.png)"
+                : props.stopName === "Malinao Skate Park"
+                  ? "linear-gradient(180deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.50) 52%, rgba(255,255,255,0.76) 100%), url(/osp/spm/passport-map/verified-stops/malinao-skate-park-community-stop.png)"
+                  : undefined,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
         border: "1px solid rgba(5,150,165,0.105)",
         boxShadow: "0 10px 21px rgba(1,56,99,0.048)",
         color: "inherit",
@@ -2015,6 +2031,7 @@ function SpmFeaturedPartnerTours() {
     {
       eyebrow: "Popular route",
       title: "Tri-Island Joiner Tour",
+      image: "/osp/spm/passport-map/featured-local-tours/tri-island-joiner-tour.png",
       description: "Classic General Luna island-hopping route.",
       meta: ["Joiner", "Island day"],
       href: "/traveler/partner-tours?focus=tri-island-joiner",
@@ -2025,6 +2042,7 @@ function SpmFeaturedPartnerTours() {
     {
       eyebrow: "Land route",
       title: "Siargao Land Tour Highlights",
+      image: "/osp/spm/passport-map/featured-local-tours/siargao-land-tour-highlights.png",
       description: "Scenic inland and coastal stops.",
       meta: ["Full day", "Land tour"],
       href: "/traveler/partner-tours?focus=land-tour-highlights",
@@ -2035,6 +2053,7 @@ function SpmFeaturedPartnerTours() {
     {
       eyebrow: "Lagoon route",
       title: "Sugba Lagoon Adventure",
+      image: "/osp/spm/passport-map/featured-local-tours/sugba-lagoon-adventure.png",
       description: "A calm day trip through lagoon waters.",
       meta: ["Day trip", "Nature route"],
       href: "/traveler/partner-tours?focus=sugba-lagoon-adventure",
@@ -2045,6 +2064,7 @@ function SpmFeaturedPartnerTours() {
     {
       eyebrow: "Scenic route",
       title: "North Siargao Local Route",
+      image: "/osp/spm/passport-map/featured-local-tours/north-siargao-local-route.png",
       description: "Slower northern stops and local views.",
       meta: ["Flexible", "Scenic stops"],
       href: "/traveler/partner-tours?focus=north-siargao-local-route",
@@ -2192,6 +2212,11 @@ function SpmFeaturedPartnerTours() {
               borderRadius: 24,
               padding: 11,
               background: tour.shell,
+              backgroundImage: tour.image
+                ? `linear-gradient(180deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.42) 48%, rgba(255,255,255,0.68) 100%), url(${tour.image})`
+                : undefined,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
               border: "1px solid rgba(5,150,165,0.13)",
               boxShadow: "0 12px 24px rgba(1,56,99,0.06)",
               color: "inherit",
@@ -2392,6 +2417,7 @@ function SpmCuratedPassportTours() {
     {
       hierarchy: "Surf Trail",
       title: "Explorer Surf Trail",
+          image: "/osp/spm/passport-map/explorer-surf-trail.png",
       description: "Start with one surf stop or lesson. Progress stays saved so beginners and enthusiasts can continue later.",
       href: "/traveler/passport-trails/surf-explorer",
       icon: "🏄",
@@ -2407,6 +2433,7 @@ function SpmCuratedPassportTours() {
     {
       hierarchy: "Community",
       title: "Culture & Community Trail",
+          image: "/osp/spm/passport-map/culture-community-trail.png",
       description: "One-day local discovery trail through community stops, island stories, makers, and local experiences.",
       href: "/traveler/passport-trails/culture-community",
       icon: "🤝",
@@ -2422,6 +2449,7 @@ function SpmCuratedPassportTours() {
     {
       hierarchy: "Merchant Trail",
       title: "Food & Wellness Trail",
+          image: "/osp/spm/passport-map/food-wellness-trail.png",
       description: "Restaurants, cafés, wellness, recovery, and island care experiences operated by local merchants.",
       href: "/traveler/passport-trails/food-wellness",
       icon: "🥗",
@@ -2693,6 +2721,7 @@ function SpmCuratedPassportTours() {
         {
           href: "/traveler/passport-trails/sugba-lagoon",
           title: "Sugba Lagoon",
+          image: "/osp/spm/passport-map/sugba-lagoon.png",
           line: "Hidden lagoon escape.",
           icon: "/osp/spm/trails/icons/sugba-lagoon-badge.png?v=01l",
           background: "linear-gradient(145deg, #EFFAF6 0%, #E7F7F1 100%)",
@@ -2702,6 +2731,7 @@ function SpmCuratedPassportTours() {
         {
           href: "/traveler/passport-trails/bucas-grande-sohoton",
           title: "Bucas Grande / Sohoton",
+          image: "/osp/spm/passport-map/bucas-grande-sohoton.png",
           line: "Caves, cliffs, clear waters.",
           icon: "/osp/spm/trails/icons/bucas-sohoton-badge.png?v=01l",
           background: "linear-gradient(145deg, #F0FAFB 0%, #E7F6F8 100%)",
@@ -2711,6 +2741,7 @@ function SpmCuratedPassportTours() {
         {
           href: "/traveler/passport-trails/siargao-land-tour",
           title: "Siargao Land Tour",
+          image: "/osp/spm/passport-map/siargao-land-tour.png",
           line: "Scenic spots. Local gems.",
           icon: "/osp/spm/trails/icons/siargao-land-tour-badge.png?v=01l",
           background: "linear-gradient(145deg, #FFF7EA 0%, #FFF2DF 100%)",
@@ -2720,6 +2751,7 @@ function SpmCuratedPassportTours() {
         {
           href: "/traveler/passport-trails/culture-community",
           title: "Culture & Community Trail",
+          image: "/osp/spm/passport-map/culture-community-trail.png",
           line: "Stories, people, heritage.",
           icon: "/osp/spm/trails/icons/culture-community-badge.png?v=01l",
           background: "linear-gradient(145deg, #FFF1EF 0%, #FDE8E5 100%)",
@@ -2729,6 +2761,7 @@ function SpmCuratedPassportTours() {
         {
           href: "/traveler/passport-trails/explorer-surf",
           title: "Explorer Surf Trail",
+          image: "/osp/spm/passport-map/explorer-surf-trail.png",
           line: "Chase waves. Find flow.",
           icon: "/osp/spm/trails/icons/explorer-surf-badge.png?v=01l",
           background: "linear-gradient(145deg, #EFF8FF 0%, #E4F2FC 100%)",
@@ -2738,6 +2771,7 @@ function SpmCuratedPassportTours() {
         {
           href: "/traveler/passport-trails/food-wellness",
           title: "Food & Wellness Trail",
+          image: "/osp/spm/passport-map/food-wellness-trail.png",
           line: "Savor. Nourish. Heal.",
           icon: "/osp/spm/trails/icons/food-wellness-badge.png?v=01l",
           background: "linear-gradient(145deg, #FFF9EC 0%, #FFF3DF 100%)",
@@ -2753,6 +2787,11 @@ function SpmCuratedPassportTours() {
             borderRadius: 22,
             border: `1px solid ${trail.border}`,
             background: trail.background,
+            backgroundImage: trail.image
+              ? `linear-gradient(180deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.46) 48%, rgba(255,255,255,0.66) 100%), url(${trail.image})`
+              : undefined,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
             padding: 10,
             color: "inherit",
             textDecoration: "none",
@@ -2856,6 +2895,9 @@ function SpmCuratedPassportTours() {
         borderRadius: 22,
         border: "1px solid rgba(5,150,165,0.18)",
         background: "linear-gradient(135deg, #DDF7F4 0%, #C9F1EE 100%)",
+        backgroundImage: `linear-gradient(90deg, rgba(221,247,244,0.78) 0%, rgba(221,247,244,0.58) 52%, rgba(221,247,244,0.32) 100%), url(/osp/spm/passport-map/return-traveler-continuity.png)`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
         padding: 12,
         color: "inherit",
         textDecoration: "none",
@@ -2925,6 +2967,9 @@ function SpmCuratedPassportTours() {
           borderRadius: 20,
           border: "1px solid #E1E8EA",
           background: "#FFFFFF",
+          backgroundImage: `linear-gradient(90deg, rgba(255,255,255,0.80) 0%, rgba(255,255,255,0.58) 54%, rgba(255,255,255,0.28) 100%), url(/osp/spm/passport-map/check-trail-hierarchy.png)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           padding: "11px 12px",
           color: "inherit",
           textDecoration: "none",
@@ -2961,6 +3006,9 @@ function SpmCuratedPassportTours() {
           borderRadius: 20,
           border: "1px solid #CFEFEB",
           background: "linear-gradient(145deg, #EFFCFB 0%, #E5F8F6 100%)",
+          backgroundImage: `linear-gradient(90deg, rgba(239,252,251,0.80) 0%, rgba(239,252,251,0.58) 56%, rgba(239,252,251,0.30) 100%), url(/osp/spm/passport-map/your-passport-progress.png)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           padding: "11px 12px",
           color: "inherit",
           textDecoration: "none",
@@ -3006,6 +3054,9 @@ function SpmCuratedPassportTours() {
           borderRadius: 20,
           border: "1px solid #F0DFC4",
           background: "linear-gradient(145deg, #FFF8EA 0%, #FFF1DD 100%)",
+          backgroundImage: `linear-gradient(90deg, rgba(255,248,234,0.80) 0%, rgba(255,248,234,0.58) 56%, rgba(255,248,234,0.30) 100%), url(/osp/spm/passport-map/guide-support.png)`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           padding: "11px 12px",
           color: "inherit",
           textDecoration: "none",
