@@ -18,6 +18,7 @@ async function getSpmTravelerPreview() {
   }
 }
 
+// OSP_PASSPORT_MAP_IMAGE_CARD_TEXT_CONTRAST_09J
 export default async function TravelerPassportMapPage() {
   const spmPreview = await getSpmTravelerPreview();
   return (
@@ -392,7 +393,38 @@ export default async function TravelerPassportMapPage() {
       <UniversalTravelerBottomTabBar activeTab="trails" fixed />
 
       </div>
-    </main>
+        <style
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: `
+          /* OSP_PASSPORT_MAP_CREATIVE_TEXT_WHITE_09K */
+          [style*="/osp/spm/passport-map/"] h1,
+          [style*="/osp/spm/passport-map/"] h2,
+          [style*="/osp/spm/passport-map/"] h3,
+          [style*="/osp/spm/passport-map/"] h4,
+          [style*="/osp/spm/passport-map/"] strong,
+          [style*="/osp/spm/passport-map/"] p {
+            color: #FFFFFF !important;
+            text-shadow: 0 2px 8px rgba(1, 24, 48, 0.82) !important;
+          }
+
+          [style*="/osp/spm/passport-map/"] a,
+          [style*="/osp/spm/passport-map/"] a strong,
+          [style*="/osp/spm/passport-map/"] a p {
+            color: #FFFFFF !important;
+            text-shadow: 0 2px 8px rgba(1, 24, 48, 0.82) !important;
+          }
+
+          [style*="/osp/spm/passport-map/"] small,
+          [style*="/osp/spm/passport-map/"] em {
+            color: rgba(255,255,255,0.94) !important;
+            text-shadow: 0 1px 6px rgba(1, 24, 48, 0.78) !important;
+          }
+            `,
+          }}
+        />
+
+</main>
   );
 }
 
