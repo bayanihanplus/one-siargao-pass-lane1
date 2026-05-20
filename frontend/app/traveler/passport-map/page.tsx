@@ -418,9 +418,10 @@ function SpmBuildYourOwnTrailSection() {
         background:
           "linear-gradient(145deg, rgba(255,255,255,0.98), rgba(234,251,250,0.98))",
         backgroundImage:
-          "linear-gradient(90deg, rgba(239,252,251,0.92) 0%, rgba(239,252,251,0.74) 48%, rgba(239,252,251,0.42) 100%), url(/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png)",
+          "url(/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png)",
         backgroundSize: "cover",
         backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
         border: "1px solid rgba(5,150,165,0.16)",
         boxShadow: "0 16px 38px rgba(1,56,99,0.08)",
       }}
@@ -539,9 +540,10 @@ function SpmGuideSupportProvidedBy() {
         padding: 16,
         background: "#FFFFFF",
         backgroundImage:
-          "linear-gradient(90deg, rgba(255,255,255,0.90) 0%, rgba(255,255,255,0.70) 50%, rgba(255,255,255,0.38) 100%), url(/osp/spm/passport-map/flexible-trail/guided-when-needed.png)",
+          "url(/osp/spm/passport-map/flexible-trail/guided-when-needed.png)",
         backgroundSize: "cover",
         backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
         border: "1px solid rgba(1,56,99,0.10)",
         boxShadow: "0 16px 38px rgba(1,56,99,0.075)",
       }}
@@ -801,6 +803,7 @@ function SpmVerifiedStopsPreview({ stops }: { stops?: SpmVerifiedStopPreviewData
   );
 }
 
+// OSP_PASSPORT_MAP_MEDIA_SHARPEN_09B
 function StopPreviewCard(props: {
   stopName: string;
   subtitle: string;
@@ -864,12 +867,13 @@ function StopPreviewCard(props: {
         background: props.soft,
             backgroundImage:
               props.stopName === "Cloud 9"
-                ? "linear-gradient(180deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.50) 52%, rgba(255,255,255,0.76) 100%), url(/osp/spm/passport-map/verified-stops/cloud-9-surf-landmark.png)"
+                ? "url(/osp/spm/passport-map/verified-stops/cloud-9-surf-landmark.png)"
                 : props.stopName === "Malinao Skate Park"
-                  ? "linear-gradient(180deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.50) 52%, rgba(255,255,255,0.76) 100%), url(/osp/spm/passport-map/verified-stops/malinao-skate-park-community-stop.png)"
+                  ? "url(/osp/spm/passport-map/verified-stops/malinao-skate-park-community-stop.png)"
                   : undefined,
             backgroundSize: "cover",
             backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
         border: "1px solid rgba(5,150,165,0.105)",
         boxShadow: "0 10px 21px rgba(1,56,99,0.048)",
         color: "inherit",
@@ -2213,10 +2217,11 @@ function SpmFeaturedPartnerTours() {
               padding: 11,
               background: tour.shell,
               backgroundImage: tour.image
-                ? `linear-gradient(180deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.42) 48%, rgba(255,255,255,0.68) 100%), url(${tour.image})`
+                ? `url(${tour.image})`
                 : undefined,
               backgroundSize: "cover",
               backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
               border: "1px solid rgba(5,150,165,0.13)",
               boxShadow: "0 12px 24px rgba(1,56,99,0.06)",
               color: "inherit",
@@ -2788,10 +2793,11 @@ function SpmCuratedPassportTours() {
             border: `1px solid ${trail.border}`,
             background: trail.background,
             backgroundImage: trail.image
-              ? `linear-gradient(180deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0.46) 48%, rgba(255,255,255,0.66) 100%), url(${trail.image})`
+              ? `url(${trail.image})`
               : undefined,
             backgroundSize: "cover",
             backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
             padding: 10,
             color: "inherit",
             textDecoration: "none",
@@ -2898,6 +2904,7 @@ function SpmCuratedPassportTours() {
         backgroundImage: `linear-gradient(90deg, rgba(221,247,244,0.78) 0%, rgba(221,247,244,0.58) 52%, rgba(221,247,244,0.32) 100%), url(/osp/spm/passport-map/return-traveler-continuity.png)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
         padding: 12,
         color: "inherit",
         textDecoration: "none",
@@ -2967,9 +2974,10 @@ function SpmCuratedPassportTours() {
           borderRadius: 20,
           border: "1px solid #E1E8EA",
           background: "#FFFFFF",
-          backgroundImage: `linear-gradient(90deg, rgba(255,255,255,0.80) 0%, rgba(255,255,255,0.58) 54%, rgba(255,255,255,0.28) 100%), url(/osp/spm/passport-map/check-trail-hierarchy.png)`,
+          backgroundImage: `linear-gradient(90deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.18) 54%, rgba(255,255,255,0.28) 100%), url(/osp/spm/passport-map/check-trail-hierarchy.png)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
           padding: "11px 12px",
           color: "inherit",
           textDecoration: "none",
@@ -3006,9 +3014,10 @@ function SpmCuratedPassportTours() {
           borderRadius: 20,
           border: "1px solid #CFEFEB",
           background: "linear-gradient(145deg, #EFFCFB 0%, #E5F8F6 100%)",
-          backgroundImage: `linear-gradient(90deg, rgba(239,252,251,0.80) 0%, rgba(239,252,251,0.58) 56%, rgba(239,252,251,0.30) 100%), url(/osp/spm/passport-map/your-passport-progress.png)`,
+          backgroundImage: `linear-gradient(90deg, rgba(239,252,251,0.22) 0%, rgba(239,252,251,0.16) 56%, rgba(239,252,251,0.30) 100%), url(/osp/spm/passport-map/your-passport-progress.png)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
           padding: "11px 12px",
           color: "inherit",
           textDecoration: "none",
@@ -3054,9 +3063,10 @@ function SpmCuratedPassportTours() {
           borderRadius: 20,
           border: "1px solid #F0DFC4",
           background: "linear-gradient(145deg, #FFF8EA 0%, #FFF1DD 100%)",
-          backgroundImage: `linear-gradient(90deg, rgba(255,248,234,0.80) 0%, rgba(255,248,234,0.58) 56%, rgba(255,248,234,0.30) 100%), url(/osp/spm/passport-map/guide-support.png)`,
+          backgroundImage: `linear-gradient(90deg, rgba(255,248,234,0.22) 0%, rgba(255,248,234,0.16) 56%, rgba(255,248,234,0.30) 100%), url(/osp/spm/passport-map/guide-support.png)`,
           backgroundSize: "cover",
           backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
           padding: "11px 12px",
           color: "inherit",
           textDecoration: "none",
