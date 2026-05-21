@@ -1,11 +1,12 @@
 import Link from "next/link";
 
+// OSP_CLOUD9_SITE_ACCESS_BANNER_12A
 const CLOUD9 = {
   title: "Cloud 9 Access",
   eyebrow: "LGU SITE ACCESS",
   subtitle: "Boardwalk entry for surf viewing, photos, and a short coastal stop.",
   heroImage:
-    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+    "/osp/spm/passport-map/site-visit/cloud-9-access.png",
   chips: ["Surf landmark", "Boardwalk", "Quick stop"],
   stats: [
     { label: "BEST TIME", value: "Daylight visit" },

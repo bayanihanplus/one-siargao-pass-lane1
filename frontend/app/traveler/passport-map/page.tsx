@@ -420,7 +420,74 @@ export default async function TravelerPassportMapPage() {
             color: rgba(255,255,255,0.94) !important;
             text-shadow: 0 1px 6px rgba(1, 24, 48, 0.78) !important;
           }
-            `,
+            
+
+          /* OSP_PASSPORT_MAP_CAPSULE_TEXT_BLUE_11D */
+          [style*="/osp/spm/passport-map/return-traveler-continuity.png"] h1,
+          [style*="/osp/spm/passport-map/return-traveler-continuity.png"] h2,
+          [style*="/osp/spm/passport-map/return-traveler-continuity.png"] h3,
+          [style*="/osp/spm/passport-map/return-traveler-continuity.png"] h4,
+          [style*="/osp/spm/passport-map/return-traveler-continuity.png"] strong,
+          [style*="/osp/spm/passport-map/return-traveler-continuity.png"] p,
+          [style*="/osp/spm/passport-map/check-trail-hierarchy.png"] h1,
+          [style*="/osp/spm/passport-map/check-trail-hierarchy.png"] h2,
+          [style*="/osp/spm/passport-map/check-trail-hierarchy.png"] h3,
+          [style*="/osp/spm/passport-map/check-trail-hierarchy.png"] h4,
+          [style*="/osp/spm/passport-map/check-trail-hierarchy.png"] strong,
+          [style*="/osp/spm/passport-map/check-trail-hierarchy.png"] p,
+          [style*="/osp/spm/passport-map/your-passport-progress.png"] h1,
+          [style*="/osp/spm/passport-map/your-passport-progress.png"] h2,
+          [style*="/osp/spm/passport-map/your-passport-progress.png"] h3,
+          [style*="/osp/spm/passport-map/your-passport-progress.png"] h4,
+          [style*="/osp/spm/passport-map/your-passport-progress.png"] strong,
+          [style*="/osp/spm/passport-map/your-passport-progress.png"] p,
+          [style*="/osp/spm/passport-map/guide-support.png"] h1,
+          [style*="/osp/spm/passport-map/guide-support.png"] h2,
+          [style*="/osp/spm/passport-map/guide-support.png"] h3,
+          [style*="/osp/spm/passport-map/guide-support.png"] h4,
+          [style*="/osp/spm/passport-map/guide-support.png"] strong,
+          [style*="/osp/spm/passport-map/guide-support.png"] p {
+            color: #013863 !important;
+            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.88) !important;
+          }
+
+          [style*="/osp/spm/passport-map/return-traveler-continuity.png"] small,
+          [style*="/osp/spm/passport-map/return-traveler-continuity.png"] em,
+          [style*="/osp/spm/passport-map/check-trail-hierarchy.png"] small,
+          [style*="/osp/spm/passport-map/check-trail-hierarchy.png"] em,
+          [style*="/osp/spm/passport-map/your-passport-progress.png"] small,
+          [style*="/osp/spm/passport-map/your-passport-progress.png"] em,
+          [style*="/osp/spm/passport-map/guide-support.png"] small,
+          [style*="/osp/spm/passport-map/guide-support.png"] em {
+            color: rgba(1, 56, 99, 0.88) !important;
+            text-shadow: 0 1px 4px rgba(255, 255, 255, 0.88) !important;
+          }
+
+
+          /* OSP_PASSPORT_MAP_FLEXIBLE_TRAIL_TEXT_BLUE_11E */
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] h1,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] h2,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] h3,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] h4,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] strong,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] p,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] small,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] em,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] a,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] button {
+            color: #013863 !important;
+            text-shadow: 0 1px 4px rgba(255,255,255,0.82) !important;
+          }
+
+          /* Keep the primary CTA (Start route) white */
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] a:first-of-type,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] a:first-of-type *,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] button:first-of-type,
+          [style*="/osp/spm/passport-map/flexible-trail/build-your-own-passport-trail.png"] button:first-of-type * {
+            color: #FFFFFF !important;
+            text-shadow: none !important;
+          }
+`,
           }}
         />
 
@@ -2389,6 +2456,7 @@ function SpmFeaturedPartnerTours() {
 }
 
 
+// OSP_PASSPORT_MAP_FEATURED_TRAIL_HERO_PAGE_CARD_10K
 function SpmCuratedPassportTours() {
   const officialTrails = [
     {
@@ -2611,7 +2679,7 @@ function SpmCuratedPassportTours() {
       }}
     >
       <img
-        src="/osp/spm/trails/island-hopping-route-illustration.png?v=02a"
+        src="/osp/spm/passport-map/featured-trail/island-hopping-passport-trail-hero-page-card.png"
         alt=""
         aria-hidden="true"
         style={{
@@ -2620,7 +2688,7 @@ function SpmCuratedPassportTours() {
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          objectPosition: "center right",
+          objectPosition: "center",
           opacity: 0.98,
           pointerEvents: "none",
           filter: "saturate(1.03) contrast(1.01)",

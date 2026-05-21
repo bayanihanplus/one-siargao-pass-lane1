@@ -960,6 +960,7 @@ async function TravelerHomeQuickAccessGrid() {
       href: "/traveler/passport-map",
       status: "Map",
       button: "Open Map",
+      mediaSrc: "/osp/traveler/home/quick-access/passport-map.png",
       icon: (
         <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
           <path d="M9 18l-5 2V6l5-2 6 2 5-2v14l-5 2-6-2Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
@@ -985,6 +986,7 @@ async function TravelerHomeQuickAccessGrid() {
       href: cloud9Point?.qrDefinition?.publicScanUrl || "/traveler/site-access/cloud-9",
       status: "Active",
       button: "Open Access",
+      mediaSrc: "/osp/traveler/home/quick-access/cloud-9-access.png", // OSP_HOME_CLOUD9_ACCESS_DATA_DRIVEN_CARD_MEDIA_14D
       icon: (
         <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
           <path d="M3.5 15.5c2.8 0 3.4-2.2 5.8-2.2s3 2.2 5.7 2.2 3.4-2.2 5.5-2.2" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
@@ -1010,6 +1012,7 @@ async function TravelerHomeQuickAccessGrid() {
       href: mksPoint?.qrDefinition?.publicScanUrl || "/traveler/site-access/malinao-skate-park",
       status: mksPoint?.accessRule === "SITE_VISIT_LOG" ? "Validated" : "Validated",
       button: "View Point",
+      mediaSrc: "/osp/traveler/home/quick-access/malinao-skate-park.png", // OSP_HOME_MALINAO_SKATE_PARK_FORCE_MEDIASRC_14E2
       icon: (
         <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
           <path d="M6.2 13.4h9.1c1.5 0 2.8-.9 3.3-2.3l.3-.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -1036,6 +1039,7 @@ async function TravelerHomeQuickAccessGrid() {
       href: afamPoint?.qrDefinition?.publicScanUrl || "/traveler/site-access/afam-catangnan-bridge",
       status: afamPoint?.accessRule === "SITE_VISIT_LOG" ? "Site Visit" : "Site Visit",
       button: "View Point",
+      mediaSrc: "/osp/traveler/home/quick-access/afam-catangnan-bridge.png", // OSP_HOME_AFAM_CATANGNAN_BRIDGE_DATA_DRIVEN_CARD_MEDIA_14F
       icon: (
         <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
           <path d="M4 15.5h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -1152,7 +1156,8 @@ async function TravelerHomeQuickAccessGrid() {
               minHeight: card.title === "Passport Map" ? 78 : 70,
               padding: card.title === "Passport Map" ? "14px 14px" : "12px 14px",
               borderRadius: 22,
-              background: card.shell,
+              // OSP_HOME_PASSPORT_MAP_DATA_DRIVEN_CARD_MEDIA_14C
+              background: card.mediaSrc ? `url(${card.mediaSrc}) center / cover no-repeat` : card.shell,
               border: `1px solid ${card.border}`,
               boxShadow:
                 card.title === "Passport Map"
@@ -1188,7 +1193,8 @@ async function TravelerHomeQuickAccessGrid() {
                     fontSize: card.title === "Passport Map" ? 14.5 : 13.5,
                     lineHeight: 1.15,
                     fontWeight: 900,
-                    color: card.titleColor,
+                    color: card.mediaSrc ? "#FFFFFF" : card.titleColor, // OSP_HOME_QUICK_ACCESS_MEDIA_TEXT_WHITE_14L
+                    textShadow: card.mediaSrc ? "0 2px 8px rgba(1,24,48,0.78)" : "none",
                     letterSpacing: "-0.015em",
                   }}
                 >
@@ -1222,7 +1228,8 @@ async function TravelerHomeQuickAccessGrid() {
                   fontSize: 11.5,
                   lineHeight: 1.35,
                   fontWeight: 700,
-                  color: card.subtitleColor,
+                  color: card.mediaSrc ? "rgba(255,255,255,0.96)" : card.subtitleColor,
+                  textShadow: card.mediaSrc ? "0 2px 8px rgba(1,24,48,0.74)" : "none",
                 }}
               >
                 {card.subtitle}
@@ -1260,89 +1267,100 @@ async function TravelerHomeQuickAccessGrid() {
 
 
 function TravelerJourneyCard(props: {
+  href: string;
   title: string;
   subtitle: string;
-  href: string;
-  icon: any;
   shellBg: string;
   borderColor: string;
   chipBg: string;
   accentColor: string;
+  icon: React.ReactNode;
+  mediaSrc?: string;
 }) {
+  const hasMedia = Boolean(props.mediaSrc);
+
   return (
     <a
       href={props.href}
       style={{
-        border: `1px solid ${props.borderColor}`,
+        // OSP_HOME_REPAIR_JOURNEY_CARD_AND_TRIPS_MEDIA_14H3
+        minHeight: 112,
         borderRadius: 18,
-        background: props.shellBg,
-        padding: "8px 9px",
-        minHeight: 96,
-        textDecoration: "none",
-        boxShadow: "0 8px 22px rgba(15,23,42,0.045)",
+        padding: 12,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        color: "inherit",
+        textDecoration: "none",
+        background: hasMedia
+          ? `url(${props.mediaSrc}) center / cover no-repeat`
+          : props.shellBg,
+        border: `1px solid ${props.borderColor}`,
+        boxShadow: "0 14px 32px rgba(8, 54, 84, 0.08)",
+        overflow: "hidden",
+        position: "relative",
       }}
     >
       <div
         style={{
-          width: 32,
-          height: 32,
-          borderRadius: 10,
-          background: props.chipBg,
+          width: 34,
+          height: 34,
+          borderRadius: 12,
+          background: hasMedia ? "rgba(255,255,255,0.84)" : props.chipBg,
           border: `1px solid ${props.borderColor}`,
           color: props.accentColor,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.72)",
+          display: "grid",
+          placeItems: "center",
+          flex: "0 0 auto",
+          boxShadow: hasMedia ? "0 8px 18px rgba(1,42,69,0.14)" : "none",
         }}
       >
         {props.icon}
       </div>
 
       <div>
-        <div
+        <strong
           style={{
-            marginTop: 6,
-            fontSize: 11,
-            fontWeight: 950,
-            lineHeight: 1.08,
-            color: "#19305a",
-            letterSpacing: "-0.015em",
+            display: "block",
+            color: "#013863",
+            fontSize: 13,
+            lineHeight: 1.04,
+            fontWeight: 900,
+            letterSpacing: "-0.02em",
+            textShadow: hasMedia ? "0 1px 5px rgba(255,255,255,0.9)" : "none",
           }}
         >
           {props.title}
-        </div>
-        <div
+        </strong>
+        <p
           style={{
-            marginTop: 2,
-            fontSize: 8.5,
-            fontWeight: 750,
-            lineHeight: 1.18,
-            color: "#52677f",
+            margin: "3px 0 0",
+            color: "#123B63",
+            fontSize: 10.5,
+            lineHeight: 1.14,
+            fontWeight: 800,
+            textShadow: hasMedia ? "0 1px 5px rgba(255,255,255,0.86)" : "none",
           }}
         >
           {props.subtitle}
-        </div>
-        <div
-          style={{
-            marginTop: 4,
-            fontSize: 7.1,
-            fontWeight: 950,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: props.accentColor,
-          }}
-        >
-          Open
-        </div>
+        </p>
       </div>
+
+      <span
+        style={{
+          color: props.accentColor,
+          fontSize: 9,
+          fontWeight: 950,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          textShadow: hasMedia ? "0 1px 5px rgba(255,255,255,0.88)" : "none",
+        }}
+      >
+        Open
+      </span>
     </a>
   );
 }
+
 
 function TravelerBottomNavLink(props: {
   href: string;
@@ -2246,6 +2264,7 @@ function TravelerReassuranceAndJourney(props: {
             href={rootPreview ? "/traveler/start" : "/traveler/trips"}
             title={tripsTitle}
             subtitle={tripsSubtitle}
+              mediaSrc="/osp/traveler/home/continue-your-journey/trips.png"
             shellBg="#eff6ff"
             borderColor="#cfe0f7"
             chipBg="#dceeff"
@@ -2263,6 +2282,7 @@ function TravelerReassuranceAndJourney(props: {
             href="/traveler/payments"
             title={paymentsTitle}
             subtitle={paymentsSubtitle}
+            mediaSrc="/osp/traveler/home/continue-your-journey/payments-receipts.png" // OSP_HOME_PAYMENTS_RECEIPTS_CARD_MEDIA_14I
             shellBg="#fff8eb"
             borderColor="#f6e1b5"
             chipBg="#fef0c7"
@@ -3021,6 +3041,7 @@ export default async function TravelerHomePage() {
               title="Trips"
               subtitle="Plans & records"
               href="/traveler/trips"
+              mediaSrc="/osp/traveler/home/continue-your-journey/trips.png"
               shellBg="#eff6ff"
               borderColor="#bfdbfe"
               chipBg="#dbeafe"
@@ -3037,6 +3058,7 @@ export default async function TravelerHomePage() {
               title="Payments & Receipts"
               subtitle="Payments & receipts"
               href="/traveler/payments"
+              mediaSrc="/osp/traveler/home/continue-your-journey/payments-receipts.png"
               shellBg="#fff7ed"
               borderColor="#fed7aa"
               chipBg="#ffedd5"
@@ -3049,10 +3071,12 @@ export default async function TravelerHomePage() {
               }
             />
 
-            <TravelerJourneyCard
+            {/* OSP_HOME_MY_PASS_VISIBLE_CARD_FORCE_MEDIA_14J2 */}
+<TravelerJourneyCard
               title="My Pass"
               subtitle="Show your QR identity and trip pass"
               href="/traveler/pass"
+              mediaSrc="/osp/traveler/home/continue-your-journey/my-pass.png"
               shellBg="#ecfeff"
               borderColor="#a5f3fc"
               chipBg="#cffafe"
@@ -3065,10 +3089,12 @@ export default async function TravelerHomePage() {
               }
             />
 
-            <TravelerJourneyCard
+            {/* OSP_HOME_EXPLORE_SIARGAO_CARD_MEDIA_14K */}
+<TravelerJourneyCard
               title="Explore Siargao"
               subtitle="Discover stays, tours, trails, and local spots"
               href="/traveler/explore"
+              mediaSrc="/osp/traveler/home/continue-your-journey/explore-siargao.png"
               shellBg="#F4FCFA"
               borderColor="rgba(5,150,165,0.22)"
               chipBg="#EAFBFA"
