@@ -139,7 +139,7 @@ export default function TravelerStartPage() {
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
             <a
-              href="/login"
+              href="/traveler/login"
               aria-label="Back to traveler access"
               style={{
                 width: 42,
@@ -197,7 +197,7 @@ export default function TravelerStartPage() {
 
           <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             <MiniButton href="/traveler/register" icon="🧭">Create my account</MiniButton>
-            <MiniButton href="/login?mode=returning" icon="🗺️" variant="secondary">Preview map</MiniButton>
+            <MiniButton href="/traveler/login" icon="🗺️" variant="secondary">Preview map</MiniButton>
           </div>
         </header>
 
@@ -291,7 +291,7 @@ export default function TravelerStartPage() {
           </p>
           <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             <MiniButton href="/traveler/register" icon="▣">Create my account</MiniButton>
-            <MiniButton href="/login?mode=returning" icon="◈" variant="secondary">View pass</MiniButton>
+            <MiniButton href="/traveler/login" icon="◈" variant="secondary">View pass</MiniButton>
           </div>
         </section>
       </div>

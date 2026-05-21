@@ -230,7 +230,7 @@ export function ConsentAndSubmit() {
       </button>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-        <UtilityLink href="/login?mode=returning" icon="🧭" title="I already have account" />
+        <UtilityLink href="/traveler/login" icon="🧭" title="I already have account" />
         <UtilityLink href="/traveler/explore" icon="🗺️" title="Explore first" />
       </div>
     </>

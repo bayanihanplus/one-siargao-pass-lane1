@@ -586,7 +586,7 @@ export default async function TravelerRegisterPage({
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
             <a
-              href="/login?mode=returning"
+              href="/traveler/login"
               aria-label="Back to login"
               style={{
                 width: 40,

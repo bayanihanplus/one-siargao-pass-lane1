@@ -231,6 +231,12 @@ function IslandHoppingRequestStartedPanel({
         color: OSP.ink,
       }}
     >
+      <style>{`
+        .osp-passport-trails-next-step-hidden {
+          display: none !important;
+        }
+      `}</style>
+
       <section
         aria-label="Island Hopping request started"
         style={{ width: "100%", maxWidth: 430, margin: "0 auto", display: "grid", gap: 12 }}
@@ -1465,7 +1471,7 @@ export default async function PassportTrailsPremiumHubPage({
             border: "1px solid rgba(5,150,165,0.16)",
             boxShadow: "0 18px 42px rgba(1,56,99,0.10)",
           }}
-        >
+         data-osp-passport-trails-next-step-hidden="true" className="osp-passport-trails-next-step-hidden">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
             <div>
               <SectionEyebrow>{tr(dictionary, "passportTrails.nextStep.eyebrow", "Next Step")}</SectionEyebrow>

@@ -1061,9 +1061,12 @@ async function TravelerHomeQuickAccessGrid() {
 
   return (
     <section
+      data-osp-home-quick-access="true"
       style={{
-        width: "100%",
-        maxWidth: 430,
+        gridColumn: "1 / -1",
+        width: "min(430px, calc(100vw - 32px))",
+        maxWidth: "100%",
+        minWidth: 0,
         margin: "0 auto 14px",
         borderRadius: 28,
         padding: 16,
@@ -1553,13 +1556,13 @@ function TravelerShellFrame(props: {
             flex: "0 0 auto",
           }}
         >
-          <HeaderControlButton label={languageLabel} ariaLabel={languageAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=language"} icon="language" />
-          <HeaderControlButton label={currencyLabel} ariaLabel={currencyAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=currency"} icon="currency" />
-          <HeaderControlButton className="osp-phone-secondary-control" label="AI" ariaLabel={assistantAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=assistant"} icon="assistant" />
+          <HeaderControlButton label={languageLabel} ariaLabel={languageAriaLabel} href={rootPreview ? "/traveler/login" : "/traveler/settings?panel=language"} icon="language" />
+          <HeaderControlButton label={currencyLabel} ariaLabel={currencyAriaLabel} href={rootPreview ? "/traveler/login" : "/traveler/settings?panel=currency"} icon="currency" />
+          <HeaderControlButton className="osp-phone-secondary-control" label="AI" ariaLabel={assistantAriaLabel} href={rootPreview ? "/traveler/login" : "/traveler/settings?panel=assistant"} icon="assistant" />
 
           <a
             className="osp-phone-hidden-notification"
-            href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=notifications"}
+            href={rootPreview ? "/traveler/login" : "/traveler/settings?panel=notifications"}
             aria-label={notificationsAriaLabel}
             style={{
               position: "relative",
@@ -2204,8 +2207,6 @@ function TravelerReassuranceAndJourney(props: {
   latestTravelerTrip: any;
   dictionary: Record<string, string>;
 }) {
-  const reassurance = getTravelerReassuranceMessage(props.latestTravelerTrip);
-  const reassuranceMessage = t(props.dictionary, "home.reassurance.message", reassurance.message);
   const continueJourneyTitle = t(props.dictionary, "home.journey.title", "Continue Your Journey");
   const tripsTitle = t(props.dictionary, "home.journey.trips.title", "Trips");
   const tripsSubtitle = t(props.dictionary, "home.journey.trips.subtitle", "Plans & records");
@@ -2220,40 +2221,7 @@ function TravelerReassuranceAndJourney(props: {
 
   return (
     <>
-      <section
-        style={{
-          marginTop: 14,
-          border: "1px solid #cfe8ef",
-          borderRadius: 14,
-          background: "#e7f6fb",
-          padding: "12px 14px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: "#ffffff",
-              color: "#17b6c6",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flex: "0 0 auto",
-            }}
-          >
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
-              <path d="M12 3l7 3v5c0 4.5-3 8.1-7 10-4-1.9-7-5.5-7-10V6l7-3z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.35, fontWeight: 500, color: reassurance.color }}>
-            {reassuranceMessage}
-          </p>
-        </div>
-      </section>
-
-      <section style={{ marginTop: 20 }}>
+      <section style={{ marginTop: 0 }}>
         <h3
           style={{
             margin: 0,
@@ -2270,8 +2238,8 @@ function TravelerReassuranceAndJourney(props: {
           style={{
             marginTop: 9,
             display: "grid",
-            gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-            gap: 5,
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 8,
           }}
         >
           <TravelerJourneyCard
@@ -2423,7 +2391,7 @@ function TravelerBottomNav(props: {
         </a>
 
         <TravelerBottomNavLink
-          href={rootPreview ? "/login?mode=returning" : "/traveler/trips"}
+          href={rootPreview ? "/traveler/login" : "/traveler/trips"}
           label={paymentsLabel}
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
@@ -2434,7 +2402,7 @@ function TravelerBottomNav(props: {
         />
 
         <TravelerBottomNavLink
-          href={rootPreview ? "/login?mode=returning" : "/traveler/pass"}
+          href={rootPreview ? "/traveler/login" : "/traveler/pass"}
           label={profileLabel}
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">

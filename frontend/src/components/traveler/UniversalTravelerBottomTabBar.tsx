@@ -28,7 +28,7 @@ const OSP = {
 } as const;
 
 const bottomTabSafeSpacerStyle = {
-  height: "calc(112px + env(safe-area-inset-bottom))",
+  height: "calc(60px + env(safe-area-inset-bottom))",
   flex: "0 0 auto",
   pointerEvents: "none",
 } as const;
