@@ -663,7 +663,7 @@ function PassCardQrShell(props: { qrToken?: string | null }) {
             style={{
               textAlign: "center",
               fontSize: 11,
-              fontWeight: 700,
+              fontWeight: 500,
               lineHeight: 1.35,
               color: "#7b8ea2",
               padding: "0 10px",
@@ -1099,7 +1099,7 @@ async function TravelerHomeQuickAccessGrid() {
               margin: "5px 0 0",
               fontSize: 19,
               lineHeight: 1.08,
-              fontWeight: 850,
+              fontWeight: 650,
               letterSpacing: "-0.035em",
               color: "#013863",
             }}
@@ -1112,7 +1112,7 @@ async function TravelerHomeQuickAccessGrid() {
               maxWidth: 310,
               fontSize: 12.5,
               lineHeight: 1.45,
-              fontWeight: 700,
+              fontWeight: 500,
               color: "#50668B",
             }}
           >
@@ -1192,7 +1192,7 @@ async function TravelerHomeQuickAccessGrid() {
                   style={{
                     fontSize: card.title === "Passport Map" ? 14.5 : 13.5,
                     lineHeight: 1.15,
-                    fontWeight: 900,
+                    fontWeight: 650,
                     color: card.mediaSrc ? "#FFFFFF" : card.titleColor, // OSP_HOME_QUICK_ACCESS_MEDIA_TEXT_WHITE_14L
                     textShadow: card.mediaSrc ? "0 2px 8px rgba(1,24,48,0.78)" : "none",
                     letterSpacing: "-0.015em",
@@ -1227,7 +1227,7 @@ async function TravelerHomeQuickAccessGrid() {
                   marginTop: 5,
                   fontSize: 11.5,
                   lineHeight: 1.35,
-                  fontWeight: 700,
+                  fontWeight: 500,
                   color: card.mediaSrc ? "rgba(255,255,255,0.96)" : card.subtitleColor,
                   textShadow: card.mediaSrc ? "0 2px 8px rgba(1,24,48,0.74)" : "none",
                 }}
@@ -1248,7 +1248,7 @@ async function TravelerHomeQuickAccessGrid() {
                   color: card.buttonColor,
                   fontSize: 10.5,
                   lineHeight: 1,
-                  fontWeight: 900,
+                  fontWeight: 650,
                   boxShadow: "0 6px 14px rgba(1,56,99,0.06)",
                 }}
               >
@@ -1324,7 +1324,7 @@ function TravelerJourneyCard(props: {
             color: "#013863",
             fontSize: 13,
             lineHeight: 1.04,
-            fontWeight: 900,
+            fontWeight: 650,
             letterSpacing: "-0.02em",
             textShadow: hasMedia ? "0 1px 5px rgba(255,255,255,0.9)" : "none",
           }}
@@ -1386,7 +1386,7 @@ function TravelerBottomNavLink(props: {
         justifyContent: "center",
         gap: 5,
         fontSize: 9.5,
-        fontWeight: 900,
+        fontWeight: 650,
         letterSpacing: "-0.01em",
         color,
         background,
@@ -1526,7 +1526,7 @@ function TravelerShellFrame(props: {
               style={{
                 margin: 0,
                 fontSize: 18,
-                fontWeight: 850,
+                fontWeight: 650,
                 lineHeight: 0.98,
                 letterSpacing: "-0.035em",
                 color: "#19305a",
@@ -1541,7 +1541,7 @@ function TravelerShellFrame(props: {
                 alignItems: "center",
                 gap: 5,
                 fontSize: 12,
-                fontWeight: 700,
+                fontWeight: 500,
                 color: "#64748b",
               }}
             >
@@ -1668,7 +1668,7 @@ function TravelerShellFrame(props: {
                   borderRadius: 999,
                   padding: "6px 14px",
                   fontSize: 12,
-                  fontWeight: 850,
+                  fontWeight: 650,
                   background: hero.pillBg,
                   color: "#ffffff",
                 }}
@@ -1884,7 +1884,7 @@ function TravelerShellFrame(props: {
                   style={{
                     fontSize: 7.1,
                     lineHeight: 1,
-                    fontWeight: 900,
+                    fontWeight: 650,
                     letterSpacing: "0.08em",
                     textTransform: "uppercase",
                     color: "rgba(255,255,255,0.7)",
@@ -1901,7 +1901,7 @@ function TravelerShellFrame(props: {
                     marginTop: 4,
                     fontSize: 9.1,
                     lineHeight: 1.08,
-                    fontWeight: 900,
+                    fontWeight: 650,
                     color: "#ffffff",
                     wordBreak: "break-word",
                     textShadow: "0 2px 8px rgba(0,18,42,0.35)",
@@ -1972,7 +1972,7 @@ function TravelerPassCard(props: {
           <div
             style={{
               fontSize: 11,
-              fontWeight: 900,
+              fontWeight: 650,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: "#6f879f",
@@ -1986,7 +1986,7 @@ function TravelerPassCard(props: {
               marginTop: 10,
               marginBottom: 0,
               fontSize: 18,
-              fontWeight: 900,
+              fontWeight: 650,
               lineHeight: 1.12,
               color: "#1d2f5c",
             }}
@@ -1998,7 +1998,7 @@ function TravelerPassCard(props: {
             <div
               style={{
                 fontSize: 11,
-                fontWeight: 900,
+                fontWeight: 650,
                 letterSpacing: "0.16em",
                 textTransform: "uppercase",
                 color: "#7a93ad",
@@ -2010,7 +2010,7 @@ function TravelerPassCard(props: {
               style={{
                 marginTop: 5,
                 fontSize: 15,
-                fontWeight: 850,
+                fontWeight: 650,
                 letterSpacing: "0.02em",
                 color: "#0f172a",
                 wordBreak: "break-word",
@@ -2024,7 +2024,7 @@ function TravelerPassCard(props: {
             <div
               style={{
                 fontSize: 11,
-                fontWeight: 900,
+                fontWeight: 650,
                 letterSpacing: "0.16em",
                 textTransform: "uppercase",
                 color: "#7a93ad",
@@ -2051,7 +2051,7 @@ function TravelerPassCard(props: {
               alignItems: "center",
               gap: 8,
               fontSize: 13,
-              fontWeight: 700,
+              fontWeight: 500,
               color: "#66819e",
             }}
           >
@@ -2096,7 +2096,7 @@ function TravelerPassCard(props: {
               alignItems: "center",
               gap: 7,
               fontSize: 13,
-              fontWeight: 900,
+              fontWeight: 650,
               color: "#1195a7",
             }}
           >
@@ -2563,7 +2563,7 @@ export default async function TravelerHomePage() {
                   style={{
                     margin: 0,
                     fontSize: 18,
-                    fontWeight: 850,
+                    fontWeight: 650,
                     lineHeight: 0.98,
                     letterSpacing: "-0.035em",
                     color: "#19305a",
@@ -2579,7 +2579,7 @@ export default async function TravelerHomePage() {
                     alignItems: "center",
                     gap: 5,
                     fontSize: 12,
-                    fontWeight: 700,
+                    fontWeight: 500,
                     color: "#64748b",
                     whiteSpace: "nowrap",
                   }}
@@ -2731,7 +2731,7 @@ export default async function TravelerHomePage() {
                       borderRadius: 999,
                       padding: "6px 14px",
                       fontSize: 12,
-                      fontWeight: 850,
+                      fontWeight: 650,
                       background: "#14b8a6",
                       color: "#ffffff",
                     }}
@@ -2810,7 +2810,7 @@ export default async function TravelerHomePage() {
                       background: "#24bfd1",
                       color: "#ffffff",
                       fontSize: 15,
-                      fontWeight: 850,
+                      fontWeight: 650,
                       boxShadow: "0 12px 24px rgba(36,191,209,0.24)",
                     }}
                   >
@@ -2830,7 +2830,7 @@ export default async function TravelerHomePage() {
                       background: "rgba(255,255,255,0.14)",
                       color: "#ffffff",
                       fontSize: 15,
-                      fontWeight: 850,
+                      fontWeight: 650,
                       border: "1px solid rgba(255,255,255,0.28)",
                     }}
                   >
@@ -2910,7 +2910,7 @@ export default async function TravelerHomePage() {
                       style={{
                         fontSize: 7.1,
                         lineHeight: 1,
-                        fontWeight: 900,
+                        fontWeight: 650,
                         letterSpacing: "0.08em",
                         textTransform: "uppercase",
                         color: "rgba(255,255,255,0.7)",
@@ -2927,7 +2927,7 @@ export default async function TravelerHomePage() {
                         marginTop: 4,
                         fontSize: 9.1,
                         lineHeight: 1.08,
-                        fontWeight: 900,
+                        fontWeight: 650,
                         color: "#ffffff",
                         wordBreak: "break-word",
                         textShadow: "0 2px 8px rgba(0,18,42,0.35)",
@@ -2972,7 +2972,7 @@ export default async function TravelerHomePage() {
         >
           <div style={{ display: "flex", justifyContent: "space-between", gap: 14 }}>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.18em", color: "#7c96ad", textTransform: "uppercase" }}>
+              <div style={{ fontSize: 13, fontWeight: 650, letterSpacing: "0.18em", color: "#7c96ad", textTransform: "uppercase" }}>
                 One Siargao Pass
               </div>
 
@@ -2980,21 +2980,21 @@ export default async function TravelerHomePage() {
                 New Traveler
               </h2>
 
-              <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
+              <div style={{ fontSize: 13, fontWeight: 650, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
                 Pass Code
               </div>
 
-              <div style={{ marginTop: 6, fontSize: 18, lineHeight: 1.1, fontWeight: 900, color: "#0f172a" }}>
+              <div style={{ marginTop: 6, fontSize: 18, lineHeight: 1.1, fontWeight: 650, color: "#0f172a" }}>
                 OSP-READY-
                 <br />
                 START-HERE
               </div>
 
-              <div style={{ marginTop: 18, fontSize: 13, fontWeight: 900, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
+              <div style={{ marginTop: 18, fontSize: 13, fontWeight: 650, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
                 Valid Dates
               </div>
 
-              <div style={{ marginTop: 6, fontSize: 15, fontWeight: 850, color: "#0f172a" }}>
+              <div style={{ marginTop: 6, fontSize: 15, fontWeight: 650, color: "#0f172a" }}>
                 Created after trip setup
               </div>
             </div>
@@ -3005,7 +3005,7 @@ export default async function TravelerHomePage() {
               </div>
 
               <div style={{ marginTop: 18, borderRadius: 24, background: "#ffffff", border: "1px solid #dbe8ef", padding: 12 }}>
-                <div style={{ fontSize: 9.1, fontWeight: 900, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
+                <div style={{ fontSize: 9.1, fontWeight: 650, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
                   Official Pass
                 </div>
 
@@ -3022,7 +3022,7 @@ export default async function TravelerHomePage() {
                   aria-label="Preview QR pattern"
                 />
 
-                <div style={{ marginTop: 8, fontSize: 9, fontWeight: 900, letterSpacing: "0.18em", color: "#7c96ad", textTransform: "uppercase" }}>
+                <div style={{ marginTop: 8, fontSize: 9, fontWeight: 650, letterSpacing: "0.18em", color: "#7c96ad", textTransform: "uppercase" }}>
                   Scan to Verify
                 </div>
               </div>
@@ -3177,3 +3177,4 @@ export default async function TravelerHomePage() {
     </main>
   );
 }
+

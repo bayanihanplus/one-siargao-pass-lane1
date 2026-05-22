@@ -25183,3 +25183,31 @@ body:has(.osp-public-header) {
   }
 }
 /* OSP-TRAVELER-BOTTOM-TAB-SAFE-GAP-UNIVERSAL-11N END */
+
+/* OSP_HOME_CONTINUE_JOURNEY_FORCE_WHITE_CSS_14X START */
+/* Force readable white text on /traveler/home Continue Your Journey media cards only. */
+a[href="/traveler/trips"] strong,
+a[href="/traveler/trips"] p,
+a[href="/traveler/trips"] span,
+a[href="/traveler/payments"] strong,
+a[href="/traveler/payments"] p,
+a[href="/traveler/payments"] span,
+a[href="/traveler/pass"] strong,
+a[href="/traveler/pass"] p,
+a[href="/traveler/pass"] span,
+a[href="/traveler/explore"] strong,
+a[href="/traveler/explore"] p,
+a[href="/traveler/explore"] span {
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(1, 24, 48, 0.9) !important;
+}
+
+/* Keep icon SVG colors untouched. */
+a[href="/traveler/trips"] svg,
+a[href="/traveler/payments"] svg,
+a[href="/traveler/pass"] svg,
+a[href="/traveler/explore"] svg {
+  text-shadow: none !important;
+}
+/* OSP_HOME_CONTINUE_JOURNEY_FORCE_WHITE_CSS_14X END */
+
