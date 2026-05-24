@@ -40,8 +40,8 @@ OSP_TRUST_EMAIL_WEBHOOK_URL=https://your-email-provider-or-automation-webhook
 ## Current template proof
 
 TRAVELER_QR_CREATED
-CTA: Open My OSP Pass
-Path: /traveler/pass
+CTA: Open My OSP App
+Path: /traveler/home
 
 OPERATOR_ACCOUNT_READY
 CTA: Open Partner Dashboard

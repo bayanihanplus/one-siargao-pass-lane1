@@ -14,10 +14,10 @@ Trigger:
 Traveler OSP account / QR identity / pass created.
 
 CTA:
-Open My OSP Pass
+Open My OSP App
 
 Destination:
-/traveler/pass
+/traveler/home
 
 Login fallback:
 Traveler App returning login only.

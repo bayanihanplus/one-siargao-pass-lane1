@@ -26,8 +26,8 @@ export const OSP_TRUST_EMAIL_TEMPLATES: Record<OspTrustEmailTemplateKey, OspTrus
     key: 'TRAVELER_QR_CREATED',
     roleFamily: 'TRAVELER',
     subject: 'Welcome to One Siargao Pass',
-    ctaLabel: 'Open My OSP Pass',
-    ctaPath: '/traveler/pass',
+    ctaLabel: 'Open My OSP App',
+    ctaPath: '/traveler/home',
     eyebrow: 'Your OSP Pass is ready',
     bodyIntro: 'Your traveler account has been created, and your OSP Pass is now on record.',
     bodySupport:
