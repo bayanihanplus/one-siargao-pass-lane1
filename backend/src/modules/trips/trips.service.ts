@@ -517,13 +517,62 @@ export class TripsService {
 
     const now = new Date();
 
-    const latestTrip =
+    let latestTrip =
       trips.find((trip: any) => {
         const departureDate = trip?.departureDate ? new Date(trip.departureDate) : null;
         return departureDate && !Number.isNaN(departureDate.getTime()) && departureDate >= now;
       }) ||
       trips[0] ||
       null;
+
+    // OSP-TRAVELER-HOME-UNIVERSAL-PASS-LOCK-05C
+    // Authenticated traveler home must never appear passless/fake.
+    // If an older traveler somehow has no trip, create a starter trip and let the
+    // existing pass safety net issue the canonical OSP Pass + QR.
+    if (!latestTrip) {
+      latestTrip = await this.prisma.trip.create({
+        data: {
+          travelerUserId: userId,
+          tripTitle: 'One Siargao Pass Starter Trip',
+          arrivalDate: now,
+          departureDate: new Date(now.getTime() + 1000 * 60 * 60 * 24 * 30),
+          originLocation: 'To be completed',
+          declaredAccommodationName: 'To be completed',
+          registration: {
+            create: {
+              registrationReference: `REG-HOME-${Date.now()}`,
+              registrationChannel: 'traveler_home_auto_bootstrap',
+              registrationCompletedAt: null,
+            },
+          },
+        },
+        include: {
+          pass: {
+            include: {
+              qrCredential: true,
+            },
+          },
+          bookingLinks: {
+            include: {
+              booking: {
+                include: {
+                  paymentState: true,
+                  paymentIntents: {
+                    orderBy: { createdAt: 'desc' },
+                    take: 1,
+                  },
+                },
+              },
+            },
+          },
+          manifestMembers: true,
+          clearanceHistory: {
+            orderBy: { createdAt: 'desc' },
+            take: 5,
+          },
+        },
+      });
+    }
 
     let pass = latestTrip?.pass || null;
 

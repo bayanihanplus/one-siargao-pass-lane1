@@ -124,9 +124,31 @@ async function getTravelerHomeSummary() {
     }
 
     const summary = await safeReadJsonResponse(res);
-    const trip = summary?.latestTrip
+
+    // OSP-TRAVELER-HOME-PASS-FIRST-LOCK-05C
+    // A traveler can have a real OSP Pass / Universal QR before meaningful trip activity.
+    // Do not hide a real pass behind a trip-first null state.
+    const tripSource = summary?.latestTrip || (
+      summary?.passSummary
+        ? {
+            id: "osp-pass-first-home-summary",
+            tripTitle: "One Siargao Pass",
+            arrivalDate: summary?.passLayer?.validFrom || summary?.passSummary?.issuedAt || null,
+            departureDate: summary?.passLayer?.validUntil || summary?.passSummary?.expiresAt || null,
+            originLocation: "Traveler identity",
+            declaredAccommodationName: "To be completed",
+            tripStatus: "DRAFT",
+            registrationStatus: "INCOMPLETE",
+            clearanceStatus: null,
+            createdAt: summary?.passSummary?.issuedAt || summary?.generatedAt || null,
+            updatedAt: summary?.generatedAt || null,
+          }
+        : null
+    );
+
+    const trip = tripSource
       ? {
-          ...summary.latestTrip,
+          ...tripSource,
           pass: summary.passSummary
             ? {
                 ...summary.passSummary,
@@ -226,7 +248,7 @@ function formatHeroTitleFromDictionary(value: string) {
     "Trip Found. Pass Pending.": "Trip Found.\nPass Pending.",
     "Trip On File. Clearance Pending.": "Trip On File.\nClearance Pending.",
     "Trip On File. Payment Pending.": "Trip On File.\nPayment Pending.",
-    "Start Your One Siargao Pass.": "Start Your\nOSP Pass.",
+    "Start Your One Siargao Pass.": "Your OSP\nPass.",
   };
 
   return lockedHeroTitles[normalized] || normalized;
@@ -2507,6 +2529,12 @@ function TravelerShell(props: {
 
 export default async function TravelerHomePage() {
   const user = await getCurrentUser();
+
+  // OSP-TRAVELER-HOME-PRIVATE-AUTH-LOCK-05C
+  // /traveler/home is a private app surface. Never render a fake public shell here.
+  if (!user) {
+    redirect("/traveler/login");
+  }
   const languageRuntime = await getTravelerLanguageRuntime({ scope: "traveler" });
   const dictionary = languageRuntime.dictionary;
 
@@ -2777,9 +2805,9 @@ export default async function TravelerHomePage() {
                       "0 5px 20px rgba(0, 18, 42, 0.72), 0 2px 6px rgba(0, 18, 42, 0.58), 0 1px 1px rgba(0, 18, 42, 0.82)",
                   }}
                 >
-                  Start Your
+                  Your OSP
                   <br />
-                  OSP Pass.
+                  Pass.
                 </h2>
 
                 <p
@@ -2793,7 +2821,7 @@ export default async function TravelerHomePage() {
                     textShadow: "0 3px 12px rgba(0, 18, 42, 0.62), 0 1px 2px rgba(0, 18, 42, 0.58)",
                   }}
                 >
-                  Create your official One Siargao Pass or continue an existing trip when you are ready.
+                  Your official One Siargao Pass belongs to your traveler identity. Add trip details when ready.
                 </p>
 
                 <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
@@ -2814,7 +2842,7 @@ export default async function TravelerHomePage() {
                       boxShadow: "0 12px 24px rgba(36,191,209,0.24)",
                     }}
                   >
-                    Create My OSP Pass
+                    Open My OSP Pass
                   </a>
 
                   <a
@@ -2977,7 +3005,7 @@ export default async function TravelerHomePage() {
               </div>
 
               <h2 style={{ margin: "12px 0 18px", fontSize: 22, lineHeight: 1.1, color: "#19305a" }}>
-                New Traveler
+                Traveler Home
               </h2>
 
               <div style={{ fontSize: 13, fontWeight: 650, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
@@ -2985,9 +3013,9 @@ export default async function TravelerHomePage() {
               </div>
 
               <div style={{ marginTop: 6, fontSize: 18, lineHeight: 1.1, fontWeight: 650, color: "#0f172a" }}>
-                OSP-READY-
+                OSP-PASS-
                 <br />
-                START-HERE
+                READY
               </div>
 
               <div style={{ marginTop: 18, fontSize: 13, fontWeight: 650, letterSpacing: "0.16em", color: "#7c96ad", textTransform: "uppercase" }}>
@@ -2995,7 +3023,7 @@ export default async function TravelerHomePage() {
               </div>
 
               <div style={{ marginTop: 6, fontSize: 15, fontWeight: 650, color: "#0f172a" }}>
-                Created after trip setup
+                Available after sign in
               </div>
             </div>
 
