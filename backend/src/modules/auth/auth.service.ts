@@ -21,6 +21,7 @@ import {
   UserRole,
 } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
+import { TrustEmailService } from './trust-email/trust-email.service';
 
 function normalizeEnumValue<T extends Record<string, string>>(value: unknown, enumObject: T, fallback: T[keyof T]): T[keyof T] {
   const normalized = String(value || '').trim().toUpperCase();
@@ -67,7 +68,7 @@ function isResidentParticipant(participantType: OspParticipantType) {
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService) {}
+  constructor(private readonly prisma: PrismaService, private readonly jwtService: JwtService, private readonly trustEmailService: TrustEmailService) {}
 
   async register(dto: RegisterDto) {
     if (!dto.email && !dto.mobileNumber) {
@@ -300,19 +301,27 @@ export class AuthService {
       return { user, trip, pass };
     });
 
-    const accessToken = await this.jwtService.signAsync({
+    
+    await this.trustEmailService.sendTrustEmail({
+      templateKey: 'TRAVELER_QR_CREATED',
+      to: dto.email || null,
+      travelerName: dto.fullName,
+      passCode: result.pass.passCode,
+      validFrom: result.pass.issuedAt ? result.pass.issuedAt.toISOString().slice(0, 10) : null,
+      validUntil: result.pass.expiresAt ? result.pass.expiresAt.toISOString().slice(0, 10) : null,
+    }).catch((error) => {
+      console.warn('[OSP_TRUST_EMAIL_FAILED]', JSON.stringify({
+        event: 'TRAVELER_QR_CREATED',
+        to: dto.email || null,
+        errorMessage: error?.message || String(error),
+      }));
+    });
+
+const accessToken = await this.jwtService.signAsync({
       sub: result.user.id,
       role: result.user.primaryRole,
       email: result.user.email ?? null,
       mobileNumber: result.user.mobileNumber ?? null,
-    });
-
-    await this.dispatchPassIssuedEmail({
-      email: result.user.email,
-      fullName: result.user.fullName,
-      passCode: result.pass.passCode,
-      qrToken: result.pass.qrCredential?.qrToken ?? null,
-      expiresAt: result.pass.expiresAt,
     });
 
     return {
@@ -353,7 +362,6 @@ export class AuthService {
         qrCredential: result.pass.qrCredential
           ? {
               id: result.pass.qrCredential.id,
-              qrToken: result.pass.qrCredential.qrToken,
               qrVersion: result.pass.qrCredential.qrVersion,
             }
           : null,
@@ -365,7 +373,6 @@ export class AuthService {
     email?: string | null;
     fullName?: string | null;
     passCode: string;
-    qrToken?: string | null;
     expiresAt?: Date | null;
   }) {
     if (!input.email) {
@@ -380,7 +387,7 @@ export class AuthService {
     const payload = {
       event: 'OSP_PASS_ISSUED',
       to: input.email,
-      subject: 'Your One Siargao Pass is ready',
+      subject: 'Your One Siargao Pass account is ready',
       template: 'osp_pass_issued_v1',
       data: {
         travelerName,
@@ -389,7 +396,6 @@ export class AuthService {
         appUrl,
         // QR token is included for backend/email-provider rendering only.
         // Never expose JWT access tokens through email.
-        qrToken: input.qrToken,
         message:
           'Your One Siargao Pass has been created. Clearance, payment, manifest, and operational checks may still apply depending on your trip activity.',
       },
@@ -415,7 +421,7 @@ export class AuthService {
         return;
       }
 
-      console.log('[OSP_EMAIL_TRIGGERED_DEV_FALLBACK]', JSON.stringify(payload));
+      console.log('[OSP_LEGACY_EMAIL_FALLBACK_SUPPRESSED]', JSON.stringify(payload));
     } catch (error: any) {
       console.warn('[OSP_EMAIL_FAILED_NON_BLOCKING]', error?.message || error);
     }

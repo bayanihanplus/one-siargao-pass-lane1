@@ -554,6 +554,7 @@ function FlowStep(props: { number: string; title: string; body: string }) {
   );
 }
 
+/* OSP-TRAVELER-REGISTER-GLOBAL-TRUST-UI-01: Premium trust-first OSP QR identity registration. Public-safe wording only. */
 export default async function TravelerRegisterPage({
   searchParams,
 }: {
@@ -702,13 +703,13 @@ export default async function TravelerRegisterPage({
                 color: "#013863",
               }}
             >
-              Create your One Siargao QR
+              Create your OSP Pass
             </h1>
             <p style={{ margin: "9px 0 0", color: "#50668B", fontSize: 14.2, lineHeight: 1.36, fontWeight: 780 }}>
-              Register once for trips, services, events, and verified island access.
+              Create one QR identity for your trips, local services, site access, and saved Siargao journey.
             </p>
             <p style={{ margin: "7px 0 0", color: "#50668B", fontSize: 12.2, lineHeight: 1.38, fontWeight: 700 }}>
-              Your account creates your QR identity, starter OSP Pass, and safer check-in support.
+              Your account creates your OSP Pass, traveler QR, and protected journey record.
             </p>
           </div>
 
@@ -803,7 +804,7 @@ export default async function TravelerRegisterPage({
               options={qrPurposes}
               defaultValue="TRAVEL_TO_SIARGAO"
               required
-              hint="Traveler and service purposes come first. Community and public-service purposes are supported without making registration feel like surveillance."
+              hint="Traveler and service purposes come first. Community and public-service purposes are supported with clear, respectful records."
             />
             <SelectField
               id="qrSubjectRelation"
@@ -827,7 +828,7 @@ export default async function TravelerRegisterPage({
           <SectionCard
             eyebrow="Step 3"
             title="Visitor and trip profile"
-            body="This supports aggregated destination intelligence without making registration feel like surveillance."
+            body="This helps keep access, support, and journey records organized while protecting your private details."
             tone="blue"
           >
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -871,7 +872,7 @@ export default async function TravelerRegisterPage({
           <SectionCard
             eyebrow="Step 5"
             title="Consent and local rules"
-            body="Your private records stay protected. Destination reporting should use aggregated intelligence unless a specific lawful workflow applies."
+            body="Your private records stay protected. OSP uses only the details needed for access, support, safety, and your saved journey."
             tone="green"
           >
 <ConsentAndSubmit />

@@ -4,6 +4,7 @@ import { JwtModule, type JwtSignOptions } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { TrustEmailService } from './trust-email/trust-email.service';
 import { DevAuthGuard } from './guards/dev-auth.guard';
 import { PrismaService } from '../../database/prisma.service';
 import { RolesGuard } from './guards/roles.guard';
@@ -27,7 +28,7 @@ import { RolesGuard } from './guards/roles.guard';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, DevAuthGuard, RolesGuard, PrismaService],
-  exports: [AuthService, DevAuthGuard, RolesGuard, JwtModule],
+  providers: [AuthService, DevAuthGuard, RolesGuard, PrismaService, TrustEmailService],
+  exports: [AuthService, DevAuthGuard, RolesGuard, JwtModule, TrustEmailService],
 })
 export class AuthModule {}
