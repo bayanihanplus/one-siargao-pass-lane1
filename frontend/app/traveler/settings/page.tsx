@@ -216,7 +216,7 @@ async function updateTravelerProfile(formData: FormData) {
   try {
     token = await requireAccessToken();
   } catch {
-    redirect("/login?mode=returning");
+    redirect("/traveler/login?mode=returning");
   }
 
   const body: Record<string, string> = {
@@ -245,7 +245,7 @@ async function updateTravelerProfile(formData: FormData) {
     });
 
     if (res.status === 401 || res.status === 403) {
-      redirect("/login?mode=returning");
+      redirect("/traveler/login?mode=returning");
     }
 
     if (!res.ok) {

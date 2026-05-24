@@ -8,9 +8,9 @@ const PUBLIC_APP_BASE_URL =
 
 function getPublicLoginUrl() {
   try {
-    return new URL("/login?mode=returning", PUBLIC_APP_BASE_URL);
+    return new URL("/traveler/login?mode=returning", PUBLIC_APP_BASE_URL);
   } catch {
-    return new URL("https://app.onesiargao.online/login?mode=returning");
+    return new URL("https://app.onesiargao.online/traveler/login?mode=returning");
   }
 }
 

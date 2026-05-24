@@ -41,7 +41,7 @@ async function createTripAction(formData: FormData) {
   const token = cookieStore.get(getAuthCookieName())?.value;
 
   if (!token) {
-    redirect("/login?mode=returning&next=/traveler/trips/new");
+    redirect("/traveler/login?mode=returning");
   }
 
   const res = await fetch(`${getApiBaseUrl()}/trips`, {
@@ -217,7 +217,7 @@ export default async function NewTravelerTripPage({
   const errorMessage = getErrorMessage(resolvedSearchParams?.error, resolvedSearchParams?.message);
 
   if (!user) {
-    redirect("/login?mode=returning&next=/traveler/trips/new");
+    redirect("/traveler/login?mode=returning");
   }
 
   return (
