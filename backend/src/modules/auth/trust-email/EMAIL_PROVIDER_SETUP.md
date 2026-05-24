@@ -1,13 +1,31 @@
-# OSP-GLOBAL-TRUST-EMAIL-PROVIDER-02
+# OSP-GLOBAL-TRUST-EMAIL-PROVIDER
 
-## Provider mode
+## Provider modes
 
-Development/default:
+Development/default console:
 OSP_TRUST_EMAIL_PROVIDER=console
+
+Native Resend provider:
+OSP_TRUST_EMAIL_PROVIDER=resend
+RESEND_API_KEY=re_xxxxxxxxx
+OSP_TRUST_EMAIL_FROM=One Siargao Pass <noreply@onesiargao.online>
 
 Webhook provider:
 OSP_TRUST_EMAIL_PROVIDER=webhook
 OSP_TRUST_EMAIL_WEBHOOK_URL=https://your-email-provider-or-automation-webhook
+
+## Resend production requirements
+
+1. Create Resend account.
+2. Add and verify sending domain:
+   onesiargao.online
+3. Configure DNS records required by Resend:
+   SPF
+   DKIM
+   DMARC recommended
+4. Create production API key.
+5. Store API key only in environment variables.
+6. Never commit secrets.
 
 ## Required behavior
 
@@ -17,6 +35,7 @@ OSP_TRUST_EMAIL_WEBHOOK_URL=https://your-email-provider-or-automation-webhook
 - CTA points to protected route
 - Auth-aware routing protects destination
 - Provider failure must not block account creation
+- Console fallback remains available in local/dev
 
 ## Current template proof
 

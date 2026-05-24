@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Resend } from 'resend';
 import {
   buildOspTrustEmailUrl,
   OSP_TRUST_EMAIL_TEMPLATES,
@@ -73,12 +74,66 @@ export class TrustEmailService {
 
     const provider = String(process.env.OSP_TRUST_EMAIL_PROVIDER || 'console').trim().toLowerCase();
 
+    if (provider === 'resend') {
+      return this.sendViaResend(payload);
+    }
+
     if (provider === 'webhook') {
       return this.sendViaWebhook(payload);
     }
 
     this.logger.log(`[OSP_TRUST_EMAIL_READY] ${JSON.stringify(payload)}`);
     return { status: 'READY', provider: 'console', payload };
+  }
+
+
+  private async sendViaResend(payload: TrustEmailPayload) {
+    const apiKey = process.env.RESEND_API_KEY || process.env.OSP_RESEND_API_KEY;
+    const from = process.env.OSP_TRUST_EMAIL_FROM || 'One Siargao Pass <noreply@onesiargao.online>';
+
+    if (!apiKey) {
+      this.logger.warn(`[OSP_TRUST_EMAIL_PROVIDER_MISSING] ${JSON.stringify({
+        provider: 'resend',
+        event: payload.event,
+        to: payload.to,
+        reason: 'missing-api-key',
+      })}`);
+
+      this.logger.log(`[OSP_TRUST_EMAIL_READY] ${JSON.stringify(payload)}`);
+      return { status: 'READY', provider: 'console-fallback', payload };
+    }
+
+    const resend = new Resend(apiKey);
+
+    const { data, error } = await resend.emails.send({
+      from,
+      to: [payload.to],
+      subject: payload.subject,
+      html: this.renderHtml(payload),
+      text: this.renderText(payload),
+    });
+
+    if (error) {
+      this.logger.warn(`[OSP_TRUST_EMAIL_FAILED] ${JSON.stringify({
+        provider: 'resend',
+        event: payload.event,
+        to: payload.to,
+        error,
+      })}`);
+
+      return { status: 'FAILED', provider: 'resend', error };
+    }
+
+    this.logger.log(`[OSP_TRUST_EMAIL_SENT] ${JSON.stringify({
+      provider: 'resend',
+      event: payload.event,
+      to: payload.to,
+      providerMessageId: data?.id || null,
+      ctaLabel: payload.ctaLabel,
+      ctaUrl: payload.ctaUrl,
+    })}`);
+
+    return { status: 'SENT', provider: 'resend', providerMessageId: data?.id || null };
   }
 
   private async sendViaWebhook(payload: TrustEmailPayload) {
