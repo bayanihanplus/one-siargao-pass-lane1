@@ -968,6 +968,9 @@ async function fetchPublicSiteAccessRegistryPoints(): Promise<Record<string, Sit
   }
 }
 
+// OSP-TRAVELER-HOME-QUICK-ACCESS-GOVERNED-SURFACES-06B-A3
+// OSP-TRAVELER-HOME-QUICK-ACCESS-SUPER-PREMIUM-06B-A4
+// OSP-TRAVELER-HOME-ACCESS-JOURNEY-HARMONIZATION-06B-B
 async function TravelerHomeQuickAccessGrid() {
   const registryPoints = await fetchPublicSiteAccessRegistryPoints();
   const cloud9Point = registryPoints[SITE_ACCESS_REGISTRY_CODES.cloud9];
@@ -978,10 +981,10 @@ async function TravelerHomeQuickAccessGrid() {
   const cards = [
     {
       title: "Passport Map",
-      subtitle: "Explore trails, local stops, and verified map points.",
+      subtitle: "",
       href: "/traveler/passport-map",
       status: "Map",
-      button: "Open Map",
+      button: "",
       mediaSrc: "/osp/traveler/home/quick-access/passport-map.png",
       icon: (
         <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
@@ -991,12 +994,13 @@ async function TravelerHomeQuickAccessGrid() {
         </svg>
       ),
       active: true,
-      shell: "#EFF6FF",
-      border: "#BFDBFE",
-      iconBg: "#DBEAFE",
-      iconColor: "#2563EB",
-      badgeBg: "#DBEAFE",
-      badgeColor: "#2563EB",
+      shell: "#F4FCFA",
+      border: "rgba(5,150,165,0.16)",
+      iconBg: "#EAFBFA",
+      iconColor: "#0596A5",
+      badgeBg: "rgba(243,174,38,0.18)",
+      badgeColor: "#013863",
+      accent: "rgba(243,174,38,0.34)",
       buttonBg: "#FFFFFF",
       buttonColor: "#013863",
       titleColor: "#013863",
@@ -1004,10 +1008,10 @@ async function TravelerHomeQuickAccessGrid() {
     },
     {
       title: cloud9Point?.displayName || "Cloud 9 Access",
-      subtitle: cloud9AccessRule === "PAID_SITE_ENTITLEMENT" ? "QR-linked General Luna site access." : "QR-linked General Luna site access.",
+      subtitle: "",
       href: cloud9Point?.qrDefinition?.publicScanUrl || "/traveler/site-access/cloud-9",
-      status: "Active",
-      button: "Open Access",
+      status: "LGU",
+      button: "",
       mediaSrc: "/osp/traveler/home/quick-access/cloud-9-access.png", // OSP_HOME_CLOUD9_ACCESS_DATA_DRIVEN_CARD_MEDIA_14D
       icon: (
         <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
@@ -1017,12 +1021,13 @@ async function TravelerHomeQuickAccessGrid() {
         </svg>
       ),
       active: true,
-      shell: "#ECFEFF",
-      border: "#A5F3FC",
-      iconBg: "#CFFAFE",
-      iconColor: "#0891B2",
-      badgeBg: "#CFFAFE",
-      badgeColor: "#0891B2",
+      shell: "#F4FCFA",
+      border: "rgba(5,150,165,0.16)",
+      iconBg: "#EAFBFA",
+      iconColor: "#0596A5",
+      badgeBg: "rgba(5,150,165,0.12)",
+      badgeColor: "#0596A5",
+      accent: "rgba(5,150,165,0.24)",
       buttonBg: "#FFFFFF",
       buttonColor: "#0596A5",
       titleColor: "#013863",
@@ -1030,10 +1035,10 @@ async function TravelerHomeQuickAccessGrid() {
     },
     {
       title: mksPoint?.displayName || "Malinao Skate Park",
-      subtitle: "Validated LGU site-visit access.",
+      subtitle: "",
       href: mksPoint?.qrDefinition?.publicScanUrl || "/traveler/site-access/malinao-skate-park",
-      status: mksPoint?.accessRule === "SITE_VISIT_LOG" ? "Validated" : "Validated",
-      button: "View Point",
+      status: "LGU",
+      button: "",
       mediaSrc: "/osp/traveler/home/quick-access/malinao-skate-park.png", // OSP_HOME_MALINAO_SKATE_PARK_FORCE_MEDIASRC_14E2
       icon: (
         <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
@@ -1044,11 +1049,11 @@ async function TravelerHomeQuickAccessGrid() {
         </svg>
       ),
       active: true,
-      shell: "#FFF7ED",
-      border: "#FED7AA",
-      iconBg: "#FFEDD5",
-      iconColor: "#D97706",
-      badgeBg: "#F3AE26",
+      shell: "#F4FCFA",
+      border: "rgba(5,150,165,0.16)",
+      iconBg: "rgba(243,174,38,0.16)",
+      iconColor: "#013863",
+      badgeBg: "rgba(243,174,38,0.18)",
       badgeColor: "#013863",
       buttonBg: "#FFFFFF",
       buttonColor: "#013863",
@@ -1057,10 +1062,10 @@ async function TravelerHomeQuickAccessGrid() {
     },
     {
       title: afamPoint?.displayName || "AFAM / Catangnan Bridge",
-      subtitle: "Validated scenic LGU site-visit access.",
+      subtitle: "",
       href: afamPoint?.qrDefinition?.publicScanUrl || "/traveler/site-access/afam-catangnan-bridge",
-      status: afamPoint?.accessRule === "SITE_VISIT_LOG" ? "Site Visit" : "Site Visit",
-      button: "View Point",
+      status: "LGU",
+      button: "",
       mediaSrc: "/osp/traveler/home/quick-access/afam-catangnan-bridge.png", // OSP_HOME_AFAM_CATANGNAN_BRIDGE_DATA_DRIVEN_CARD_MEDIA_14F
       icon: (
         <svg viewBox="0 0 24 24" width="21" height="21" fill="none" aria-hidden="true">
@@ -1094,51 +1099,51 @@ async function TravelerHomeQuickAccessGrid() {
         maxWidth: "100%",
         minWidth: 0,
         margin: "0 auto 14px",
-        borderRadius: 28,
-        padding: 16,
+        borderRadius: 18,
+        padding: 13,
         background: "#F4FCFA",
         border: "1px solid rgba(5,150,165,0.20)",
-        boxShadow: "0 18px 44px rgba(1,56,99,0.10)",
+        boxShadow: "0 10px 24px rgba(1,56,99,0.07)",
         boxSizing: "border-box",
       }}
     >
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+      <div style={{ display: "grid", alignItems: "flex-start", justifyContent: "flex-start", gap: 12 }}>
         <div>
           <p
             style={{
               margin: 0,
               fontSize: 10,
-              fontWeight: 950,
+              fontWeight: 720,
               letterSpacing: "0.14em",
               color: "#0596A5",
               textTransform: "uppercase",
             }}
           >
-            Quick Access
+            Official Access
           </p>
           <h2
             style={{
               margin: "5px 0 0",
-              fontSize: 19,
+              fontSize: 17,
               lineHeight: 1.08,
-              fontWeight: 650,
+              fontWeight: 670,
               letterSpacing: "-0.035em",
               color: "#013863",
             }}
           >
-            Map & QR Access
+            Map & LGU Sites
           </h2>
           <p
             style={{
               margin: "8px 0 0",
               maxWidth: 310,
               fontSize: 12.5,
-              lineHeight: 1.45,
+              lineHeight: 1.25,
               fontWeight: 500,
               color: "#50668B",
             }}
           >
-            Use your OSP QR for supported Siargao map points and LGU site-visit access.
+            Passport Map and approved LGU site access.
           </p>
         </div>
 
@@ -1165,58 +1170,68 @@ async function TravelerHomeQuickAccessGrid() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gap: 10, marginTop: 15 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10, marginTop: 13 }}>
         {cards.map((card) => (
           <a
             key={card.title}
             href={card.href}
             style={{
               position: "relative",
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              minHeight: card.title === "Passport Map" ? 78 : 70,
-              padding: card.title === "Passport Map" ? "14px 14px" : "12px 14px",
-              borderRadius: 22,
+              display: "grid",
+              alignItems: "stretch",
+              gap: 8,
+              minHeight: 94,
+              padding: 10,
+              borderRadius: 18,
               // OSP_HOME_PASSPORT_MAP_DATA_DRIVEN_CARD_MEDIA_14C
-              background: card.mediaSrc ? `url(${card.mediaSrc}) center / cover no-repeat` : card.shell,
+              background: `linear-gradient(135deg, ${card.accent || "rgba(5,150,165,0.10)"} 0%, ${card.shell} 38%, #FFFFFF 100%)`,
               border: `1px solid ${card.border}`,
-              boxShadow:
-                card.title === "Passport Map"
-                  ? "0 16px 34px rgba(1,56,99,0.12)"
-                  : "0 12px 26px rgba(1,56,99,0.08)",
+              boxShadow: "0 8px 18px rgba(1,56,99,0.065)",
               color: "#013863",
               textDecoration: "none",
               overflow: "hidden",
             }}
           >
             <span
+              data-osp-quick-access-accent-line="true"
               aria-hidden="true"
               style={{
-                width: card.title === "Passport Map" ? 44 : 40,
-                height: card.title === "Passport Map" ? 44 : 40,
-                borderRadius: 16,
+                position: "absolute",
+                top: 0,
+                left: 12,
+                right: 12,
+                height: 3,
+                borderRadius: "0 0 999px 999px",
+                background: card.accent || "rgba(5,150,165,0.22)",
+              }}
+            />
+            <span
+              aria-hidden="true"
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 12,
                 background: card.iconBg,
                 border: "1px solid rgba(1,56,99,0.08)",
                 display: "grid",
                 placeItems: "center",
                 flex: "0 0 auto",
                 color: card.iconColor,
-                boxShadow: "0 8px 18px rgba(1,56,99,0.08)",
+                boxShadow: "0 5px 12px rgba(1,56,99,0.06)",
               }}
             >
               {card.icon}
             </span>
 
             <span style={{ flex: "1 1 auto", minWidth: 0 }}>
-              <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+              <span style={{ display: "grid", alignItems: "stretch", justifyContent: "flex-start", gap: 8 }}>
                 <span
                   style={{
-                    fontSize: card.title === "Passport Map" ? 14.5 : 13.5,
+                    fontSize: 13,
                     lineHeight: 1.15,
-                    fontWeight: 650,
-                    color: card.mediaSrc ? "#FFFFFF" : card.titleColor, // OSP_HOME_QUICK_ACCESS_MEDIA_TEXT_WHITE_14L
-                    textShadow: card.mediaSrc ? "0 2px 8px rgba(1,24,48,0.78)" : "none",
+                    fontWeight: 670,
+                    color: card.titleColor,
+                    textShadow: "none",
                     letterSpacing: "-0.015em",
                   }}
                 >
@@ -1225,18 +1240,22 @@ async function TravelerHomeQuickAccessGrid() {
 
                 <span
                   style={{
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
                     flex: "0 0 auto",
+                    width: "fit-content",
                     borderRadius: 999,
-                    padding: "4px 7px",
+                    padding: "3px 7px",
                     background: card.badgeBg,
                     border: "1px solid rgba(1,56,99,0.08)",
                     color: card.badgeColor,
-                    fontSize: 8.5,
+                    fontSize: 8,
                     lineHeight: 1,
-                    fontWeight: 950,
+                    fontWeight: 720,
                     letterSpacing: "0.07em",
                     textTransform: "uppercase",
-                    boxShadow: "0 6px 14px rgba(1,56,99,0.06)",
+                    boxShadow: "0 5px 12px rgba(1,56,99,0.06)",
                   }}
                 >
                   {card.status}
@@ -1259,19 +1278,19 @@ async function TravelerHomeQuickAccessGrid() {
 
               <span
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
+                  display: card.button ? "inline-flex" : "none",
+                  alignItems: "stretch",
                   gap: 5,
-                  marginTop: 8,
+                  marginTop: 6,
                   borderRadius: 999,
                   padding: "6px 9px",
                   background: card.buttonBg,
                   border: "1px solid rgba(1,56,99,0.10)",
                   color: card.buttonColor,
-                  fontSize: 10.5,
+                  fontSize: 10,
                   lineHeight: 1,
-                  fontWeight: 650,
-                  boxShadow: "0 6px 14px rgba(1,56,99,0.06)",
+                  fontWeight: 670,
+                  boxShadow: "0 5px 12px rgba(1,56,99,0.06)",
                 }}
               >
                 {card.button}
@@ -1288,6 +1307,16 @@ async function TravelerHomeQuickAccessGrid() {
 }
 
 
+// OSP-TRAVELER-HOME-JOURNEY-CARD-HARMONIZATION-06B-B
+// OSP-TRAVELER-HOME-JOURNEY-CLEAN-TILES-06B-D3
+// OSP-TRAVELER-HOME-JOURNEY-TEXT-CONTRAST-06B-D4
+// OSP-TRAVELER-HOME-JOURNEY-NO-TEXT-PLATE-06B-D5
+// OSP-TRAVELER-HOME-JOURNEY-FORCE-DARK-TEXT-06B-D6
+// OSP-TRAVELER-HOME-JOURNEY-NO-GLOW-06B-D7
+// OSP-TRAVELER-HOME-JOURNEY-NO-GLOW-06B-D7
+// OSP-TRAVELER-HOME-JOURNEY-HARD-NO-SHADOW-06B-D8
+// OSP-TRAVELER-HOME-JOURNEY-COMPUTED-STYLE-OVERRIDE-06B-D10
+// OSP-TRAVELER-HOME-JOURNEY-GLOBAL-PREMIUM-06B-E
 function TravelerJourneyCard(props: {
   href: string;
   title: string;
@@ -1302,84 +1331,155 @@ function TravelerJourneyCard(props: {
   const hasMedia = Boolean(props.mediaSrc);
 
   return (
+    <>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            a[data-osp-journey-card="true"] {
+              box-shadow: none !important;
+              filter: none !important;
+              text-shadow: none !important;
+            }
+
+            a[data-osp-journey-card="true"] [data-osp-journey-title="true"] {
+              color: #013863 !important;
+              -webkit-text-fill-color: #013863 !important;
+              text-shadow: none !important;
+              filter: none !important;
+              opacity: 1 !important;
+            }
+
+            a[data-osp-journey-card="true"] [data-osp-journey-subtitle="true"] {
+              color: #334E68 !important;
+              -webkit-text-fill-color: #334E68 !important;
+              text-shadow: none !important;
+              filter: none !important;
+              opacity: 1 !important;
+            }
+          `,
+        }}
+      />
     <a
+      data-osp-journey-card="true"
       href={props.href}
       style={{
-        // OSP_HOME_REPAIR_JOURNEY_CARD_AND_TRIPS_MEDIA_14H3
-        minHeight: 112,
+        // OSP_HOME_JOURNEY_CLEAN_TILE_06B_D3
+        minHeight: 110,
         borderRadius: 18,
         padding: 12,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
         textDecoration: "none",
-        background: hasMedia
-          ? `url(${props.mediaSrc}) center / cover no-repeat`
-          : props.shellBg,
-        border: `1px solid ${props.borderColor}`,
-        boxShadow: "0 14px 32px rgba(8, 54, 84, 0.08)",
+        background: "linear-gradient(135deg, #FFFFFF 0%, #F8FFFE 54%, rgba(234,251,250,0.78) 100%)",
+        border: "1px solid rgba(5,150,165,0.14)",
         overflow: "hidden",
         position: "relative",
       }}
     >
+      <span
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 16,
+          right: 16,
+          height: 2,
+          borderRadius: "0 0 999px 999px",
+          background: props.accentColor,
+          opacity: 0.42,
+        }}
+      />
+      <span
+        data-osp-journey-vector-accent="true"
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          top: 12,
+          right: 10,
+          width: 58,
+          height: 48,
+          borderRadius: 18,
+          opacity: 0.22,
+          pointerEvents: "none",
+          overflow: "hidden",
+        }}
+      >
+        <svg viewBox="0 0 72 56" width="72" height="56" fill="none" aria-hidden="true">
+          <path
+            d="M5 38 C18 18, 29 47, 43 25 S61 19, 67 8"
+            stroke={props.accentColor}
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            strokeDasharray="4 6"
+          />
+          <circle cx="16" cy="30" r="4.5" fill={props.accentColor} />
+          <circle cx="47" cy="23" r="4.5" fill={props.accentColor} />
+          <path
+            d="M12 49 H58"
+            stroke={props.accentColor}
+            strokeWidth="2"
+            strokeLinecap="round"
+            opacity="0.55"
+          />
+        </svg>
+      </span>
       <div
         style={{
-          width: 34,
-          height: 34,
-          borderRadius: 12,
-          background: hasMedia ? "rgba(255,255,255,0.84)" : props.chipBg,
-          border: `1px solid ${props.borderColor}`,
+          width: 36,
+          height: 36,
+          borderRadius: 13,
+          background: "#EAFBFA",
+          border: "1px solid rgba(5,150,165,0.16)",
           color: props.accentColor,
           display: "grid",
           placeItems: "center",
           flex: "0 0 auto",
-          boxShadow: hasMedia ? "0 8px 18px rgba(1,42,69,0.14)" : "none",
         }}
       >
         {props.icon}
       </div>
 
-      <div>
+      <div
+        style={{
+          position: "relative",
+          zIndex: 2,
+          alignSelf: "stretch",
+          padding: "0 2px 1px",
+        }}
+      >
         <strong
+          data-osp-journey-title="true"
           style={{
             display: "block",
+            position: "relative",
+            zIndex: 6,
             color: "#013863",
-            fontSize: 13,
-            lineHeight: 1.04,
-            fontWeight: 650,
+            fontSize: 13.8,
+            lineHeight: 1.08,
+            fontWeight: 740,
             letterSpacing: "-0.02em",
-            textShadow: hasMedia ? "0 1px 5px rgba(255,255,255,0.9)" : "none",
           }}
         >
           {props.title}
         </strong>
         <p
+          data-osp-journey-subtitle="true"
           style={{
-            margin: "3px 0 0",
-            color: "#123B63",
-            fontSize: 10.5,
-            lineHeight: 1.14,
-            fontWeight: 800,
-            textShadow: hasMedia ? "0 1px 5px rgba(255,255,255,0.86)" : "none",
+            margin: "4px 0 0",
+            position: "relative",
+            zIndex: 6,
+            color: "#334E68",
+            fontSize: 10.4,
+            lineHeight: 1.18,
+            fontWeight: 580,
           }}
         >
           {props.subtitle}
         </p>
       </div>
-
-      <span
-        style={{
-          color: props.accentColor,
-          fontSize: 9,
-          fontWeight: 950,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          textShadow: hasMedia ? "0 1px 5px rgba(255,255,255,0.88)" : "none",
-        }}
-      >
-        Open
-      </span>
     </a>
+    </>
   );
 }
 
@@ -1466,7 +1566,7 @@ function HeaderControlButton(props: {
     gap: 5,
     padding: "0 7px",
     fontSize: 9.5,
-    fontWeight: 950,
+    fontWeight: 720,
     textDecoration: "none",
     boxShadow: "0 8px 18px rgba(15,23,42,0.045)",
   } as const;
@@ -1647,7 +1747,7 @@ function TravelerShellFrame(props: {
       <section
         style={{
           overflow: "hidden",
-          borderRadius: 28,
+          borderRadius: 22,
           background: "#083d67",
           boxShadow: "0 20px 60px rgba(8,61,103,0.22)",
         }}
@@ -2249,13 +2349,14 @@ function TravelerReassuranceAndJourney(props: {
 }) {
   const continueJourneyTitle = t(props.dictionary, "home.journey.title", "Continue Your Journey");
   const tripsTitle = t(props.dictionary, "home.journey.trips.title", "Trips");
+  // OSP-TRAVELER-HOME-JOURNEY-ACTIVE-COPY-LOCK-06B-E2
   const tripsSubtitle = t(props.dictionary, "home.journey.trips.subtitle", "Plans & records");
   const paymentsTitle = t(props.dictionary, "home.journey.payments.title", "Payments & Receipts");
-  const paymentsSubtitle = t(props.dictionary, "home.journey.payments.subtitle", "Payments & receipts");
+  const paymentsSubtitle = t(props.dictionary, "home.journey.payments.subtitle", "Receipts & fees");
   const passportMapTitle = t(props.dictionary, "home.journey.myPass.title", "My Pass");
-  const passportMapSubtitle = t(props.dictionary, "home.journey.myPass.subtitle", "Show your QR identity and trip pass");
+  const passportMapSubtitle = t(props.dictionary, "home.journey.myPass.subtitle", "QR identity");
   const checkpointsTitle = t(props.dictionary, "home.journey.explore.title", "Explore Siargao");
-  const checkpointsSubtitle = t(props.dictionary, "home.journey.explore.subtitle", "Discover stays, tours, trails, and local spots");
+  const checkpointsSubtitle = t(props.dictionary, "home.journey.explore.subtitle", "Verified discovery");
 
   const rootPreview = isRootPreviewTrip(props.latestTravelerTrip);
 
@@ -2285,9 +2386,7 @@ function TravelerReassuranceAndJourney(props: {
           <TravelerJourneyCard
             href={rootPreview ? "/traveler/start" : "/traveler/trips"}
             title={tripsTitle}
-            subtitle={tripsSubtitle}
-              mediaSrc="/osp/traveler/home/continue-your-journey/trips.png"
-            shellBg="#eff6ff"
+            subtitle={tripsSubtitle}shellBg="#eff6ff"
             borderColor="#cfe0f7"
             chipBg="#dceeff"
             accentColor="#2563eb"
@@ -2304,7 +2403,6 @@ function TravelerReassuranceAndJourney(props: {
             href="/traveler/payments"
             title={paymentsTitle}
             subtitle={paymentsSubtitle}
-            mediaSrc="/osp/traveler/home/continue-your-journey/payments-receipts.png" // OSP_HOME_PAYMENTS_RECEIPTS_CARD_MEDIA_14I
             shellBg="#fff8eb"
             borderColor="#f6e1b5"
             chipBg="#fef0c7"
@@ -3068,9 +3166,7 @@ export default async function TravelerHomePage() {
             <TravelerJourneyCard
               title="Trips"
               subtitle="Plans & records"
-              href="/traveler/trips"
-              mediaSrc="/osp/traveler/home/continue-your-journey/trips.png"
-              shellBg="#eff6ff"
+              href="/traveler/trips"shellBg="#eff6ff"
               borderColor="#bfdbfe"
               chipBg="#dbeafe"
               accentColor="#2563eb"
@@ -3084,10 +3180,8 @@ export default async function TravelerHomePage() {
 
             <TravelerJourneyCard
               title="Payments & Receipts"
-              subtitle="Payments & receipts"
-              href="/traveler/payments"
-              mediaSrc="/osp/traveler/home/continue-your-journey/payments-receipts.png"
-              shellBg="#fff7ed"
+              subtitle="Receipts & fees"
+              href="/traveler/payments"shellBg="#fff7ed"
               borderColor="#fed7aa"
               chipBg="#ffedd5"
               accentColor="#ea580c"
@@ -3102,10 +3196,8 @@ export default async function TravelerHomePage() {
             {/* OSP_HOME_MY_PASS_VISIBLE_CARD_FORCE_MEDIA_14J2 */}
 <TravelerJourneyCard
               title="My Pass"
-              subtitle="Show your QR identity and trip pass"
-              href="/traveler/pass"
-              mediaSrc="/osp/traveler/home/continue-your-journey/my-pass.png"
-              shellBg="#ecfeff"
+              subtitle="QR identity"
+              href="/traveler/pass"shellBg="#ecfeff"
               borderColor="#a5f3fc"
               chipBg="#cffafe"
               accentColor="#0891b2"
@@ -3120,10 +3212,8 @@ export default async function TravelerHomePage() {
             {/* OSP_HOME_EXPLORE_SIARGAO_CARD_MEDIA_14K */}
 <TravelerJourneyCard
               title="Explore Siargao"
-              subtitle="Discover stays, tours, trails, and local spots"
-              href="/traveler/explore"
-              mediaSrc="/osp/traveler/home/continue-your-journey/explore-siargao.png"
-              shellBg="#F4FCFA"
+              subtitle="Verified discovery"
+              href="/traveler/explore"shellBg="#F4FCFA"
               borderColor="rgba(5,150,165,0.22)"
               chipBg="#EAFBFA"
               accentColor="#0596A5"
