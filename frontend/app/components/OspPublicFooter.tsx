@@ -76,7 +76,7 @@ export default function OspPublicFooter() {
           <div className="osp-public-footer-bottom">
             <div className="osp-public-footer-business">
               <span>Business Office</span>
-              <strong>749 Tourism Road, General Luna, Siargao, Philippines 8419</strong>
+              <strong>Door 2 Lot 19 Blk 34 Luisa Street, Talomo, Talomo District, 8000 Davao City, Davao del Sur, Philippines</strong>
             </div>
 
             <div className="osp-public-footer-business">
