@@ -1,4 +1,5 @@
 export type OspTrustEmailTemplateKey =
+  | 'PASSWORD_RESET_REQUESTED'
   | 'TRAVELER_QR_CREATED'
   | 'OPERATOR_ACCOUNT_READY'
   | 'ADMIN_ACCOUNT_READY'
@@ -22,6 +23,17 @@ export type OspTrustEmailTemplate = {
 };
 
 export const OSP_TRUST_EMAIL_TEMPLATES: Record<OspTrustEmailTemplateKey, OspTrustEmailTemplate> = {
+  PASSWORD_RESET_REQUESTED: {
+    key: 'PASSWORD_RESET_REQUESTED',
+    roleFamily: 'TRAVELER',
+    subject: 'Reset your One Siargao Pass password',
+    ctaLabel: 'Reset Password',
+    ctaPath: '/traveler/reset-password',
+    eyebrow: 'OSP Pass recovery',
+    bodyIntro: 'A password reset was requested for your One Siargao Pass account.',
+    bodySupport:
+      'Use the secure reset link to set a new password. If you did not request this, you can ignore this email.',
+  },
   TRAVELER_QR_CREATED: {
     key: 'TRAVELER_QR_CREATED',
     roleFamily: 'TRAVELER',

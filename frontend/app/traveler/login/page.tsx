@@ -10,9 +10,12 @@ import { redirect } from "next/navigation";
 import { getApiBaseUrl, getAuthCookieName } from "../../../src/lib/server-auth";
 
 function getLoginErrorMessage(code?: string) {
-  if (code === "missing-fields") return "Enter your email and password to continue.";
-  if (code === "invalid-credentials") return "The email or password is incorrect.";
-  if (code === "login-unavailable") return "Sign in is temporarily unavailable. Please try again.";
+  if (code === "missing-fields")
+    return "Enter your email and password to continue.";
+  if (code === "invalid-credentials")
+    return "The email or password is incorrect.";
+  if (code === "login-unavailable")
+    return "Sign in is temporarily unavailable. Please try again.";
   return "";
 }
 
@@ -89,8 +92,12 @@ function AppAction(props: {
           ? "linear-gradient(135deg, #013863 0%, #003B66 48%, #0596A5 100%)"
           : "#FFFFFF",
         color: primary ? "#FFFFFF" : "#013863",
-        border: primary ? "1px solid rgba(5,150,165,0.26)" : "1px solid rgba(5,150,165,0.18)",
-        boxShadow: primary ? "0 16px 34px rgba(1,56,99,0.22)" : "0 8px 18px rgba(1,56,99,0.07)",
+        border: primary
+          ? "1px solid rgba(5,150,165,0.26)"
+          : "1px solid rgba(5,150,165,0.18)",
+        boxShadow: primary
+          ? "0 16px 34px rgba(1,56,99,0.22)"
+          : "0 8px 18px rgba(1,56,99,0.07)",
         fontSize: 14,
         fontWeight: 900,
         whiteSpace: "nowrap",
@@ -125,7 +132,8 @@ export default function TravelerLoginPage({
         <section
           style={{
             borderRadius: 28,
-            background: "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,253,255,0.96))",
+            background:
+              "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,253,255,0.96))",
             border: "1px solid rgba(5,150,165,0.16)",
             boxShadow: "0 20px 50px rgba(1,56,99,0.12)",
             padding: 18,
@@ -156,7 +164,9 @@ export default function TravelerLoginPage({
               color: "#013863",
             }}
           >
-            {isReturning ? "Sign in to your OSP Pass." : "Continue your OSP Pass."}
+            {isReturning
+              ? "Sign in to your OSP Pass."
+              : "Continue your OSP Pass."}
           </h1>
 
           <p
@@ -179,12 +189,18 @@ export default function TravelerLoginPage({
                 Sign In to My OSP Pass
               </AppAction>
 
-              <AppAction href="/traveler/register?source=traveler_login" variant="secondary">
+              <AppAction
+                href="/traveler/register?source=traveler_login"
+                variant="secondary"
+              >
                 Create My OSP Pass
               </AppAction>
             </div>
           ) : (
-            <form action={travelerLoginAction} style={{ marginTop: 20, display: "grid", gap: 12 }}>
+            <form
+              action={travelerLoginAction}
+              style={{ marginTop: 20, display: "grid", gap: 12 }}
+            >
               {loginError ? (
                 <div
                   role="alert"
@@ -244,7 +260,8 @@ export default function TravelerLoginPage({
                   minHeight: 50,
                   borderRadius: 999,
                   border: "1px solid rgba(5,150,165,0.26)",
-                  background: "linear-gradient(135deg, #013863 0%, #003B66 48%, #0596A5 100%)",
+                  background:
+                    "linear-gradient(135deg, #013863 0%, #003B66 48%, #0596A5 100%)",
                   color: "#FFFFFF",
                   boxShadow: "0 16px 34px rgba(1,56,99,0.22)",
                   fontSize: 14,
@@ -254,6 +271,15 @@ export default function TravelerLoginPage({
               >
                 Continue to Traveler App
               </button>
+
+              <div className="mt-4 flex items-center justify-center">
+                <Link
+                  href="/traveler/forgot-password"
+                  className="text-sm font-extrabold text-[#0596A5] transition hover:text-[#013863]"
+                >
+                  Forgot password?
+                </Link>
+              </div>
 
               <Link
                 href="/traveler/register?source=traveler_login"

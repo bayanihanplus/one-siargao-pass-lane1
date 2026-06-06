@@ -362,6 +362,39 @@ enum OspParticipationStatus {
   CHECKED_IN
 }
 
+enum PasswordResetTokenStatus {
+  PENDING
+  READY
+  SENT
+  FAILED
+  USED
+}
+
+model PasswordResetToken {
+  id                String                   @id @default(cuid())
+  userId            String?
+  email             String
+  tokenHash         String                   @unique
+  status            PasswordResetTokenStatus @default(PENDING)
+  emailProvider     String?
+  providerMessageId String?
+  failureReason     String?
+  requestedIp       String?
+  userAgent         String?
+  expiresAt         DateTime
+  usedAt            DateTime?
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([email])
+  @@index([status])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+
 model User {
   id                           String        @id @default(cuid())
   email                        String?       @unique
@@ -393,6 +426,7 @@ model User {
   rulesRecords        RulesAcknowledgement[]
   eventParticipations OspEventParticipation[]
   kycCheckIns         KycCheckInEvent[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model TravelerProfile {
@@ -4476,8 +4510,8 @@ model SiteAccessIntent {
   updatedAt            DateTime                    @updatedAt
 
   entitlement SiteAccessEntitlement?
-  scanEvents   SiteAccessScanEvent[]
-  auditEvents  SiteAccessAuditEvent[]
+  scanEvents  SiteAccessScanEvent[]
+  auditEvents SiteAccessAuditEvent[]
 
   @@index([siteCode])
   @@index([travelerUserId])
@@ -4493,27 +4527,27 @@ model SiteAccessIntent {
 }
 
 model SiteAccessEntitlement {
-  id                          String                      @id @default(cuid())
-  intentId                    String                      @unique
-  siteCode                    SiteAccessSiteCode
-  travelerUserId              String?
-  tripId                      String?
-  passId                      String?
-  qrCredentialId              String?
-  paxCount                    Int
-  rateCategoryConfirmed       SiteAccessRateCategory      @default(STANDARD_RATE)
-  validFrom                   DateTime?
-  validUntil                  DateTime?
-  usedOnce                    Boolean                     @default(false)
-  usedAt                      DateTime?
-  status                      SiteAccessEntitlementStatus @default(ACTIVE)
-  attachedToOfficialTravelerQr Boolean                    @default(true)
-  metadataJson                Json?
-  createdAt                   DateTime                    @default(now())
-  updatedAt                   DateTime                    @updatedAt
+  id                           String                      @id @default(cuid())
+  intentId                     String                      @unique
+  siteCode                     SiteAccessSiteCode
+  travelerUserId               String?
+  tripId                       String?
+  passId                       String?
+  qrCredentialId               String?
+  paxCount                     Int
+  rateCategoryConfirmed        SiteAccessRateCategory      @default(STANDARD_RATE)
+  validFrom                    DateTime?
+  validUntil                   DateTime?
+  usedOnce                     Boolean                     @default(false)
+  usedAt                       DateTime?
+  status                       SiteAccessEntitlementStatus @default(ACTIVE)
+  attachedToOfficialTravelerQr Boolean                     @default(true)
+  metadataJson                 Json?
+  createdAt                    DateTime                    @default(now())
+  updatedAt                    DateTime                    @updatedAt
 
-  intent     SiteAccessIntent      @relation(fields: [intentId], references: [id], onDelete: Cascade)
-  scanEvents SiteAccessScanEvent[]
+  intent      SiteAccessIntent       @relation(fields: [intentId], references: [id], onDelete: Cascade)
+  scanEvents  SiteAccessScanEvent[]
   auditEvents SiteAccessAuditEvent[]
 
   @@index([siteCode])
@@ -4528,7 +4562,7 @@ model SiteAccessEntitlement {
 }
 
 model SiteAccessScanEvent {
-  id                    String               @id @default(cuid())
+  id                    String                  @id @default(cuid())
   intentId              String?
   entitlementId         String?
   siteCode              SiteAccessSiteCode
@@ -4539,7 +4573,7 @@ model SiteAccessScanEvent {
   rateCategoryConfirmed SiteAccessRateCategory?
   notes                 String?
   metadataJson          Json?
-  scannedAt             DateTime             @default(now())
+  scannedAt             DateTime                @default(now())
 
   intent      SiteAccessIntent?      @relation(fields: [intentId], references: [id], onDelete: SetNull)
   entitlement SiteAccessEntitlement? @relation(fields: [entitlementId], references: [id], onDelete: SetNull)
@@ -4554,18 +4588,18 @@ model SiteAccessScanEvent {
 }
 
 model SiteAccessAuditEvent {
-  id             String                   @id @default(cuid())
-  intentId       String?
-  entitlementId  String?
-  siteCode       SiteAccessSiteCode
-  eventType      SiteAccessAuditEventType
-  actorUserId    String?
-  actorRole      String?
-  previousState  String?
-  newState       String?
-  eventKey       String                   @unique
-  metadataJson   Json?
-  createdAt      DateTime                 @default(now())
+  id            String                   @id @default(cuid())
+  intentId      String?
+  entitlementId String?
+  siteCode      SiteAccessSiteCode
+  eventType     SiteAccessAuditEventType
+  actorUserId   String?
+  actorRole     String?
+  previousState String?
+  newState      String?
+  eventKey      String                   @unique
+  metadataJson  Json?
+  createdAt     DateTime                 @default(now())
 
   intent      SiteAccessIntent?      @relation(fields: [intentId], references: [id], onDelete: SetNull)
   entitlement SiteAccessEntitlement? @relation(fields: [entitlementId], references: [id], onDelete: SetNull)
@@ -4689,42 +4723,42 @@ enum SiteAccessApiReadinessStatus {
 }
 
 model SiteAccessPoint {
-  id                     String                       @id @default(cuid())
-  siteAccessPointCode    String                       @unique
-  displayName            String
+  id                  String @id @default(cuid())
+  siteAccessPointCode String @unique
+  displayName         String
 
-  siteType               SiteAccessPointType
-  consumerModule         SiteAccessConsumerModule
-  accessRule             SiteAccessRule
-  qrMode                 SiteAccessQrMode
+  siteType       SiteAccessPointType
+  consumerModule SiteAccessConsumerModule
+  accessRule     SiteAccessRule
+  qrMode         SiteAccessQrMode
 
   governingAuthorityType SiteAccessAuthorityType
   governingAuthorityCode String?
   operatingAuthorityType SiteAccessAuthorityType?
   operatingAuthorityCode String?
 
-  municipalityCode       String?
-  barangayCode           String?
-  physicalLocationLabel  String?
+  municipalityCode      String?
+  barangayCode          String?
+  physicalLocationLabel String?
 
-  visibilityScope        String?
-  operationScope         String?
-  scanPermissionScope    String?
-  payoutVisibilityScope  String?
+  visibilityScope       String?
+  operationScope        String?
+  scanPermissionScope   String?
+  payoutVisibilityScope String?
 
-  registryStatus         SiteAccessRegistryStatus      @default(DRAFT)
-  apiReadinessStatus     SiteAccessApiReadinessStatus  @default(NOT_API_READY)
+  registryStatus     SiteAccessRegistryStatus     @default(DRAFT)
+  apiReadinessStatus SiteAccessApiReadinessStatus @default(NOT_API_READY)
 
-  isActive               Boolean                      @default(false)
-  isPublicVisible        Boolean                      @default(false)
-  isSuperAdminVisible    Boolean                      @default(true)
+  isActive            Boolean @default(false)
+  isPublicVisible     Boolean @default(false)
+  isSuperAdminVisible Boolean @default(true)
 
-  metadataJson           Json?
-  createdAt              DateTime                     @default(now())
-  updatedAt              DateTime                     @updatedAt
+  metadataJson Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  feeRules               SiteAccessFeeRule[]
-  qrDefinitions          SiteAccessQrDefinition[]
+  feeRules      SiteAccessFeeRule[]
+  qrDefinitions SiteAccessQrDefinition[]
 
   @@index([siteType])
   @@index([consumerModule])
@@ -4735,38 +4769,38 @@ model SiteAccessPoint {
 }
 
 model SiteAccessFeeRule {
-  id                     String                  @id @default(cuid())
-  siteAccessPointId      String
+  id                String @id @default(cuid())
+  siteAccessPointId String
 
-  siteAccessPoint        SiteAccessPoint         @relation(fields: [siteAccessPointId], references: [id], onDelete: Cascade)
+  siteAccessPoint SiteAccessPoint @relation(fields: [siteAccessPointId], references: [id], onDelete: Cascade)
 
-  feeRequired            Boolean                 @default(false)
-  feeType                SiteAccessFeeType       @default(NO_FEE)
+  feeRequired Boolean           @default(false)
+  feeType     SiteAccessFeeType @default(NO_FEE)
 
-  feeOwnerType           SiteAccessAuthorityType?
-  feeOwnerCode           String?
-  feeCollectorType       SiteAccessAuthorityType?
-  feeCollectorCode       String?
-  payoutRecipientType    SiteAccessAuthorityType?
-  payoutRecipientCode    String?
+  feeOwnerType        SiteAccessAuthorityType?
+  feeOwnerCode        String?
+  feeCollectorType    SiteAccessAuthorityType?
+  feeCollectorCode    String?
+  payoutRecipientType SiteAccessAuthorityType?
+  payoutRecipientCode String?
 
-  standardAmount         Decimal?                @db.Decimal(12, 2)
-  residentAmount         Decimal?                @db.Decimal(12, 2)
-  seniorAmount           Decimal?                @db.Decimal(12, 2)
-  childAmount            Decimal?                @db.Decimal(12, 2)
-  exemptAmount           Decimal?                @db.Decimal(12, 2)
-  discountedAmount       Decimal?                @db.Decimal(12, 2)
-  currencyCode           String                  @default("PHP")
+  standardAmount   Decimal? @db.Decimal(12, 2)
+  residentAmount   Decimal? @db.Decimal(12, 2)
+  seniorAmount     Decimal? @db.Decimal(12, 2)
+  childAmount      Decimal? @db.Decimal(12, 2)
+  exemptAmount     Decimal? @db.Decimal(12, 2)
+  discountedAmount Decimal? @db.Decimal(12, 2)
+  currencyCode     String   @default("PHP")
 
-  paymentProviderAllowed Boolean                 @default(false)
-  counterPaymentAllowed  Boolean                 @default(true)
-  receiptRequired        Boolean                 @default(true)
+  paymentProviderAllowed Boolean @default(false)
+  counterPaymentAllowed  Boolean @default(true)
+  receiptRequired        Boolean @default(true)
   settlementSurface      String?
 
-  isActive               Boolean                 @default(true)
-  metadataJson           Json?
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @updatedAt
+  isActive     Boolean  @default(true)
+  metadataJson Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([siteAccessPointId])
   @@index([feeType])
@@ -4775,28 +4809,27 @@ model SiteAccessFeeRule {
 }
 
 model SiteAccessQrDefinition {
-  id                   String                     @id @default(cuid())
-  siteAccessPointId    String
+  id                String @id @default(cuid())
+  siteAccessPointId String
 
-  siteAccessPoint      SiteAccessPoint            @relation(fields: [siteAccessPointId], references: [id], onDelete: Cascade)
+  siteAccessPoint SiteAccessPoint @relation(fields: [siteAccessPointId], references: [id], onDelete: Cascade)
 
-  qrCode               String                     @unique
-  qrMode               SiteAccessQrMode
-  qrPurpose            String
-  publicScanUrl        String?
-  internalScanUrl      String?
+  qrCode          String           @unique
+  qrMode          SiteAccessQrMode
+  qrPurpose       String
+  publicScanUrl   String?
+  internalScanUrl String?
 
-  status               SiteAccessRegistryStatus   @default(DRAFT)
-  issuedAt             DateTime?
-  revokedAt            DateTime?
+  status    SiteAccessRegistryStatus @default(DRAFT)
+  issuedAt  DateTime?
+  revokedAt DateTime?
 
-  metadataJson         Json?
-  createdAt            DateTime                   @default(now())
-  updatedAt            DateTime                   @updatedAt
+  metadataJson Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([siteAccessPointId])
   @@index([qrMode])
   @@index([status])
   @@map("site_access_qr_definitions")
 }
-

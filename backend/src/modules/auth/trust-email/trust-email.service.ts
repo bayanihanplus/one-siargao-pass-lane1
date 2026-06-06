@@ -14,6 +14,7 @@ export type OspTrustEmailInput = {
   validFrom?: string | null;
   validUntil?: string | null;
   appBaseUrl?: string | null;
+  ctaPathOverride?: string | null;
 };
 
 type TrustEmailPayload = {
@@ -62,7 +63,7 @@ export class TrustEmailService {
       roleFamily: template.roleFamily,
       eyebrow: template.eyebrow,
       ctaLabel: template.ctaLabel,
-      ctaUrl: buildOspTrustEmailUrl(appBaseUrl, template.ctaPath),
+      ctaUrl: buildOspTrustEmailUrl(appBaseUrl, input.ctaPathOverride || template.ctaPath),
       travelerName: input.travelerName || null,
       passCode: input.passCode || null,
       validFrom: input.validFrom || null,

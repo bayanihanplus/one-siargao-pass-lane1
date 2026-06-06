@@ -2,8 +2,10 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { PrismaService } from '../../database/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import * as bcrypt from 'bcrypt';
-import { randomUUID } from 'crypto';
+import { createHash, randomBytes, randomUUID } from 'crypto';
 import {
   OspAccommodationType,
   OspAgeBracket,
@@ -19,6 +21,7 @@ import {
   OspVisitPurpose,
   OspParticipantType,
   UserRole,
+  PasswordResetTokenStatus,
 } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { TrustEmailService } from './trust-email/trust-email.service';
@@ -64,6 +67,28 @@ function isResidentParticipant(participantType: OspParticipantType) {
   ];
 
   return residentParticipantTypes.includes(participantType);
+}
+
+
+function normalizeEmailForAuth(value: unknown) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function isValidEmailForAuth(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function hashPasswordResetToken(token: string) {
+  return createHash('sha256').update(token).digest('hex');
+}
+
+function getPublicAppBaseUrl() {
+  return (
+    process.env.PUBLIC_APP_BASE_URL ||
+    process.env.NEXT_PUBLIC_APP_BASE_URL ||
+    process.env.OSP_PUBLIC_APP_URL ||
+    'http://localhost:3000'
+  ).replace(/\/+$/, '');
 }
 
 @Injectable()
@@ -425,6 +450,171 @@ const accessToken = await this.jwtService.signAsync({
     } catch (error: any) {
       console.warn('[OSP_EMAIL_FAILED_NON_BLOCKING]', error?.message || error);
     }
+  }
+
+
+  async forgotPassword(dto: ForgotPasswordDto, requestMeta?: { ip?: string | null; userAgent?: string | null }) {
+    const email = normalizeEmailForAuth(dto.email);
+
+    if (!email || !isValidEmailForAuth(email)) {
+      throw new BadRequestException('A valid email address is required.');
+    }
+
+    const genericResponse = {
+      status: 'ACCEPTED',
+      message: 'If this email matches an OSP account, recovery instructions will be sent.',
+    };
+
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+      },
+    });
+
+    const rawToken = randomBytes(32).toString('hex');
+    const tokenHash = hashPasswordResetToken(rawToken);
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 45);
+
+    const resetRequest = await this.prisma.passwordResetToken.create({
+      data: {
+        userId: user?.id || null,
+        email,
+        tokenHash,
+        status: PasswordResetTokenStatus.PENDING,
+        requestedIp: requestMeta?.ip ? String(requestMeta.ip).slice(0, 160) : null,
+        userAgent: requestMeta?.userAgent ? String(requestMeta.userAgent).slice(0, 500) : null,
+        expiresAt,
+      },
+    });
+
+    if (!user?.email) {
+      await this.prisma.passwordResetToken.update({
+        where: { id: resetRequest.id },
+        data: {
+          status: PasswordResetTokenStatus.READY,
+          failureReason: 'no-matching-user-suppressed',
+        },
+      });
+
+      return genericResponse;
+    }
+
+    const ctaPath = `/traveler/reset-password?token=${encodeURIComponent(rawToken)}`;
+
+    const delivery = await this.trustEmailService.sendTrustEmail({
+      templateKey: 'PASSWORD_RESET_REQUESTED',
+      to: user.email,
+      travelerName: user.fullName,
+      ctaPathOverride: ctaPath,
+      appBaseUrl: getPublicAppBaseUrl(),
+    });
+
+    const deliveryResult = delivery as {
+      status?: string;
+      provider?: string;
+      providerMessageId?: string | null;
+      [key: string]: unknown;
+    };
+
+    const status =
+      deliveryResult.status === 'SENT'
+        ? PasswordResetTokenStatus.SENT
+        : deliveryResult.status === 'FAILED'
+          ? PasswordResetTokenStatus.FAILED
+          : PasswordResetTokenStatus.READY;
+
+    await this.prisma.passwordResetToken.update({
+      where: { id: resetRequest.id },
+      data: {
+        status,
+        emailProvider: deliveryResult.provider ? String(deliveryResult.provider) : null,
+        providerMessageId: deliveryResult.providerMessageId ? String(deliveryResult.providerMessageId) : null,
+        failureReason:
+          deliveryResult.status === 'FAILED'
+            ? JSON.stringify(deliveryResult).slice(0, 800)
+            : null,
+      },
+    });
+
+    return genericResponse;
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const token = String(dto.token || '').trim();
+    const password = String(dto.password || '');
+
+    if (!token || token.length < 32) {
+      throw new BadRequestException('Invalid or expired reset link.');
+    }
+
+    if (password.length < 8) {
+      throw new BadRequestException('Password must be at least 8 characters.');
+    }
+
+    const tokenHash = hashPasswordResetToken(token);
+    const resetRequest = await this.prisma.passwordResetToken.findUnique({
+      where: { tokenHash },
+      include: { user: true },
+    });
+
+    if (
+      !resetRequest ||
+      !resetRequest.userId ||
+      !resetRequest.user ||
+      resetRequest.usedAt ||
+      resetRequest.status === PasswordResetTokenStatus.USED ||
+      resetRequest.expiresAt <= new Date()
+    ) {
+      throw new BadRequestException('Invalid or expired reset link.');
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const usedAt = new Date();
+
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: resetRequest.userId },
+        data: { passwordHash },
+      }),
+      this.prisma.passwordResetToken.updateMany({
+        where: {
+          id: { not: resetRequest.id },
+          OR: [
+            { userId: resetRequest.userId },
+            { email: resetRequest.email },
+          ],
+          usedAt: null,
+          status: {
+            in: [
+              PasswordResetTokenStatus.PENDING,
+              PasswordResetTokenStatus.READY,
+              PasswordResetTokenStatus.SENT,
+            ],
+          },
+        },
+        data: {
+          status: PasswordResetTokenStatus.USED,
+          usedAt,
+          failureReason: 'superseded-by-successful-reset',
+        },
+      }),
+      this.prisma.passwordResetToken.update({
+        where: { id: resetRequest.id },
+        data: {
+          status: PasswordResetTokenStatus.USED,
+          usedAt,
+        },
+      }),
+    ]);
+
+    return {
+      status: 'UPDATED',
+      message: 'Password updated. You can now sign in.',
+    };
   }
 
   async login(dto: LoginDto) {
