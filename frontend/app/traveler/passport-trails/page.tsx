@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 import SpmTravelerBottomTabBar from "../../../src/components/traveler/SpmTravelerBottomTabBar";
 import { getTravelerLanguageRuntime, tr } from "../../../src/lib/traveler-language-runtime";
 
@@ -56,11 +56,11 @@ const officialTrails = [
     imageUrl: "/osp/spm/passport-trails/choose-official-trail/tri-island-passport-trail.png",
     description: "Classic island route.",
     href: "/traveler/passport-trails/island-hopping",
-    icon: "๐๏ธ",
+    icon: "",
     badge: "GL Port",
     behavior: "One-day tour",
     support: "Port route",
-    source: "SPM ยท Operator ยท OTA",
+    source: "SPM Operator / OTA",
     pricing: "Bookable",
     features: ["GL Port", "Boat route", "Weather aware"],
     tone: "#047f91",
@@ -72,11 +72,11 @@ const officialTrails = [
     imageUrl: "/osp/spm/passport-trails/choose-official-trail/sugba-lagoon-island-hopping.png",
     description: "Lagoon route.",
     href: "/traveler/passport-trails/sugba-lagoon",
-    icon: "๐ถ",
+    icon: "",
     badge: "Request first",
     behavior: "One-day route",
     support: "Governed route",
-    source: "SPM ยท Operator ยท OTA",
+    source: "SPM Operator / OTA",
     pricing: "Booking/payment governed",
     features: ["Del Carmen", "Support", "Access"],
     tone: "#013863",
@@ -88,11 +88,11 @@ const officialTrails = [
     imageUrl: "/osp/spm/passport-trails/choose-official-trail/bucas-grande-sohoton-cave.png",
     description: "Sohoton route.",
     href: "/traveler/passport-trails/bucas-grande-sohoton",
-    icon: "โฐ๏ธ",
+    icon: "",
     badge: "Future-ready",
     behavior: "One-day route",
     support: "Dapa support",
-    source: "SPM ยท Operator ยท OTA",
+    source: "SPM Operator / OTA",
     pricing: "Future governed pricing",
     features: ["Sohoton", "Dapa", "Support"],
     tone: "#64748b",
@@ -104,11 +104,11 @@ const officialTrails = [
     imageUrl: "/osp/spm/passport-trails/choose-official-trail/siargao-land-tour-passport-trail.png",
     description: "Land route.",
     href: "/traveler/passport-trails/siargao-land-tour",
-    icon: "๐บ",
+    icon: "",
     badge: "Guide + TukTuk",
     behavior: "South/North one-day",
     support: "Local operator guided",
-    source: "SPM ยท Operator ยท OTA",
+    source: "SPM Operator / OTA",
     pricing: "Guide/transport pricing",
     features: ["Guide", "TukTuk", "Drone option"],
     tone: "#047f91",
@@ -120,11 +120,11 @@ const officialTrails = [
     imageUrl: "/osp/spm/passport-trails/choose-official-trail/explorer-surf-trail.png",
     description: "Surf route.",
     href: "/traveler/passport-trails/surf-explorer",
-    icon: "๐",
+    icon: "",
     badge: "Continue later",
     behavior: "Multi-session",
     support: "Surf optional",
-    source: "SPM ยท Operator",
+    source: "SPM Operator",
     pricing: "Lesson/support optional",
     features: ["Beginner", "Saved", "Surf"],
     tone: "#0596A5",
@@ -136,11 +136,11 @@ const officialTrails = [
     imageUrl: "/osp/spm/passport-trails/choose-official-trail/culture-community-trail.png",
     description: "Local route.",
     href: "/traveler/passport-trails/culture-community",
-    icon: "๐ค",
+    icon: "",
     badge: "Local",
     behavior: "One-day flexible",
     support: "SPM-guided",
-    source: "SPM ยท Partner",
+    source: "SPM Partner",
     pricing: "Free/paid stops mixed",
     features: ["Community stops", "Local stories", "Makers and markets"],
     tone: "#8A5A00",
@@ -152,13 +152,13 @@ const officialTrails = [
     imageUrl: "/osp/spm/passport-trails/choose-official-trail/food-wellness-trail.png",
     description: "Local route.",
     href: "/traveler/passport-trails/food-wellness",
-    icon: "๐ฅ—",
+    icon: "",
     badge: "Merchant-led",
     behavior: "Flexible",
     support: "Restaurant/wellness operated",
-    source: "SPM ยท Merchant",
+    source: "SPM Merchant",
     pricing: "Merchant payment logic",
-    features: ["Restaurants", "Cafรฉs", "Spa / wellness / recovery"],
+    features: ["Restaurants", "Cafés", "Spa / wellness / recovery"],
     tone: "#9A5F0C",
     shell: "linear-gradient(145deg, #ffffff 0%, #fff8e8 58%, #ffffff 100%)",
   },
@@ -168,7 +168,7 @@ const officialTrails = [
     imageUrl: "/osp/spm/passport-trails/choose-official-trail/return-traveler-continuity.png",
     description: "Saved route.",
     href: "/traveler/passport-trails/return-traveler-continuity",
-    icon: "๐ซ",
+    icon: "",
     badge: "Across trips",
     behavior: "No fixed duration",
     support: "Saved layer",
@@ -211,7 +211,7 @@ function IslandHoppingRequestStartedPanel({
 
   const serviceTitle =
     normalizedServiceId.includes("tri-island-joiner") || normalizedServiceId.includes("island-hopping")
-      ? "Siargao Partner Tour โ€” Tri-Island Joiner"
+      ? "Siargao Partner Tour — Tri-Island Joiner"
       : "Siargao Partner Tour";
 
   const continueHref = cleanPaymentIntentId
@@ -312,7 +312,7 @@ function IslandHoppingRequestStartedPanel({
             boxShadow: "0 18px 38px rgba(1,56,99,0.24)",
           }}
         >
-          Continue to Next Step โ’
+          Continue to Next Step
         </a>
       </section>
     </main>
@@ -371,7 +371,7 @@ function AppHeader({ dictionary }: { dictionary: TravelerDictionary }) {
               gap: 7,
               borderRadius: 999,
               padding: "6px 9px",
-              background: OSP.navy,
+              background: "transparent",
               color: "#FFFFFF",
               fontSize: 9,
               fontWeight: 920,
@@ -412,8 +412,7 @@ function AppHeader({ dictionary }: { dictionary: TravelerDictionary }) {
               boxShadow: "0 9px 20px rgba(1,56,99,0.09)",
               whiteSpace: "nowrap",
             }}
-          >
-            {tr(dictionary, "passportTrails.actions.map", "Map")}
+          >{tr(dictionary, "passportTrails.actions.map", "Map")}
           </a>
         </div>
 
@@ -487,7 +486,7 @@ function AppHeader({ dictionary }: { dictionary: TravelerDictionary }) {
             style={{
               minHeight: 44,
               borderRadius: 16,
-              background: OSP.navy,
+              background: "transparent",
               color: "#FFFFFF",
               display: "flex",
               alignItems: "center",
@@ -550,7 +549,7 @@ function AppHeader({ dictionary }: { dictionary: TravelerDictionary }) {
               fontWeight: 840,
             }}
           >
-            ๐—บ๏ธ {tr(dictionary, "passportTrails.actions.map", "Map")}
+            {tr(dictionary, "passportTrails.actions.map", "Map")}
           </a>
 
           <a
@@ -571,7 +570,7 @@ function AppHeader({ dictionary }: { dictionary: TravelerDictionary }) {
               fontWeight: 840,
             }}
           >
-            โฆ {tr(dictionary, "passportTrails.actions.kuyaTala", "Kuya Talaโข")}
+            {tr(dictionary, "passportTrails.actions.kuyaTala", "Kuya Tala")}
           </a>
         </div>
       </div>
@@ -934,7 +933,7 @@ function OfficialTrailCard({
           padding: "9px 10px",
           background: visual.background,
           backgroundImage: trailImageUrl
-            ? `linear-gradient(90deg, rgba(255,255,255,0.90) 0%, rgba(255,255,255,0.78) 52%, rgba(255,255,255,0.54) 100%), url(${trailImageUrl})`
+            ? `linear-gradient(90deg, rgba(1,56,99,0.08) 0%, rgba(1,56,99,0.12) 52%, rgba(1,56,99,0.18) 100%), url(${trailImageUrl})`
             : undefined,
           backgroundSize: trailImageUrl ? "cover" : undefined,
           backgroundPosition: trailImageUrl ? "center" : undefined,
@@ -1005,7 +1004,9 @@ function OfficialTrailCard({
             <span
               style={{
                 minWidth: 0,
-                color: OSP.slate,
+                color: "#FFFFFF",
+                WebkitTextFillColor: "#FFFFFF",
+                textShadow: "0 2px 14px rgba(0,0,0,0.78)",
                 fontSize: 8.2,
                 lineHeight: 1,
                 fontWeight: 800,
@@ -1021,7 +1022,9 @@ function OfficialTrailCard({
           <h3
             style={{
               margin: "6px 0 0",
-              color: OSP.navy,
+              color: "#FFFFFF",
+              WebkitTextFillColor: "#FFFFFF",
+              textShadow: "0 2px 14px rgba(0,0,0,0.78)",
               fontSize: 14.4,
               lineHeight: 1.02,
               letterSpacing: "-0.034em",
@@ -1037,9 +1040,9 @@ function OfficialTrailCard({
           <p
             style={{
               margin: "4px 0 0",
-              color: OSP.slate,
-              fontSize: 9.2,
-              lineHeight: 1,
+              color: "rgba(255,255,255,0.96)",
+              WebkitTextFillColor: "rgba(255,255,255,0.96)",
+              textShadow: "0 2px 10px rgba(0,0,0,0.68)",
               fontWeight: 700,
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -1083,16 +1086,16 @@ function OfficialTrailCard({
               width: 25,
               height: 25,
               borderRadius: 10,
-              background: OSP.navy,
+              background: "transparent",
               color: "#FFFFFF",
               display: "grid",
               placeItems: "center",
               fontSize: 12.5,
               fontWeight: 900,
-              boxShadow: "0 8px 18px rgba(1,56,99,0.14)",
+              boxShadow: "none",
             }}
           >
-            โ’
+
           </span>
         </div>
       </a>
@@ -1112,7 +1115,7 @@ function OfficialTrailCard({
         padding: priority ? 10 : 10,
         background: visual.background,
         backgroundImage: trailImageUrl
-          ? `linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.76)), url(${trailImageUrl})`
+          ? `linear-gradient(180deg, rgba(255,255,255,0.18), rgba(1,56,99,0.16)), url(${trailImageUrl})`
           : undefined,
         backgroundSize: trailImageUrl ? "cover" : undefined,
         backgroundPosition: trailImageUrl ? "center" : undefined,
@@ -1180,7 +1183,9 @@ function OfficialTrailCard({
               padding: "4px 7px",
               background: "#FFFFFF",
               border: "1px solid rgba(1,56,99,0.09)",
-              color: OSP.navy,
+              color: "#FFFFFF",
+              WebkitTextFillColor: "#FFFFFF",
+              textShadow: "0 2px 14px rgba(0,0,0,0.78)",
               fontSize: 8.3,
               lineHeight: 1,
               fontWeight: 840,
@@ -1195,7 +1200,9 @@ function OfficialTrailCard({
         <h3
           style={{
             margin: priority ? "8px 0 0" : "7px 0 0",
-            color: OSP.navy,
+            color: "#FFFFFF",
+            WebkitTextFillColor: "#FFFFFF",
+            textShadow: "0 2px 14px rgba(0,0,0,0.78)",
             fontSize: priority ? 16.2 : 14.8,
             lineHeight: 1.02,
             letterSpacing: "-0.038em",
@@ -1214,7 +1221,9 @@ function OfficialTrailCard({
         <p
           style={{
             margin: "5px 0 0",
-            color: OSP.slate,
+            color: "rgba(255,255,255,0.96)",
+            WebkitTextFillColor: "rgba(255,255,255,0.96)",
+            textShadow: "0 2px 10px rgba(0,0,0,0.68)",
             fontSize: priority ? 10.2 : 9.7,
             lineHeight: 1.15,
             fontWeight: 700,
@@ -1287,16 +1296,16 @@ function OfficialTrailCard({
               width: priority ? 27 : 26,
               height: priority ? 27 : 26,
               borderRadius: 11,
-              background: OSP.navy,
+              background: "transparent",
               color: "#FFFFFF",
               display: "grid",
               placeItems: "center",
               fontSize: 13,
               fontWeight: 900,
-              boxShadow: "0 8px 18px rgba(1,56,99,0.14)",
+              boxShadow: "none",
             }}
           >
-            โ’
+
           </span>
         </div>
       </div>
@@ -1376,7 +1385,7 @@ export default async function PassportTrailsPremiumHubPage({
         >
           <div style={{ display: "grid", gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-              <SectionEyebrow>{tr(dictionary, "passportTrails.sections.officialEyebrow", "Official SPM Passport Trails")}</SectionEyebrow>
+              <SectionEyebrow>{tr(dictionary, "passportTrails.sections.officialEyebrow", "Passport Trails")}</SectionEyebrow>
               <span
                 style={{
                   borderRadius: 999,
@@ -1403,19 +1412,21 @@ export default async function PassportTrailsPremiumHubPage({
                 letterSpacing: "-0.055em",
               }}
             >
-              {tr(dictionary, "passportTrails.official.title", "Choose your official trail.")}
+              {tr(dictionary, "passportTrails.official.title", "Choose your trail.")}
             </h2>
 
             <p
               style={{
                 margin: 0,
-                color: OSP.slate,
+                color: "#FFFFFF",
+                WebkitTextFillColor: "#FFFFFF",
+                textShadow: "0 2px 14px rgba(0,0,0,0.78)",
                 fontSize: 12.2,
                 lineHeight: 1.38,
-                fontWeight: 640,
+                fontWeight: 760,
               }}
             >
-              {tr(dictionary, "passportTrails.official.body", "Pick a route. Keep progress connected.")}
+              {tr(dictionary, "passportTrails.official.body", "Choose a route. Your pass stays connected.")}
             </p>
           </div>
 
@@ -1442,15 +1453,17 @@ export default async function PassportTrailsPremiumHubPage({
             }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-              <SectionEyebrow>{tr(dictionary, "passportTrails.sections.discoverSaved", "Discover + Saved")}</SectionEyebrow>
+              <SectionEyebrow>{tr(dictionary, "passportTrails.sections.discoverSaved", "More trails")}</SectionEyebrow>
               <span
                 style={{
-                  color: OSP.slate,
+                  color: "#FFFFFF",
+                  WebkitTextFillColor: "#FFFFFF",
+                  textShadow: "0 2px 14px rgba(0,0,0,0.78)",
                   fontSize: 10,
                   fontWeight: 850,
                 }}
               >
-                {tr(dictionary, "passportTrails.labels.savedFriendly", "Saved-friendly")}
+                {tr(dictionary, "passportTrails.labels.savedFriendly", "")}
               </span>
             </div>
 
@@ -1495,15 +1508,15 @@ export default async function PassportTrailsPremiumHubPage({
                 width: 44,
                 height: 44,
                 borderRadius: 18,
-                background: OSP.navy,
+                background: "transparent",
                 color: OSP.white,
                 display: "grid",
                 placeItems: "center",
                 fontSize: 19,
-                boxShadow: "0 12px 24px rgba(1,56,99,0.18)",
+                boxShadow: "none",
               }}
             >
-              โ’
+
             </span>
           </div>
 
@@ -1523,7 +1536,7 @@ export default async function PassportTrailsPremiumHubPage({
                 borderRadius: 24,
                 padding: 12,
                 textDecoration: "none",
-                background: "#013863",
+                background: "transparent",
                 backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0.12), rgba(1,56,99,0.58)), url(/osp/spm/passport-trails/choose-official-trail/official-trail.png)`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
@@ -1535,7 +1548,7 @@ export default async function PassportTrailsPremiumHubPage({
                 justifyContent: "space-between",
               }}
             >
-              <span style={{ fontSize: 22, lineHeight: 1 }}>๐๏ธ</span>
+              <span style={{ fontSize: 22, lineHeight: 1 }}></span>
               <span>
                 <strong style={{ display: "block", fontSize: 14.8, lineHeight: 1.02, letterSpacing: "-0.03em" }}>
                   {tr(dictionary, "passportTrails.nextStep.official.title", "Official Trail")}
@@ -1554,7 +1567,7 @@ export default async function PassportTrailsPremiumHubPage({
                 borderRadius: 24,
                 padding: 12,
                 textDecoration: "none",
-                background: "#013863",
+                background: "transparent",
                 backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0.12), rgba(1,56,99,0.58)), url(/osp/spm/passport-trails/choose-official-trail/custom-route.png)`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
@@ -1566,7 +1579,7 @@ export default async function PassportTrailsPremiumHubPage({
                 justifyContent: "space-between",
               }}
             >
-              <span style={{ fontSize: 22, lineHeight: 1 }}>โจ</span>
+              <span style={{ fontSize: 22, lineHeight: 1 }}></span>
               <span>
                 <strong style={{ display: "block", fontSize: 14.8, lineHeight: 1.02, letterSpacing: "-0.03em" }}>
                   {tr(dictionary, "passportTrails.nextStep.custom.title", "Custom Route")}
@@ -1587,7 +1600,7 @@ export default async function PassportTrailsPremiumHubPage({
             }}
           >
             <AppButton href="/traveler/passport-map" variant="soft">{tr(dictionary, "passportTrails.actions.openMap", "Open Map")}</AppButton>
-            <AppButton href="/traveler/settings?panel=assistant&topic=passport-trails" variant="navy">{tr(dictionary, "passportTrails.actions.askKuyaTala", "Ask Kuya Talaโข")}</AppButton>
+            <AppButton href="/traveler/settings?panel=assistant&topic=passport-trails" variant="navy">{tr(dictionary, "passportTrails.actions.askKuyaTala", "Ask Kuya Tala")}</AppButton>
           </div>
         </section>
 
@@ -1610,7 +1623,7 @@ export default async function PassportTrailsPremiumHubPage({
                 minHeight: 58,
                 borderRadius: 20,
                 padding: "10px 11px",
-                background: "#013863",
+                background: "transparent",
                 backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0.12), rgba(1,56,99,0.58)), url(/osp/spm/passport-trails/choose-official-trail/trips-saved-plans.png)`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
@@ -1623,7 +1636,7 @@ export default async function PassportTrailsPremiumHubPage({
                 boxShadow: "0 10px 24px rgba(1,56,99,0.08)",
               }}
             >
-              <span style={{ fontSize: 18 }}>๐ซ</span>
+              <span style={{ fontSize: 18 }}></span>
               <span>
                 <strong style={{ display: "block", fontSize: 12.5, lineHeight: 1.05 }}>{tr(dictionary, "passportTrails.shortcuts.trips", "Trips")}</strong>
                 <span style={{ display: "block", marginTop: 3, color: "rgba(255,255,255,0.88)", fontSize: 9.8, fontWeight: 760 }}>{tr(dictionary, "passportTrails.shortcuts.savedPlans", "Saved plans")}</span>
@@ -1637,7 +1650,7 @@ export default async function PassportTrailsPremiumHubPage({
                 minHeight: 58,
                 borderRadius: 20,
                 padding: "10px 11px",
-                background: "#013863",
+                background: "transparent",
                 backgroundImage: `linear-gradient(180deg, rgba(255,255,255,0.12), rgba(1,56,99,0.58)), url(/osp/spm/passport-trails/choose-official-trail/payments-receipts.png)`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
@@ -1650,7 +1663,7 @@ export default async function PassportTrailsPremiumHubPage({
                 boxShadow: "0 10px 24px rgba(1,56,99,0.08)",
               }}
             >
-              <span style={{ fontSize: 18 }}>โฑ</span>
+              <span style={{ fontSize: 18 }}></span>
               <span>
                 <strong style={{ display: "block", fontSize: 12.5, lineHeight: 1.05 }}>{tr(dictionary, "passportTrails.utility.payments", "Payments")}</strong>
                 <span style={{ display: "block", marginTop: 3, color: "rgba(255,255,255,0.88)", fontSize: 9.8, fontWeight: 760 }}>{tr(dictionary, "passportTrails.utility.receipts", "Receipts")}</span>
@@ -1666,6 +1679,16 @@ export default async function PassportTrailsPremiumHubPage({
     </main>
   );
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
