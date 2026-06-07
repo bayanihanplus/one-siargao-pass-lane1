@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { QRCodeSVG } from "qrcode.react";
 import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
+import { getApiBaseUrl, requireAccessToken } from "../../../src/lib/server-auth";
 
 const OSP = {
   navy: "#013863",
@@ -29,11 +31,72 @@ const actions = [
   }
 ];
 
-const statusItems = [
-  { label: "Identity", value: "QR ready" },
-  { label: "Access", value: "Available" },
-  { label: "Records", value: "Linked" },
-];
+async function safeReadJsonResponse(response: Response) {
+  try {
+    const raw = await response.text();
+
+    if (!raw || !raw.trim()) {
+      return null;
+    }
+
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+async function getOfficialTravelerPassSummary() {
+  try {
+    const token = await requireAccessToken();
+
+    const res = await fetch(`${getApiBaseUrl()}/trips/current/home-summary`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      return {
+        summary: null,
+        error: `Unable to load official Traveler QR: HTTP ${res.status}`,
+      };
+    }
+
+    const summary = await safeReadJsonResponse(res);
+    return { summary, error: null };
+  } catch (error: any) {
+    return {
+      summary: null,
+      error: error?.message || "Unable to load official Traveler QR.",
+    };
+  }
+}
+
+function normalizeStatus(value: any, fallback = "Not issued") {
+  const raw = String(value || "").trim();
+
+  if (!raw) return fallback;
+
+  return raw
+    .replace(/[_-]+/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function formatDate(value: any) {
+  if (!value) return "—";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
+
+  return new Intl.DateTimeFormat("en-PH", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
 
 function MiniQrPattern() {
   const blocks = [
@@ -90,7 +153,7 @@ function MiniQrPattern() {
         display: "grid",
         placeItems: "center",
         position: "relative",
-      }}
+        }}
     >
       <div
         style={{
@@ -113,7 +176,7 @@ function MiniQrPattern() {
               style={{
                 borderRadius: 3,
                 background: active ? OSP.deep : "rgba(5,150,165,0.07)",
-              }}
+        }}
             />
           );
         })}
@@ -132,7 +195,7 @@ function MiniQrPattern() {
           display: "grid",
           placeItems: "center",
           fontSize: 11,
-          fontWeight: 1000,
+          fontWeight: 850,
           border: "4px solid #FFFFFF",
           boxShadow: "0 12px 24px rgba(243,174,38,0.24)",
         }}
@@ -171,7 +234,7 @@ function ActionCard({
           ? "linear-gradient(180deg, rgba(247,254,252,0.98) 0%, rgba(255,255,255,0.98) 100%)"
           : isGold
             ? "linear-gradient(180deg, rgba(255,250,239,0.98) 0%, rgba(255,255,255,0.98) 100%)"
-            : "#FFFFFF",
+            : "linear-gradient(180deg, rgba(255,255,255,0.995) 0%, rgba(247,254,252,0.98) 100%)",
         border: isTeal
           ? "1px solid rgba(5,150,165,0.13)"
           : isGold
@@ -183,9 +246,10 @@ function ActionCard({
         gridTemplateColumns: "38px 1fr 16px",
         gap: 10,
         alignItems: "center",
-      }}
+        }}
     >
       <span
+        className="osp-pass-action-badge"
         style={{
           width: 38,
           height: 38,
@@ -195,8 +259,8 @@ function ActionCard({
           background: isTeal ? OSP.teal : isGold ? OSP.gold : OSP.mist,
           color: isGold ? OSP.deep : isTeal ? "#FFFFFF" : OSP.teal,
           fontSize: 9.5,
-          fontWeight: 1000,
-          letterSpacing: "-0.035em",
+          fontWeight: 850,
+          letterSpacing: "-0.01em",
           boxShadow: isTeal
             ? "0 9px 20px rgba(5,150,165,0.16)"
             : isGold
@@ -209,26 +273,36 @@ function ActionCard({
 
       <span>
         <span
+          className="osp-pass-action-title"
           style={{
             display: "block",
             color: OSP.navy,
+            WebkitTextFillColor: OSP.navy,
+            textShadow: "none",
+            filter: "none",
             fontSize: 14,
             lineHeight: 1.08,
-            fontWeight: 920,
-            letterSpacing: "-0.018em",
+            fontWeight: 840,
+            opacity: 1,
+            letterSpacing: "-0.01em",
             marginBottom: 3,
-          }}
+        }}
         >
           {title}
         </span>
         <span
+          className="osp-pass-action-copy"
           style={{
             display: "block",
             color: OSP.slate,
+            WebkitTextFillColor: OSP.slate,
+            textShadow: "none",
+            filter: "none",
             fontSize: 12,
             lineHeight: 1.25,
             fontWeight: 700,
-          }}
+            opacity: 1,
+        }}
         >
           {copy}
         </span>
@@ -239,7 +313,7 @@ function ActionCard({
         style={{
           color: isGold ? OSP.gold : OSP.teal,
           fontSize: 20,
-          fontWeight: 900,
+          fontWeight: 820,
           lineHeight: 1,
         }}
       >
@@ -249,7 +323,29 @@ function ActionCard({
   );
 }
 
-export default function TravelerPassPage() {
+export default async function TravelerPassPage() {
+  const { summary, error } = await getOfficialTravelerPassSummary();
+
+  const passSummary = summary?.passSummary || null;
+  const qrSummary = summary?.qrSummary || null;
+  const passLayer = summary?.passLayer || null;
+  const siteAccessSummary = summary?.siteAccessSummary || null;
+
+  const hasIssuedPass = Boolean(passSummary?.passCode);
+  const hasQrCredential = Boolean(qrSummary?.qrToken || qrSummary?.id || passLayer?.hasQrCredential);
+  const passCode = passSummary?.passCode || "No issued pass yet";
+  const passStatus = hasIssuedPass ? normalizeStatus(passSummary?.passStatus, "Issued") : "Not issued";
+  const qrValue = qrSummary?.qrToken || passSummary?.passCode || "OSP-NO-ISSUED-PASS";
+  const validityLabel = hasIssuedPass
+    ? `${formatDate(passSummary?.issuedAt || passLayer?.validFrom)} — ${formatDate(passSummary?.expiresAt || passLayer?.validUntil)}`
+    : "Create or activate your OSP Pass first";
+
+  const statusItems = [
+    { label: "Identity", value: hasQrCredential ? "QR ready" : "QR pending" },
+    { label: "Access", value: siteAccessSummary?.label || (hasIssuedPass ? "Available" : "Pending") },
+    { label: "Records", value: hasIssuedPass ? "Linked" : "Pending" },
+  ];
+
   return (
     <main
       className="osp-pass-surface-hardening-18d osp-traveler-bottom-tab-safe-page"
@@ -261,7 +357,7 @@ export default function TravelerPassPage() {
         padding: "20px 16px calc(128px + env(safe-area-inset-bottom))",
         fontFamily:
           'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-      }}
+        }}
     >
       <style dangerouslySetInnerHTML={{ __html: `
         .osp-pass-surface-hardening-18d {
@@ -352,6 +448,73 @@ export default function TravelerPassPage() {
           border-color: rgba(243, 174, 38, 0.38) !important;
         }
 
+        /* LANE-2S-R5B-SAFE-FONT-CONSISTENCY */
+        .osp-pass-surface-hardening-18d,
+        .osp-pass-surface-hardening-18d *,
+        .osp-pass-surface-hardening-18d a,
+        .osp-pass-surface-hardening-18d button,
+        .osp-pass-surface-hardening-18d p,
+        .osp-pass-surface-hardening-18d span,
+        .osp-pass-surface-hardening-18d h1,
+        .osp-pass-surface-hardening-18d h2 {
+          font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+          font-synthesis: none;
+        }
+
+        .osp-pass-surface-hardening-18d .osp-pass-action-title {
+          font-size: 13.7px !important;
+          line-height: 1.14 !important;
+          letter-spacing: -0.006em !important;
+        }
+
+        .osp-pass-surface-hardening-18d .osp-pass-action-copy {
+          font-size: 11.8px !important;
+          line-height: 1.32 !important;
+        }
+
+        /* LANE-2S-R4-ACTION-CONTRAST-FREEZE */
+        .osp-pass-surface-hardening-18d .osp-pass-action-card,
+        .osp-pass-surface-hardening-18d .osp-pass-action-card *,
+        .osp-pass-surface-hardening-18d .osp-pass-action-card span {
+          text-shadow: none !important;
+        }
+
+        .osp-pass-surface-hardening-18d .osp-pass-action-title {
+          color: #013863 !important;
+          -webkit-text-fill-color: #013863 !important;
+          opacity: 1 !important;
+          filter: none !important;
+          text-shadow: none !important;
+          mix-blend-mode: normal !important;
+          font-weight: 840 !important;
+        }
+
+        .osp-pass-surface-hardening-18d .osp-pass-action-copy {
+          color: #50668B !important;
+          -webkit-text-fill-color: #50668B !important;
+          opacity: 1 !important;
+          filter: none !important;
+          text-shadow: none !important;
+          mix-blend-mode: normal !important;
+          font-weight: 700 !important;
+        }
+
+        .osp-pass-surface-hardening-18d .osp-pass-action-badge {
+          color: #0596A5 !important;
+          -webkit-text-fill-color: #0596A5 !important;
+          background: #EAFBFA !important;
+          text-shadow: none !important;
+          filter: none !important;
+          opacity: 1 !important;
+        }
+
+        .osp-pass-surface-hardening-18d .osp-pass-action-card {
+          background: linear-gradient(180deg, rgba(255,255,255,0.995), rgba(247,254,252,0.98)) !important;
+          border-color: rgba(1,56,99,0.075) !important;
+          color: #013863 !important;
+          -webkit-text-fill-color: initial !important;
+        }
+
         @media (hover: none) {
           .osp-pass-surface-hardening-18d .osp-pass-action-card:hover {
             transform: none;
@@ -373,7 +536,7 @@ export default function TravelerPassPage() {
             alignItems: "center",
             gap: 12,
             marginBottom: 12,
-          }}
+        }}
         >
           <Link
             href="/traveler/home"
@@ -389,9 +552,9 @@ export default function TravelerPassPage() {
               border: "1px solid rgba(1,56,99,0.075)",
               color: OSP.navy,
               fontSize: 13.5,
-              fontWeight: 900,
+              fontWeight: 820,
               boxShadow: "0 10px 24px rgba(1,56,99,0.055)",
-            }}
+        }}
           >
             ← Home
           </Link>
@@ -408,11 +571,11 @@ export default function TravelerPassPage() {
               border: "1px solid rgba(5,150,165,0.14)",
               color: OSP.teal,
               fontSize: 11.5,
-              fontWeight: 900,
-              letterSpacing: "0.10em",
+              fontWeight: 820,
+              letterSpacing: "0.085em",
               textTransform: "uppercase",
               boxShadow: "0 9px 20px rgba(1,56,99,0.04)",
-            }}
+        }}
           >
             Official Pass
           </span>
@@ -428,7 +591,7 @@ export default function TravelerPassPage() {
             boxShadow: "0 26px 70px rgba(1,56,99,0.125)",
             marginBottom: 12,
             position: "relative",
-          }}
+        }}
         >
           <div
             aria-hidden="true"
@@ -440,7 +603,7 @@ export default function TravelerPassPage() {
               height: 4,
               background:
                 "linear-gradient(90deg, rgba(5,150,165,0.82), rgba(243,174,38,0.82), rgba(1,56,99,0.82))",
-            }}
+        }}
           />
 
           <section
@@ -448,17 +611,17 @@ export default function TravelerPassPage() {
               padding: "18px 16px 10px",
               background:
                 "linear-gradient(180deg, rgba(247,254,252,0.98) 0%, rgba(255,255,255,0.98) 100%)",
-            }}
+        }}
           >
             <p
               style={{
                 margin: "0 0 5px",
                 color: OSP.gold,
                 fontSize: 10,
-                fontWeight: 950,
-                letterSpacing: "0.16em",
+                fontWeight: 840,
+                letterSpacing: "0.12em",
                 textTransform: "uppercase",
-              }}
+        }}
             >
               One Siargao Pass
             </p>
@@ -469,9 +632,9 @@ export default function TravelerPassPage() {
                 color: OSP.navy,
                 fontSize: 29,
                 lineHeight: 1.04,
-                fontWeight: 920,
-                letterSpacing: "-0.038em",
-              }}
+                fontWeight: 860,
+                letterSpacing: "-0.016em",
+        }}
             >
               Official Traveler QR
             </h1>
@@ -484,7 +647,7 @@ export default function TravelerPassPage() {
                 lineHeight: 1.42,
                 fontWeight: 720,
                 maxWidth: 320,
-              }}
+        }}
             >
               Your QR for supported access, scans, and records.
             </p>
@@ -497,9 +660,55 @@ export default function TravelerPassPage() {
               justifyItems: "center",
               background:
                 "radial-gradient(circle at 50% 10%, rgba(5,150,165,0.08), transparent 48%), #FFFFFF",
-            }}
+        }}
           >
-            <MiniQrPattern />
+            {hasQrCredential ? (
+              <div
+                style={{
+                  width: 164,
+                  height: 164,
+                  borderRadius: 32,
+                  background: "#FFFFFF",
+                  border: "1px solid rgba(1,56,99,0.08)",
+                  boxShadow:
+                    "inset 0 0 0 9px rgba(234,251,250,0.76), 0 22px 48px rgba(1,56,99,0.13)",
+                  display: "grid",
+                  placeItems: "center",
+                  position: "relative",
+        }}
+              >
+                <QRCodeSVG
+                  value={qrValue}
+                  size={108}
+                  bgColor="#FFFFFF"
+                  fgColor={OSP.deep}
+                  level="M"
+                  includeMargin={false}
+                />
+                <span
+                  style={{
+                    position: "absolute",
+                    right: 17,
+                    bottom: 17,
+                    width: 34,
+                    height: 34,
+                    borderRadius: 999,
+                    background: OSP.gold,
+                    color: OSP.deep,
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: 11,
+                    fontWeight: 850,
+                    border: "4px solid #FFFFFF",
+                    boxShadow: "0 12px 24px rgba(243,174,38,0.24)",
+        }}
+                >
+                  OSP
+                </span>
+              </div>
+            ) : (
+              <MiniQrPattern />
+            )}
 
             <div
               style={{
@@ -514,7 +723,7 @@ export default function TravelerPassPage() {
                 gridTemplateColumns: "1fr auto",
                 gap: 10,
                 alignItems: "center",
-              }}
+        }}
             >
               <div>
                 <p
@@ -522,10 +731,10 @@ export default function TravelerPassPage() {
                     margin: "0 0 4px",
                     color: OSP.slate,
                     fontSize: 9.5,
-                    letterSpacing: "0.13em",
+                    letterSpacing: "0.085em",
                     textTransform: "uppercase",
-                    fontWeight: 950,
-                  }}
+                    fontWeight: 840,
+        }}
                 >
                   Pass code
                 </p>
@@ -535,11 +744,11 @@ export default function TravelerPassPage() {
                     color: OSP.deep,
                     fontSize: 16,
                     lineHeight: 1.05,
-                    fontWeight: 930,
-                    letterSpacing: "-0.028em",
-                  }}
+                    fontWeight: 860,
+                    letterSpacing: "-0.01em",
+        }}
                 >
-                  OSP-READY-START-HERE
+                  {passCode}
                 </p>
               </div>
 
@@ -555,10 +764,10 @@ export default function TravelerPassPage() {
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: 11.5,
-                  fontWeight: 900,
-                }}
+                  fontWeight: 820,
+        }}
               >
-                Ready
+                {passStatus}
               </span>
             </div>
 
@@ -569,9 +778,35 @@ export default function TravelerPassPage() {
                 display: "grid",
                 gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
                 gap: 8,
-              }}
+        }}
             >
-              {statusItems.map((item) => (
+              {error ? (
+                  <p
+                    style={{
+                      margin: "10px 0 0",
+                      color: "#9A3412",
+                      fontSize: 11.5,
+                      lineHeight: 1.35,
+                      fontWeight: 800,
+        }}
+                  >
+                    {error}
+                  </p>
+                ) : null}
+
+                <p
+                  style={{
+                    margin: "10px 0 0",
+                    color: OSP.slate,
+                    fontSize: 11.5,
+                    lineHeight: 1.35,
+                    fontWeight: 750,
+        }}
+                >
+                  Validity: {validityLabel}
+                </p>
+
+                {statusItems.map((item) => (
                 <div
                   key={item.label}
                   style={{
@@ -581,17 +816,17 @@ export default function TravelerPassPage() {
                     border: "1px solid rgba(1,56,99,0.065)",
                     boxShadow: "0 8px 18px rgba(1,56,99,0.035)",
                     padding: "9px 8px",
-                  }}
+        }}
                 >
                   <p
                     style={{
                       margin: "0 0 5px",
                       color: OSP.slate,
                       fontSize: 8.7,
-                      fontWeight: 950,
-                      letterSpacing: "0.10em",
+                      fontWeight: 840,
+                      letterSpacing: "0.085em",
                       textTransform: "uppercase",
-                    }}
+        }}
                   >
                     {item.label}
                   </p>
@@ -601,8 +836,8 @@ export default function TravelerPassPage() {
                       color: item.label === "Identity" ? OSP.teal : OSP.navy,
                       fontSize: 11.5,
                       lineHeight: 1.05,
-                      fontWeight: 900,
-                    }}
+                      fontWeight: 820,
+        }}
                   >
                     {item.value}
                   </p>
@@ -617,7 +852,7 @@ export default function TravelerPassPage() {
             display: "grid",
             gap: 9,
             marginBottom: 12,
-          }}
+        }}
         >
           {actions.map((action) => (
             <ActionCard key={action.title} {...action} />
@@ -632,17 +867,17 @@ export default function TravelerPassPage() {
               "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(247,254,252,0.92) 100%)",
             border: "1px solid rgba(1,56,99,0.075)",
             boxShadow: "0 12px 30px rgba(1,56,99,0.055)",
-          }}
+        }}
         >
           <p
             style={{
               margin: "0 0 5px",
               color: OSP.gold,
               fontSize: 10,
-              fontWeight: 950,
-              letterSpacing: "0.16em",
+              fontWeight: 840,
+              letterSpacing: "0.12em",
               textTransform: "uppercase",
-            }}
+        }}
           >
             Access layer
           </p>
@@ -653,9 +888,9 @@ export default function TravelerPassPage() {
               color: OSP.navy,
               fontSize: 17,
               lineHeight: 1.1,
-              fontWeight: 920,
-              letterSpacing: "-0.026em",
-            }}
+              fontWeight: 860,
+              letterSpacing: "-0.016em",
+        }}
           >
             Connected to your traveler pass.
           </h2>
@@ -667,7 +902,7 @@ export default function TravelerPassPage() {
               fontSize: 12.7,
               lineHeight: 1.4,
               fontWeight: 700,
-            }}
+        }}
           >
             Site access, trail activity, scan points, and payment records can attach as OSP services activate.
           </p>
