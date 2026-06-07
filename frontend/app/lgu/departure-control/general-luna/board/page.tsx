@@ -183,7 +183,7 @@ async function getBoardData(): Promise<DcsPreviewResponse> {
       ...data,
       ok: true,
       displayMode: "PILOT_PREVIEW",
-      dataSource: data.dataSource || "DCS_REGISTRY_PREVIEW_NOT_LIVE_BOARD",
+      dataSource: "DCS_PILOT_DISPLAY",
       trips: sourceTrips.slice(0, 6).map((trip, index) => enrichTripForPresentation(trip, index)),
       totalTrips: sourceTrips.length,
     };
@@ -199,7 +199,7 @@ function offlinePreview(today: string): DcsPreviewResponse {
     departureDate: today,
     totalTrips: fallbackTrips.length,
     displayMode: "PILOT_PREVIEW",
-    dataSource: "OFFLINE_PRESENTATION_FALLBACK",
+    dataSource: "DCS_PILOT_DISPLAY",
     trips: fallbackTrips,
   };
 }
