@@ -1,4 +1,4 @@
-import SpmTravelerBottomTabBar from "../../../../src/components/traveler/SpmTravelerBottomTabBar";
+import UniversalTravelerBottomTabBar from "../../../../src/components/traveler/UniversalTravelerBottomTabBar";
 import Link from "next/link";
 import { SpmFunctionalJourneyMap } from "../../../../src/spm/functional-map/SpmFunctionalJourneyMap";
 import { notFound } from "next/navigation";
@@ -3955,7 +3955,7 @@ function OfficialTrailCommercialExposurePanel({
           </article>
         </div>
       
-      <SpmTravelerBottomTabBar activeTab="trails" fixed />
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
 </section>
     );
   }
@@ -6265,7 +6265,7 @@ function OfficialDcsPremiumTrailDetail({
 
 
 
-      <SpmTravelerBottomTabBar activeTab="trails" fixed />
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }
@@ -7374,7 +7374,7 @@ function IslandHoppingCommercialTemplate() {
       
     
       <div aria-hidden="true" style={{ height: 148 }} />
-      <SpmTravelerBottomTabBar activeTab="trails" fixed />
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }

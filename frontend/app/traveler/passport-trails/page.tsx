@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import SpmTravelerBottomTabBar from "../../../src/components/traveler/SpmTravelerBottomTabBar";
+import UniversalTravelerBottomTabBar from "../../../src/components/traveler/UniversalTravelerBottomTabBar";
 import { getTravelerLanguageRuntime, tr } from "../../../src/lib/traveler-language-runtime";
 
 const OSP = {
@@ -1675,7 +1675,7 @@ export default async function PassportTrailsPremiumHubPage({
 
       <div aria-hidden="true" style={{ height: 118 }} />
       
-      <SpmTravelerBottomTabBar activeTab="trails" fixed />
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }

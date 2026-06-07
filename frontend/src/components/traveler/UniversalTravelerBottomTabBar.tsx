@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
 
 type TravelerBottomTabKey = "home" | "trails" | "pass" | "explore" | "profile";
 
@@ -70,12 +70,7 @@ export default function UniversalTravelerBottomTabBar({
   labels,
 }: UniversalTravelerBottomTabBarProps) {
   const passActive = activeTab === "pass";
-  const [portalMounted, setPortalMounted] = useState(false);
   const [dictionary, setDictionary] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    setPortalMounted(true);
-  }, []);
 
   useEffect(() => {
     const languageCode = readPreviewLanguageCookie();
@@ -121,6 +116,10 @@ export default function UniversalTravelerBottomTabBar({
         boxShadow: "0 14px 36px rgba(15,23,42,0.08)",
         backdropFilter: "blur(18px)",
         WebkitBackdropFilter: "blur(18px)",
+        WebkitTapHighlightColor: "transparent",
+        userSelect: "none",
+        willChange: "auto",
+        isolation: "isolate",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -128,38 +127,55 @@ export default function UniversalTravelerBottomTabBar({
         gap: 6,
         padding: "10px 12px 12px",
         boxSizing: "border-box",
+        touchAction: "manipulation",
+        outline: "none",
       }}
     >
       {resolvedTabs.slice(0, 2).map((tab) => (
         <BottomTabItem key={tab.key} tab={tab} active={activeTab === tab.key} />
       ))}
 
-      <a
+      <Link
         href="/traveler/pass"
+        prefetch
         aria-label={translate(dictionary, "traveler.bottomTab.qrAria", "Open official Traveler QR")}
         aria-current={passActive ? "page" : undefined}
         data-osp-bottom-tab-center-qr="true"
         style={{
           width: 66,
           height: 66,
+          minWidth: 66,
+          maxWidth: 66,
+          minHeight: 66,
+          maxHeight: 66,
+          aspectRatio: "1 / 1",
           marginTop: -24,
-          borderRadius: 999,
+          borderRadius: "50%",
           background: passActive ? OSP.navy : "#24bfd1",
           color: OSP.white,
           border: "6px solid #FFFFFF",
           boxShadow: passActive
             ? "0 14px 30px rgba(1,56,99,0.24)"
             : "0 12px 28px rgba(36,191,209,0.35)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          display: "grid",
+          placeItems: "center",
           textDecoration: "none",
-          flex: "0 0 auto",
+          flex: "0 0 66px",
+          flexShrink: 0,
           boxSizing: "border-box",
+          overflow: "hidden",
+          lineHeight: 0,
+          appearance: "none",
+          WebkitAppearance: "none",
+          WebkitTapHighlightColor: "transparent",
+          touchAction: "manipulation",
+          userSelect: "none",
+          outline: "none",
+          transform: "translateZ(0)",
         }}
       >
         <QrIcon active={passActive} />
-      </a>
+      </Link>
 
       {resolvedTabs.slice(2).map((tab) => (
         <BottomTabItem key={tab.key} tab={tab} active={activeTab === tab.key} />
@@ -170,7 +186,7 @@ export default function UniversalTravelerBottomTabBar({
   return (
     <>
       <div aria-hidden="true" style={bottomTabSafeSpacerStyle} />
-      {portalMounted ? createPortal(bottomTabNav, document.body) : null}
+      {bottomTabNav}
     </>
   );
 }
@@ -183,8 +199,9 @@ function BottomTabItem({
   active: boolean;
 }) {
   return (
-    <a
+    <Link
       href={tab.href}
+      prefetch
       aria-label={tab.label}
       aria-current={active ? "page" : undefined}
       data-osp-bottom-tab-item={tab.key}
@@ -207,6 +224,10 @@ function BottomTabItem({
         overflow: "hidden",
         position: "relative",
         flex: "1 1 0",
+        WebkitTapHighlightColor: "transparent",
+        touchAction: "manipulation",
+        userSelect: "none",
+        outline: "none",
       }}
     >
       {active ? (
@@ -256,7 +277,7 @@ function BottomTabItem({
       >
         {tab.label}
       </span>
-    </a>
+    </Link>
   );
 }
 
@@ -445,29 +466,39 @@ function ProfileBadgeIcon({ active }: { active: boolean }) {
 
 function QrIcon({ active }: { active: boolean }) {
   const stroke = active ? OSP.gold : OSP.white;
-  const glow = active ? "rgba(243,174,38,0.24)" : "rgba(255,255,255,0.20)";
+  const soft = active ? "rgba(243,174,38,0.24)" : "rgba(255,255,255,0.22)";
+  const dot = active ? OSP.white : OSP.white;
 
   return (
-    <svg width="33" height="33" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <circle cx="16" cy="16" r="13.4" fill={glow} />
-      <rect x="5.4" y="5.4" width="7.8" height="7.8" rx="2.15" stroke={stroke} strokeWidth="2.15" />
-      <rect x="18.8" y="5.4" width="7.8" height="7.8" rx="2.15" stroke={stroke} strokeWidth="2.15" />
-      <rect x="5.4" y="18.8" width="7.8" height="7.8" rx="2.15" stroke={stroke} strokeWidth="2.15" />
-      <path
-        d="M18.8 18.8h3.15v3.15H18.8V18.8ZM24 18.8h2.6v7.8h-7.8V24H24v-5.2Z"
-        stroke={stroke}
-        strokeWidth="2.15"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M16 12.95v6.1M12.95 16h6.1"
-        stroke={stroke}
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        opacity="0.92"
-      />
+    <svg
+      aria-hidden="true"
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
+      fill="none"
+      style={{
+        display: "block",
+        width: 32,
+        height: 32,
+        overflow: "visible",
+        filter: active ? "drop-shadow(0 2px 7px rgba(243,174,38,0.22))" : "none",
+      }}
+    >
+      <circle cx="16" cy="16" r="15" fill={soft} />
+
+      <path d="M9 9h5v5H9V9Z" stroke={stroke} strokeWidth="2.15" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M18 9h5v5h-5V9Z" stroke={stroke} strokeWidth="2.15" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 18h5v5H9v-5Z" stroke={stroke} strokeWidth="2.15" strokeLinecap="round" strokeLinejoin="round" />
+
+      <circle cx="11.5" cy="11.5" r="1.15" fill={dot} />
+      <circle cx="20.5" cy="11.5" r="1.15" fill={dot} />
+      <circle cx="11.5" cy="20.5" r="1.15" fill={dot} />
+
+      <path d="M18 18h2.6v2.6H18V18Z" fill={stroke} />
+      <path d="M22 18h1.8v5.8H22V18Z" fill={stroke} />
+      <path d="M18 22h5.8v1.8H18V22Z" fill={stroke} />
+
+      <circle cx="16" cy="16" r="14.2" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
     </svg>
   );
 }
-
-// OSP_UNIVERSAL_BOTTOM_TAB_ORDER_12B_COMPLETE

@@ -1,4 +1,4 @@
-import SpmTravelerBottomTabBar from "../../../../src/components/traveler/SpmTravelerBottomTabBar";
+import UniversalTravelerBottomTabBar from "../../../../src/components/traveler/UniversalTravelerBottomTabBar";
 import Link from "next/link";
 
 const OSP = {
@@ -804,7 +804,7 @@ export default function ReturnTravelerContinuityPage() {
         <div aria-hidden="true" style={{ height: 118 }} />
       </div>
 
-      <SpmTravelerBottomTabBar activeTab="trails" fixed />
+      <UniversalTravelerBottomTabBar activeTab="trails" fixed />
     </main>
   );
 }

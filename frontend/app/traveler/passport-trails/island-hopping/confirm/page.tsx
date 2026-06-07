@@ -1,5 +1,5 @@
 import Link from "next/link";
-import SpmTravelerBottomTabBar from "../../../../../src/components/traveler/SpmTravelerBottomTabBar";
+import UniversalTravelerBottomTabBar from "../../../../../src/components/traveler/UniversalTravelerBottomTabBar";
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -143,7 +143,7 @@ export default function IslandHoppingConfirmPage({ searchParams }: { searchParam
           Back to Seat Setup
         </Link>
       </section>
-      <SpmTravelerBottomTabBar />
+      <UniversalTravelerBottomTabBar />
     </main>
   );
 }
