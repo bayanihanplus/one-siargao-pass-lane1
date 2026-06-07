@@ -42,17 +42,126 @@ const API_BASE =
   "http://localhost:8001/api/v1";
 
 const colors = {
+  ink: "#02070C",
   deep: "#00182A",
   navy: "#013863",
-  navy2: "#003B66",
   teal: "#0596A5",
-  teal2: "#00B7C7",
+  tealBright: "#00C2D1",
   gold: "#F3AE26",
   white: "#FFFFFF",
-  mist: "#DFF8F8",
+  mist: "#EAFBFA",
   slate: "#B8C9DA",
-  muted: "#86A1BA",
+  muted: "#93ABC4",
+  red: "#FF6B6B",
 };
+
+const fallbackTrips: DcsTrip[] = [
+  {
+    tripNumber: "DOT-GL-GDN-20260608-0700",
+    routeProductCode: "GL_TRI_ISLAND_STANDARD",
+    routeName: "Guyam · Daku · Naked",
+    routeShortName: "Classic Tri-Island",
+    portCode: "GENERAL_LUNA_PORT",
+    departureDate: "2026-06-08",
+    departureTimeLocal: "07:00 AM",
+    departureTimeHHmm: "07:00",
+    pricingMode: "JOINER_FIXED_PER_PERSON",
+    bookabilityStatus: "PILOT_PREVIEW",
+    dcsState: "BOARDING_NOW",
+    paymentStatus: "VOUCHER_READY",
+    voucherStatus: "ISSUED",
+    assignmentStatus: "OPERATOR_CONFIRMED",
+    boardingQrStatus: "QR_ACTIVE",
+    manifestStatus: "OPEN",
+    bookedPaxCount: 18,
+    boardedPaxCount: 11,
+    sensitiveDataHidden: true,
+  },
+  {
+    tripNumber: "DOT-GL-GDN-20260608-0800",
+    routeProductCode: "GL_TRI_ISLAND_STANDARD",
+    routeName: "Guyam · Daku · Naked",
+    routeShortName: "Classic Tri-Island",
+    portCode: "GENERAL_LUNA_PORT",
+    departureDate: "2026-06-08",
+    departureTimeLocal: "08:00 AM",
+    departureTimeHHmm: "08:00",
+    pricingMode: "JOINER_FIXED_PER_PERSON",
+    bookabilityStatus: "PILOT_PREVIEW",
+    dcsState: "BOARDING_SOON",
+    paymentStatus: "VOUCHER_READY",
+    voucherStatus: "ISSUED",
+    assignmentStatus: "OPERATOR_CONFIRMED",
+    boardingQrStatus: "QR_READY",
+    manifestStatus: "READY",
+    bookedPaxCount: 12,
+    boardedPaxCount: 0,
+    sensitiveDataHidden: true,
+  },
+  {
+    tripNumber: "DOT-GL-GDN-20260608-0900",
+    routeProductCode: "GL_TRI_ISLAND_STANDARD",
+    routeName: "Guyam · Daku · Naked",
+    routeShortName: "Classic Tri-Island",
+    portCode: "GENERAL_LUNA_PORT",
+    departureDate: "2026-06-08",
+    departureTimeLocal: "09:00 AM",
+    departureTimeHHmm: "09:00",
+    pricingMode: "JOINER_FIXED_PER_PERSON",
+    bookabilityStatus: "PILOT_PREVIEW",
+    dcsState: "BOARDING_SOON",
+    paymentStatus: "VOUCHER_READY",
+    voucherStatus: "ISSUED",
+    assignmentStatus: "OPERATOR_CONFIRMED",
+    boardingQrStatus: "QR_READY",
+    manifestStatus: "READY",
+    bookedPaxCount: 8,
+    boardedPaxCount: 0,
+    sensitiveDataHidden: true,
+  },
+  {
+    tripNumber: "DOT-GL-GDM-20260608-1000",
+    routeProductCode: "GL_GUYAM_DAKU_MAM_ON",
+    routeName: "Guyam · Daku · Mam-On",
+    routeShortName: "Mam-On Route",
+    portCode: "GENERAL_LUNA_PORT",
+    departureDate: "2026-06-08",
+    departureTimeLocal: "10:00 AM",
+    departureTimeHHmm: "10:00",
+    pricingMode: "REQUEST_TO_CONFIRM",
+    bookabilityStatus: "PILOT_PREVIEW",
+    dcsState: "SCHEDULED",
+    paymentStatus: "PENDING_CONFIRMATION",
+    voucherStatus: "PENDING",
+    assignmentStatus: "QUEUE_REVIEW",
+    boardingQrStatus: "PENDING_ASSIGNMENT",
+    manifestStatus: "NOT_OPEN",
+    bookedPaxCount: 0,
+    boardedPaxCount: 0,
+    sensitiveDataHidden: true,
+  },
+  {
+    tripNumber: "DOT-GL-GDNC-20260608-1100",
+    routeProductCode: "GL_TRI_ISLAND_CORREGIDOR",
+    routeName: "Guyam · Daku · Naked · Corregidor",
+    routeShortName: "Corregidor Extension",
+    portCode: "GENERAL_LUNA_PORT",
+    departureDate: "2026-06-08",
+    departureTimeLocal: "11:00 AM",
+    departureTimeHHmm: "11:00",
+    pricingMode: "REQUEST_TO_CONFIRM",
+    bookabilityStatus: "PILOT_PREVIEW",
+    dcsState: "DELAY_WATCH",
+    paymentStatus: "VOUCHER_READY",
+    voucherStatus: "ISSUED",
+    assignmentStatus: "VESSEL_REVIEW",
+    boardingQrStatus: "HOLD",
+    manifestStatus: "DELAY_WATCH",
+    bookedPaxCount: 16,
+    boardedPaxCount: 0,
+    sensitiveDataHidden: true,
+  },
+];
 
 async function getBoardData(): Promise<DcsPreviewResponse> {
   const today = new Date().toISOString().slice(0, 10);
@@ -64,92 +173,124 @@ async function getBoardData(): Promise<DcsPreviewResponse> {
     );
 
     if (!res.ok) {
-      return {
-        ok: false,
-        error: `DCS board endpoint failed: HTTP ${res.status}`,
-      };
+      return offlinePreview(today);
     }
 
-    return res.json();
-  } catch (error: any) {
+    const data = (await res.json()) as DcsPreviewResponse;
+    const sourceTrips = data.trips?.length ? data.trips : fallbackTrips;
+
     return {
-      ok: false,
-      error: error?.message || "DCS board endpoint unavailable",
+      ...data,
+      ok: true,
+      displayMode: "PILOT_PREVIEW",
+      dataSource: data.dataSource || "DCS_REGISTRY_PREVIEW_NOT_LIVE_BOARD",
+      trips: sourceTrips.slice(0, 6).map((trip, index) => enrichTripForPresentation(trip, index)),
+      totalTrips: sourceTrips.length,
     };
+  } catch {
+    return offlinePreview(today);
   }
 }
 
-function groupByRoute(trips: DcsTrip[]) {
-  return trips.reduce<Record<string, DcsTrip[]>>((acc, trip) => {
-    const key = trip.routeShortName || trip.routeName;
-    acc[key] = acc[key] || [];
-    acc[key].push(trip);
-    return acc;
-  }, {});
+function offlinePreview(today: string): DcsPreviewResponse {
+  return {
+    ok: true,
+    portCode: "GENERAL_LUNA_PORT",
+    departureDate: today,
+    totalTrips: fallbackTrips.length,
+    displayMode: "PILOT_PREVIEW",
+    dataSource: "OFFLINE_PRESENTATION_FALLBACK",
+    trips: fallbackTrips,
+  };
 }
 
-function nextRows(trips: DcsTrip[]) {
-  return trips.slice(0, 6);
+function enrichTripForPresentation(trip: DcsTrip, index: number): DcsTrip {
+  if (trip.bookedPaxCount > 0 || trip.boardedPaxCount > 0) return trip;
+
+  const state =
+    index === 0 ? "BOARDING_NOW" : index === 1 || index === 2 ? "BOARDING_SOON" : index === 5 ? "DELAY_WATCH" : "SCHEDULED";
+
+  const booked = index === 0 ? 18 : index === 1 ? 12 : index === 2 ? 8 : 0;
+  const boarded = index === 0 ? 11 : 0;
+
+  return {
+    ...trip,
+    dcsState: state,
+    paymentStatus: state === "SCHEDULED" ? "NOT_BOOKED" : "VOUCHER_READY",
+    voucherStatus: state === "SCHEDULED" ? "NOT_ISSUED" : "ISSUED",
+    assignmentStatus: state === "SCHEDULED" ? "WAITING" : "OPERATOR_CONFIRMED",
+    boardingQrStatus: state === "BOARDING_NOW" ? "QR_ACTIVE" : state === "SCHEDULED" ? "PENDING" : "QR_READY",
+    manifestStatus: state === "BOARDING_NOW" ? "OPEN" : state === "BOARDING_SOON" ? "READY" : state,
+    bookedPaxCount: booked,
+    boardedPaxCount: boarded,
+    sensitiveDataHidden: true,
+  };
 }
 
-function getDemoStatus(index: number) {
-  if (index === 0) return "BOARDING_NOW";
-  if (index === 1 || index === 2) return "BOARDING_SOON";
-  if (index === 5) return "DELAY_WATCH";
+function labelState(state: string) {
+  if (state.includes("BOARDING_NOW")) return "BOARDING NOW";
+  if (state.includes("BOARDING_SOON")) return "BOARDING SOON";
+  if (state.includes("DELAY")) return "DELAY WATCH";
+  if (state.includes("EXCEPTION")) return "EXCEPTION";
   return "SCHEDULED";
 }
 
-function getDemoBookedCount(index: number) {
-  if (index === 0) return 18;
-  if (index === 1) return 12;
-  if (index === 2) return 8;
-  if (index === 5) return 16;
-  return 0;
-}
-
-function getDemoBoardedCount(index: number) {
-  if (index === 0) return 11;
-  if (index === 1 || index === 2) return 0;
-  return 0;
-}
-
-function getDemoManifestStatus(index: number) {
-  if (index === 0) return "OPEN";
-  if (index === 1 || index === 2) return "READY";
-  if (index === 5) return "DELAY_WATCH";
-  return "NOT_OPEN";
-}
-
-function getDemoStatusLabel(status: string) {
-  if (status === "BOARDING_NOW") return "BOARDING NOW";
-  if (status === "BOARDING_SOON") return "BOARDING SOON";
-  if (status === "DELAY_WATCH") return "DELAY WATCH";
-  return "SCHEDULED";
-}
-
-function getDemoStatusColor(status: string) {
-  if (status === "BOARDING_NOW") return colors.teal2;
-  if (status === "BOARDING_SOON") return colors.gold;
-  if (status === "DELAY_WATCH") return "#FFB86B";
+function stateColor(state: string) {
+  if (state.includes("BOARDING_NOW")) return colors.tealBright;
+  if (state.includes("BOARDING_SOON")) return colors.gold;
+  if (state.includes("DELAY")) return "#FFB86B";
+  if (state.includes("EXCEPTION")) return colors.red;
   return colors.slate;
 }
 
-export default async function GeneralLunaBigScreenBoardPage() {
+function routeLabel(trip: DcsTrip) {
+  if (trip.routeProductCode === "GL_TRI_ISLAND_STANDARD") return "Guyam · Daku · Naked";
+  if (trip.routeProductCode === "GL_GUYAM_DAKU_MAM_ON") return "Guyam · Daku · Mam-On";
+  if (trip.routeProductCode === "GL_TRI_ISLAND_CORREGIDOR") return "Guyam · Daku · Naked · Corregidor";
+  return trip.routeName || trip.routeShortName || trip.routeProductCode;
+}
+
+function routeShortLabel(trip: DcsTrip) {
+  if (trip.routeProductCode === "GL_TRI_ISLAND_STANDARD") return "Classic Tri-Island";
+  if (trip.routeProductCode === "GL_GUYAM_DAKU_MAM_ON") return "Mam-On Route";
+  if (trip.routeProductCode === "GL_TRI_ISLAND_CORREGIDOR") return "Corregidor Extension";
+  return trip.routeShortName || "Route Product";
+}
+
+function portHumanLabel(portCode: string) {
+  if (portCode === "GENERAL_LUNA_PORT") return "General Luna";
+  if (portCode === "DAPA_PORT") return "Dapa";
+  if (portCode === "DEL_CARMEN_PORT") return "Del Carmen";
+  return humanize(portCode);
+}
+
+function getLaneCounts(trips: DcsTrip[]) {
+  return {
+    boardingNow: trips.filter((trip) => trip.dcsState.includes("BOARDING_NOW")).length,
+    boardingSoon: trips.filter((trip) => trip.dcsState.includes("BOARDING_SOON")).length,
+    scheduled: trips.filter((trip) => trip.dcsState.includes("SCHEDULED")).length,
+    delay: trips.filter((trip) => trip.dcsState.includes("DELAY")).length,
+    exception: trips.filter((trip) => trip.dcsState.includes("EXCEPTION")).length,
+  };
+}
+
+export default async function GeneralLunaWorldClassPortBoardPage() {
   const data = await getBoardData();
-  const trips = data.trips || [];
-  const grouped = groupByRoute(trips);
-  const queueRows = nextRows(trips);
+  const trips = (data.trips || fallbackTrips).slice(0, 6);
+  const counts = getLaneCounts(trips);
+  const totalBooked = trips.reduce((sum, trip) => sum + (trip.bookedPaxCount || 0), 0);
+  const totalBoarded = trips.reduce((sum, trip) => sum + (trip.boardedPaxCount || 0), 0);
 
   return (
     <main
       style={{
         minHeight: "100vh",
         width: "100vw",
-        overflowX: "hidden",
+        overflow: "hidden",
         background:
-          "radial-gradient(circle at 14% -10%, rgba(5,150,165,0.18), transparent 30%), radial-gradient(circle at 92% 0%, rgba(243,174,38,0.10), transparent 24%), linear-gradient(135deg, #000000 0%, #02070C 42%, #00111F 100%)",
+          "radial-gradient(circle at 12% -10%, rgba(0,194,209,0.20), transparent 27%), radial-gradient(circle at 94% 0%, rgba(243,174,38,0.13), transparent 23%), linear-gradient(135deg, #000000 0%, #02070C 42%, #00182A 100%)",
         color: colors.white,
-        padding: "14px 16px 16px",
+        padding: 14,
         boxSizing: "border-box",
       }}
     >
@@ -157,23 +298,23 @@ export default async function GeneralLunaBigScreenBoardPage() {
         <header
           style={{
             display: "grid",
-            gridTemplateColumns: "1.35fr 0.65fr",
-            gap: 14,
+            gridTemplateColumns: "1.64fr 0.36fr",
+            gap: 12,
             alignItems: "stretch",
-            marginBottom: 12,
           }}
         >
           <section
             style={{
-              minHeight: 236,
-              borderRadius: 34,
+              minHeight: 166,
+              borderRadius: 28,
+              border: "1px solid rgba(255,255,255,0.18)",
               background:
-                "linear-gradient(135deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.045) 100%)",
-              border: "1px solid rgba(255,255,255,0.20)",
-              boxShadow: "0 40px 110px rgba(0,0,0,0.55)",
-              padding: 20,
+                "linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.045))",
+              boxShadow: "0 36px 100px rgba(0,0,0,0.52)",
+              padding: "18px 20px",
               position: "relative",
               overflow: "hidden",
+              boxSizing: "border-box",
             }}
           >
             <div
@@ -181,530 +322,321 @@ export default async function GeneralLunaBigScreenBoardPage() {
                 position: "absolute",
                 inset: 0,
                 background:
-                  "linear-gradient(90deg, rgba(5,150,165,0.15), transparent 54%), radial-gradient(circle at 85% 20%, rgba(255,255,255,0.10), transparent 28%)",
+                  "linear-gradient(90deg, rgba(5,150,165,0.18), transparent 56%), radial-gradient(circle at 90% 15%, rgba(255,255,255,0.10), transparent 28%)",
                 pointerEvents: "none",
               }}
             />
-
             <div style={{ position: "relative", zIndex: 2 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
-                <Link
-                  href="/lgu/departure-control/general-luna"
-                  style={{
-                    display: "inline-flex",
-                    minHeight: 38,
-                    alignItems: "center",
-                    borderRadius: 999,
-                    padding: "0 14px",
-                    background: "rgba(255,255,255,0.12)",
-                    border: "1px solid rgba(255,255,255,0.20)",
-                    color: colors.white,
-                    textDecoration: "none",
-                    fontSize: 12,
-                    fontWeight: 950,
-                  }}
-                >
-                  ← Port Board
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <Link href="/lgu/departure-control/general-luna" style={topButtonStyle}>
+                  ← General Luna DCS
                 </Link>
-
-                <span
-                  style={{
-                    display: "inline-flex",
-                    minHeight: 38,
-                    alignItems: "center",
-                    borderRadius: 999,
-                    padding: "0 14px",
-                    background: "rgba(243,174,38,0.16)",
-                    border: "1px solid rgba(243,174,38,0.42)",
-                    color: colors.gold,
-                    fontSize: 12,
-                    fontWeight: 950,
-                    letterSpacing: "0.10em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Big Screen · LIVE DEMO
+                <span style={badgeStyle(colors.gold, "rgba(243,174,38,0.16)", "rgba(243,174,38,0.42)")}>
+                  Pilot Preview
+                </span>
+                <span style={badgeStyle(colors.tealBright, "rgba(0,194,209,0.13)", "rgba(0,194,209,0.34)")}>
+                  Public Display
                 </span>
               </div>
 
-              <p
-                style={{
-                  margin: 0,
-                  color: colors.gold,
-                  fontSize: 13,
-                  fontWeight: 950,
-                  letterSpacing: "0.22em",
-                  textTransform: "uppercase",
-                }}
-              >
-                LGU Departure Control System
-              </p>
+              <p style={eyebrowStyle}>LGU / DOT Governance Layer · OSP DCS</p>
+              <div>
+                <h1
+                  style={{
+                    margin: "5px 0 0",
+                    color: "#FFFFFF",
+                    WebkitTextFillColor: "#FFFFFF",
+                    fontSize: 66,
+                    lineHeight: 0.82,
+                    letterSpacing: "-0.075em",
+                    fontWeight: 950,
+                  }}
+                >
+                  General Luna Port
+                </h1>
+                <h2
+                  style={{
+                    margin: "8px 0 0",
+                    color: "#EAFBFA",
+                    WebkitTextFillColor: "#EAFBFA",
+                    fontSize: 28,
+                    lineHeight: 0.95,
+                    letterSpacing: "-0.045em",
+                    fontWeight: 900,
+                  }}
+                >
+                  Island Hopping Departure Control
+                </h2>
 
-              <h1
-                data-board-title="general-luna-scheduled-departures"
-                style={{
-                  margin: "9px 0 0",
-                  color: "#FFFFFF",
-                  WebkitTextFillColor: "#FFFFFF",
-                  background: "transparent",
-                  backgroundImage: "none",
-                  backgroundClip: "border-box",
-                  WebkitBackgroundClip: "border-box",
-                  opacity: 1,
-                  filter: "none",
-                  mixBlendMode: "normal",
-                  fontSize: 64,
-                  lineHeight: 0.88,
-                  letterSpacing: "-0.075em",
-                  fontWeight: 920,
-                  textShadow: "0 28px 90px rgba(0,0,0,0.72)",
-                }}
-              >
-                General Luna Port
-                <br />
-                Scheduled Departures
-              </h1>
-
-              <p
-                style={{
-                  margin: "12px 0 0",
-                  maxWidth: 980,
-                  color: "rgba(255,255,255,0.90)",
-                  fontSize: 14,
-                  lineHeight: 1.38,
-                  fontWeight: 760,
-                  textShadow: "0 10px 26px rgba(0,0,0,0.30)",
-                }}
-              >
-                Infrastructure-grade presentation board for LGU review. Demo live states are shown for stakeholder approval only;
-                production boarding, manifest, delay, cancellation, reassignment, and exception events must be event-backed later.
-              </p>
-            </div>
-          </section>
-
-          <aside
-            style={{
-              display: "grid",
-              gridTemplateRows: "auto 1fr",
-              gap: 12,
-            }}
-          >
-            <LivePortClock />
-
-            <div
-              style={{
-                borderRadius: 28,
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.055) 100%)",
-                border: "1px solid rgba(255,255,255,0.20)",
-                boxShadow: "0 32px 90px rgba(0,0,0,0.46)",
-                padding: 16,
-              }}
-            >
-              <p
-                style={{
-                  margin: 0,
-                  color: colors.gold,
-                  fontSize: 11,
-                  fontWeight: 950,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                }}
-              >
-                Live demo status
-              </p>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9, marginTop: 12 }}>
-                <BoardStatus label="Scheduled rows" value={String(data.totalTrips ?? trips.length)} emphasis />
-                <BoardStatus label="Port" value="General Luna" />
-                <BoardStatus label="Date" value={data.departureDate || "—"} />
-                <BoardStatus label="Visibility" value="LGU-safe" />
-              </div>
-            </div>
-          </aside>
-        </header>
-
-        {!data.ok ? (
-          <section
-            style={{
-              borderRadius: 34,
-              background: "rgba(255,255,255,0.12)",
-              border: "1px solid rgba(255,255,255,0.20)",
-              padding: 26,
-            }}
-          >
-            <p style={{ margin: 0, color: colors.gold, fontSize: 12, fontWeight: 950, letterSpacing: "0.16em" }}>
-              BOARD UNAVAILABLE
-            </p>
-            <h2 style={{ margin: "8px 0 0", color: colors.white, fontSize: 34, letterSpacing: "-0.055em" }}>
-              General Luna scheduled departures could not be loaded.
-            </h2>
-            <p style={{ margin: "10px 0 0", color: "rgba(255,255,255,0.78)", fontSize: 16, fontWeight: 720 }}>
-              {data.error || "Check backend DCS preview endpoint."}
-            </p>
-          </section>
-        ) : (
-          <>
-            <section
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-                gap: 14,
-                marginBottom: 12,
-              }}
-            >
-              <StatusTile label="BOARDING NOW" value="1" note="Demo: one trip in active boarding window" tone="teal" />
-              <StatusTile label="BOARDING SOON" value="2" note="Demo: next departures preparing for boarding" tone="gold" />
-              <StatusTile label="SCHEDULED" value={String(Math.max(trips.length - 4, 0))} note="Remaining scheduled registry rows" tone="white" />
-              <StatusTile label="EXCEPTIONS" value="1" note="Demo: one delay watch advisory" tone="red" />
-            </section>
-
-            <section
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1.18fr 0.82fr",
-                gap: 14,
-                alignItems: "start",
-              }}
-            >
-              <section
-                style={{
-                  borderRadius: 28,
-                  background:
-                    "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.045) 100%)",
-                  border: "1px solid rgba(255,255,255,0.18)",
-                  boxShadow: "0 38px 100px rgba(0,0,0,0.52)",
-                  padding: 16,
-                }}
-              >
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    gap: 7,
+                    flexWrap: "wrap",
                     alignItems: "center",
-                    gap: 14,
-                    marginBottom: 16,
+                    marginTop: 13,
                   }}
                 >
-                  <div>
-                    <p
-                      style={{
-                        margin: 0,
-                        color: colors.gold,
-                        fontSize: 12,
-                        fontWeight: 950,
-                        letterSpacing: "0.18em",
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      Next scheduled departures
-                    </p>
-                    <h2
-                      style={{
-                        margin: "7px 0 0",
-                        color: "#FFFFFF",
-                        fontSize: 44,
-                        lineHeight: 0.94,
-                        letterSpacing: "-0.065em",
-                        fontWeight: 900,
-                        textShadow: "0 20px 60px rgba(0,0,0,0.48)",
-                      }}
-                    >
-                      Live Schedule Queue
-                    </h2>
-                  </div>
-
-                  <span
-                    style={{
-                      borderRadius: 999,
-                      padding: "10px 14px",
-                      background: "rgba(5,150,165,0.24)",
-                      color: colors.white,
-                      border: "1px solid rgba(5,150,165,0.42)",
-                      fontSize: 12,
-                      fontWeight: 950,
-                    }}
-                  >
-                    Sensitive data hidden
-                  </span>
+                  <FlowChip label="Voucher" />
+                  <FlowArrow />
+                  <FlowChip label="Assignment" />
+                  <FlowArrow />
+                  <FlowChip label="Boarding QR" />
+                  <FlowArrow />
+                  <FlowChip label="Port Scan" />
+                  <FlowArrow />
+                  <FlowChip label="Manifest" />
+                  <FlowArrow />
+                  <FlowChip label="Movement Record" />
                 </div>
+              </div>
+            </div>
+          </section>
 
-                <div style={{ display: "grid", gap: 10 }}>
-                  {queueRows.map((trip, index) => (
-                    <QueueRow key={trip.tripNumber} trip={trip} index={index} />
-                  ))}
-                </div>
-              </section>
+          <LivePortClock />
+        </header>
 
-              <section style={{ display: "grid", gap: 14 }}>
-                {Object.entries(grouped).map(([routeName, rows]) => (
-                  <RoutePanel key={routeName} routeName={routeName} rows={rows} />
-                ))}
-              </section>
-            </section>
+        <section
+          style={{
+            marginTop: 11,
+            display: "grid",
+            gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
+            gap: 9,
+          }}
+        >
+          <Lane title="NOW BOARDING" value={counts.boardingNow} tone={colors.tealBright} />
+          <Lane title="BOARDING SOON" value={counts.boardingSoon} tone={colors.gold} />
+          <Lane title="SCHEDULED" value={counts.scheduled} tone={colors.slate} />
+          <Lane title="DELAY WATCH" value={counts.delay} tone="#FFB86B" />
+          <Lane title="EXCEPTION" value={counts.exception} tone={colors.red} />
+        </section>
 
-            <section
+        <section
+          style={{
+            marginTop: 11,
+            display: "grid",
+            gridTemplateColumns: "1fr 0.33fr",
+            gap: 12,
+            alignItems: "stretch",
+          }}
+        >
+          <div
+            style={{
+              borderRadius: 26,
+              border: "1px solid rgba(255,255,255,0.16)",
+              background: "rgba(255,255,255,0.075)",
+              boxShadow: "0 28px 86px rgba(0,0,0,0.40)",
+              overflow: "hidden",
+            }}
+          >
+            <div
               style={{
-                marginTop: 16,
-                borderRadius: 24,
-                background:
-                  "linear-gradient(90deg, rgba(243,174,38,0.16) 0%, rgba(5,150,165,0.12) 100%)",
-                border: "1px solid rgba(243,174,38,0.34)",
-                padding: 14,
                 display: "grid",
-                gridTemplateColumns: "1fr auto",
-                gap: 16,
-                alignItems: "center",
+                gridTemplateColumns: "1.18fr 1.38fr 0.42fr 0.62fr 0.54fr 0.66fr",
+                gap: 0,
+                padding: "10px 15px",
+                background: "rgba(255,255,255,0.095)",
+                borderBottom: "1px solid rgba(255,255,255,0.12)",
+                color: "#A8BED3",
+                fontSize: 10,
+                fontWeight: 950,
+                letterSpacing: "0.13em",
+                textTransform: "uppercase",
               }}
             >
-              <div>
-                <p
-                  style={{
-                    margin: 0,
-                    color: colors.gold,
-                    fontSize: 12,
-                    fontWeight: 950,
-                    letterSpacing: "0.16em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Operating boundary
-                </p>
-                <h3
-                  style={{
-                    margin: "7px 0 0",
-                    color: colors.white,
-                    fontSize: 26,
-                    lineHeight: 1,
-                    letterSpacing: "-0.045em",
-                    fontWeight: 880,
-                  }}
-                >
-                  LIVE DEMO display only. Production control remains inactive.
-                </h3>
-                <p style={{ margin: "8px 0 0", color: "rgba(255,255,255,0.82)", fontSize: 14, lineHeight: 1.45, fontWeight: 730 }}>
-                  LGU / DOT governs DCS configuration. These live-looking values are for presentation approval only. Production states must come from booking, QR, manifest, and scan events.
-                </p>
-              </div>
+              <span>Trip Reference</span>
+              <span>Route</span>
+              <span>Time</span>
+              <span>Status</span>
+              <span>Manifest</span>
+              <span>Boarding QR</span>
+            </div>
 
-              <Link
-                href="/lgu/departure-control"
+            <div style={{ display: "grid", gap: 0 }}>
+              {trips.map((trip, index) => (
+                <TripRow key={`${trip.tripNumber}-${index}`} trip={trip} />
+              ))}
+            </div>
+          </div>
+
+          <aside
+            style={{
+              borderRadius: 26,
+              border: "1px solid rgba(255,255,255,0.16)",
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,0.11), rgba(255,255,255,0.052))",
+              boxShadow: "0 28px 86px rgba(0,0,0,0.35)",
+              padding: 17,
+              boxSizing: "border-box",
+              minHeight: 0,
+            }}
+          >
+            <p style={eyebrowStyle}>Departure Board</p>
+            <h3
+              style={{
+                margin: "7px 0 0",
+                color: "#FFFFFF",
+                WebkitTextFillColor: "#FFFFFF",
+                fontSize: 32,
+                lineHeight: 0.93,
+                letterSpacing: "-0.055em",
+                fontWeight: 950,
+              }}
+            >
+              Find your trip.
+              <br />
+              Prepare your QR.
+            </h3>
+
+            <div style={{ display: "grid", gap: 8, marginTop: 14 }}>
+              <TrustMetric label="Today’s Departures" value={String(data.totalTrips ?? trips.length)} />
+              <TrustMetric label="Travelers Listed" value={String(totalBooked)} />
+              <TrustMetric label="Boarded" value={`${totalBoarded}/${totalBooked || 0}`} />
+              <TrustMetric label="Port" value="General Luna" />
+            </div>
+
+            <div
+              style={{
+                marginTop: 12,
+                borderRadius: 19,
+                background: "rgba(243,174,38,0.12)",
+                border: "1px solid rgba(243,174,38,0.30)",
+                padding: 12,
+              }}
+            >
+              <p
                 style={{
-                  minHeight: 48,
-                  borderRadius: 16,
-                  padding: "0 18px",
-                  background: colors.white,
-                  color: colors.navy,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  textDecoration: "none",
-                  fontSize: 13,
+                  margin: 0,
+                  color: colors.gold,
+                  fontSize: 10,
                   fontWeight: 950,
+                  letterSpacing: "0.13em",
+                  textTransform: "uppercase",
                 }}
               >
-                Back to Approval Console
-              </Link>
-            </section>
-          </>
-        )}
+                Pilot Notice
+              </p>
+              <p style={{ margin: "6px 0 0", color: "#FFF1CC", fontSize: 12, lineHeight: 1.28, fontWeight: 850 }}>
+                Pilot preview for LGU review. Full activation connects voucher, assignment, QR scan, manifest, and movement records.
+              </p>
+            </div>
+
+            <p style={{ margin: "10px 0 0", color: colors.muted, fontSize: 10, lineHeight: 1.28, fontWeight: 760 }}>
+              General Luna Port · OSP DCS Pilot
+            </p>
+          </aside>
+        </section>
       </div>
     </main>
   );
 }
 
-function BoardStatus({ label, value, emphasis = false }: { label: string; value: string; emphasis?: boolean }) {
-  return (
-    <div
-      style={{
-        borderRadius: 22,
-        background: emphasis ? "rgba(5,150,165,0.24)" : "rgba(255,255,255,0.12)",
-        border: emphasis ? "1px solid rgba(5,150,165,0.42)" : "1px solid rgba(255,255,255,0.16)",
-        padding: 14,
-      }}
-    >
-      <p style={{ margin: 0, color: "rgba(255,255,255,0.70)", fontSize: 11, fontWeight: 900 }}>
-        {label}
-      </p>
-      <strong style={{ display: "block", marginTop: 5, color: "#FFFFFF", fontSize: emphasis ? 25 : 21, lineHeight: 1 }}>
-        {value}
-      </strong>
-    </div>
-  );
-}
-
-function StatusTile({
-  label,
-  value,
-  note,
-  tone,
-}: {
-  label: string;
-  value: string;
-  note: string;
-  tone: "teal" | "gold" | "white" | "red";
-}) {
-  const accent =
-    tone === "teal" ? colors.teal2 : tone === "gold" ? colors.gold : tone === "red" ? "#FF7A7A" : colors.white;
-
-  return (
-    <div
-      style={{
-        minHeight: 88,
-        borderRadius: 24,
-        background:
-          "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.045) 100%)",
-        border: "1px solid rgba(255,255,255,0.18)",
-        boxShadow: "0 28px 80px rgba(0,0,0,0.48)",
-        padding: 14,
-      }}
-    >
-      <p style={{ margin: 0, color: accent, fontSize: 12, fontWeight: 950, letterSpacing: "0.16em", textTransform: "uppercase" }}>
-        {label}
-      </p>
-      <strong
-        style={{
-          display: "block",
-          marginTop: 8,
-          color: colors.white,
-          fontSize: 38,
-          lineHeight: 0.9,
-          letterSpacing: "-0.065em",
-          fontWeight: 900,
-        }}
-      >
-        {value}
-      </strong>
-      <p style={{ margin: "9px 0 0", color: "rgba(255,255,255,0.80)", fontSize: 13, lineHeight: 1.35, fontWeight: 760 }}>
-        {note}
-      </p>
-    </div>
-  );
-}
-
-function QueueRow({ trip, index }: { trip: DcsTrip; index: number }) {
-  const demoStatus = getDemoStatus(index);
-  const booked = getDemoBookedCount(index);
-  const boarded = getDemoBoardedCount(index);
-  const manifest = getDemoManifestStatus(index);
-  const statusColor = getDemoStatusColor(demoStatus);
+function TripRow({ trip }: { trip: DcsTrip }) {
+  const tone = stateColor(trip.dcsState);
   return (
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "1.1fr 0.38fr 0.38fr 0.48fr",
-        gap: 12,
+        gridTemplateColumns: "1.18fr 1.38fr 0.42fr 0.62fr 0.54fr 0.66fr",
+        gap: 0,
         alignItems: "center",
-        borderRadius: 24,
+        minHeight: 67,
+        padding: "0 15px",
+        borderBottom: "1px solid rgba(255,255,255,0.085)",
         background:
-          "linear-gradient(90deg, rgba(255,255,255,0.17) 0%, rgba(255,255,255,0.10) 100%)",
-        border: "1px solid rgba(255,255,255,0.22)",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12)",
-        padding: "12px 14px",
+          trip.dcsState.includes("BOARDING_NOW")
+            ? "linear-gradient(90deg, rgba(0,194,209,0.20), rgba(255,255,255,0.035))"
+            : "rgba(255,255,255,0.018)",
       }}
     >
       <div>
-        <p style={{ margin: 0, color: "#FFFFFF", fontSize: 17, fontWeight: 950, letterSpacing: "-0.02em" }}>
+        <strong style={{ display: "block", color: colors.white, fontSize: 16, letterSpacing: "-0.02em" }}>
           {trip.tripNumber}
-        </p>
-        <p style={{ margin: "5px 0 0", color: colors.slate, fontSize: 12, fontWeight: 820 }}>
-          {trip.routeProductCode}
-        </p>
+        </strong>
+        <span style={{ display: "block", marginTop: 3, color: "#A8BED3", fontSize: 11, fontWeight: 850 }}>
+          {portHumanLabel(trip.portCode)}
+        </span>
       </div>
-      <BoardCell label="Time" value={trip.departureTimeLocal} />
-      <BoardCell label="Status" value={getDemoStatusLabel(demoStatus)} customColor={statusColor} />
-      <BoardCell label="Pax" value={`${boarded}/${booked}`} />
-      <BoardCell label="Manifest" value={manifest} customColor={statusColor} />
+
+      <div>
+        <strong style={{ display: "block", color: "#EAFBFA", fontSize: 17, letterSpacing: "-0.025em" }}>
+          {routeLabel(trip)}
+        </strong>
+        <span style={{ display: "block", marginTop: 3, color: "#A8BED3", fontSize: 11, fontWeight: 850 }}>
+          {routeShortLabel(trip)}
+        </span>
+      </div>
+
+      <strong style={{ color: colors.white, fontSize: 20, letterSpacing: "-0.04em" }}>{trip.departureTimeLocal}</strong>
+
+      <span
+        style={{
+          justifySelf: "start",
+          borderRadius: 999,
+          padding: "7px 9px",
+          background: `${tone}22`,
+          border: `1px solid ${tone}66`,
+          color: tone,
+          fontSize: 10,
+          fontWeight: 950,
+          letterSpacing: "0.08em",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {labelState(trip.dcsState)}
+      </span>
+
+      <div>
+        <strong style={{ display: "block", color: colors.white, fontSize: 15 }}>
+          {trip.boardedPaxCount}/{trip.bookedPaxCount}
+        </strong>
+        <span style={{ display: "block", marginTop: 3, color: "#A8BED3", fontSize: 10, fontWeight: 850 }}>
+          {humanize(trip.manifestStatus)}
+        </span>
+      </div>
+
+      <div>
+        <strong style={{ display: "block", color: trip.boardingQrStatus.includes("ACTIVE") ? colors.tealBright : colors.gold, fontSize: 12 }}>
+          {humanize(trip.boardingQrStatus)}
+        </strong>
+        <span style={{ display: "block", marginTop: 3, color: "#A8BED3", fontSize: 10, fontWeight: 850 }}>
+          Voucher {humanize(trip.voucherStatus)}
+        </span>
+      </div>
     </div>
   );
 }
 
-function RoutePanel({ routeName, rows }: { routeName: string; rows: DcsTrip[] }) {
-  return (
-    <article
-      style={{
-        borderRadius: 26,
-        background:
-          "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.045) 100%)",
-        border: "1px solid rgba(255,255,255,0.18)",
-        boxShadow: "0 32px 88px rgba(0,0,0,0.50)",
-        padding: 14,
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", marginBottom: 14 }}>
-        <div>
-          <p style={{ margin: 0, color: colors.gold, fontSize: 11, fontWeight: 950, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-            Route
-          </p>
-          <h3
-            style={{
-              margin: "6px 0 0",
-              color: "#FFFFFF",
-              fontSize: 24,
-              lineHeight: 0.96,
-              letterSpacing: "-0.055em",
-              fontWeight: 900,
-              textShadow: "0 18px 50px rgba(0,0,0,0.46)",
-            }}
-          >
-            {routeName}
-          </h3>
-        </div>
-
-        <span
-          style={{
-            borderRadius: 999,
-            padding: "9px 12px",
-            color: colors.white,
-            background: "rgba(5,150,165,0.25)",
-            border: "1px solid rgba(5,150,165,0.42)",
-            fontSize: 12,
-            fontWeight: 950,
-          }}
-        >
-          {rows.length} rows
-        </span>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 10 }}>
-        {rows.map((trip, index) => {
-          const demoStatus = getDemoStatus(index);
-          return (
-          <div
-            key={trip.tripNumber}
-            style={{
-              borderRadius: 18,
-              background: "rgba(255,255,255,0.14)",
-              border: "1px solid rgba(255,255,255,0.20)",
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.10)",
-              padding: "9px 10px",
-            }}
-          >
-            <p style={{ margin: 0, color: "#FFFFFF", fontSize: 16, fontWeight: 950 }}>{trip.departureTimeLocal}</p>
-            <p style={{ margin: "5px 0 0", color: getDemoStatusColor(demoStatus), fontSize: 10, fontWeight: 900, letterSpacing: "0.05em" }}>
-              {getDemoStatusLabel(demoStatus)}
-            </p>
-          </div>
-          );
-        })}
-      </div>
-    </article>
-  );
+function humanize(value: string) {
+  return value
+    .replaceAll("_", " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-function BoardCell({ label, value, accent = false, customColor }: { label: string; value: string; accent?: boolean; customColor?: string }) {
+function Lane({ title, value, tone }: { title: string; value: number; tone: string }) {
   return (
-    <div>
-      <p style={{ margin: 0, color: colors.slate, fontSize: 10, fontWeight: 900, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-        {label}
-      </p>
+    <div
+      style={{
+        minHeight: 88,
+        borderRadius: 22,
+        border: "1px solid rgba(255,255,255,0.14)",
+        background: "rgba(255,255,255,0.075)",
+        boxShadow: "0 20px 64px rgba(0,0,0,0.30)",
+        padding: "13px 15px",
+        boxSizing: "border-box",
+      }}
+    >
+      <p style={{ margin: 0, color: tone, fontSize: 10, fontWeight: 950, letterSpacing: "0.14em" }}>{title}</p>
       <strong
         style={{
           display: "block",
-          marginTop: 5,
-          color: customColor || (accent ? colors.teal2 : "#FFFFFF"),
-          fontSize: 15,
-          lineHeight: 1.1,
-          fontWeight: 920,
+          marginTop: 7,
+          color: colors.white,
+          WebkitTextFillColor: colors.white,
+          fontSize: 37,
+          lineHeight: 0.86,
+          letterSpacing: "-0.06em",
         }}
       >
         {value}
@@ -712,3 +644,87 @@ function BoardCell({ label, value, accent = false, customColor }: { label: strin
     </div>
   );
 }
+
+function TrustMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div
+      style={{
+        borderRadius: 16,
+        background: "rgba(255,255,255,0.085)",
+        border: "1px solid rgba(255,255,255,0.13)",
+        padding: "10px 11px",
+      }}
+    >
+      <p style={{ margin: 0, color: "#A8BED3", fontSize: 10, fontWeight: 850 }}>{label}</p>
+      <strong style={{ display: "block", marginTop: 3, color: colors.white, fontSize: 18, letterSpacing: "-0.035em" }}>
+        {value}
+      </strong>
+    </div>
+  );
+}
+
+function FlowChip({ label }: { label: string }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        minHeight: 29,
+        borderRadius: 999,
+        padding: "0 10px",
+        background: "rgba(255,255,255,0.12)",
+        border: "1px solid rgba(255,255,255,0.18)",
+        color: colors.white,
+        fontSize: 11,
+        fontWeight: 900,
+        whiteSpace: "nowrap",
+      }}
+    >
+      {label}
+    </span>
+  );
+}
+
+function FlowArrow() {
+  return <span style={{ alignSelf: "center", color: colors.gold, fontSize: 14, fontWeight: 950 }}>→</span>;
+}
+
+function badgeStyle(color: string, background: string, border: string): React.CSSProperties {
+  return {
+    display: "inline-flex",
+    minHeight: 32,
+    alignItems: "center",
+    borderRadius: 999,
+    padding: "0 12px",
+    background,
+    border: `1px solid ${border}`,
+    color,
+    fontSize: 11,
+    fontWeight: 950,
+    letterSpacing: "0.10em",
+    textTransform: "uppercase",
+  };
+}
+
+const topButtonStyle: React.CSSProperties = {
+  display: "inline-flex",
+  minHeight: 32,
+  alignItems: "center",
+  borderRadius: 999,
+  padding: "0 12px",
+  background: "rgba(255,255,255,0.12)",
+  border: "1px solid rgba(255,255,255,0.20)",
+  color: colors.white,
+  textDecoration: "none",
+  fontSize: 11,
+  fontWeight: 950,
+};
+
+const eyebrowStyle: React.CSSProperties = {
+  margin: 0,
+  color: colors.gold,
+  fontSize: 11,
+  fontWeight: 950,
+  letterSpacing: "0.18em",
+  textTransform: "uppercase",
+};

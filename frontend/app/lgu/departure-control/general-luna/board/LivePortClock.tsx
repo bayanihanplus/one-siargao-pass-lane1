@@ -5,23 +5,22 @@ import { useEffect, useState } from "react";
 function getManilaClock() {
   const now = new Date();
 
-  const time = new Intl.DateTimeFormat("en-PH", {
-    timeZone: "Asia/Manila",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-  }).format(now);
-
-  const date = new Intl.DateTimeFormat("en-PH", {
-    timeZone: "Asia/Manila",
-    weekday: "short",
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-  }).format(now);
-
-  return { time, date };
+  return {
+    time: new Intl.DateTimeFormat("en-PH", {
+      timeZone: "Asia/Manila",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    }).format(now),
+    date: new Intl.DateTimeFormat("en-PH", {
+      timeZone: "Asia/Manila",
+      weekday: "short",
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    }).format(now),
+  };
 }
 
 export default function LivePortClock() {
@@ -29,35 +28,32 @@ export default function LivePortClock() {
 
   useEffect(() => {
     setClock(getManilaClock());
-
-    const interval = window.setInterval(() => {
-      setClock(getManilaClock());
-    }, 1000);
-
-    return () => window.clearInterval(interval);
+    const timer = window.setInterval(() => setClock(getManilaClock()), 1000);
+    return () => window.clearInterval(timer);
   }, []);
 
   return (
-    <section
+    <div
       suppressHydrationWarning
       style={{
-        borderRadius: 28,
+        minHeight: 166,
+        borderRadius: 26,
+        border: "1px solid rgba(255,255,255,0.18)",
         background:
-          "linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.05))",
-        border: "1px solid rgba(255,255,255,0.20)",
-        boxShadow: "0 28px 90px rgba(0,0,0,0.42)",
+          "radial-gradient(circle at 20% 0%, rgba(243,174,38,0.12), transparent 34%), linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.055))",
+        boxShadow: "0 30px 84px rgba(0,0,0,0.38)",
         padding: "16px 18px",
-        minHeight: 110,
+        color: "#FFFFFF",
         display: "grid",
         alignContent: "center",
-        color: "#ffffff",
+        boxSizing: "border-box",
       }}
     >
       <p
         style={{
           margin: 0,
           color: "#F3AE26",
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: 950,
           letterSpacing: "0.18em",
           textTransform: "uppercase",
@@ -65,31 +61,23 @@ export default function LivePortClock() {
       >
         Philippine Standard Time
       </p>
-
       <div
         style={{
-          marginTop: 6,
-          color: "#ffffff",
-          fontSize: 42,
-          lineHeight: 0.95,
+          marginTop: 7,
+          fontSize: 46,
+          lineHeight: 0.92,
           fontWeight: 950,
-          letterSpacing: "-0.045em",
+          letterSpacing: "-0.06em",
           fontVariantNumeric: "tabular-nums",
+          color: "#FFFFFF",
+          WebkitTextFillColor: "#FFFFFF",
         }}
       >
         {clock?.time || "--:--:--"}
       </div>
-
-      <p
-        style={{
-          margin: "8px 0 0",
-          color: "#B8C9DA",
-          fontSize: 12,
-          fontWeight: 850,
-        }}
-      >
+      <p style={{ margin: "9px 0 0", color: "#D7E6F4", fontSize: 12, fontWeight: 850 }}>
         {clock?.date || "Loading date"} · General Luna Port
       </p>
-    </section>
+    </div>
   );
 }

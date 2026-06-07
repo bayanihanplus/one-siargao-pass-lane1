@@ -1,5 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 
+const OSP_DCS_PUBLIC_PRESENTATION_PREFIXES = [
+  "/lgu/departure-control",
+  "/lgu/departure-control/general-luna",
+  "/lgu/departure-control/general-luna/board",
+];
+
+function isOspDcsPublicPresentationPath(pathname: string) {
+  return OSP_DCS_PUBLIC_PRESENTATION_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
+
 const AUTH_COOKIE_NAME = "osp_access_token";
 
 function decodeJwtPayload(token: string): any | null {
@@ -126,6 +139,13 @@ function sanitizeLoginRequest(req: NextRequest) {
 }
 
 export function middleware(req: NextRequest) {
+  const ospDcsPresentationPathname = req.nextUrl.pathname;
+
+  if (isOspDcsPublicPresentationPath(ospDcsPresentationPathname)) {
+    return NextResponse.next();
+  }
+
+
   const sanitizedLogin = sanitizeLoginRequest(req);
   if (sanitizedLogin) return sanitizedLogin;
 
