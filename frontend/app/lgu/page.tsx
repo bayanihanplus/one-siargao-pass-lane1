@@ -22,13 +22,13 @@ const navItems: Array<{ label: string; panel: LguPanel }> = [
   { label: "Departure Control", panel: "departure-control" },
   { label: "Manifest Submissions", panel: "manifests" },
   { label: "Queue / Clearance", panel: "clearance" },
-  { label: "Fee Exceptions Watch", panel: "fee-exceptions" },
-  { label: "Receipts Read", panel: "receipts" },
-  { label: "Payment Audit Read", panel: "payment-audit" },
-  { label: "Fee Programs Config", panel: "fee-programs" },
-  { label: "Reports / Export", panel: "reports" },
+  { label: "Fee Exceptions", panel: "fee-exceptions" },
+  { label: "Receipts", panel: "receipts" },
+  { label: "Payment Visibility", panel: "payment-audit" },
+  { label: "Fee Programs", panel: "fee-programs" },
+  { label: "Reports", panel: "reports" },
   { label: "Notifications", panel: "notifications" },
-  { label: "Session / Access", panel: "session" },
+  { label: "Access", panel: "session" },
 ];
 
 const colors = {
@@ -385,7 +385,7 @@ export default async function LguPage({
             LGU Compliance Console
           </h1>
           <p style={{ marginTop: 16, maxWidth: 720, lineHeight: 1.7, color: "#475569" }}>
-            Read-only operational view for inter-island movement compliance, manifest intake, fee-clearance
+            Official operational view for inter-island movement compliance, manifest intake, fee-clearance
             visibility, and intelligence-layer monitoring.
           </p>
           <Link
@@ -605,7 +605,7 @@ export default async function LguPage({
                     fontSize: 16,
                   }}
                 >
-                  Read-only operational command layer for inter-island manifest intake,
+                  Official operational command layer for inter-island manifest intake,
                   fee-clearance readiness, compliance exceptions, receipt visibility, and
                   DOT/LGU movement intelligence.
                 </p>
@@ -633,7 +633,7 @@ export default async function LguPage({
                 >
                   Access Mode
                 </div>
-                <div style={{ marginTop: 8, fontSize: 22, fontWeight: 950 }}>Read-only</div>
+                <div style={{ marginTop: 8, fontSize: 22, fontWeight: 950 }}>Official</div>
                 <div style={{ marginTop: 6, fontSize: 12, color: "#dbe4ef" }}>{role}</div>
               </div>
             </div>
@@ -769,160 +769,464 @@ export default async function LguPage({
     }
 
     if (activePanel === "intelligence") {
-      return (
-        <PanelCard title="Operational Intelligence Dashboard">
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "flex-start" }}>
-            <p style={{ marginTop: 0, maxWidth: 820, lineHeight: 1.7, color: "#475569" }}>
-              Backend-backed read layer for inter-island movement pressure, compliance exceptions,
-              fee readiness, overdue trails, receipts, and payment audit visibility.
-            </p>
-            <div
+      const topKpis = [
+        ["2023 Arrivals", "529,822", "Siargao baseline", "BASELINE", "blue"],
+        ["Q1 2025 Arrivals", "112,510", "+9.8% vs Q1 2024", "BASELINE", "green"],
+        ["GL TRES", "152 / 181", "~84% tourism enterprises", "BASELINE", "amber"],
+        ["GL Rooms", "1,198 / 1,310", "~91% recorded rooms", "BASELINE", "amber"],
+        ["Active Visitors", "5,840", "Sample active estimate", "SAMPLE", "blue"],
+        ["Fee Visibility", "PHP 51,000", "Sample fee visibility", "SAMPLE", "green"],
+      ];
+
+      const sourceMix = [
+        ["OSP Direct", "32%"],
+        ["Accommodation", "24%"],
+        ["OTA / API", "18%"],
+        ["Travel & Tours", "14%"],
+        ["Operator Assisted", "8%"],
+        ["LGU / Walk-in", "4%"],
+      ];
+
+      const visitorMetrics = [
+        ["Passes", "386", "Sample"],
+        ["Ingress", "412", "Scans"],
+        ["Egress", "268", "Scans"],
+        ["Active", "5,840", "Estimate"],
+      ];
+
+      const stayMetrics = [
+        ["Rooms", "1,198/1,310", "Baseline"],
+        ["Check-ins", "318", "Arrivals"],
+        ["Check-outs", "221", "Departures"],
+        ["Hotspot", "Catangnan", "Watch"],
+      ];
+
+      const tourMetrics = [
+        ["Trips", "24", "Sample"],
+        ["Booked Pax", "386", "Demand"],
+        ["Boarded Pax", "312", "Signal"],
+        ["Route", "Tri-Island", "High"],
+      ];
+
+      const revenueMetrics = [
+        ["Receipts", safeCount(receiptRows.length), "Current"],
+        ["Fee Status", String(counts.feeConfigurationStatus || "PENDING"), "Config"],
+        ["Fee View", "PHP 51k", "Sample"],
+        ["Exceptions", safeCount(counts.openComplianceExceptions), "Visible"],
+      ];
+
+      function tagStyle(kind: string) {
+        const upper = String(kind).toUpperCase();
+        if (upper === "BASELINE") {
+          return { border: "1px solid rgba(5,150,165,0.18)", background: "rgba(234,251,250,0.85)", color: "#013863" };
+        }
+        if (upper === "SAMPLE") {
+          return { border: "1px solid rgba(243,174,38,0.25)", background: "rgba(255,248,232,0.9)", color: "#9B6200" };
+        }
+        return { border: "1px solid rgba(1,56,99,0.12)", background: "#FFFFFF", color: "#50668B" };
+      }
+
+      function toneStyle(tone: string) {
+        if (tone === "green") return { border: "rgba(5,150,165,0.24)", bg: "linear-gradient(180deg, #F2FFFD, #FFFFFF)", accent: "#0596A5" };
+        if (tone === "amber") return { border: "rgba(243,174,38,0.30)", bg: "linear-gradient(180deg, #FFF9EC, #FFFFFF)", accent: "#F3AE26" };
+        return { border: "rgba(1,56,99,0.11)", bg: "linear-gradient(180deg, #F7FBFF, #FFFFFF)", accent: "#0596A5" };
+      }
+
+      function cardTone(tone: "blue" | "aqua" | "teal" | "gold" | "neutral") {
+        if (tone === "gold") {
+          return {
+            border: "rgba(243,174,38,0.20)",
+            background: "linear-gradient(180deg, #FFFBF0, #FFFFFF)",
+            label: "#9B6200",
+          };
+        }
+        if (tone === "teal") {
+          return {
+            border: "rgba(5,150,165,0.22)",
+            background: "linear-gradient(180deg, #F2FFFD, #FFFFFF)",
+            label: "#007A86",
+          };
+        }
+        if (tone === "aqua") {
+          return {
+            border: "rgba(5,150,165,0.16)",
+            background: "linear-gradient(180deg, #F4FCFA, #FFFFFF)",
+            label: "#0596A5",
+          };
+        }
+        if (tone === "blue") {
+          return {
+            border: "rgba(1,56,99,0.12)",
+            background: "linear-gradient(180deg, #F6FAFF, #FFFFFF)",
+            label: "#005B83",
+          };
+        }
+        return {
+          border: "rgba(1,56,99,0.1)",
+          background: "linear-gradient(180deg, #FFFFFF, #FBFDFD)",
+          label: "#0596A5",
+        };
+      }
+
+      function MiniMetric({
+        label,
+        value,
+        note,
+        tone = "neutral",
+      }: {
+        label: string;
+        value: string;
+        note: string;
+        tone?: "blue" | "aqua" | "teal" | "gold" | "neutral";
+      }) {
+        const t = cardTone(tone);
+        const valueString = String(value);
+        const longValue = valueString.length > 9;
+
+        return (
+          <div
+            style={{
+              borderRadius: 14,
+              border: `1px solid ${t.border}`,
+              background: t.background,
+              padding: "10px 11px",
+              minHeight: 70,
+              boxShadow: "0 7px 16px rgba(1,56,99,0.028)",
+              overflow: "hidden",
+            }}
+          >
+            <p style={{ margin: 0, color: t.label, fontSize: 9, fontWeight: 950, letterSpacing: "0.08em", textTransform: "uppercase" }}>{label}</p>
+            <h3
               style={{
-                borderRadius: 999,
-                padding: "10px 14px",
-                background: "#ecfdf5",
-                border: "1px solid #a7f3d0",
-                color: "#065f46",
-                fontSize: 12,
-                fontWeight: 950,
-                whiteSpace: "nowrap",
+                margin: "5px 0 0",
+                color: colors.dark,
+                fontSize: longValue ? 17.5 : 19.5,
+                lineHeight: 1.02,
+                fontWeight: 920,
+                letterSpacing: "-0.035em",
+                whiteSpace: "normal",
+                overflowWrap: "normal",
               }}
             >
-              LIVE READ DATA
+              {value}
+            </h3>
+            <p style={{ margin: "5px 0 0", color: colors.muted, fontSize: 10, lineHeight: 1.18, fontWeight: 700 }}>{note}</p>
+          </div>
+        );
+      }
+
+      function SignalChips({ metrics, tone }: { metrics: string[][]; tone: "blue" | "aqua" | "teal" | "gold" }) {
+        const t = cardTone(tone);
+        return (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 6, margin: "-3px 0 9px" }}>
+            {metrics.map(([label, value]) => (
+              <span
+                key={`${label}-${value}`}
+                style={{
+                  borderRadius: 999,
+                  border: `1px solid ${t.border}`,
+                  background: t.background,
+                  color: colors.dark,
+                  padding: "5px 7px",
+                  fontSize: 9.5,
+                  fontWeight: 850,
+                  lineHeight: 1,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  textAlign: "center",
+                }}
+                title={`${value} ${label}`}
+              >
+                <strong style={{ color: t.label }}>{value}</strong> {label}
+              </span>
+            ))}
+          </div>
+        );
+      }
+
+      function DomainPanel({
+        title,
+        eyebrow,
+        metrics,
+        tone,
+      }: {
+        title: string;
+        eyebrow: string;
+        metrics: string[][];
+        tone: "blue" | "aqua" | "teal" | "gold";
+      }) {
+        const t = cardTone(tone);
+
+        return (
+          <section
+            style={{
+              borderRadius: 28,
+              border: "1px solid rgba(1,56,99,0.1)",
+              background: "#FFFFFF",
+              padding: 22,
+              minHeight: 420,
+              boxShadow: "0 14px 38px rgba(1,56,99,0.055)",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div style={{ minHeight: 74 }}>
+              <h3
+                style={{
+                  margin: 0,
+                  color: colors.dark,
+                  fontSize: 26,
+                  lineHeight: 1.02,
+                  letterSpacing: "-0.05em",
+                  fontWeight: 900,
+                  maxWidth: 220,
+                }}
+              >
+                {title}
+              </h3>
+              <div
+                style={{
+                  marginTop: 12,
+                  height: 3,
+                  borderRadius: 999,
+                  background: tone === "gold" ? "#F3AE26" : "#0596A5",
+                  opacity: tone === "gold" ? 0.58 : 0.68,
+                }}
+              />
             </div>
-          </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 16, marginTop: 22 }}>
-            <IntelligenceMetricCard
-              label="Movement Intelligence"
-              value={safeCount(counts.totalMovements)}
-              note="Total tracked inter-island movements under the compliance spine."
-              tone="blue"
-            />
-            <IntelligenceMetricCard
-              label="Exception Intelligence"
-              value={safeCount(counts.openComplianceExceptions)}
-              note="Open compliance exceptions requiring LGU/DOT operational attention."
-              tone="red"
-            />
-            <IntelligenceMetricCard
-              label="Fee Readiness"
-              value={String(counts.feeConfigurationStatus || "UNKNOWN")}
-              note="Current backend status for LGU/barangay/environmental fee configuration readiness."
-              tone={counts.feeConfigurationStatus === "READY" ? "green" : "amber"}
-            />
-            <IntelligenceMetricCard
-              label="Receipt Intelligence"
-              value={safeCount(receiptRows.length)}
-              note="Latest issued fee receipts visible in the LGU read layer."
-              tone="green"
-            />
-          </div>
+            <p style={{ margin: "8px 0 8px", color: t.label, fontSize: 9.5, fontWeight: 950, letterSpacing: "0.13em", textTransform: "uppercase" }}>
+              {eyebrow}
+            </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 16, marginTop: 18 }}>
-            <StatCard
-              label="Overdue Movement Signals"
-              value={safeCount(counts.overdueDepartedMovements ?? overdueRows.length)}
-              note="Departed movements without complete arrival/return trail."
-            />
-            <StatCard
-              label="Fee-Clearance Blocked Cases"
-              value={safeCount(exceptionRows.length)}
-              note="Latest blocked departure cases caused by fee-clearance requirements."
-            />
-            <StatCard
-              label="Payment Audit Rows"
-              value={safeCount(paymentAuditRows.length)}
-              note="Latest visible manual fee payment audit records."
-            />
-          </div>
+            <SignalChips metrics={metrics} tone={tone} />
 
-          <div style={{ marginTop: 24 }}>
-            <h2 style={{ marginBottom: 12, color: colors.dark }}>Manifest Approval Event Dashboard</h2>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 16 }}>
-              <IntelligenceMetricCard
-                label="Approval Events"
-                value={safeCount(approvalEventRows.length)}
-                note="Total visible approval/return actions from manifest approval history."
-                tone="blue"
-              />
-              <IntelligenceMetricCard
-                label="Approved Actions"
-                value={safeCount(approvalEventApprovedCount)}
-                note="Visible approve actions recorded in ManifestApprovalAction."
-                tone="green"
-              />
-              <IntelligenceMetricCard
-                label="Returned / Denied"
-                value={safeCount(approvalEventDeniedCount)}
-                note="Visible deny/return actions recorded in ManifestApprovalAction."
-                tone={approvalEventDeniedCount > 0 ? "amber" : "green"}
-              />
-              <IntelligenceMetricCard
-                label="Latest Actor"
-                value={latestApprovalEvent?.actor?.fullName || latestApprovalEvent?.actedByUserId || "N/A"}
-                note={latestApprovalEvent?.actionType ? `${latestApprovalEvent.actionType} / ${latestApprovalEvent.createdAt}` : "No approval event visible yet."}
-                tone="blue"
-              />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8, marginTop: "auto" }}>
+              {metrics.map(([label, value, note]) => (
+                <MiniMetric key={label} label={label} value={String(value)} note={note} tone={tone} />
+              ))}
             </div>
+          </section>
+        );
+      }
 
-            <div style={{ marginTop: 16, display: "grid", gap: 12 }}>
-              {approvalEventRows.length > 0 ? (
-                approvalEventRows.slice(0, 6).map((event: any) => (
+      return (
+        <div style={{ display: "grid", gap: 12 }}>
+          <PanelCard title="LGU Tourism Intelligence Data Center">
+            <section
+              style={{
+                borderRadius: 22,
+                border: "1px solid rgba(1,56,99,0.11)",
+                background: "linear-gradient(135deg, #FFFFFF 0%, #F7FDFC 62%, #EAFBFA 100%)",
+                padding: 16,
+                boxShadow: "0 18px 48px rgba(1,56,99,0.075)",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center" }}>
+                <div>
+                  <p style={{ margin: 0, color: "#0596A5", fontSize: 10.5, fontWeight: 950, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                    General Luna Tourism Intelligence
+                  </p>
+                  <h2 style={{ margin: "5px 0 0", color: colors.dark, fontSize: 30, lineHeight: 1.02, letterSpacing: "-0.05em", fontWeight: 920 }}>
+                    Tourism volume, capacity, movement, demand, and fee visibility.
+                  </h2>
+                </div>
+
+                <div
+                  style={{
+                    minWidth: 232,
+                    borderRadius: 18,
+                    border: "1px solid rgba(5,150,165,0.16)",
+                    background: "rgba(255,255,255,0.92)",
+                    padding: "11px 13px",
+                    boxShadow: "0 10px 24px rgba(1,56,99,0.045)",
+                  }}
+                >
+                  <div style={{ display: "grid", gap: 6 }}>
+                    {[
+                      ["Layer", "Tourism Data Center"],
+                      ["Scope", "General Luna"],
+                      ["View", "LGU / DOT Intelligence"],
+                    ].map(([label, value]) => (
+                      <div key={label} style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+                        <p style={{ margin: 0, color: colors.muted, fontSize: 9.5, fontWeight: 900, letterSpacing: "0.1em", textTransform: "uppercase" }}>{label}</p>
+                        <p style={{ margin: 0, color: colors.dark, fontSize: 11.5, fontWeight: 920 }}>{value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(6, minmax(0, 1fr))", gap: 8, marginTop: 11 }}>
+              {topKpis.map(([label, value, note, tag, tone]) => {
+                const t = toneStyle(String(tone));
+                const s = tagStyle(String(tag));
+                return (
                   <div
-                    key={event.id}
+                    key={label}
                     style={{
-                      border: `1px solid ${colors.border}`,
-                      borderRadius: 18,
-                      background: "#ffffff",
-                      padding: 16,
-                      display: "grid",
-                      gridTemplateColumns: "1.1fr 1.2fr 1fr",
-                      gap: 14,
-                      alignItems: "start",
+                      borderRadius: 16,
+                      border: `1px solid ${t.border}`,
+                      background: t.bg,
+                      padding: "12px 12px 11px",
+                      minHeight: 106,
+                      boxShadow: "0 8px 20px rgba(1,56,99,0.035)",
+                      position: "relative",
+                      overflow: "hidden",
                     }}
                   >
+                    <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: t.accent }} />
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 6, alignItems: "flex-start" }}>
+                      <p style={{ margin: 0, color: "#005B83", fontSize: 10, fontWeight: 950, letterSpacing: "0.075em", textTransform: "uppercase" }}>{label}</p>
+                      <span style={{ ...s, borderRadius: 999, padding: "3px 5px", fontSize: 8, fontWeight: 950, whiteSpace: "nowrap" }}>{tag}</span>
+                    </div>
+                    <h3 style={{ margin: "10px 0 0", color: colors.dark, fontSize: 25, lineHeight: 1, fontWeight: 920, letterSpacing: "-0.04em" }}>{value}</h3>
+                    <p style={{ margin: "6px 0 0", color: colors.muted, fontSize: 10, lineHeight: 1.24, fontWeight: 700 }}>{note}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </PanelCard>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1.18fr 0.82fr 0.82fr", gap: 12 }}>
+            <PanelCard title="Arrivals Trend">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: -5 }}>
+                <p style={{ margin: 0, color: colors.muted, fontSize: 11.5, fontWeight: 780 }}>Monthly baseline signal</p>
+                <div style={{ display: "flex", gap: 5 }}>
+                  <span style={{ borderRadius: 999, border: "1px solid rgba(243,174,38,0.22)", color: "#9B6200", background: "#FFF8E8", padding: "4px 7px", fontSize: 9.5, fontWeight: 920 }}>Apr-May peak</span>
+                  <span style={{ borderRadius: 999, border: "1px solid rgba(5,150,165,0.18)", color: "#013863", background: "#EAFBFA", padding: "4px 7px", fontSize: 9.5, fontWeight: 920 }}>Oct-Dec crest</span>
+                </div>
+              </div>
+              <svg viewBox="0 0 640 206" style={{ width: "100%", height: 206, marginTop: 6 }}>
+                <defs>
+                  <linearGradient id="ospAreaR10" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stopColor="#0596A5" stopOpacity="0.21" />
+                    <stop offset="100%" stopColor="#0596A5" stopOpacity="0.015" />
+                  </linearGradient>
+                </defs>
+                {[36, 72, 108, 144, 180].map((y) => (
+                  <line key={y} x1="32" y1={y} x2="620" y2={y} stroke="rgba(1,56,99,0.08)" strokeWidth="1" />
+                ))}
+                <path
+                  d="M40 166 L95 136 L150 124 L205 91 L260 40 L315 70 L370 88 L425 75 L480 84 L535 112 L590 139"
+                  fill="none"
+                  stroke="#0596A5"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M40 166 L95 136 L150 124 L205 91 L260 40 L315 70 L370 88 L425 75 L480 84 L535 112 L590 139 L590 188 L40 188 Z"
+                  fill="url(#ospAreaR10)"
+                />
+                <path d="M40 170 L95 153 L150 146" fill="none" stroke="#F3AE26" strokeWidth="4" strokeLinecap="round" />
+                <circle cx="260" cy="40" r="5.5" fill="#F3AE26" />
+                <text x="228" y="26" fill="#9B6200" fontSize="11" fontWeight="900">Peak</text>
+                {["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"].map((m, i) => (
+                  <text key={m} x={40 + i * 55} y="201" fill="#50668B" fontSize="11" fontWeight="700">{m}</text>
+                ))}
+              </svg>
+            </PanelCard>
+
+            <PanelCard title="GL Room Load">
+              <div style={{ display: "grid", placeItems: "center", minHeight: 206 }}>
+                <div
+                  style={{
+                    width: 164,
+                    height: 164,
+                    borderRadius: "50%",
+                    background: "conic-gradient(#0596A5 0deg 328deg, #EAFBFA 328deg 360deg)",
+                    display: "grid",
+                    placeItems: "center",
+                    boxShadow: "inset 0 0 0 1px rgba(5,150,165,0.12), 0 14px 30px rgba(1,56,99,0.075)",
+                  }}
+                >
+                  <div style={{ width: 116, height: 116, borderRadius: "50%", background: "#FFFFFF", display: "grid", placeItems: "center", textAlign: "center" }}>
                     <div>
-                      <div
-                        style={{
-                          fontSize: 12,
-                          letterSpacing: "0.08em",
-                          textTransform: "uppercase",
-                          fontWeight: 950,
-                          color: event.actionType === "approve" ? "#065f46" : "#991b1b",
-                        }}
-                      >
-                        {event.actionType || "ACTION"}
-                      </div>
-                      <div style={{ marginTop: 8, color: colors.dark, fontWeight: 950 }}>
-                        {event.manifestReference}
-                      </div>
-                      <div style={{ marginTop: 4, color: colors.muted, fontSize: 13 }}>
-                        {event.activityTitle}
-                      </div>
-                    </div>
-
-                    <div style={{ color: colors.muted, fontSize: 13, lineHeight: 1.6 }}>
-                      <strong style={{ color: colors.dark }}>Notes</strong><br />
-                      {event.actionNotes || "No action notes recorded."}
-                    </div>
-
-                    <div style={{ color: colors.muted, fontSize: 13, lineHeight: 1.6 }}>
-                      <strong style={{ color: colors.dark }}>Actor</strong><br />
-                      {event.actor?.fullName || event.actedByUserId || "N/A"}<br />
-                      {event.actor?.email || "N/A"}<br />
-                      {event.actor?.primaryRole || "N/A"}<br />
-                      <span>{event.createdAt || "N/A"}</span>
+                      <p style={{ margin: 0, color: colors.dark, fontSize: 37, fontWeight: 920, letterSpacing: "-0.055em" }}>91%</p>
+                      <p style={{ margin: "3px 0 0", color: colors.muted, fontSize: 11, fontWeight: 820 }}>room share</p>
+                      <p style={{ margin: "4px 0 0", color: "#0596A5", fontSize: 11.5, fontWeight: 920 }}>1,198 / 1,310</p>
                     </div>
                   </div>
-                ))
-              ) : (
-                <EmptyState message="No manifest approval events visible yet." />
-              )}
-            </div>
+                </div>
+                <p style={{ margin: "-5px 0 0", color: colors.muted, fontSize: 11.5, fontWeight: 780, textAlign: "center" }}>
+                  General Luna carries recorded room load.
+                </p>
+              </div>
+            </PanelCard>
+
+            <PanelCard title="Demand Sources">
+              <div style={{ display: "grid", gap: 8, marginTop: 2 }}>
+                {sourceMix.map(([label, value]) => (
+                  <div key={label}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, fontWeight: 880, color: colors.dark }}>
+                      <span>{label}</span>
+                      <span>{value}</span>
+                    </div>
+                    <div style={{ marginTop: 4, height: 8, borderRadius: 999, background: "#EAFBFA", overflow: "hidden", border: "1px solid rgba(5,150,165,0.1)" }}>
+                      <div style={{ width: value, height: "100%", borderRadius: 999, background: "linear-gradient(90deg, #013863, #0596A5)" }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </PanelCard>
           </div>
-        </PanelCard>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 12 }}>
+            <DomainPanel title="Visitor Flow" eyebrow="Pass + movement" tone="blue" metrics={visitorMetrics} />
+            <DomainPanel title="Accommodation" eyebrow="Capacity + stay flow" tone="aqua" metrics={stayMetrics} />
+            <DomainPanel title="Island Hopping" eyebrow="Tour demand" tone="teal" metrics={tourMetrics} />
+            <DomainPanel title="Fee Visibility" eyebrow="Revenue signal" tone="gold" metrics={revenueMetrics} />
+          </div>
+
+          <PanelCard title="Destination Pressure">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: 8 }}>
+              {[
+                ["Peak Season", "Apr-May", "Crest"],
+                ["Second Crest", "Oct-Dec", "Foreign"],
+                ["Port Window", "07:00-09:00", "Pressure"],
+                ["Hotspot", "Catangnan", "Base area"],
+                ["Flights", "10-12/day", "Capacity"],
+              ].map(([label, value, note]) => (
+                <MiniMetric key={label} label={label} value={value} note={note} tone="aqua" />
+              ))}
+            </div>
+          </PanelCard>
+
+          <PanelCard title="LGU Use Cases">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(6, minmax(0, 1fr))", gap: 8 }}>
+              {[
+                ["Tourism Counting", "Visitor arrivals, active visitors, ingress/egress"],
+                ["Capacity Planning", "Rooms, check-ins, check-outs, pressure areas"],
+                ["Port Coordination", "Trips, pax volume, route demand, peak windows"],
+                ["Revenue Review", "Fee visibility, receipts, reconciliation signals"],
+                ["Surge Readiness", "Peak season, room load, transport pressure"],
+                ["Policy Reporting", "Monthly trends, source channels, tourism baseline"],
+              ].map(([label, note]) => (
+                <div
+                  key={label}
+                  style={{
+                    borderRadius: 16,
+                    border: "1px solid rgba(5,150,165,0.14)",
+                    background: "linear-gradient(180deg, #F4FCFA, #FFFFFF)",
+                    padding: "12px 12px",
+                    minHeight: 96,
+                    boxShadow: "0 7px 16px rgba(1,56,99,0.026)",
+                  }}
+                >
+                  <p style={{ margin: 0, color: "#0596A5", fontSize: 9.5, fontWeight: 950, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                    {label}
+                  </p>
+                  <p style={{ margin: "8px 0 0", color: colors.dark, fontSize: 12.5, fontWeight: 820, lineHeight: 1.28 }}>
+                    {note}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </PanelCard>
+        </div>
       );
     }
 
@@ -931,7 +1235,7 @@ export default async function LguPage({
         <>
           <PanelCard title="Departure Control Operations">
             <p style={{ marginTop: 0, color: colors.muted, lineHeight: 1.7, fontWeight: 700 }}>
-              LGU-facing operations view for scheduled port departures, boarding readiness, manifest visibility, and exception monitoring. This panel is the entry point into the DCS approval flow; live booking, QR, assignment, and manifest events stay inactive until approved and event-backed.
+              General Luna-facing operations view for scheduled island-hopping departures, boarding readiness, manifest visibility, and exception monitoring. This panel frames the LGU pilot flow before production booking, QR, assignment, and manifest events are activated.
             </p>
 
             <div
@@ -945,19 +1249,19 @@ export default async function LguPage({
               <IntelligenceMetricCard
                 label="General Luna DCS"
                 value="READY"
-                note="General Luna board is ready for LGU flow review and port-scope presentation."
+                note="Public departure display is ready for LGU pilot review, showing scheduled trips, boarding states, manifest counts, and QR readiness."
                 tone="green"
               />
               <IntelligenceMetricCard
-                label="Dapa DCS"
-                value="NEXT"
-                note="Dapa remains a future port-scoped DCS module for Bucas Grande / Sohoton."
+                label="PORT QUEUE & BOARDING FLOW"
+                value="PILOT FLOW"
+                note="Voucher, assignment, Boarding QR, port scan, manifest update, and movement record align into one LGU-readable operating sequence."
                 tone="amber"
               />
               <IntelligenceMetricCard
-                label="Del Carmen DCS"
-                value="NEXT"
-                note="Del Carmen remains a future port-scoped DCS module for Sugba Lagoon and mangrove tours."
+                label="OPERATOR & VESSEL READINESS"
+                value="GOVERNANCE LAYER"
+                note="Eligibility, boat-class matching, readiness, and assignment audit stay governed before production activation."
                 tone="amber"
               />
             </div>
@@ -1023,7 +1327,7 @@ export default async function LguPage({
             </div>
           </PanelCard>
 
-          <PanelCard title="LGU Departure Control Boundary">
+          <PanelCard title="General Luna Operating Boundary">
             <div
               style={{
                 display: "grid",
@@ -1037,14 +1341,14 @@ export default async function LguPage({
                 note="Trip number, route, departure time, boarding status, manifest status, exception status, and port operating visibility."
               />
               <StatCard
-                label="Hidden from LGU"
-                value="Platform commercial internals"
-                note="Platform commercial internals, private payout logic, OTA ownership details, and Super Admin configuration controls stay hidden."
+                label="Visibility Boundary"
+                value="Internal commercial controls"
+                note="Internal commercial controls, private payout logic, OTA ownership details, and internal configuration controls stay hidden."
               />
               <StatCard
                 label="Current mode"
-                value="Read-only preview"
-                note="Live booking, voucher, assignment, boarding QR, and manifest events will attach after LGU flow approval."
+                value="Pilot operations view"
+                note="Production booking, voucher, assignment, boarding QR, and manifest events attach after LGU operating approval."
               />
             </div>
           </PanelCard>
@@ -1377,7 +1681,7 @@ export default async function LguPage({
                                 fontWeight: 950,
                                 cursor: "not-allowed",
                               }}
-                              title="SILENT_LGU_ANALYTICS is read-only."
+                              title="SILENT_LGU_ANALYTICS is official."
                             >
                               Approval Locked
                             </button>
@@ -1493,7 +1797,7 @@ export default async function LguPage({
                       />
                       <RecordRow
                         title="Approval Boundary"
-                        meta={canApproveManifests(role) ? "Current role may approve or return UNDER_REVIEW requests." : "Current role is read-only."}
+                        meta={canApproveManifests(role) ? "Current role may approve or return UNDER_REVIEW requests." : "Current role is official."}
                       />
                     </div>
 
@@ -1613,7 +1917,7 @@ export default async function LguPage({
         <div style={{ display: "grid", gap: 18 }}>
           <PanelCard title="Queue / Clearance">
             <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-              Read-only clearance command surface. Departure clearance is enforced by the backend only after
+              Official clearance command surface. Departure clearance is enforced by the backend only after
               generated fee charges, PAID fee state, and ISSUED receipt state are confirmed.
             </p>
 
@@ -1689,9 +1993,9 @@ export default async function LguPage({
     if (activePanel === "fee-exceptions") {
       return (
         <div style={{ display: "grid", gap: 18 }}>
-          <PanelCard title="Fee Exceptions Watch">
+          <PanelCard title="Fee Exceptions">
             <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-              Read-only watch surface for departure blocks caused by fee-clearance requirements.
+              Official watch surface for departure blocks caused by fee-clearance requirements.
               LGU analytics users can inspect exception pressure but cannot resolve or mutate records from this lane.
             </p>
 
@@ -1800,9 +2104,9 @@ export default async function LguPage({
 
       return (
         <div style={{ display: "grid", gap: 18 }}>
-          <PanelCard title="Receipts Read">
+          <PanelCard title="Receipts">
             <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-              Read-only receipt visibility for issued LGU/barangay/environmental fee receipts.
+              Official receipt visibility for issued LGU/barangay/environmental fee receipts.
               PDF/export remains intentionally excluded from this lane.
             </p>
 
@@ -1907,9 +2211,9 @@ export default async function LguPage({
 
       return (
         <div style={{ display: "grid", gap: 18 }}>
-          <PanelCard title="Payment Audit Read">
+          <PanelCard title="Payment Visibility">
             <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-              Read-only audit surface for manual fee payment recording. Payment recording remains ADMIN-only.
+              Official audit surface for manual fee payment recording. Payment recording remains ADMIN-only.
               LGU analytics users can inspect payment audit pressure but cannot mutate records.
             </p>
 
@@ -2011,9 +2315,9 @@ export default async function LguPage({
 
       return (
         <div style={{ display: "grid", gap: 18 }}>
-          <PanelCard title="Fee Programs Config">
+          <PanelCard title="Fee Programs">
             <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-              Read-only fee program visibility for LGU analytics users. Editing stays role-governed and
+              Official fee program visibility for LGU analytics users. Editing stays role-governed and
               is not exposed to SILENT_LGU_ANALYTICS.
             </p>
 
@@ -2046,7 +2350,7 @@ export default async function LguPage({
               <IntelligenceMetricCard
                 label="Mutation Access"
                 value="LOCKED"
-                note="Read-only for LGU analytics. Editing requires governed role."
+                note="Official for LGU analytics. Editing requires governed role."
                 tone="amber"
               />
             </div>
@@ -2128,7 +2432,7 @@ export default async function LguPage({
             />
           ) : null}
 
-          <PanelCard title="Reports / Export">
+          <PanelCard title="Reports">
             <div style={{ display: "flex", justifyContent: "space-between", gap: 18, alignItems: "flex-start" }}>
               <div>
                 <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
@@ -2339,7 +2643,7 @@ export default async function LguPage({
 
           <PanelCard title="Official Report Registry Readiness">
             <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-              Read-only registry view for future official report types and jurisdiction codes. Official activation
+              Official registry view for future official report types and jurisdiction codes. Official activation
               remains disabled. This panel does not generate report numbers, official PDFs, signatures, or seals.
             </p>
 
@@ -2466,7 +2770,7 @@ export default async function LguPage({
 
           <PanelCard title="Latest Report Export Audit Log">
             <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-              Read-only trace of recent backend report export events. This proves draft CSV export activity
+              Official trace of recent backend report export events. This proves draft CSV export activity
               without turning the draft report into an official DOT/LGU filing.
             </p>
 
@@ -2597,7 +2901,7 @@ export default async function LguPage({
                 meta="Notifications should support operator attention, not replace manifest review."
               />
               <RecordRow
-                title="Fee Exceptions Watch carries clearance pressure"
+                title="Fee Exceptions carries clearance pressure"
                 meta={`${safeCount(exceptionRows.length)} visible fee-clearance exception(s) currently available.`}
               />
               <RecordRow
@@ -2612,9 +2916,9 @@ export default async function LguPage({
 
     return (
       <div style={{ display: "grid", gap: 18 }}>
-        <PanelCard title="Session / Access">
+        <PanelCard title="Access">
           <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-            Current authenticated LGU console session. This access profile is intentionally read-only.
+            Current authenticated LGU console session. This access profile is intentionally official.
           </p>
 
           <div
@@ -2673,7 +2977,7 @@ export default async function LguPage({
               ONE SIARGAO PASS
             </p>
             <h2 style={{ marginTop: 10, marginBottom: 0, fontSize: 28 }}>LGU Console</h2>
-            <p style={{ marginTop: 6, color: "#cbd5e1" }}>Compliance + Intelligence Desk</p>
+            <p style={{ marginTop: 6, color: "#cbd5e1" }}>Destination Intelligence Desk</p>
             <div
               style={{
                 display: "inline-flex",
@@ -2686,7 +2990,7 @@ export default async function LguPage({
                 color: "#e2e8f0",
               }}
             >
-              READ ONLY
+              DATA CENTER
             </div>
           </div>
 
