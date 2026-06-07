@@ -168,7 +168,7 @@ async function getBoardData(): Promise<DcsPreviewResponse> {
 
   try {
     const res = await fetch(
-      `${API_BASE}/osp-dcs/general-luna/scheduled-trips/preview?departureDate=${today}`,
+      `${API_BASE}/api/v1/osp-dcs/general-luna/board?departureDate=${today}`,
       { cache: "no-store" },
     );
 

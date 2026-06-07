@@ -33,4 +33,10 @@ export class OspDcsController {
     return this.ospDcsService.previewGeneralLunaScheduledTrips({ departureDate });
   }
 
+
+  @Get('general-luna/board')
+  getGeneralLunaBoard(@Query('departureDate') departureDate?: string) {
+    return this.ospDcsService.getGeneralLunaBoardDbProjection({ departureDate });
+  }
+
 }
