@@ -290,7 +290,10 @@ export class OspDcsService {
     const toPublicState = (row: DbTripRow) => {
       if (row.movementStatus === 'DEPARTED' || row.tripStatus === 'DEPARTED') return 'DEPARTED';
       if (row.tripStatus === 'CANCELLED') return 'CANCELLED';
-      if (row.tripStatus === 'DELAYED' || row.tripStatus === 'HELD') return 'DELAY_WATCH';
+      if (row.tripStatus === 'BOARDING_NOW') return 'BOARDING_NOW';
+      if (row.tripStatus === 'BOARDING_SOON') return 'BOARDING_SOON';
+      if (row.tripStatus === 'CLEARED_FOR_DEPARTURE') return 'DEPARTING';
+      if (row.tripStatus === 'DELAY_WATCH' || row.tripStatus === 'BOARDING_HOLD' || row.tripStatus === 'DELAYED' || row.tripStatus === 'HELD') return 'DELAY_WATCH';
       if (row.manifestStatus === 'CREATED' || row.manifestStatus === 'OPEN') return 'BOARDING_NOW';
       if (row.boardingQrStatus === 'ISSUED' || row.boardingQrStatus === 'ACTIVE') return 'BOARDING_SOON';
       return 'SCHEDULED';
@@ -331,6 +334,428 @@ export class OspDcsService {
         };
       }),
     };
+  }
+
+
+  async updateGeneralLunaQueueClearance(input: {
+    tripNumber: string;
+    queueStatus?: string;
+    boardingWindowStatus?: string;
+    clearanceStatus?: string;
+    publicStatus?: string;
+    routeNote?: string;
+    actorRole?: string;
+  }) {
+    const tripNumber = (input.tripNumber || '').trim();
+
+    if (!tripNumber) {
+      return {
+        ok: false,
+        error: 'TRIP_NUMBER_REQUIRED',
+      };
+    }
+
+    const allowedQueueStatuses = new Set([
+      'NOT_OPEN',
+      'QUEUE_FORMING',
+      'BOARDING_SOON',
+      'BOARDING_NOW',
+      'BOARDING_HOLD',
+      'CLEARED_FOR_DEPARTURE',
+      'DEPARTED',
+      'CLOSED',
+    ]);
+
+    const allowedBoardingWindows = new Set([
+      'NOT_STARTED',
+      'OPEN',
+      'PAUSED',
+      'CLOSED',
+    ]);
+
+    const allowedClearanceStatuses = new Set([
+      'PENDING',
+      'READY_FOR_REVIEW',
+      'CLEARED',
+      'HELD_BY_LGU',
+      'HELD_BY_WEATHER',
+      'HELD_BY_PORT',
+      'HELD_BY_OPERATOR',
+      'CANCELLED',
+    ]);
+
+    const allowedPublicStatuses = new Set([
+      'SCHEDULED',
+      'BOARDING_SOON',
+      'BOARDING_NOW',
+      'CLEARED_FOR_DEPARTURE',
+      'DEPARTED',
+      'DELAY_WATCH',
+      'CANCELLED',
+    ]);
+
+    const queueStatus = input.queueStatus || 'QUEUE_FORMING';
+    const boardingWindowStatus = input.boardingWindowStatus || 'NOT_STARTED';
+    const clearanceStatus = input.clearanceStatus || 'READY_FOR_REVIEW';
+    const publicStatus = input.publicStatus || this.deriveTripStatusFromQueueClearance({
+      queueStatus,
+      clearanceStatus,
+    });
+
+    if (!allowedQueueStatuses.has(queueStatus)) {
+      return { ok: false, error: 'INVALID_QUEUE_STATUS', queueStatus };
+    }
+
+    if (!allowedBoardingWindows.has(boardingWindowStatus)) {
+      return { ok: false, error: 'INVALID_BOARDING_WINDOW_STATUS', boardingWindowStatus };
+    }
+
+    if (!allowedClearanceStatuses.has(clearanceStatus)) {
+      return { ok: false, error: 'INVALID_CLEARANCE_STATUS', clearanceStatus };
+    }
+
+    if (!allowedPublicStatuses.has(publicStatus)) {
+      return { ok: false, error: 'INVALID_PUBLIC_STATUS', publicStatus };
+    }
+
+    const rows = await this.prisma.$queryRawUnsafe<Array<{
+      id: string;
+      tripNumber: string;
+      status: string;
+      departureDate: Date;
+      departureTime: string;
+      portCode: string;
+    }>>(
+      `
+      UPDATE "OspScheduledTrip"
+      SET "status" = $2,
+          "updatedAt" = NOW()
+      WHERE "tripNumber" = $1
+        AND "portCode" IN ('GENERAL_LUNA', 'GENERAL_LUNA_PORT')
+      RETURNING "id", "tripNumber", "status", "departureDate", "departureTime", "portCode"
+      `,
+      tripNumber,
+      publicStatus,
+    );
+
+    if (!rows.length) {
+      return {
+        ok: false,
+        error: 'TRIP_NOT_FOUND_OR_NOT_GENERAL_LUNA',
+        tripNumber,
+      };
+    }
+
+    const trip = rows[0];
+
+    return {
+      ok: true,
+      dataSource: 'DCS_DB_OPERATING_SPINE',
+      operation: 'QUEUE_CLEARANCE_UPDATED',
+      tripNumber: trip.tripNumber,
+      portCode: trip.portCode,
+      departureDate: trip.departureDate.toISOString().slice(0, 10),
+      departureTime: trip.departureTime,
+      publicStatus: trip.status,
+      queueStatus,
+      boardingWindowStatus,
+      clearanceStatus,
+      routeNote: input.routeNote || null,
+      actorRole: input.actorRole || 'LGU_DOT_STAFF',
+      boardProjectionHint: 'GL_BOARD_READS_FROM_OSP_SCHEDULED_TRIP_STATUS',
+    };
+  }
+
+  private deriveTripStatusFromQueueClearance(input: {
+    queueStatus?: string;
+    clearanceStatus?: string;
+  }) {
+    if (input.clearanceStatus === 'CANCELLED') return 'CANCELLED';
+    if (
+      input.clearanceStatus === 'HELD_BY_LGU' ||
+      input.clearanceStatus === 'HELD_BY_WEATHER' ||
+      input.clearanceStatus === 'HELD_BY_PORT' ||
+      input.clearanceStatus === 'HELD_BY_OPERATOR' ||
+      input.queueStatus === 'BOARDING_HOLD'
+    ) {
+      return 'DELAY_WATCH';
+    }
+    if (input.queueStatus === 'DEPARTED') return 'DEPARTED';
+    if (input.queueStatus === 'CLEARED_FOR_DEPARTURE') return 'CLEARED_FOR_DEPARTURE';
+    if (input.queueStatus === 'BOARDING_NOW') return 'BOARDING_NOW';
+    if (input.queueStatus === 'BOARDING_SOON') return 'BOARDING_SOON';
+    return 'SCHEDULED';
+  }
+
+
+  async generateGeneralLunaDailyTrips(input: {
+    departureDate: string;
+    dryRun?: boolean;
+    routeProductCodes?: string[];
+    departureSlots?: string[];
+    actorRole?: string;
+  }) {
+    const departureDate = (input.departureDate || '').trim();
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(departureDate)) {
+      return {
+        ok: false,
+        error: 'INVALID_DEPARTURE_DATE',
+        departureDate,
+      };
+    }
+
+    const routeProducts = [
+      {
+        routeProductCode: 'GL_TRI_ISLAND_STANDARD',
+        routeCode: 'GDN',
+        routeName: 'Guyam · Daku · Naked',
+        defaultBoatClassCode: 'A',
+      },
+      {
+        routeProductCode: 'GL_GUYAM_DAKU_MAM_ON',
+        routeCode: 'GDM',
+        routeName: 'Guyam · Daku · Mam-On',
+        defaultBoatClassCode: 'B',
+      },
+      {
+        routeProductCode: 'GL_TRI_ISLAND_CORREGIDOR',
+        routeCode: 'GDNC',
+        routeName: 'Guyam · Daku · Naked · Corregidor',
+        defaultBoatClassCode: 'C',
+      },
+    ];
+
+    const defaultDepartureSlots = [
+      '07:00',
+      '08:00',
+      '09:00',
+      '10:00',
+      '11:00',
+      '12:00',
+      '13:00',
+      '14:00',
+    ];
+
+    const requestedRouteCodes = new Set(input.routeProductCodes || []);
+    const activeRouteProducts = requestedRouteCodes.size
+      ? routeProducts.filter((route) => requestedRouteCodes.has(route.routeProductCode))
+      : routeProducts;
+
+    const departureSlots = input.departureSlots?.length
+      ? input.departureSlots
+      : defaultDepartureSlots;
+
+    const validTime = (value: string) => /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
+
+    const invalidSlot = departureSlots.find((slot) => !validTime(slot));
+    if (invalidSlot) {
+      return {
+        ok: false,
+        error: 'INVALID_DEPARTURE_SLOT',
+        departureSlot: invalidSlot,
+      };
+    }
+
+    if (!activeRouteProducts.length) {
+      return {
+        ok: false,
+        error: 'NO_VALID_ROUTE_PRODUCTS',
+        routeProductCodes: input.routeProductCodes || [],
+      };
+    }
+
+    const generated = activeRouteProducts.flatMap((route) =>
+      departureSlots.map((slot) => {
+        const hhmm = slot.replace(':', '');
+        const serviceNumber = `GL-${route.routeCode}-${hhmm}`;
+        const operatingTripId = `DOT-GL-${route.routeCode}-${departureDate.replace(/-/g, '')}-${hhmm}`;
+
+        return {
+          serviceNumber,
+          tripNumber: operatingTripId,
+          routeProductCode: route.routeProductCode,
+          routeCode: route.routeCode,
+          routeName: route.routeName,
+          portCode: 'GENERAL_LUNA_PORT',
+          departureDate,
+          departureTime: slot,
+          boatClassCode: route.defaultBoatClassCode,
+          status: 'SCHEDULED',
+        };
+      }),
+    );
+
+    const existingRows = await this.prisma.$queryRawUnsafe<Array<{ tripNumber: string }>>(
+      `
+      SELECT "tripNumber"
+      FROM "OspScheduledTrip"
+      WHERE "tripNumber" = ANY($1::text[])
+      `,
+      generated.map((trip) => trip.tripNumber),
+    );
+
+    const existingTripNumbers = new Set(existingRows.map((row) => row.tripNumber));
+    const toCreate = generated.filter((trip) => !existingTripNumbers.has(trip.tripNumber));
+    const existing = generated.filter((trip) => existingTripNumbers.has(trip.tripNumber));
+
+    if (input.dryRun !== false) {
+      return {
+        ok: true,
+        dryRun: true,
+        operation: 'GENERAL_LUNA_DAILY_TRIP_GENERATOR_PREVIEW',
+        dataSource: 'DCS_GENERATOR_FOUNDATION',
+        departureDate,
+        generatedCount: generated.length,
+        createCount: toCreate.length,
+        existingCount: existing.length,
+        serviceNumberDoctrine: 'Service number repeats by route and time; operating trip ID is unique by date.',
+        bookingSystemDoctrine: 'Scheduled trips are the DCS operating anchor. Centralized booking modules attach later; this generator does not claim booking centralization is complete.',
+        generated,
+        existing,
+      };
+    }
+
+    await this.ensureGeneralLunaRouteProductsForGenerator(activeRouteProducts);
+
+    const created: Array<{
+      tripNumber: string;
+      serviceNumber: string;
+      routeProductCode: string;
+      departureTime: string;
+    }> = [];
+
+    for (const trip of toCreate) {
+      const id = `osp_sched_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+
+      await this.prisma.$executeRawUnsafe(
+        `
+        INSERT INTO "OspScheduledTrip" (
+          "id",
+          "tripNumber",
+          "routeProductCode",
+          "portCode",
+          "departureDate",
+          "departureTime",
+          "boatClassCode",
+          "status",
+          "createdAt",
+          "updatedAt"
+        )
+        VALUES (
+          $1,
+          $2,
+          $3,
+          $4,
+          $5::date,
+          $6,
+          $7,
+          $8,
+          NOW(),
+          NOW()
+        )
+        `,
+        id,
+        trip.tripNumber,
+        trip.routeProductCode,
+        trip.portCode,
+        trip.departureDate,
+        trip.departureTime,
+        trip.boatClassCode,
+        trip.status,
+      );
+
+      created.push({
+        tripNumber: trip.tripNumber,
+        serviceNumber: trip.serviceNumber,
+        routeProductCode: trip.routeProductCode,
+        departureTime: trip.departureTime,
+      });
+    }
+
+    return {
+      ok: true,
+      dryRun: false,
+      operation: 'GENERAL_LUNA_DAILY_TRIPS_GENERATED',
+      dataSource: 'DCS_GENERATOR_FOUNDATION',
+      departureDate,
+      generatedCount: generated.length,
+      createdCount: created.length,
+      existingCount: existing.length,
+      actorRole: input.actorRole || 'LGU_DOT_STAFF',
+      serviceNumberDoctrine: 'Service number repeats by route and time; operating trip ID is unique by date.',
+      bookingSystemDoctrine: 'Scheduled trips are the DCS operating anchor. Centralized booking modules attach later; this generator does not claim booking centralization is complete.',
+      created,
+      existing,
+    };
+  }
+
+
+  private async ensureGeneralLunaRouteProductsForGenerator(routeProducts: Array<{
+    routeProductCode: string;
+    routeName: string;
+  }>) {
+    for (const route of routeProducts) {
+      const existingRows = await this.prisma.$queryRawUnsafe<Array<{ id: string }>>(
+        `
+        SELECT "id"
+        FROM "OspRouteProduct"
+        WHERE "routeProductCode" = $1
+        LIMIT 1
+        `,
+        route.routeProductCode,
+      );
+
+      if (existingRows.length) {
+        await this.prisma.$executeRawUnsafe(
+          `
+          UPDATE "OspRouteProduct"
+          SET "name" = $2,
+              "portCode" = 'GENERAL_LUNA_PORT',
+              "pricingMode" = COALESCE(NULLIF("pricingMode", ''), 'DCS_SCHEDULE_TEMPLATE'),
+              "instantBookingMode" = COALESCE(NULLIF("instantBookingMode", ''), 'REQUEST_TO_CONFIRM'),
+              "isActive" = true,
+              "updatedAt" = NOW()
+          WHERE "routeProductCode" = $1
+          `,
+          route.routeProductCode,
+          route.routeName,
+        );
+        continue;
+      }
+
+      await this.prisma.$executeRawUnsafe(
+        `
+        INSERT INTO "OspRouteProduct" (
+          "id",
+          "routeProductCode",
+          "name",
+          "portCode",
+          "pricingMode",
+          "authorityContext",
+          "isActive",
+          "instantBookingMode",
+          "createdAt",
+          "updatedAt"
+        )
+        VALUES (
+          $1,
+          $2,
+          $3,
+          'GENERAL_LUNA_PORT',
+          'DCS_SCHEDULE_TEMPLATE',
+          'GENERAL_LUNA_LGU_DOT_GOVERNANCE_LAYER',
+          true,
+          'REQUEST_TO_CONFIRM',
+          NOW(),
+          NOW()
+        )
+        `,
+        `osp_route_${route.routeProductCode.toLowerCase()}`,
+        route.routeProductCode,
+        route.routeName,
+      );
+    }
   }
 
 }

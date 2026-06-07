@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, requireAccessToken } from "../../src/lib/server-auth";
+import LguQueueClearancePanel from "./LguQueueClearancePanel";
 
 type LguPanel =
   | "overview"
@@ -1334,128 +1335,521 @@ export default async function LguPage({
     }
 
     if (activePanel === "departure-control") {
+      const commandStatus = [
+        { label: "Port", value: "General Luna" },
+        { label: "Scope", value: "Island Hopping" },
+        { label: "Layer", value: "LGU / DOT" },
+        { label: "Board", value: "Available" },
+      ];
+
+      const truthSteps = [
+        { step: "01", label: "Trip Reference", note: "Route anchor" },
+        { step: "02", label: "Voucher", note: "Payment proof" },
+        { step: "03", label: "Assignment", note: "Operator / vessel readiness" },
+        { step: "04", label: "Boarding QR", note: "Validation pass" },
+        { step: "05", label: "Port Scan", note: "Boarding event" },
+        { step: "06", label: "Manifest", note: "Boarded pax" },
+        { step: "07", label: "Movement Record", note: "Route completion" },
+      ];
+
+      const boardingReadiness = [
+        { label: "Port Board", status: "Available", note: "Public-safe board" },
+        { label: "Boarding QR", status: "Defined", note: "Validation path" },
+        { label: "Manifest Watch", status: "Prepared", note: "Boarded pax visibility" },
+      ];
+
+      const lguReview = [
+        { label: "Queue / Clearance", status: "Coordinated", note: "Readiness status" },
+        { label: "Exception Watch", status: "Active", note: "Delay and irregularity lane" },
+        { label: "Daily Records", status: "Prepared", note: "LGU reporting trail" },
+      ];
+
+      const controlLanes = [
+        {
+          title: "Manifest & Boarding",
+          href: "/lgu?panel=manifests",
+          eyebrow: "Boarding Control",
+          body: "Voucher, Boarding QR, port scan, and manifest stay separated.",
+          cta: "Open Manifest",
+        },
+        {
+          title: "Queue / Clearance",
+          href: "/lgu?panel=clearance",
+          eyebrow: "Port Readiness",
+          body: "Route pressure, boarding readiness, and clearance status.",
+          cta: "Open Clearance",
+        },
+        {
+          title: "Exception Watch",
+          href: "/lgu?panel=fee-exceptions",
+          eyebrow: "Operations Review",
+          body: "Delay, cancellation, reassignment, and irregular boarding signals.",
+          cta: "Open Exceptions",
+        },
+        {
+          title: "Departure Records",
+          href: "/lgu?panel=reports",
+          eyebrow: "Daily Output",
+          body: "Departure rows, manifest visibility, receipt trail, and daily export.",
+          cta: "Open Records",
+        },
+      ];
+
+      const assurancePanels = [
+        {
+          title: "Operator Fulfillment",
+          body: "Approved local operators remain the fulfillment backbone. Assignment readiness follows eligibility, vessel/category fit, availability, response, and audit trail.",
+        },
+        {
+          title: "Public Board Scope",
+          body: "Public board views show departure status and boarding readiness without traveler-sensitive or private commercial data.",
+        },
+        {
+          title: "Receipt & Boarding Clarity",
+          body: "Voucher, Boarding QR, port scan, manifest, and movement record remain separate operating records.",
+        },
+      ];
+
+      const departureRecords = [
+        "Scheduled departures",
+        "Boarding readiness",
+        "Manifest visibility",
+        "Exception watch",
+        "Receipt trail",
+        "Daily export",
+      ];
+
+      const shellStyle = {
+        display: "grid",
+        gap: "18px",
+      };
+
+      const heroStyle = {
+        border: "1px solid rgba(5, 150, 165, 0.18)",
+        borderRadius: "28px",
+        background: "linear-gradient(135deg, #ffffff 0%, #f7fefc 50%, #eafbfa 100%)",
+        padding: "20px 22px",
+        boxShadow: "0 22px 60px rgba(1, 56, 99, 0.10)",
+      };
+
+      const heroGridStyle = {
+        display: "grid",
+        gridTemplateColumns: "minmax(0, 1fr) minmax(250px, 310px)",
+        gap: "18px",
+        alignItems: "stretch",
+      };
+
+      const pillStyle = {
+        display: "inline-flex",
+        width: "fit-content",
+        border: "1px solid rgba(5, 150, 165, 0.26)",
+        borderRadius: "999px",
+        background: "#eafbfa",
+        color: "#047886",
+        padding: "6px 11px",
+        fontSize: "10px",
+        fontWeight: 850,
+        letterSpacing: "0.17em",
+        textTransform: "uppercase" as const,
+      };
+
+      const navyBandStyle = {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
+        gap: "1px",
+        marginTop: "16px",
+        borderRadius: "20px",
+        overflow: "hidden",
+        border: "1px solid rgba(1, 56, 99, 0.12)",
+        background: "#013863",
+        boxShadow: "0 14px 34px rgba(1, 56, 99, 0.16)",
+      };
+
+      const navyBandItemStyle = {
+        background: "linear-gradient(135deg, rgba(1,56,99,0.98), rgba(4,120,134,0.82))",
+        padding: "12px 13px",
+      };
+
+      const statusPanelStyle = {
+        border: "1px solid rgba(255, 255, 255, 0.95)",
+        borderRadius: "24px",
+        background: "rgba(255, 255, 255, 0.92)",
+        padding: "15px",
+        boxShadow: "0 12px 30px rgba(1, 56, 99, 0.07)",
+      };
+
+      const statusRowStyle = {
+        display: "flex",
+        justifyContent: "space-between",
+        gap: "12px",
+        borderRadius: "15px",
+        background: "#f4fcfa",
+        padding: "9px 11px",
+      };
+
+      const boardShellStyle = {
+        display: "grid",
+        gridTemplateColumns: "minmax(320px, 0.95fr) minmax(420px, 1.35fr)",
+        gap: "16px",
+        alignItems: "stretch",
+      };
+
+      const primaryBoardStyle = {
+        border: "1px solid rgba(255, 255, 255, 0.14)",
+        borderRadius: "26px",
+        background: "linear-gradient(145deg, #013863 0%, #003B66 48%, #0596A5 130%)",
+        padding: "20px",
+        color: "#ffffff",
+        boxShadow: "0 24px 64px rgba(1, 56, 99, 0.26)",
+        minHeight: "332px",
+        display: "grid",
+        gridTemplateRows: "auto 1fr auto",
+      };
+
+      const spineStyle = {
+        border: "1px solid rgba(5, 150, 165, 0.18)",
+        borderRadius: "26px",
+        background: "#ffffff",
+        padding: "18px",
+        boxShadow: "0 16px 44px rgba(1, 56, 99, 0.075)",
+      };
+
+      const stepGridStyle = {
+        display: "grid",
+        gap: "8px",
+        marginTop: "13px",
+      };
+
+      const stepStyle = {
+        display: "grid",
+        gridTemplateColumns: "42px minmax(0,1fr)",
+        gap: "10px",
+        alignItems: "center",
+        border: "1px solid rgba(5,150,165,0.14)",
+        borderRadius: "17px",
+        background: "#f7fefc",
+        padding: "9px 11px",
+      };
+
+      const stepNumberStyle = {
+        display: "grid",
+        placeItems: "center",
+        width: "32px",
+        height: "32px",
+        borderRadius: "12px",
+        background: "#013863",
+        color: "#F3AE26",
+        fontSize: "10px",
+        fontWeight: 900,
+        letterSpacing: "0.08em",
+      };
+
+      const readinessShellStyle = {
+        display: "grid",
+        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+        gap: "14px",
+      };
+
+      const readinessGroupStyle = {
+        border: "1px solid rgba(5, 150, 165, 0.18)",
+        borderRadius: "24px",
+        background: "#ffffff",
+        padding: "16px",
+        boxShadow: "0 16px 44px rgba(1, 56, 99, 0.065)",
+      };
+
+      const readinessGridStyle = {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+        gap: "10px",
+        marginTop: "12px",
+      };
+
+      const cardStyle = {
+        border: "1px solid rgba(5, 150, 165, 0.16)",
+        borderRadius: "18px",
+        background: "#f7fefc",
+        padding: "13px",
+      };
+
+      const statusDotStyle = {
+        width: "8px",
+        height: "8px",
+        borderRadius: "999px",
+        background: "#F3AE26",
+        boxShadow: "0 0 0 4px rgba(243, 174, 38, 0.14)",
+        flex: "0 0 auto",
+      };
+
+      const controlGridStyle = {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+        gap: "14px",
+      };
+
+      const controlCardStyle = {
+        display: "grid",
+        gridTemplateRows: "auto auto minmax(42px, 1fr) auto",
+        minHeight: "154px",
+        border: "1px solid rgba(5, 150, 165, 0.18)",
+        borderRadius: "24px",
+        background: "#ffffff",
+        padding: "17px",
+        boxShadow: "0 16px 44px rgba(1, 56, 99, 0.075)",
+        textDecoration: "none",
+        color: "inherit",
+      };
+
+      const ctaStyle = {
+        display: "inline-flex",
+        alignItems: "center",
+        width: "fit-content",
+        gap: "8px",
+        border: "1px solid rgba(243, 174, 38, 0.35)",
+        borderRadius: "999px",
+        background: "linear-gradient(135deg, rgba(255, 211, 107, 0.44), rgba(243, 174, 38, 0.18))",
+        color: "#7A4D00",
+        padding: "8px 11px",
+        fontSize: "12px",
+        fontWeight: 850,
+        textDecoration: "none",
+      };
+
+      const assuranceGridStyle = {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+        gap: "14px",
+      };
+
+      const recordsGridStyle = {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+        gap: "10px",
+        marginTop: "15px",
+      };
+
       return (
-        <>
-          <PanelCard title="Departure Control Operations">
-            <p style={{ marginTop: 0, color: colors.muted, lineHeight: 1.7, fontWeight: 700 }}>
-              General Luna-facing operations view for scheduled island-hopping departures, boarding readiness, manifest visibility, and exception monitoring. This panel frames the LGU pilot flow before production booking, QR, assignment, and manifest events are activated.
-            </p>
+        <div style={shellStyle}>
+          <section style={heroStyle}>
+            <div style={heroGridStyle}>
+              <div>
+                <div style={pillStyle}>LGU / DOT Departure Layer</div>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                gap: 14,
-                marginTop: 18,
-              }}
-            >
-              <IntelligenceMetricCard
-                label="General Luna DCS"
-                value="READY"
-                note="Public departure display is ready for LGU pilot review, showing scheduled trips, boarding states, manifest counts, and QR readiness."
-                tone="green"
-              />
-              <IntelligenceMetricCard
-                label="PORT QUEUE & BOARDING FLOW"
-                value="PILOT FLOW"
-                note="Voucher, assignment, Boarding QR, port scan, manifest update, and movement record align into one LGU-readable operating sequence."
-                tone="amber"
-              />
-              <IntelligenceMetricCard
-                label="OPERATOR & VESSEL READINESS"
-                value="GOVERNANCE LAYER"
-                note="Eligibility, boat-class matching, readiness, and assignment audit stay governed before production activation."
-                tone="amber"
-              />
+                <div style={{ marginTop: "13px", maxWidth: "880px" }}>
+                  <h1 style={{ margin: 0, color: "#013863", fontSize: "34px", lineHeight: 1.06, letterSpacing: "-0.038em", fontWeight: 780 }}>
+                    General Luna Departure Control
+                  </h1>
+                  <p style={{ margin: "10px 0 0", maxWidth: "760px", color: "#50668B", fontSize: "14px", lineHeight: 1.6 }}>
+                    Port board, Boarding QR, manifest, queue, exceptions, and departure records for General Luna island-hopping.
+                  </p>
+                </div>
+
+                <div style={navyBandStyle}>
+                  {[
+                    ["Board", "Port board"],
+                    ["Validate", "QR scan"],
+                    ["Record", "Manifest truth"],
+                    ["Review", "Exception watch"],
+                  ].map(([label, value]) => (
+                    <div key={label} style={navyBandItemStyle}>
+                      <div style={{ color: "#F3AE26", fontSize: "10px", fontWeight: 900, letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                        {label}
+                      </div>
+                      <div style={{ marginTop: "4px", color: "rgba(255,255,255,0.92)", fontSize: "13px", lineHeight: 1.35, fontWeight: 760 }}>
+                        {value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <aside style={statusPanelStyle}>
+                <div style={{ color: "#50668B", fontSize: "10px", fontWeight: 850, letterSpacing: "0.17em", textTransform: "uppercase" }}>
+                  Port Scope
+                </div>
+                <div style={{ display: "grid", gap: "8px", marginTop: "12px" }}>
+                  {commandStatus.map((item) => (
+                    <div key={item.label} style={statusRowStyle}>
+                      <span style={{ color: "#50668B", fontSize: "12px", fontWeight: 650 }}>{item.label}</span>
+                      <span style={{ color: "#013863", fontSize: "13px", fontWeight: 850, textAlign: "right" }}>{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section style={boardShellStyle}>
+            <a href="/lgu/departure-control/general-luna/board" style={{ ...primaryBoardStyle, textDecoration: "none" }}>
+              <div>
+                <div style={{ color: "#F3AE26", fontSize: "10px", fontWeight: 900, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                  Port Board
+                </div>
+                <h2 style={{ margin: "10px 0 0", color: "#FFFFFF", WebkitTextFillColor: "#FFFFFF", opacity: 1, fontSize: "27px", lineHeight: 1.08, letterSpacing: "-0.035em", fontWeight: 950, textShadow: "0 2px 14px rgba(0,0,0,0.35)" }}>
+                  General Luna Port Board
+                </h2>
+                <p style={{ margin: "10px 0 0", color: "rgba(255,255,255,0.92)", WebkitTextFillColor: "rgba(255,255,255,0.92)", opacity: 1, fontSize: "14px", lineHeight: 1.55, fontWeight: 650 }}>
+                  Public-safe island-hopping board for General Luna departures.
+                </p>
+              </div>
+
+              <div style={{ marginTop: "18px", borderRadius: "18px", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.08)", padding: "14px" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", marginBottom: "12px" }}>
+                  <div style={{ color: "#F3AE26", fontSize: "10px", fontWeight: 900, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                    Board Status
+                  </div>
+                  <div style={{ color: "rgba(255,255,255,0.88)", fontSize: "12px", fontWeight: 850 }}>
+                    Ready
+                  </div>
+                </div>
+                <div style={{ display: "grid", gap: "10px" }}>
+                {[
+                  ["Board view", "Available"],
+                  ["Scope", "General Luna"],
+                  ["Display", "Public-safe"],
+                ].map(([label, value]) => (
+                  <div key={label} style={{ display: "flex", justifyContent: "space-between", gap: "12px", borderRadius: "16px", background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.18)", padding: "11px 12px" }}>
+                    <span style={{ color: "rgba(255,255,255,0.72)", fontSize: "12px", fontWeight: 760 }}>{label}</span>
+                    <span style={{ color: "#ffffff", fontSize: "13px", fontWeight: 850 }}>{value}</span>
+                  </div>
+                ))}
+                </div>
+              </div>
+
+              <div style={{ marginTop: "16px", display: "inline-flex", width: "fit-content", alignItems: "center", gap: "8px", borderRadius: "999px", background: "#F3AE26", color: "#013863", padding: "10px 13px", fontSize: "12px", fontWeight: 900, boxShadow: "0 10px 24px rgba(243,174,38,0.28)" }}>
+                Open Port Board -&gt;
+              </div>
+            </a>
+
+            <div style={spineStyle}>
+              <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 900, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                Departure Control Path
+              </div>
+              <h2 style={{ margin: "8px 0 0", color: "#013863", fontSize: "21px", lineHeight: 1.18, letterSpacing: "-0.03em", fontWeight: 850 }}>
+                Trip reference to movement record
+              </h2>
+
+              <div style={stepGridStyle}>
+                {truthSteps.map((item) => (
+                  <div key={item.step} style={stepStyle}>
+                    <div style={stepNumberStyle}>{item.step}</div>
+                    <div>
+                      <div style={{ color: "#013863", fontSize: "13.5px", fontWeight: 850 }}>{item.label}</div>
+                      <div style={{ marginTop: "2px", color: "#50668B", fontSize: "12px", lineHeight: 1.35 }}>{item.note}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section style={readinessShellStyle}>
+            <div style={readinessGroupStyle}>
+              <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 900, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                Boarding Readiness
+              </div>
+              <div style={readinessGridStyle}>
+                {boardingReadiness.map((item) => (
+                  <div key={item.label} style={cardStyle}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={statusDotStyle} />
+                      <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 850, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                        {item.status}
+                      </div>
+                    </div>
+                    <div style={{ marginTop: "8px", color: "#013863", fontSize: "14px", lineHeight: 1.25, fontWeight: 850 }}>
+                      {item.label}
+                    </div>
+                    <div style={{ marginTop: "4px", color: "#50668B", fontSize: "12px", lineHeight: 1.45 }}>
+                      {item.note}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div style={{ marginTop: 22, display: "flex", flexWrap: "wrap", gap: 12 }}>
-              <Link
-                href="/lgu/departure-control"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  minHeight: 46,
-                  borderRadius: 14,
-                  padding: "0 18px",
-                  background: "#ffffff",
-                  color: colors.dark,
-                  textDecoration: "none",
-                  fontSize: 14,
-                  fontWeight: 900,
-                  border: `1px solid ${colors.border}`,
-                }}
-              >
-                Open Departure Control Console
-              </Link>
-
-
-              <Link
-                href="/lgu/departure-control/general-luna"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  minHeight: 46,
-                  borderRadius: 14,
-                  padding: "0 18px",
-                  background: colors.green,
-                  color: colors.yellow,
-                  textDecoration: "none",
-                  fontSize: 14,
-                  fontWeight: 900,
-                  border: "1px solid rgba(16,58,51,0.18)",
-                }}
-              >
-                Open General Luna Port Board →
-              </Link>
-
-              <Link
-                href="/lgu?panel=manifests"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  minHeight: 46,
-                  borderRadius: 14,
-                  padding: "0 18px",
-                  background: "#ffffff",
-                  color: colors.dark,
-                  textDecoration: "none",
-                  fontSize: 14,
-                  fontWeight: 900,
-                  border: `1px solid ${colors.border}`,
-                }}
-              >
-                Review Manifest Submissions
-              </Link>
+            <div style={readinessGroupStyle}>
+              <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 900, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                LGU Review
+              </div>
+              <div style={readinessGridStyle}>
+                {lguReview.map((item) => (
+                  <div key={item.label} style={cardStyle}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={statusDotStyle} />
+                      <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 850, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                        {item.status}
+                      </div>
+                    </div>
+                    <div style={{ marginTop: "8px", color: "#013863", fontSize: "14px", lineHeight: 1.25, fontWeight: 850 }}>
+                      {item.label}
+                    </div>
+                    <div style={{ marginTop: "4px", color: "#50668B", fontSize: "12px", lineHeight: 1.45 }}>
+                      {item.note}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </PanelCard>
+          </section>
 
-          <PanelCard title="General Luna Operating Boundary">
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-                gap: 14,
-              }}
-            >
-              <StatCard
-                label="Visible to LGU"
-                value="Port operations"
-                note="Trip number, route, departure time, boarding status, manifest status, exception status, and port operating visibility."
-              />
-              <StatCard
-                label="Visibility Boundary"
-                value="Internal commercial controls"
-                note="Internal commercial controls, private payout logic, OTA ownership details, and internal configuration controls stay hidden."
-              />
-              <StatCard
-                label="Current mode"
-                value="Pilot operations view"
-                note="Production booking, voucher, assignment, boarding QR, and manifest events attach after LGU operating approval."
-              />
+          <section style={controlGridStyle}>
+            {controlLanes.map((item) => (
+              <a key={item.title} href={item.href} style={controlCardStyle}>
+                <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 850, letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                  {item.eyebrow}
+                </div>
+                <div style={{ marginTop: "9px", color: "#013863", fontSize: "18px", lineHeight: 1.22, fontWeight: 850, letterSpacing: "-0.025em" }}>
+                  {item.title}
+                </div>
+                <p style={{ margin: "9px 0 0", color: "#50668B", fontSize: "13.5px", lineHeight: 1.5 }}>
+                  {item.body}
+                </p>
+                <div style={ctaStyle}>{item.cta} -&gt;</div>
+              </a>
+            ))}
+          </section>
+
+          <section style={assuranceGridStyle}>
+            {assurancePanels.map((item) => (
+              <div key={item.title} style={{ border: "1px solid rgba(5, 150, 165, 0.18)", borderRadius: "24px", background: "#ffffff", padding: "18px", boxShadow: "0 16px 44px rgba(1, 56, 99, 0.075)" }}>
+                <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 850, letterSpacing: "0.16em", textTransform: "uppercase" }}>
+                  Operational Assurance
+                </div>
+                <h3 style={{ margin: "8px 0 0", color: "#013863", fontSize: "18px", lineHeight: 1.2, fontWeight: 850, letterSpacing: "-0.02em" }}>
+                  {item.title}
+                </h3>
+                <p style={{ margin: "9px 0 0", color: "#50668B", fontSize: "13.5px", lineHeight: 1.55 }}>
+                  {item.body}
+                </p>
+              </div>
+            ))}
+          </section>
+
+          <section style={{ border: "1px solid rgba(5, 150, 165, 0.18)", borderRadius: "24px", background: "#ffffff", padding: "20px 22px", boxShadow: "0 16px 44px rgba(1, 56, 99, 0.075)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "16px", alignItems: "flex-end", flexWrap: "wrap" }}>
+              <div>
+                <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 850, letterSpacing: "0.17em", textTransform: "uppercase" }}>
+                  Daily Departure Records
+                </div>
+                <h2 style={{ margin: "7px 0 0", color: "#013863", fontSize: "20px", lineHeight: 1.18, letterSpacing: "-0.028em", fontWeight: 850 }}>
+                  Records prepared for LGU departure review
+                </h2>
+              </div>
+              <div style={{ color: "#50668B", fontSize: "13px" }}>
+                Departure rows, manifest visibility, exception watch, receipt trail, and daily export.
+              </div>
             </div>
-          </PanelCard>
-        </>
+
+            <div style={recordsGridStyle}>
+              {departureRecords.map((item) => (
+                <div key={item} style={{ border: "1px solid rgba(5, 150, 165, 0.14)", borderRadius: "16px", background: "#f4fcfa", color: "#0B2442", padding: "11px 14px", fontSize: "13.5px", fontWeight: 760 }}>
+                  {item}
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
       );
     }
 
@@ -2016,82 +2410,9 @@ export default async function LguPage({
     }
 
     if (activePanel === "clearance") {
-      return (
-        <div style={{ display: "grid", gap: 18 }}>
-          <PanelCard title="Queue / Clearance">
-            <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
-              Official clearance command surface. Departure clearance is enforced by the backend only after
-              generated fee charges, PAID fee state, and ISSUED receipt state are confirmed.
-            </p>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-                gap: 16,
-                marginTop: 20,
-              }}
-            >
-              <IntelligenceMetricCard
-                label="Clearance Status"
-                value={exceptionRows.length > 0 ? "WATCH" : "CLEAR"}
-                note="Operational state based on visible fee-clearance exception pressure."
-                tone={exceptionRows.length > 0 ? "amber" : "green"}
-              />
-              <IntelligenceMetricCard
-                label="Blocked Cases"
-                value={safeCount(exceptionRows.length)}
-                note="Latest departure blocks caused by fee-clearance requirements."
-                tone={exceptionRows.length > 0 ? "red" : "green"}
-              />
-              <IntelligenceMetricCard
-                label="Overdue Signals"
-                value={safeCount(counts.overdueDepartedMovements ?? overdueRows.length)}
-                note="Departed movements without complete arrival or return trail."
-                tone={Number((counts.overdueDepartedMovements ?? overdueRows.length) || 0) > 0 ? "amber" : "green"}
-              />
-              <IntelligenceMetricCard
-                label="Fee Readiness"
-                value={String(counts.feeConfigurationStatus || "UNKNOWN")}
-                note="Fee configuration readiness used by the compliance spine."
-                tone={counts.feeConfigurationStatus === "READY" ? "green" : "amber"}
-              />
-            </div>
-          </PanelCard>
-
-          <PanelCard title="Clearance Enforcement Doctrine">
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 14 }}>
-              <RecordRow
-                title="1. Generated charge snapshots required"
-                meta="Departure clearance must not be evaluated from mutable fee configuration or preview-only records."
-              />
-              <RecordRow
-                title="2. Fee payment must be PAID"
-                meta="Unpaid generated charges remain uncleared even when fee programs are already approved."
-              />
-              <RecordRow
-                title="3. Receipt must be ISSUED"
-                meta="Paid charges alone are not formal clearance until receipt issuance exists."
-              />
-            </div>
-          </PanelCard>
-
-          <PanelCard title="Latest Clearance Exceptions">
-            {exceptionRows.length > 0 ? (
-              exceptionRows.slice(0, 5).map((row: any) => (
-                <RecordRow
-                  key={row.id}
-                  title={`${row.exceptionType} / ${row.resolutionStatus}`}
-                  meta={row.resolutionNotes || "No resolution notes captured."}
-                />
-              ))
-            ) : (
-              <EmptyState message="No fee-clearance blocked departures visible." />
-            )}
-          </PanelCard>
-        </div>
-      );
+      return <LguQueueClearancePanel />;
     }
+
 
     if (activePanel === "fee-exceptions") {
       return (

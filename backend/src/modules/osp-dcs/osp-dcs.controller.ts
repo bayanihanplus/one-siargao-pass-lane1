@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Post, Body } from '@nestjs/common';
 import { OspDcsService } from './osp-dcs.service';
 
 @Controller('osp-dcs')
@@ -37,6 +37,50 @@ export class OspDcsController {
   @Get('general-luna/board')
   getGeneralLunaBoard(@Query('departureDate') departureDate?: string) {
     return this.ospDcsService.getGeneralLunaBoardDbProjection({ departureDate });
+  }
+
+
+  @Post('general-luna/trips/:tripNumber/queue-clearance')
+  updateGeneralLunaQueueClearance(
+    @Param('tripNumber') tripNumber: string,
+    @Body() body: {
+      queueStatus?: string;
+      boardingWindowStatus?: string;
+      clearanceStatus?: string;
+      publicStatus?: string;
+      routeNote?: string;
+      actorRole?: string;
+    },
+  ) {
+    return this.ospDcsService.updateGeneralLunaQueueClearance({
+      tripNumber,
+      queueStatus: body?.queueStatus,
+      boardingWindowStatus: body?.boardingWindowStatus,
+      clearanceStatus: body?.clearanceStatus,
+      publicStatus: body?.publicStatus,
+      routeNote: body?.routeNote,
+      actorRole: body?.actorRole,
+    });
+  }
+
+
+  @Post('general-luna/daily-trips/generate')
+  generateGeneralLunaDailyTrips(
+    @Body() body: {
+      departureDate?: string;
+      dryRun?: boolean;
+      routeProductCodes?: string[];
+      departureSlots?: string[];
+      actorRole?: string;
+    },
+  ) {
+    return this.ospDcsService.generateGeneralLunaDailyTrips({
+      departureDate: body?.departureDate || '',
+      dryRun: body?.dryRun !== false,
+      routeProductCodes: body?.routeProductCodes,
+      departureSlots: body?.departureSlots,
+      actorRole: body?.actorRole,
+    });
   }
 
 }
