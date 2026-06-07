@@ -4833,3 +4833,415 @@ model SiteAccessQrDefinition {
   @@index([status])
   @@map("site_access_qr_definitions")
 }
+
+// DCS-01A reconciled Prisma schema bindings.
+// Existing DB migration: 20260528095246_dcs_01a_source_booking_intent_spine_additive_only.
+// No new DB migration should be generated for this block unless future additive changes are scoped.
+
+enum BookingSourceChannel {
+  OSP_DIRECT
+  SPM_SOURCED
+  OPERATOR_SOURCED
+  OTA_API
+  TRAVEL_TOURS_PARTNER
+  LGU_WALK_IN
+  PORT_WALK_IN
+  ACCOMMODATION_DIRECT
+  STAY_OPERATOR_ASSISTED
+  TOUR_OPERATOR_ASSISTED
+  BARANGAY_ASSISTED
+  ADMIN_CREATED
+  AFFILIATE_NETWORK
+}
+
+enum SourceSurfaceType {
+  PUBLIC_WEBSITE
+  TRAVELER_APP
+  TOUR_OPERATOR_DASHBOARD
+  STAY_OPERATOR_DASHBOARD
+  LGU_PORT_CONSOLE
+  OTA_API_INTAKE
+  TRAVEL_TOURS_PORTAL
+  BARANGAY_RECEIVING_DASHBOARD
+  ADMIN_CONSOLE
+  SYSTEM_JOB
+}
+
+enum SourceActorType {
+  TRAVELER
+  TOUR_OPERATOR
+  STAY_OPERATOR
+  LGU_PORT_STAFF
+  OTA_PARTNER
+  TRAVEL_TOURS_PARTNER
+  ACCOMMODATION_OPERATOR
+  BARANGAY_STAFF
+  ADMIN
+  SYSTEM
+}
+
+enum BookingIntentStatus {
+  DRAFT
+  SOURCE_RECEIVED
+  SEARCH_SELECTED
+  AUTH_REQUIRED
+  PASS_ATTACHED
+  PRICED
+  OPERATOR_CONFIRMATION_PENDING
+  LGU_COUNTER_PENDING
+  PAYMENT_READY
+  PAYMENT_PENDING
+  PAYMENT_SUCCEEDED
+  BOOKING_CREATED
+  FULFILLMENT_READY
+  EXPIRED
+  CANCELLED
+}
+
+enum BookingIntentProductType {
+  DCS_ISLAND_HOPPING
+  SPM_TRAIL_PACKAGE
+  SPM_DIY_NODE_SUPPORT
+  LAND_TOUR
+  SURF_LESSON
+  FOOD_WELLNESS_RESERVATION
+  ACCOMMODATION_STAY
+  SITE_ACCESS
+  TRANSPORT_SERVICE
+  RENTAL_SERVICE
+  BARANGAY_RECEIVING_VALIDATION
+  RETURN_TO_PORT_COMPLETION
+}
+
+enum DistributionChannelType {
+  OSP_DIRECT_CHANNEL
+  SPM_CHANNEL
+  OPERATOR_DIRECT_CHANNEL
+  OTA_CHANNEL
+  TRAVEL_TOURS_CHANNEL
+  LGU_PORT_COUNTER
+  ACCOMMODATION_DIRECT_CHANNEL
+  ADMIN_CHANNEL
+  AFFILIATE_CHANNEL
+}
+
+enum FulfillmentOwnerType {
+  DCS_APPROVED_TOUR_OPERATOR
+  SPM_APPROVED_TOUR_OPERATOR
+  ACCOMMODATION_OPERATOR
+  MERCHANT_PARTNER
+  GUIDE_PARTNER
+  TRANSPORT_OPERATOR
+  SITE_ACCESS_AUTHORITY
+  BARANGAY_RECEIVING_POINT
+  SYSTEM
+}
+
+enum FulfillmentDashboardOwnerType {
+  TRAVELER_APP
+  TOUR_OPERATOR_DASHBOARD
+  STAY_OPERATOR_DASHBOARD
+  LGU_PORT_CONSOLE
+  OTA_PARTNER_PORTAL
+  TRAVEL_TOURS_PORTAL
+  BARANGAY_RECEIVING_DASHBOARD
+  ADMIN_CONSOLE
+  SYSTEM
+}
+
+enum PaymentOwnershipMode {
+  OSP_COLLECTED
+  SOURCE_PARTNER_COLLECTED
+  OPERATOR_COLLECTED
+  LGU_COUNTER_RECORDED
+  NO_PAYMENT_REQUIRED
+}
+
+enum PaymentCollectorType {
+  OSP
+  OTA_PARTNER
+  TRAVEL_TOURS_PARTNER
+  TOUR_OPERATOR
+  STAY_OPERATOR
+  LGU_COUNTER
+  NONE
+}
+
+enum SettlementMode {
+  OSP_SETTLEMENT
+  EXTERNAL_SETTLEMENT
+  HYBRID_SETTLEMENT
+  STATEMENT_ONLY
+  NO_SETTLEMENT_REQUIRED
+}
+
+enum OperatorPayoutResponsibility {
+  OSP_PAYOUT
+  OTA_PAYOUT
+  TRAVEL_TOURS_PAYOUT
+  OPERATOR_DIRECT_COLLECTION
+  NO_PAYOUT_REQUIRED
+}
+
+enum QrIssuerType {
+  OSP
+}
+
+model SourcePartner {
+  id                  String               @id
+  partnerCode         String               @unique
+  displayName         String
+  sourceChannel       BookingSourceChannel
+  sourceActorType     SourceActorType
+  status              String               @default("ACTIVE")
+  contactEmail        String?
+  contactPhone        String?
+  externalSystemName  String?
+  metadataJson        Json?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime
+  distributionRecords DistributionRecord[]
+  sourceAttributions  SourceAttribution[]
+
+  @@index([sourceActorType])
+  @@index([sourceChannel])
+  @@index([status])
+  @@map("source_partners")
+}
+
+model SourceAttribution {
+  id                           String                       @id
+  sourceChannel                BookingSourceChannel
+  sourceActorType              SourceActorType
+  sourceActorId                String?
+  sourcePartnerId              String?
+  sourceSurface                SourceSurfaceType
+  externalReference            String?
+  distributionChannel          DistributionChannelType?
+  paymentOwnershipMode         PaymentOwnershipMode         @default(OSP_COLLECTED)
+  paymentCollectorType         PaymentCollectorType         @default(OSP)
+  qrIssuerType                 QrIssuerType                 @default(OSP)
+  fulfillmentOwnerType         FulfillmentOwnerType?
+  fulfillmentOwnerId           String?
+  settlementMode               SettlementMode               @default(OSP_SETTLEMENT)
+  operatorPayoutResponsibility OperatorPayoutResponsibility @default(OSP_PAYOUT)
+  metadataJson                 Json?
+  createdAt                    DateTime                     @default(now())
+  updatedAt                    DateTime
+  bookingIntents               BookingIntent[]
+  distributionRecords          DistributionRecord[]
+  fulfillmentRequests          FulfillmentRequest[]
+  sourcePartner                SourcePartner?               @relation(fields: [sourcePartnerId], references: [id])
+
+  @@index([externalReference])
+  @@index([fulfillmentOwnerId])
+  @@index([fulfillmentOwnerType])
+  @@index([paymentCollectorType])
+  @@index([paymentOwnershipMode])
+  @@index([sourceActorId])
+  @@index([sourceActorType])
+  @@index([sourceChannel])
+  @@index([sourcePartnerId])
+  @@index([sourceSurface])
+  @@map("source_attributions")
+}
+
+model BookingIntent {
+  id                           String                   @id
+  intentReference              String                   @unique
+  sourceAttributionId          String?
+  sourceChannel                BookingSourceChannel
+  sourceSurface                SourceSurfaceType
+  travelerUserId               String?
+  assistedTravelerName         String?
+  assistedTravelerContact      String?
+  ospPassId                    String?
+  status                       BookingIntentStatus      @default(DRAFT)
+  productType                  BookingIntentProductType
+  selectedDate                 DateTime?
+  selectedTime                 String?
+  paxRegularCount              Int                      @default(0)
+  paxSeniorCount               Int                      @default(0)
+  paxChildCount                Int                      @default(0)
+  paxTotalCount                Int                      @default(0)
+  currencyCode                 String                   @default("PHP")
+  authRequired                 Boolean                  @default(true)
+  passRequired                 Boolean                  @default(true)
+  paymentRequired              Boolean                  @default(false)
+  operatorConfirmationRequired Boolean                  @default(false)
+  fulfillmentRequired          Boolean                  @default(false)
+  pricingSnapshotReference     String?
+  paymentIntentReference       String?
+  productBookingReference      String?
+  expiresAt                    DateTime?
+  metadataJson                 Json?
+  createdAt                    DateTime                 @default(now())
+  updatedAt                    DateTime
+  bookingIntentItems           BookingIntentItem[]
+  sourceAttribution            SourceAttribution?       @relation(fields: [sourceAttributionId], references: [id])
+  distributionRecords          DistributionRecord[]
+  fulfillmentRequests          FulfillmentRequest[]
+
+  @@index([expiresAt])
+  @@index([ospPassId])
+  @@index([productType])
+  @@index([selectedDate])
+  @@index([sourceAttributionId])
+  @@index([sourceChannel])
+  @@index([sourceSurface])
+  @@index([status])
+  @@index([travelerUserId])
+  @@map("booking_intents")
+}
+
+model BookingIntentItem {
+  id                  String                   @id
+  bookingIntentId     String
+  productType         BookingIntentProductType
+  productId           String?
+  routeProductCode    String?
+  scheduledTripId     String?
+  trailPackageId      String?
+  trailNodeId         String?
+  accommodationId     String?
+  siteAccessPointId   String?
+  barangayStopId      String?
+  quantity            Int                      @default(1)
+  paxRegularCount     Int                      @default(0)
+  paxSeniorCount      Int                      @default(0)
+  paxChildCount       Int                      @default(0)
+  paxTotalCount       Int                      @default(0)
+  metadataJson        Json?
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime
+  bookingIntent       BookingIntent            @relation(fields: [bookingIntentId], references: [id], onDelete: Cascade)
+  fulfillmentRequests FulfillmentRequest[]
+
+  @@index([accommodationId])
+  @@index([barangayStopId])
+  @@index([bookingIntentId])
+  @@index([productId])
+  @@index([productType])
+  @@index([routeProductCode])
+  @@index([scheduledTripId])
+  @@index([siteAccessPointId])
+  @@index([trailNodeId])
+  @@index([trailPackageId])
+  @@map("booking_intent_items")
+}
+
+model DistributionRecord {
+  id                           String                       @id
+  sourceAttributionId          String?
+  sourcePartnerId              String?
+  bookingIntentId              String?
+  bookingId                    String?
+  bookingItemId                String?
+  sourceChannel                BookingSourceChannel
+  distributionChannel          DistributionChannelType
+  externalReference            String?
+  commercialOwnerType          SourceActorType?
+  commercialOwnerId            String?
+  fulfillmentOwnerType         FulfillmentOwnerType?
+  fulfillmentOwnerId           String?
+  paymentOwnershipMode         PaymentOwnershipMode         @default(OSP_COLLECTED)
+  paymentCollectorType         PaymentCollectorType         @default(OSP)
+  settlementMode               SettlementMode               @default(OSP_SETTLEMENT)
+  operatorPayoutResponsibility OperatorPayoutResponsibility @default(OSP_PAYOUT)
+  status                       String                       @default("ACTIVE")
+  metadataJson                 Json?
+  createdAt                    DateTime                     @default(now())
+  updatedAt                    DateTime
+  bookingIntent                BookingIntent?               @relation(fields: [bookingIntentId], references: [id])
+  sourceAttribution            SourceAttribution?           @relation(fields: [sourceAttributionId], references: [id])
+  sourcePartner                SourcePartner?               @relation(fields: [sourcePartnerId], references: [id])
+
+  @@index([bookingId])
+  @@index([bookingIntentId])
+  @@index([bookingItemId])
+  @@index([commercialOwnerId])
+  @@index([commercialOwnerType])
+  @@index([distributionChannel])
+  @@index([externalReference])
+  @@index([fulfillmentOwnerId])
+  @@index([fulfillmentOwnerType])
+  @@index([sourceAttributionId])
+  @@index([sourceChannel])
+  @@index([sourcePartnerId])
+  @@index([status])
+  @@map("distribution_records")
+}
+
+model FulfillmentRequest {
+  id                           String                        @id
+  fulfillmentReference         String                        @unique
+  bookingIntentId              String?
+  bookingIntentItemId          String?
+  bookingId                    String?
+  bookingItemId                String?
+  sourceAttributionId          String?
+  sourceChannel                BookingSourceChannel
+  fulfillmentType              BookingIntentProductType
+  fulfillmentOwnerType         FulfillmentOwnerType
+  fulfillmentOwnerId           String?
+  dashboardOwnerType           FulfillmentDashboardOwnerType
+  dashboardOwnerId             String?
+  routeProductCode             String?
+  scheduledTripId              String?
+  trailPackageId               String?
+  trailNodeId                  String?
+  accommodationId              String?
+  siteAccessPointId            String?
+  barangayStopId               String?
+  requiresOperatorConfirmation Boolean                       @default(false)
+  requiresVesselAssignment     Boolean                       @default(false)
+  requiresGuideConfirmation    Boolean                       @default(false)
+  requiresBoardingQr           Boolean                       @default(false)
+  requiresManifest             Boolean                       @default(false)
+  requiresIngressScan          Boolean                       @default(false)
+  requiresEgressScan           Boolean                       @default(false)
+  requiresStampValidation      Boolean                       @default(false)
+  requiresCheckIn              Boolean                       @default(false)
+  requiresCheckOut             Boolean                       @default(false)
+  requiresPaymentBeforeConfirm Boolean                       @default(false)
+  paymentOwnershipMode         PaymentOwnershipMode          @default(OSP_COLLECTED)
+  paymentCollectorType         PaymentCollectorType          @default(OSP)
+  settlementMode               SettlementMode                @default(OSP_SETTLEMENT)
+  operatorPayoutResponsibility OperatorPayoutResponsibility  @default(OSP_PAYOUT)
+  status                       String                        @default("REQUESTED")
+  slaCategory                  String?
+  slaExpiresAt                 DateTime?
+  ownerViewedAt                DateTime?
+  acceptedAt                   DateTime?
+  confirmedAt                  DateTime?
+  declinedAt                   DateTime?
+  completedAt                  DateTime?
+  reassignmentRequired         Boolean                       @default(false)
+  metadataJson                 Json?
+  createdAt                    DateTime                      @default(now())
+  updatedAt                    DateTime
+  bookingIntent                BookingIntent?                @relation(fields: [bookingIntentId], references: [id])
+  bookingIntentItem            BookingIntentItem?            @relation(fields: [bookingIntentItemId], references: [id])
+  sourceAttribution            SourceAttribution?            @relation(fields: [sourceAttributionId], references: [id])
+
+  @@index([accommodationId])
+  @@index([barangayStopId])
+  @@index([bookingId])
+  @@index([bookingIntentId])
+  @@index([bookingIntentItemId])
+  @@index([dashboardOwnerId])
+  @@index([dashboardOwnerType])
+  @@index([fulfillmentOwnerId])
+  @@index([fulfillmentOwnerType])
+  @@index([fulfillmentType])
+  @@index([routeProductCode])
+  @@index([scheduledTripId])
+  @@index([siteAccessPointId])
+  @@index([slaExpiresAt])
+  @@index([sourceAttributionId])
+  @@index([sourceChannel])
+  @@index([status])
+  @@index([trailNodeId])
+  @@index([trailPackageId])
+  @@map("fulfillment_requests")
+}
