@@ -360,6 +360,7 @@ function EmptyState(props: { message: string }) {
 }
 
 export default async function LguPage({
+
   searchParams,
 }: {
   searchParams?: { panel?: string; action?: string; status?: string; manifestRequestId?: string; print?: string };
