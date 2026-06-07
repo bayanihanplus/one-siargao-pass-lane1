@@ -266,10 +266,11 @@ function getPanel(searchParams?: { [key: string]: string | string[] | undefined 
   const value = Array.isArray(raw) ? raw[0] : raw;
 
   if (value === "profile") return "profile";
+  if (value === "language") return "language";
   if (value === "currency") return "currency";
   if (value === "assistant") return "assistant";
   if (value === "notifications") return "notifications";
-  return "language";
+  return "profile";
 }
 
 function getSingleSearchParam(
@@ -2043,7 +2044,76 @@ export default async function TravelerSettingsPage({
         boxSizing: "border-box",
       }}
     >
-      <div style={{ marginBottom: 16 }}>
+      <style>{`
+          .travelerProfileSubmitButton {
+            position: relative;
+            z-index: 20;
+            min-height: 52px;
+            border: 0;
+            border-radius: 18px;
+            padding: 13px 16px;
+            background: linear-gradient(135deg, #013863, #0596A5);
+            color: #ffffff;
+            -webkit-text-fill-color: #ffffff;
+            font-weight: 950;
+            cursor: pointer;
+            pointer-events: auto;
+            box-shadow: 0 14px 30px rgba(1,56,99,0.18);
+            transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+            touch-action: manipulation;
+          }
+
+          .travelerProfileSubmitButton:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.04);
+            box-shadow: 0 18px 38px rgba(1,56,99,0.24);
+          }
+
+          .travelerProfileSubmitButton:active {
+            transform: translateY(1px) scale(0.99);
+            filter: brightness(0.98);
+            box-shadow: 0 10px 22px rgba(1,56,99,0.18);
+          }
+
+          .travelerProfileSubmitButton:focus-visible {
+            outline: 3px solid rgba(243,174,38,0.72);
+            outline-offset: 3px;
+          }
+
+          .travelerProfileSavedInline {
+            min-height: 46px;
+            border-radius: 18px;
+            border: 1px solid rgba(5,150,165,0.26);
+            background: linear-gradient(135deg, rgba(234,251,250,0.98), rgba(255,255,255,0.98));
+            color: #013863;
+            -webkit-text-fill-color: #013863;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 13px;
+            font-size: 12.5px;
+            line-height: 1.25;
+            font-weight: 900;
+            box-shadow: 0 10px 24px rgba(1,56,99,0.08);
+          }
+
+          .travelerProfileSavedInlineIcon {
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            background: #0596A5;
+            color: #ffffff;
+            -webkit-text-fill-color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            font-size: 13px;
+            font-weight: 950;
+          }
+        `}</style>
+
+        <div style={{ marginBottom: 16 }}>
         <a
           href="/traveler/home"
           style={{
@@ -2414,18 +2484,17 @@ export default async function TravelerSettingsPage({
                 />
               </label>
 
+              {saved ? (
+                <div className="travelerProfileSavedInline" role="status" aria-live="polite">
+                  <span className="travelerProfileSavedInlineIcon" aria-hidden="true">✓</span>
+                  <span>Profile saved. Your OSP Pass identity details are now updated.</span>
+                </div>
+              ) : null}
+
               <button
                 type="submit"
-                style={{
-                  border: 0,
-                  borderRadius: 18,
-                  padding: "13px 16px",
-                  background: "linear-gradient(135deg, #013863, #0596A5)",
-                  color: "#ffffff",
-                  fontWeight: 900,
-                  cursor: "pointer",
-                  boxShadow: "0 14px 30px rgba(1,56,99,0.18)",
-                }}
+                className="travelerProfileSubmitButton"
+                aria-label="Save traveler profile"
               >
                 Save traveler profile
               </button>
