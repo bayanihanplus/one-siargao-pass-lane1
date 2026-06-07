@@ -552,218 +552,321 @@ export default async function LguPage({
 
   function renderPanel() {
     if (activePanel === "overview") {
+      const overviewReadiness = [
+        { label: "Tourism Intelligence", status: "Active", note: "Visitor demand" },
+        { label: "Departure Board", status: "Ready", note: "GL board access" },
+        { label: "Fee Visibility", status: "Available", note: "Exception review" },
+        { label: "Receipts", status: "Current rows", note: "Payment visibility" },
+        { label: "Queue / Clearance", status: "Configured", note: "Coordination ready" },
+        { label: "Reports", status: "Export-ready", note: "LGU outputs" },
+      ];
+
+      const trustLayers = [
+        { label: "Observe", value: "Tourism + demand signals" },
+        { label: "Coordinate", value: "Port, queue, and clearance" },
+        { label: "Review", value: "Fees, receipts, and reports" },
+        { label: "Protect", value: "Sensitive data kept out of public views" },
+      ];
+
+      const overviewModules = [
+        {
+          title: "Tourism Intelligence",
+          href: "/lgu?panel=intelligence",
+          eyebrow: "Visitor + demand view",
+          body: "Visitor flow, accommodation load, demand sources, and fee visibility for LGU review.",
+          cta: "Open Intelligence",
+        },
+        {
+          title: "Departure Control",
+          href: "/lgu?panel=departure-control",
+          eyebrow: "Port coordination",
+          body: "General Luna departure visibility, manifest readiness, route pressure, and coordination signals.",
+          cta: "Open Departure Control",
+        },
+        {
+          title: "General Luna Port Board",
+          href: "/lgu/departure-control/general-luna/board",
+          eyebrow: "Board view",
+          body: "Public-facing board route for General Luna island-hopping departure presentation.",
+          cta: "Open Port Board",
+        },
+        {
+          title: "Fee / Receipt Visibility",
+          href: "/lgu?panel=fee-exceptions",
+          eyebrow: "Payment review",
+          body: "Fee exceptions, receipt rows, and payment visibility prepared for LGU review workflows.",
+          cta: "Review Signals",
+        },
+        {
+          title: "Queue / Clearance",
+          href: "/lgu?panel=clearance",
+          eyebrow: "Readiness layer",
+          body: "Queue coordination and clearance readiness without exposing sensitive operator or traveler data.",
+          cta: "Review Readiness",
+        },
+        {
+          title: "Reports / Notifications",
+          href: "/lgu?panel=reports",
+          eyebrow: "Review outputs",
+          body: "Reports, exports, alerts, and LGU-ready review outputs for planning and coordination.",
+          cta: "Open Reports View",
+        },
+      ];
+
+      const useCases = [
+        "Tourism counting",
+        "Capacity planning",
+        "Port coordination",
+        "Fee / receipt review",
+        "Policy reporting",
+        "Surge readiness",
+      ];
+
+      const shellStyle = {
+        display: "grid",
+        gap: "18px",
+      };
+
+      const heroStyle = {
+        border: "1px solid rgba(5, 150, 165, 0.18)",
+        borderRadius: "28px",
+        background: "linear-gradient(135deg, #ffffff 0%, #f7fefc 48%, #eafbfa 100%)",
+        padding: "22px 24px",
+        boxShadow: "0 22px 60px rgba(1, 56, 99, 0.10)",
+      };
+
+      const heroGridStyle = {
+        display: "grid",
+        gridTemplateColumns: "minmax(0, 1fr) minmax(250px, 310px)",
+        gap: "20px",
+        alignItems: "stretch",
+      };
+
+      const pillStyle = {
+        display: "inline-flex",
+        width: "fit-content",
+        border: "1px solid rgba(5, 150, 165, 0.26)",
+        borderRadius: "999px",
+        background: "#eafbfa",
+        color: "#047886",
+        padding: "6px 11px",
+        fontSize: "10px",
+        fontWeight: 850,
+        letterSpacing: "0.17em",
+        textTransform: "uppercase" as const,
+      };
+
+      const trustGridStyle = {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+        gap: "10px",
+        marginTop: "16px",
+      };
+
+      const trustCardStyle = {
+        border: "1px solid rgba(5, 150, 165, 0.12)",
+        borderRadius: "18px",
+        background: "rgba(255, 255, 255, 0.86)",
+        padding: "12px 13px",
+        boxShadow: "0 10px 28px rgba(1, 56, 99, 0.05)",
+      };
+
+      const statusPanelStyle = {
+        border: "1px solid rgba(255, 255, 255, 0.95)",
+        borderRadius: "24px",
+        background: "rgba(255, 255, 255, 0.92)",
+        padding: "16px",
+        boxShadow: "0 12px 30px rgba(1, 56, 99, 0.07)",
+      };
+
+      const statusRowStyle = {
+        display: "flex",
+        justifyContent: "space-between",
+        gap: "12px",
+        borderRadius: "16px",
+        background: "#f4fcfa",
+        padding: "10px 12px",
+      };
+
+      const readinessGridStyle = {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+        gap: "10px",
+      };
+
+      const cardStyle = {
+        position: "relative" as const,
+        border: "1px solid rgba(5, 150, 165, 0.18)",
+        borderRadius: "20px",
+        background: "#ffffff",
+        padding: "14px 14px 13px",
+        boxShadow: "0 12px 32px rgba(1, 56, 99, 0.065)",
+        overflow: "hidden",
+      };
+
+      const statusDotStyle = {
+        width: "8px",
+        height: "8px",
+        borderRadius: "999px",
+        background: "#F3AE26",
+        boxShadow: "0 0 0 4px rgba(243, 174, 38, 0.14)",
+        flex: "0 0 auto",
+      };
+
+      const moduleGridStyle = {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(285px, 1fr))",
+        gap: "14px",
+      };
+
+      const moduleCardStyle = {
+        display: "grid",
+        gridTemplateRows: "auto auto minmax(54px, 1fr) auto",
+        minHeight: "178px",
+        border: "1px solid rgba(5, 150, 165, 0.18)",
+        borderRadius: "24px",
+        background: "#ffffff",
+        padding: "18px",
+        boxShadow: "0 16px 44px rgba(1, 56, 99, 0.075)",
+        textDecoration: "none",
+        color: "inherit",
+      };
+
+      const ctaStyle = {
+        display: "inline-flex",
+        alignItems: "center",
+        width: "fit-content",
+        gap: "8px",
+        border: "1px solid rgba(243, 174, 38, 0.35)",
+        borderRadius: "999px",
+        background: "linear-gradient(135deg, rgba(255, 211, 107, 0.38), rgba(243, 174, 38, 0.18))",
+        color: "#7A4D00",
+        padding: "8px 11px",
+        fontSize: "12px",
+        fontWeight: 850,
+        textDecoration: "none",
+      };
+
+      const useCaseGridStyle = {
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+        gap: "10px",
+        marginTop: "16px",
+      };
+
       return (
-        <div style={{ display: "grid", gap: 22 }}>
-          <div
-            style={{
-              border: `1px solid ${colors.border}`,
-              borderRadius: 28,
-              background:
-                "linear-gradient(135deg, #ffffff 0%, #f8fafc 52%, #ecfdf5 100%)",
-              padding: 30,
-              boxShadow: "0 1px 2px rgba(15,23,42,0.06)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                gap: 20,
-                alignItems: "flex-start",
-              }}
-            >
+        <div style={shellStyle}>
+          <section style={heroStyle}>
+            <div style={heroGridStyle}>
               <div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: "#065f46",
-                    fontWeight: 950,
-                  }}
-                >
-                  One Siargao Pass / LGU Command View
+                <div style={pillStyle}>LGU Command Layer</div>
+
+                <div style={{ marginTop: "14px", maxWidth: "850px" }}>
+                  <h1 style={{ margin: 0, color: "#013863", fontSize: "34px", lineHeight: 1.06, letterSpacing: "-0.038em", fontWeight: 760 }}>
+                    General Luna LGU Command Overview
+                  </h1>
+                  <p style={{ margin: "10px 0 0", maxWidth: "760px", color: "#50668B", fontSize: "14px", lineHeight: 1.6 }}>
+                    Tourism intelligence, departure visibility, fee signals, queue readiness, and reporting in one LGU/DOT command layer.
+                  </p>
                 </div>
-                <h1
-                  style={{
-                    marginTop: 12,
-                    marginBottom: 0,
-                    maxWidth: 860,
-                    fontSize: 40,
-                    lineHeight: 1.08,
-                    color: colors.dark,
-                  }}
-                >
-                  LGU Compliance & Intelligence Overview
-                </h1>
-                <p
-                  style={{
-                    marginTop: 14,
-                    maxWidth: 860,
-                    lineHeight: 1.7,
-                    color: "#475569",
-                    fontSize: 16,
-                  }}
-                >
-                  Official operational command layer for inter-island manifest intake,
-                  fee-clearance readiness, compliance exceptions, receipt visibility, and
-                  DOT/LGU movement intelligence.
+
+                <div style={trustGridStyle}>
+                  {trustLayers.map((item) => (
+                    <div key={item.label} style={trustCardStyle}>
+                      <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 850, letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                        {item.label}
+                      </div>
+                      <div style={{ marginTop: "4px", color: "#0B2442", fontSize: "13px", lineHeight: 1.35, fontWeight: 760 }}>
+                        {item.value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <aside style={statusPanelStyle}>
+                <div style={{ color: "#50668B", fontSize: "10px", fontWeight: 850, letterSpacing: "0.17em", textTransform: "uppercase" }}>
+                  Command Status
+                </div>
+                <div style={{ display: "grid", gap: "9px", marginTop: "13px" }}>
+                  <div style={statusRowStyle}>
+                    <span style={{ color: "#50668B", fontSize: "12px", fontWeight: 650 }}>Console</span>
+                    <span style={{ color: "#013863", fontSize: "13px", fontWeight: 850 }}>LGU Command</span>
+                  </div>
+                  <div style={statusRowStyle}>
+                    <span style={{ color: "#50668B", fontSize: "12px", fontWeight: 650 }}>Area</span>
+                    <span style={{ color: "#013863", fontSize: "13px", fontWeight: 850 }}>General Luna</span>
+                  </div>
+                  <div style={{ borderRadius: "16px", background: "#f4fcfa", padding: "10px 12px" }}>
+                    <span style={{ color: "#50668B", fontSize: "12px", fontWeight: 650 }}>Focus</span>
+                    <div style={{ marginTop: "3px", color: "#013863", fontSize: "13px", lineHeight: 1.35, fontWeight: 850 }}>
+                      Tourism + Departure Coordination
+                    </div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section style={readinessGridStyle}>
+            {overviewReadiness.map((item) => (
+              <div key={item.label} style={cardStyle}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <span style={statusDotStyle} />
+                  <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 850, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                    {item.status}
+                  </div>
+                </div>
+                <div style={{ marginTop: "8px", color: "#013863", fontSize: "14px", lineHeight: 1.25, fontWeight: 850 }}>
+                  {item.label}
+                </div>
+                <div style={{ marginTop: "4px", color: "#50668B", fontSize: "12px", lineHeight: 1.45 }}>
+                  {item.note}
+                </div>
+              </div>
+            ))}
+          </section>
+
+          <section style={moduleGridStyle}>
+            {overviewModules.map((item) => (
+              <a key={item.title} href={item.href} style={moduleCardStyle}>
+                <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 850, letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                  {item.eyebrow}
+                </div>
+                <div style={{ marginTop: "9px", color: "#013863", fontSize: "18px", lineHeight: 1.22, fontWeight: 850, letterSpacing: "-0.025em" }}>
+                  {item.title}
+                </div>
+                <p style={{ margin: "9px 0 0", color: "#50668B", fontSize: "13.5px", lineHeight: 1.58 }}>
+                  {item.body}
                 </p>
-              </div>
+                <div style={ctaStyle}>{item.cta} -&gt;</div>
+              </a>
+            ))}
+          </section>
 
-              <div
-                style={{
-                  minWidth: 180,
-                  borderRadius: 18,
-                  background: "#103a33",
-                  color: "#ffffff",
-                  padding: 16,
-                  textAlign: "center",
-                  border: "1px solid #3fbf9f",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 11,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    color: "#f4d35e",
-                    fontWeight: 950,
-                  }}
-                >
-                  Access Mode
+          <section style={{ border: "1px solid rgba(5, 150, 165, 0.18)", borderRadius: "24px", background: "#ffffff", padding: "20px 22px", boxShadow: "0 16px 44px rgba(1, 56, 99, 0.075)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "16px", alignItems: "flex-end", flexWrap: "wrap" }}>
+              <div>
+                <div style={{ color: "#0596A5", fontSize: "10px", fontWeight: 850, letterSpacing: "0.17em", textTransform: "uppercase" }}>
+                  LGU Use Cases
                 </div>
-                <div style={{ marginTop: 8, fontSize: 22, fontWeight: 950 }}>Official</div>
-                <div style={{ marginTop: 6, fontSize: 12, color: "#dbe4ef" }}>{role}</div>
+                <h2 style={{ margin: "7px 0 0", color: "#013863", fontSize: "20px", lineHeight: 1.18, letterSpacing: "-0.028em", fontWeight: 850 }}>
+                  Practical review lanes for SB/LGU coordination
+                </h2>
+              </div>
+              <div style={{ color: "#50668B", fontSize: "13px" }}>
+                Built for planning, review, and destination coordination.
               </div>
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-                gap: 16,
-                marginTop: 26,
-              }}
-            >
-              <IntelligenceMetricCard
-                label="Movement Intelligence"
-                value={safeCount(counts.totalMovements)}
-                note="Tracked inter-island movements under the compliance spine."
-                tone="blue"
-              />
-              <IntelligenceMetricCard
-                label="Open Exceptions"
-                value={safeCount(counts.openComplianceExceptions)}
-                note="Compliance exceptions still requiring operational attention."
-                tone={Number(counts.openComplianceExceptions || 0) > 0 ? "red" : "green"}
-              />
-              <IntelligenceMetricCard
-                label="Fee Readiness"
-                value={String(counts.feeConfigurationStatus || "UNKNOWN")}
-                note="LGU/barangay/environmental fee configuration readiness."
-                tone={counts.feeConfigurationStatus === "READY" ? "green" : "amber"}
-              />
-              <IntelligenceMetricCard
-                label="Receipts Issued"
-                value={safeCount(receiptRows.length)}
-                note="Latest issued fee receipts visible to LGU read layer."
-                tone="green"
-              />
+            <div style={useCaseGridStyle}>
+              {useCases.map((item) => (
+                <div key={item} style={{ border: "1px solid rgba(5, 150, 165, 0.14)", borderRadius: "16px", background: "#f4fcfa", color: "#0B2442", padding: "11px 14px", fontSize: "13.5px", fontWeight: 760 }}>
+                  {item}
+                </div>
+              ))}
             </div>
-          </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1.35fr 1fr",
-              gap: 18,
-            }}
-          >
-            <PanelCard title="Priority Operating Signals">
-              <div style={{ display: "grid", gap: 12 }}>
-                <RecordRow
-                  title="Fee-clearance blocked cases"
-                  meta={`${safeCount(exceptionRows.length)} latest blocked departure case(s) visible in the exception read layer.`}
-                />
-                <RecordRow
-                  title="Overdue movement signals"
-                  meta={`${safeCount(counts.overdueDepartedMovements ?? overdueRows.length)} departed movement signal(s) without complete arrival/return trail.`}
-                />
-                <RecordRow
-                  title="Payment audit visibility"
-                  meta={`${safeCount(paymentAuditRows.length)} latest manual fee payment audit row(s) visible. Recording remains ADMIN-only.`}
-                />
-              </div>
-            </PanelCard>
-
-            <PanelCard title="LGU Quick Actions">
-              <div style={{ display: "grid", gap: 12 }}>
-                <Link
-                  href="/lgu?panel=intelligence"
-                  scroll={false}
-                  style={{
-                    borderRadius: 14,
-                    padding: "14px 16px",
-                    background: "#103a33",
-                    color: "#f4d35e",
-                    textDecoration: "none",
-                    fontWeight: 950,
-                    display: "block",
-                  }}
-                >
-                  Open Intelligence Layer
-                </Link>
-                <Link
-                  href="/lgu?panel=manifests"
-                  scroll={false}
-                  style={{
-                    borderRadius: 14,
-                    padding: "14px 16px",
-                    background: "#eff6ff",
-                    color: "#075985",
-                    textDecoration: "none",
-                    fontWeight: 950,
-                    display: "block",
-                    border: "1px solid #bfdbfe",
-                  }}
-                >
-                  Review Manifest Submissions
-                </Link>
-                <Link
-                  href="/lgu?panel=fee-exceptions"
-                  scroll={false}
-                  style={{
-                    borderRadius: 14,
-                    padding: "14px 16px",
-                    background: "#fef2f2",
-                    color: "#991b1b",
-                    textDecoration: "none",
-                    fontWeight: 950,
-                    display: "block",
-                    border: "1px solid #fecaca",
-                  }}
-                >
-                  Watch Fee-Clearance Exceptions
-                </Link>
-              </div>
-            </PanelCard>
-          </div>
-
-          <PanelCard title="Current Session Guardrail">
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-                gap: 16,
-              }}
-            >
-              <StatCard label="User" value={fullName} />
-              <StatCard label="Email" value={email} />
-              <StatCard label="Role" value={role} />
-              <StatCard label="Status" value={status} />
-            </div>
-          </PanelCard>
+          </section>
         </div>
       );
     }
