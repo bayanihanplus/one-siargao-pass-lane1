@@ -61,7 +61,18 @@ export default function GeneralLunaDepartureControlOverview() {
             <p style={{ margin: 0, color: "#F3AE26", fontSize: 12, fontWeight: 950, letterSpacing: "0.16em", textTransform: "uppercase" }}>
               General Luna Port · LGU / DOT Governance Layer
             </p>
-            <h1 style={{ margin: "10px 0 0", fontSize: 58, lineHeight: 0.9, letterSpacing: "-0.078em", fontWeight: 950 }}>
+            <h1
+              style={{
+                margin: "10px 0 0",
+                color: "#FFFFFF",
+                WebkitTextFillColor: "#FFFFFF",
+                textShadow: "0 18px 42px rgba(0,0,0,0.26)",
+                fontSize: 58,
+                lineHeight: 0.9,
+                letterSpacing: "-0.078em",
+                fontWeight: 950,
+              }}
+            >
               World-class Island Hopping Boarding
             </h1>
             <p style={{ margin: "14px 0 0", maxWidth: 790, color: "rgba(255,255,255,0.91)", fontSize: 17, lineHeight: 1.42, fontWeight: 800 }}>
