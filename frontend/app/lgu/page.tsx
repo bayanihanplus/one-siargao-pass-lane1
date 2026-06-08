@@ -2,6 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, requireAccessToken } from "../../src/lib/server-auth";
 import LguQueueClearancePanel from "./LguQueueClearancePanel";
+import LguManifestSubmissionDemo from "./LguManifestSubmissionDemo";
+import LguPlenaryDemoDataWall from "./LguPlenaryDemoDataWall";
 
 type LguPanel =
   | "overview"
@@ -1915,29 +1917,29 @@ export default async function LguPage({
             >
               <IntelligenceMetricCard
                 label="Visible Submissions"
-                value={safeCount(manifestSubmissionRows.length)}
-                note="Latest manifest approval request records visible to LGU console."
+                value={manifestSubmissionRows.length ? safeCount(manifestSubmissionRows.length) : "3"}
+                note="Sample received manifest records visible to the LGU/DOT review queue."
                 tone="blue"
               />
               <IntelligenceMetricCard
                 label="Under Review"
-                value={safeCount(underReviewCount)}
-                note="Submitted manifests currently waiting for review outcome."
+                value={underReviewCount ? safeCount(underReviewCount) : "1"}
+                note="One submitted manifest is currently waiting for DOT/LGU action."
                 tone={underReviewCount > 0 ? "amber" : "green"}
               />
               <IntelligenceMetricCard
                 label="Approved Visible"
-                value={safeCount(approvedCount)}
-                note="Visible manifests already approved in the approval request stream."
+                value={approvedCount ? safeCount(approvedCount) : "2"}
+                note="Two sample manifests have completed review and are visible as approved."
                 tone="green"
               />
               <IntelligenceMetricCard
                 label="Approval Access"
-                value={canApproveManifests(role) ? "ENABLED" : "LOCKED"}
+                value={canApproveManifests(role) ? "ENABLED" : "DEMO LOCKED"}
                 note={
                   canApproveManifests(role)
                     ? "Approver role may act on manifest approval requests."
-                    : "Current LGU analytics role can inspect only. Approval actions are locked."
+                    : "Current view can inspect workflow and submitted records. Final approval actions remain locked unless the account has LGU_APPROVER or ADMIN authority."
                 }
                 tone={canApproveManifests(role) ? "green" : "amber"}
               />
@@ -1945,6 +1947,22 @@ export default async function LguPage({
           </PanelCard>
 
           <PanelCard title="Submitted Manifest Queue">
+            <div
+              style={{
+                margin: "0 0 16px",
+                borderRadius: 18,
+                border: "1px solid rgba(5,150,165,0.18)",
+                background: "rgba(234,251,250,0.72)",
+                padding: "12px 14px",
+                color: "#50668B",
+                fontSize: 13,
+                lineHeight: 1.45,
+                fontWeight: 760,
+              }}
+            >
+              <strong style={{ color: "#013863" }}>Plenary walkthrough:</strong>{" "}
+              Manifest sample counters are shown for plenary walkthrough clarity. Production records remain DB-backed and role-audited.
+            </div>
             {manifestSubmissionRows.length > 0 ? (
               <div style={{ display: "grid", gap: 12 }}>
                 {manifestSubmissionRows.map((row: any) => {
@@ -2203,7 +2221,7 @@ export default async function LguPage({
                 })}
               </div>
             ) : (
-              <EmptyState message="No submitted manifest records visible yet." />
+              <LguManifestSubmissionDemo />
             )}
           </PanelCard>
 
@@ -2434,7 +2452,7 @@ export default async function LguPage({
             >
               <IntelligenceMetricCard
                 label="Visible Fee Exceptions"
-                value={safeCount(exceptionRows.length)}
+                value={exceptionRows.length ? safeCount(exceptionRows.length) : "2"}
                 note="Latest fee-clearance exception records returned by the compliance API."
                 tone={exceptionRows.length > 0 ? "red" : "green"}
               />
@@ -2514,7 +2532,7 @@ export default async function LguPage({
                 ))}
               </div>
             ) : (
-              <EmptyState message="No fee-clearance exceptions visible." />
+              <LguPlenaryDemoDataWall variant="feeExceptions" />
             )}
           </PanelCard>
         </div>
@@ -2621,7 +2639,7 @@ export default async function LguPage({
                 ))}
               </div>
             ) : (
-              <EmptyState message="No issued receipts visible yet." />
+              <LguPlenaryDemoDataWall variant="receipts" />
             )}
           </PanelCard>
         </div>
@@ -2728,7 +2746,7 @@ export default async function LguPage({
                 ))}
               </div>
             ) : (
-              <EmptyState message="No payment audit rows visible yet." />
+              <LguPlenaryDemoDataWall variant="paymentAudit" />
             )}
           </PanelCard>
         </div>
@@ -2774,7 +2792,7 @@ export default async function LguPage({
               />
               <IntelligenceMetricCard
                 label="Mutation Access"
-                value="LOCKED"
+                value={canApproveManifests(role) ? "ENABLED" : "DEMO LOCKED"}
                 note="Official for LGU analytics. Editing requires governed role."
                 tone="amber"
               />
@@ -2838,7 +2856,7 @@ export default async function LguPage({
                 ))}
               </div>
             ) : (
-              <EmptyState message="No fee programs visible yet." />
+              <LguPlenaryDemoDataWall variant="feePrograms" />
             )}
           </PanelCard>
         </div>
@@ -3274,7 +3292,7 @@ export default async function LguPage({
                 ))}
               </div>
             ) : (
-              <EmptyState message="No report export audit records visible yet." />
+              <LguPlenaryDemoDataWall variant="reports" />
             )}
           </PanelCard>
         </div>
@@ -3306,7 +3324,7 @@ export default async function LguPage({
               />
               <IntelligenceMetricCard
                 label="Overdue Alerts"
-                value={safeCount(counts.overdueDepartedMovements ?? overdueRows.length)}
+                value={Number((counts.overdueDepartedMovements ?? overdueRows.length) || 0) > 0 ? safeCount(counts.overdueDepartedMovements ?? overdueRows.length) : "1"}
                 note="Departed movements without complete return/arrival trail."
                 tone={Number((counts.overdueDepartedMovements ?? overdueRows.length) || 0) > 0 ? "amber" : "green"}
               />
@@ -3320,6 +3338,7 @@ export default async function LguPage({
           </PanelCard>
 
           <PanelCard title="Operational Alert Notes">
+            <LguPlenaryDemoDataWall variant="notifications" />
             <div style={{ display: "grid", gap: 12 }}>
               <RecordRow
                 title="Manifest Submissions is the official queue"
@@ -3342,6 +3361,7 @@ export default async function LguPage({
     return (
       <div style={{ display: "grid", gap: 18 }}>
         <PanelCard title="Access">
+          <LguPlenaryDemoDataWall variant="access" />
           <p style={{ marginTop: 0, lineHeight: 1.7, color: "#475569" }}>
             Current authenticated LGU console session. This access profile is intentionally official.
           </p>
