@@ -161,6 +161,28 @@ const fallbackTrips: DcsTrip[] = [
     boardedPaxCount: 0,
     sensitiveDataHidden: true,
   },
+  {
+    tripNumber: "DOT-GL-GDN-20260608-1200",
+    routeProductCode: "GL_TRI_ISLAND_CLASSIC",
+    routeName: "Guyam · Daku · Naked",
+    routeShortName: "Classic Tri-Island",
+    portCode: "GENERAL_LUNA_PORT",
+    departureDate: "2026-06-08",
+    departureTimeLocal: "12:00 PM",
+    departureTimeHHmm: "12:00",
+    pricingMode: "REQUEST_TO_CONFIRM",
+    bookabilityStatus: "PILOT_PREVIEW",
+    dcsState: "SCHEDULED",
+    paymentStatus: "VOUCHER_READY",
+    voucherStatus: "ISSUED",
+    assignmentStatus: "VESSEL_REVIEW",
+    boardingQrStatus: "READY",
+    manifestStatus: "READY",
+    bookedPaxCount: 10,
+    boardedPaxCount: 0,
+    sensitiveDataHidden: true,
+  },
+
 ];
 
 async function getBoardData(): Promise<DcsPreviewResponse> {
@@ -288,7 +310,7 @@ export default async function GeneralLunaWorldClassPortBoardPage() {
         width: "100vw",
         overflow: "hidden",
         background:
-          "radial-gradient(circle at 12% -10%, rgba(0,194,209,0.20), transparent 27%), radial-gradient(circle at 94% 0%, rgba(243,174,38,0.13), transparent 23%), linear-gradient(135deg, #000000 0%, #02070C 42%, #00182A 100%)",
+          "radial-gradient(circle at 82% 4%, rgba(0,194,209,0.13), transparent 28%), radial-gradient(circle at 96% 0%, rgba(243,174,38,0.11), transparent 23%), linear-gradient(135deg, #000000 0%, #02070C 48%, #00182A 100%)",
         color: colors.white,
         padding: 14,
         boxSizing: "border-box",
@@ -322,7 +344,7 @@ export default async function GeneralLunaWorldClassPortBoardPage() {
                 position: "absolute",
                 inset: 0,
                 background:
-                  "linear-gradient(90deg, rgba(5,150,165,0.18), transparent 56%), radial-gradient(circle at 90% 15%, rgba(255,255,255,0.10), transparent 28%)",
+                  "linear-gradient(90deg, rgba(0,7,12,0.56) 0%, rgba(1,24,42,0.48) 46%, rgba(5,150,165,0.08) 100%), radial-gradient(circle at 92% 16%, rgba(255,255,255,0.075), transparent 30%)",
                 pointerEvents: "none",
               }}
             />
