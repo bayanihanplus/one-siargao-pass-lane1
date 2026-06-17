@@ -38,7 +38,7 @@ export const CONTROL_TOWER_SETTINGS_CONTROLS: SettingsControlContract[] = [
     label: "Traveler home routing",
     description: "Control where traveler Home and Continue actions point inside the mobile app shell.",
     currentState: "Route behavior exists in frontend code and middleware/auth flow.",
-    targetControl: "Govern /traveler/home, /traveler/explore, /traveler/trips, /traveler/pass and bottom nav behavior.",
+    targetControl: "Govern /traveler/app, /traveler/explore, /traveler/trips, /traveler/pass and bottom nav behavior.",
     mode: "DISPLAY_ONLY",
     risk: "HIGH",
     enabled: true,

@@ -454,7 +454,7 @@ export default async function TravelerPaymentsPage({ searchParams }: TravelerPay
       <div style={{ width: "100%", maxWidth: 430, margin: "0 auto" }}>
         <div style={{ marginBottom: 14 }}>
           <Link
-            href="/traveler/home"
+            href="/traveler/app"
             style={{
               display: "inline-flex",
               alignItems: "center",

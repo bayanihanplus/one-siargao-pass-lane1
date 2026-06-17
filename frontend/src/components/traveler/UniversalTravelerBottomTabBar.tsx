@@ -34,7 +34,7 @@ const bottomTabSafeSpacerStyle = {
 } as const;
 
 const TABS: TabItem[] = [
-  { key: "home", label: "Home", href: "/traveler/home", dictionaryKey: "traveler.bottomTab.home" },
+  { key: "home", label: "Home", href: "/traveler/app", dictionaryKey: "traveler.bottomTab.home" },
   { key: "explore", label: "Explore", href: "/traveler/explore", dictionaryKey: "traveler.bottomTab.explore" },
   { key: "trails", label: "Trails", href: "/traveler/passport-trails", dictionaryKey: "traveler.bottomTab.trails" },
   { key: "profile", label: "Profile", href: "/traveler/settings", dictionaryKey: "traveler.bottomTab.profile" },

@@ -257,7 +257,7 @@ async function updateTravelerProfile(formData: FormData) {
 
   revalidatePath("/");
   revalidatePath("/traveler/settings");
-  revalidatePath("/traveler/home");
+  revalidatePath("/traveler/app");
   redirect("/traveler/settings?panel=profile&saved=1");
 }
 
@@ -2115,7 +2115,7 @@ export default async function TravelerSettingsPage({
 
         <div style={{ marginBottom: 16 }}>
         <a
-          href="/traveler/home"
+          href="/traveler/app"
           style={{
             display: "inline-flex",
             alignItems: "center",

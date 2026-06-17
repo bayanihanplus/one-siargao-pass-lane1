@@ -58,7 +58,7 @@ export function OspPublicPageShell(props: OspPublicPageShellProps) {
           </nav>
 
           <div className="osp-public-header-actions">
-            <PublicButton label="Traveler App" href="/traveler/home" variant="secondary" />
+            <PublicButton label="Traveler App" href="/login?mode=returning" variant="secondary" />
             <PublicButton label="Create Pass" href="/traveler/start" variant="primary" />
           </div>
         </div>
@@ -99,7 +99,7 @@ export function OspPublicPageShell(props: OspPublicPageShellProps) {
             <div className="osp-public-quick-grid">
               {[
                 ["Website", "/", "Public gateway"],
-                ["Traveler App", "/traveler/home", "Mobile interface"],
+                ["Traveler App", "/login?mode=returning", "Mobile interface"],
                 ["API", "/ota", "Partner access"],
                 ["Government", "/government", "Governed visibility"],
               ].map(([label, href, body]) => (

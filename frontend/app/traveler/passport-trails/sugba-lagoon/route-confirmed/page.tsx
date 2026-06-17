@@ -90,7 +90,7 @@ function BottomTab() {
   };
   return (
     <nav aria-label="Traveler app bottom navigation" style={{ position: "fixed", left: "50%", bottom: 14, transform: "translateX(-50%)", width: "min(398px, calc(100vw - 28px))", zIndex: 40, display: "grid", gridTemplateColumns: "1fr 1fr 64px 1fr 1fr", alignItems: "center", gap: 6, padding: "10px 12px", borderRadius: 26, background: "rgba(255,255,255,0.96)", border: "1px solid rgba(6,53,68,0.12)", boxShadow: "0 18px 50px rgba(6,53,68,0.16)", backdropFilter: "blur(18px)" }}>
-      <Link href="/traveler/home" style={itemStyle}><span>⌂</span><span>Home</span></Link>
+      <Link href="/traveler/app" style={itemStyle}><span>⌂</span><span>Home</span></Link>
       <Link href="/traveler/passport-trails" style={activeStyle}><span>◇</span><span>Trails</span></Link>
       <Link href="/traveler/pass" aria-label="Open official Traveler QR" style={qrStyle}>QR</Link>
       <Link href="/traveler/explore" style={itemStyle}><span>⌕</span><span>Explore</span></Link>

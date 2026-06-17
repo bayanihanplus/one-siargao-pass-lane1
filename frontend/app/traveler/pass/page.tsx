@@ -539,7 +539,7 @@ export default async function TravelerPassPage() {
         }}
         >
           <Link
-            href="/traveler/home"
+            href="/traveler/app"
             style={{
               minHeight: 38,
               padding: "0 15px",

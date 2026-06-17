@@ -80,7 +80,7 @@ function getDefaultRoleLanding(user: any) {
   if (hasLguRole(roles)) return "/lgu";
   if (hasOperatorRole(roles)) return "/operator/commercial";
 
-  return "/traveler/home";
+  return "/traveler/app";
 }
 
 function getRoleAwareContinuePath(user: any, requestedNext?: string | null) {
@@ -110,15 +110,15 @@ function ospLoginNormalizeNext(value: string | null | undefined): string {
   const next = String(value || "").trim();
 
   if (!next || next === "/" || next === "/login" || next.startsWith("/login?") || next === "/logout") {
-    return "/traveler/home";
+    return "/traveler/app";
   }
 
   if (!next.startsWith("/") || next.startsWith("//")) {
-    return "/traveler/home";
+    return "/traveler/app";
   }
 
   if (isTravelerShellNext(next)) {
-    return "/traveler/home";
+    return "/traveler/app";
   }
 
   return next;
@@ -158,7 +158,7 @@ function buildLoginErrorRedirect(mode: LoginMode, requestedNextPath: string, log
 
   const normalizedNext = ospLoginNormalizeNext(requestedNextPath);
 
-  if (normalizedNext && normalizedNext !== "/traveler/home") {
+  if (normalizedNext && normalizedNext !== "/traveler/app") {
     params.set("next", normalizedNext);
   }
 
@@ -170,7 +170,7 @@ async function loginAction(formData: FormData) {
 
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "").trim();
-  const requestedNextPath = String(formData.get("next") || "/traveler/home").trim() || "/traveler/home";
+  const requestedNextPath = String(formData.get("next") || "/traveler/app").trim() || "/traveler/app";
   const mode = normalizeMode(String(formData.get("mode") || "returning"));
   const nextPath = ospLoginNormalizeNext(requestedNextPath);
 

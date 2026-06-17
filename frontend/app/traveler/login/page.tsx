@@ -67,7 +67,7 @@ async function travelerLoginAction(formData: FormData) {
     maxAge: 60 * 60 * 24,
   });
 
-  redirect("/traveler/home");
+  redirect("/traveler/app");
 }
 
 function AppAction(props: {

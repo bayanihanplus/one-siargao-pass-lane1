@@ -155,7 +155,7 @@ export default async function SiteVisitDetailPage(props: SiteVisitDetailPageProp
           }}
         >
           <Link
-            href="/traveler/home"
+            href="/traveler/app"
             style={{
               minHeight: 38,
               borderRadius: 999,
@@ -480,7 +480,7 @@ export default async function SiteVisitDetailPage(props: SiteVisitDetailPageProp
           </Link>
 
           <Link
-            href="/traveler/home"
+            href="/traveler/app"
             style={{
               minHeight: 42,
               borderRadius: 16,

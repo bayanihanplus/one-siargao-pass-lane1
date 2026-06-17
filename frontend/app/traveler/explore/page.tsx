@@ -826,7 +826,7 @@ function Header({ dictionary }: { dictionary: TravelerDictionary }) {
         }}
       >
         <Link
-          href="/traveler/home"
+          href="/traveler/app"
           aria-label="Back to traveler home"
           style={{
             width: 44,

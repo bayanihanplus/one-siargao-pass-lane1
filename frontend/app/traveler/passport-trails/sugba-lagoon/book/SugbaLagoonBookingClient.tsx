@@ -190,7 +190,7 @@ function BottomTab() {
         backdropFilter: "blur(18px)",
       }}
     >
-      <Link href="/traveler/home" style={itemStyle}><span>⌂</span><span>Home</span></Link>
+      <Link href="/traveler/app" style={itemStyle}><span>⌂</span><span>Home</span></Link>
       <Link href="/traveler/passport-trails" style={activeStyle}><span>◇</span><span>Trails</span></Link>
       <Link href="/traveler/pass" aria-label="Open official Traveler QR" style={qrStyle}>QR</Link>
       <Link href="/traveler/explore" style={itemStyle}><span>⌕</span><span>Explore</span></Link>

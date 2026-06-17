@@ -45,7 +45,7 @@ export const controlTowerGateData: Record<ControlTowerGateKey, ControlTowerGateD
     operationalRole:
       "This module prevents traveler identity, QR issuance, pass readiness, and role-aware navigation from being scattered across login, traveler, and middleware pages.",
     connectedRoutes: [
-      "/traveler/home",
+      "/traveler/app",
       "/traveler/pass",
       "/traveler/trips",
       "/traveler/settings",

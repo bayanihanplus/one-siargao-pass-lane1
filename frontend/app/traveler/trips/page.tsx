@@ -382,7 +382,7 @@ export default async function TravelerTripsPage() {
       <KuyaTalaEntryButton topic="trips" title="Ask Kuya Tala™ about your trips" note="Get guided help understanding trip readiness, records, pass status, and next traveler actions." />
       <div style={{ marginBottom: 16 }}>
         <a
-          href="/traveler/home"
+          href="/traveler/app"
           style={{
             display: "inline-flex",
             alignItems: "center",
@@ -431,7 +431,7 @@ export default async function TravelerTripsPage() {
       </header>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
-        <PillLink href="/traveler/home" label={navHome} icon={<TripsNavIcon kind="HOME" />} />
+        <PillLink href="/traveler/app" label={navHome} icon={<TripsNavIcon kind="HOME" />} />
         <PillLink href="/traveler/pass" label={navPass} icon={<TripsNavIcon kind="PASS" />} />
         <PillLink href="/logout" label={navLogout} icon={<TripsNavIcon kind="LOGOUT" />} />
       </div>

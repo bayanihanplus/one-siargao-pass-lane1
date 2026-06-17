@@ -91,7 +91,7 @@ export default function Cloud9SiteAccessPage() {
           }}
         >
           <Link
-            href="/traveler/home"
+            href="/traveler/app"
             style={{
               minHeight: 40,
               padding: "0 16px",
@@ -415,7 +415,7 @@ export default function Cloud9SiteAccessPage() {
               </Link>
 
               <Link
-                href="/traveler/home"
+                href="/traveler/app"
                 style={{
                   minHeight: 48,
                   borderRadius: 16,

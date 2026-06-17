@@ -60,7 +60,7 @@ export default async function TravelerPassportMapPage() {
             }}
           >
             <a
-              href="/traveler/home"
+              href="/traveler/app"
               aria-label="Back to One Siargao Pass home"
               style={{
                 width: 54,

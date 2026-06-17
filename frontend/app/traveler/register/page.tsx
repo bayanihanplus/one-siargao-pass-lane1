@@ -314,7 +314,7 @@ async function registerTravelerAction(formData: FormData) {
     maxAge: 60 * 60 * 24,
   });
 
-  redirect("/traveler/home");
+  redirect("/traveler/app");
 }
 
 function getErrorMessage(error?: string, message?: string) {
