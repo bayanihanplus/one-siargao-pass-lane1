@@ -1696,13 +1696,13 @@ function TravelerShellFrame(props: {
             flex: "0 0 auto",
           }}
         >
-          <HeaderControlButton label={languageLabel} ariaLabel={languageAriaLabel} href={rootPreview ? "/traveler/login" : "/traveler/settings?panel=language"} icon="language" />
-          <HeaderControlButton label={currencyLabel} ariaLabel={currencyAriaLabel} href={rootPreview ? "/traveler/login" : "/traveler/settings?panel=currency"} icon="currency" />
-          <HeaderControlButton className="osp-phone-secondary-control" label="AI" ariaLabel={assistantAriaLabel} href={rootPreview ? "/traveler/login" : "/traveler/settings?panel=assistant"} icon="assistant" />
+          <HeaderControlButton label={languageLabel} ariaLabel={languageAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=language"} icon="language" />
+          <HeaderControlButton label={currencyLabel} ariaLabel={currencyAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=currency"} icon="currency" />
+          <HeaderControlButton className="osp-phone-secondary-control" label="AI" ariaLabel={assistantAriaLabel} href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=assistant"} icon="assistant" />
 
           <a
             className="osp-phone-hidden-notification"
-            href={rootPreview ? "/traveler/login" : "/traveler/settings?panel=notifications"}
+            href={rootPreview ? "/login?mode=returning" : "/traveler/settings?panel=notifications"}
             aria-label={notificationsAriaLabel}
             style={{
               position: "relative",
@@ -2531,7 +2531,7 @@ function TravelerBottomNav(props: {
         </a>
 
         <TravelerBottomNavLink
-          href={rootPreview ? "/traveler/login" : "/traveler/trips"}
+          href={rootPreview ? "/login?mode=returning" : "/traveler/trips"}
           label={paymentsLabel}
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
@@ -2542,7 +2542,7 @@ function TravelerBottomNav(props: {
         />
 
         <TravelerBottomNavLink
-          href={rootPreview ? "/traveler/login" : "/traveler/pass"}
+          href={rootPreview ? "/login?mode=returning" : "/traveler/pass"}
           label={profileLabel}
           icon={
             <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
@@ -2628,11 +2628,10 @@ function TravelerShell(props: {
 export default async function TravelerHomePage() {
   const user = await getCurrentUser();
 
-  // OSP-TRAVELER-HOME-PRIVATE-AUTH-LOCK-05C
-  // /traveler/home is a private app surface. Never render a fake public shell here.
-  if (!user) {
-    redirect("/traveler/login");
-  }
+  // AUTH-R1 PUBLIC PREVIEW LOCK:
+  // /traveler/home is a public-browsable traveler shell.
+  // Private traveler data remains protected by server/API token checks and action-level gates.
+  // Do not redirect guests away from the shell; render the root preview state instead.
   const languageRuntime = await getTravelerLanguageRuntime({ scope: "traveler" });
   const dictionary = languageRuntime.dictionary;
 
